@@ -1,9 +1,0 @@
-{% extends base.html.twig %}
-
-{% block head %}
-{% endblock %}
-
-{% block body %}
-    <h1>Willkommen zu WIAG</h1>
-
-{% endblock %}
