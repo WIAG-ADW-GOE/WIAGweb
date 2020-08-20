@@ -1,0 +1,17 @@
+body {
+    font-family: Georgia, ui-serif;
+    color: #444;
+}
+
+.dio {
+    text-transform: uppercase;
+    color: #667;
+}
+
+.gs {
+    color: #a33;
+}
+
+footer {
+    background-color: #efefee;
+}
