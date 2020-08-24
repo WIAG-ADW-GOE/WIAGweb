@@ -1,0 +1,68 @@
+{% extends 'query_bishop/launch_query.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
+{% endblock %}
+
+{% block list_results %}
+    <div class="container-fluid">
+	<!-- query result -->
+	<div class="mt-3 mb-1">Treffer: {{ persons|length }}</div>
+	{% if persons|length > 0 %}
+	    <div class="table-responsive">    
+		<table class="table">
+		    <thead class="thead-light">
+			<tr>
+			    <th scope="col">WIAG ID</th>
+			    <th scope="col">Name</th>
+			    <th scope="col">Lebensdaten</th>
+			</tr>
+		    </thead>
+		    <tbody>
+			{% for person in persons %}
+			    <tr>
+				<th scope="row">
+				    <a href="{{ path('bishop', {id: person.wiagid}) }}">{{ person.wiagid }}</a>
+				</th>	    
+				<td>{{ person.givenname }} {{ person.prefix }} {{ person.familyname }}<br>
+				    <small text-truncate>{{ person.offices }}</small></td>
+				<td>{% if not person.date_birth and not person.date_death %}
+				{% elseif person.date_birth and not person.date_death %}
+				    * {{ person.date_birth }}
+				{% elseif not person.date_birth and person.date_death %}
+				    † {{ person.date_death }}
+				{% else %}
+				    {{ person.date_birth }}-{{ person.date_death }}
+				{% endif %}
+				</td>
+			    </tr>
+			{% endfor %}
+		    </tbody>
+		</table>
+	    </div>
+
+	    
+	    {# {% for person in listpersons %}
+	    {{dump(person) }}
+	    {% endfor %} #}
+	    
+	    <nav aria-label="Bottom pagination buttons">
+		<ul class="pagination">
+		    <li class="page-item" ><a href="{{ path('launch_query', { 'page': page - 1}) }}"
+						 class="page-link" href="">zurück</a></li>
+		    <li class="page-item"><a class="page-link" href="#">1</a></li>
+		    <li class="page-item"><a class="page-link" href="#">2</a></li>
+		    <li class="page-item"><a class="page-link" href="#">3</a></li>
+		    {% if fmore %}
+			<li class="page-item"><a href="{{ path('launch_query', 
+						       { 'page': page + 1,
+							   'method': "POST"
+							   }) }}"
+						 class="page-link" href="">vor</a></li>
+		    {% endif %}
+		</ul>
+	    </nav>
+	{% endif %}
+    </div>
+{% endblock %}

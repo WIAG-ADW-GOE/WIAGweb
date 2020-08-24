@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+	{% if not person%}
+	    <p class="em">Person nicht gefunden.</p>
+	{% else %}
+	    <div class="mt-3 mb-2">
+		<h2>{{ person.givenname }} {{ person.prefix }} {{ person.familyname }}</h2>
+	    </div>
+	    <dl class="row">
+		{% if person.date_birth %}
+		    <dt class="col-sm-3">geboren</dt>
+		    <dd class="col-sm-9">{{ person.date_birth }}</dd>
+		{% endif %}
+		{% if person.date_death %}
+		    <dt class="col-sm-3">gestorben</dt>
+		    <dd class="col-sm-9">{{ person.date_death }}</dd>
+		{% endif %}
+		{% if offices %}
+		    <dt class="col-sm-3">Ämter</dt>
+		    <dd class="col-sm-9">
+			<ul class="list-unstyled">
+			    {% for office in offices %}
+				<li>
+				    <ul class="list-inlined">
+					<li class="list-inline-item"> {{ office.office_name }}</li>
+					<li class="list-inline-item">{{ office.diocese }}</li>
+					<li class="list-inline-item">
+					    {% if not office.date_start and not office.date_end %}
+					    {% elseif office.date_start and not office.date_end %}
+						{{ office.date_start }}
+					    {% elseif not office.date_start and office.date_end %}
+						bis {{ office.date_end }}
+					    {% else %}
+						{{ office.date_start }}-{{ office.date_end }}
+					    {% endif %}</li>
+				    </ul>
+				</li>
+			    {% endfor %}
+			</ul>
+		    </dd>
+		{% endif %}
+		{% if person.gsid %}
+		    <dt class="col-sm-3">Germania Sacra</dt>
+		    <dd class="col-sm-9">
+			<a href="http://germania-sacra-datenbank.uni-goettingen.de/index/gsn/{{ person.gsid }}">{{ person.gsid }}</a></dd>
+		{% endif %}
+		{% if person.gndid %}
+		    <dt class="col-sm-3">GND</dt>
+		    <dd class="col-sm-9"><a href="http://lobid.org/gnd/{{ person.gndid }}">{{ person.gndid }}</a></dd>
+		{% endif %}
+		{% if person.viafid %}
+		    <dt class="col-sm-3">VIAF</dt>
+		    <dd class="col-sm-9"><a href="https://viaf.org/viaf/{{ person.viafid }}">{{ person.viafid }}</a></dd>
+		{% endif %}
+		{% if person.wikipediaurl %}
+		    <dt class="col-sm-3">Wikipedia</dt>
+		    <dd class="col-sm-9"><a href="{{ person.wikipediaurl }}">{{ person.givenname }} {{ person.prefix }} {{ person.familyname }}</a></dd>
+		{% endif %}
+
+	    </dl>
+	{% endif %}
+    </div>
+{% endblock %}

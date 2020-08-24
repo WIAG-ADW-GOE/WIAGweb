@@ -13,7 +13,7 @@ class Start extends AbstractController {
     }
 
     /**
-     * @Route("/about", name="about-wiag")
+     * @Route("/about", name="about_wiag")
      */
 	public function about() {
         return $this->render('start/about.html.twig');

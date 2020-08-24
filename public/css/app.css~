@@ -1,8 +1,0 @@
-body {
-    font-family: Georgia, ui-serif;
-    color: #444;
-}
-
-footer {
-    background-color: #efefee;
-}
