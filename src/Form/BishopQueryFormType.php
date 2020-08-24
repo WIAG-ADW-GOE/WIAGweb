@@ -12,16 +12,26 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Routing\RouterInterface;
 
 
 class BishopQueryFormType extends AbstractType
 {
+
+    public function __construct(RouterInterface $router) {
+        $this->router = $router;
+    }
+    
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Name',
                 'required' => false,
+                'attr' => [
+                    'class' => 'js-name-autocomplete',
+                    // 'data-autocomplete-url' => $this->router->generate('query_bishops_names_utility'),
+                ]
             ])
             ->add('place', TextType::class, [
                 'label' => 'Ort',

@@ -57,11 +57,14 @@ class PersonRepository extends ServiceEntityRepository {
         $sql = "
         SELECT * FROM person p
         WHERE p.familyname like :name
-        ORDER BY p.familyname ASC
+        ORDER BY p.familyname ASC 
+        LIMIT 12
         ";
         $stmt = $conn->prepare($sql);
         // is it possible to reuse prepared statements?
-        $stmt->execute(['name' => "%{$name}%"]);
+        $stmt->execute([
+            'name' => "%{$name}%"
+        ]);
         
         // returns an array of arrays (i.e. a raw data set)
         return $stmt->fetchAll();
