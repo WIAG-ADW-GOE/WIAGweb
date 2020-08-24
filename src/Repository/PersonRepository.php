@@ -76,30 +76,40 @@ class PersonRepository extends ServiceEntityRepository {
          */
         /* Doctrine Querybuilder allows to combine conditions in a more flexible way. */
         $condclause = "";
+        $offset = ($page - 1) * $limit;
+        $sql = "";
         if (is_null($querydata->place)) {
-
-            if ($querydata->year) {
-                // mysql is quit robust
-                $thyear = self::THYEAR;
-                $condclause = " ABS(date_death - {$querydata->year}) < {$thyear}";
-            }
-
-            if ($querydata->someid) {
-                $condclause = $condclause ? $condclause." AND" : "";
-                $condclause = $condclause." '{$querydata->someid}' IN (gsid, gndid, viafid)";
-            }
-            
-            if ($querydata->name) {
-                $condclause = $condclause ? $condclause." AND" : "";
-                $condclause = $condclause." familyname like '%{$querydata->name}%' OR ".
-                            $condclause." givenname like '%{$querydata->name}%'";
-            }       
+            $sqltables = "person";
+        } else {
+            $sqltables = "person, office";
         }
         
-        $offset = ($page - 1) * $limit;
-        $sql = "SELECT * FROM person WHERE".
+        if ($querydata->year) {
+            // mysql is quit robust
+            $thyear = self::THYEAR;
+            $condclause = " ABS(date_death - {$querydata->year}) < {$thyear}";
+        }
+        
+        if ($querydata->someid) {
+            $condclause = $condclause ? $condclause." AND" : "";
+            $condclause = $condclause." '{$querydata->someid}' IN (gsid, gndid, viafid)";
+        }
+        
+        if ($querydata->name) {
+            $condclause = $condclause ? $condclause." AND" : "";
+            $condclause = $condclause." familyname like '%{$querydata->name}%' OR ".
+                        $condclause." givenname like '%{$querydata->name}%'";
+        }
+
+        if ($querydata->place) {
+            $condclause = $condclause ? $condclause." AND" : "";
+            $condclause = $condclause." person.wiagid = office.wiagid_person AND ".
+                        "diocese like '%{$querydata->place}%'";
+        }
+
+        $sql = "SELECT DISTINCT(person.wiagid), person.* FROM ${sqltables} WHERE".
              $condclause.
-             " LIMIT {$limit} OFFSET {$offset}";
+             " LIMIT {$limit} OFFSET {$offset}";            
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
