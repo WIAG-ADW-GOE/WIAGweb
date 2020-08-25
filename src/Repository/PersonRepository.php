@@ -91,18 +91,8 @@ class PersonRepository extends ServiceEntityRepository {
         return $stmt->fetchAll();
     }
 
-    public function findByQueryObject(BishopQueryFormModel $querydata, $limit, $page): array {
-        $conn = $this->getEntityManager()->getConnection();
-
-        /* Doctrine Querybuilder may allow to combine conditions in a more flexible way. */
+    private function buildWhere(BishopQueryFormModel $querydata): string {
         $condclause = "";
-        $offset = ($page - 1) * $limit;
-        $sql = "";
-        if (is_null($querydata->place)) {
-            $sqltables = "person";
-        } else {
-            $sqltables = "person, office";
-        }
         
         if ($querydata->year) {
             // mysql is quit robust
@@ -126,9 +116,45 @@ class PersonRepository extends ServiceEntityRepository {
                         "diocese like '%{$querydata->place}%'";
         }
 
+        return $condclause;
+        
+    }
+
+    public function countByQueryObject(BishopQueryFormModel $querydata) {
+        $conn = $this->getEntityManager()->getConnection();
+
+        if (is_null($querydata->place)) {
+            $sqltables = "person";
+        } else {
+            $sqltables = "person, office";
+        }
+
+        $sql = "SELECT COUNT(DISTINCT(person.wiagid)) as count FROM ${sqltables} WHERE".
+             $this->buildWhere($querydata);
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+    
+    public function findByQueryObject(BishopQueryFormModel $querydata, $limit, $page): array {
+        $conn = $this->getEntityManager()->getConnection();
+
+        /* Doctrine Querybuilder may allow to combine conditions in a more flexible way. */
+
+        if (is_null($querydata->place)) {
+            $sqltables = "person";
+        } else {
+            $sqltables = "person, office";
+        }
+
+        $offset = ($page - 1) * $limit;
+
         $sql = "SELECT DISTINCT(person.wiagid), person.* FROM ${sqltables} WHERE".
-             $condclause.
-             " LIMIT {$limit} OFFSET {$offset}";            
+             $this->buildWhere($querydata).
+             " LIMIT {$limit} OFFSET {$offset}";
+
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();

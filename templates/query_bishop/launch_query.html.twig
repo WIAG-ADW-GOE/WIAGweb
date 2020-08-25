@@ -23,9 +23,22 @@
 		    <div class="ml-2">{{ form_row(query_form.someid) }}</div>
 		</div>
 		<button type="submit" class="btn btn-primary">Suche</button>
-		<!-- <span class="ml-4">
-		     <button type="submit" class="btn btn-secondary" name="page" value="2">vor</button>
-		     </span> -->
+		{% if count is defined %}
+		    <span class="ml-4">
+			<button type="submit"
+				class="btn btn-secondary"
+				{% if page < 2%}
+				      disabled="disabled"
+				{% endif %}
+				name="page" value="{{ page - 1 }}">&#9204; zurück</button>
+			<button type="submit"
+				      class="btn btn-secondary"
+				      {% if page * limit > count%}
+				disabled="disabled"
+				      {% endif %}
+				      name="page" value="{{ page + 1 }}">vor &#9205;</button>
+			</span>
+		{% endif %}
 	    {{ form_end(query_form) }}	    
     </div>
     {% block list_results %}{% endblock %}

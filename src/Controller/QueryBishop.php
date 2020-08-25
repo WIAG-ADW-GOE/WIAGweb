@@ -19,9 +19,9 @@ class QueryBishop extends AbstractController {
 
     
 	/**
-     * @Route("/query-bishops/{page}", name="launch_query")
+     * @Route("/query-bishops", name="launch_query")
      */
-    public function launch_query($page, Request $request) {
+    public function launch_query(Request $request) {
         $form = $this->createForm(BishopQueryFormType::class);
         $form->handlerequest($request);
 
@@ -30,11 +30,19 @@ class QueryBishop extends AbstractController {
              */
             $bishopquery = $form->getData();
 
-            // return $this->listresults($form, $bishopquery); # page 1
+            $count = $this->getDoctrine()
+                            ->getRepository(Person::class)
+                            ->countByQueryObject($bishopquery)[0]['count'];
 
+            $page = $request->request->get('page');            
+            if (!$page) {
+                $page = 1;
+            }
+            
             $persons = $this->getDoctrine()
                             ->getRepository(Person::class)
                             ->findByQueryObject($bishopquery, self::LIST_LIMIT, $page);
+
 
             // dd($persons[11]['familyname']);
 
@@ -56,11 +64,11 @@ class QueryBishop extends AbstractController {
                 $displaypersons->push($person);
             }
 
-            $fmore = count($persons) == self::LIST_LIMIT;
             return $this->render('query_bishop/listresult.html.twig', [
                 'query_form' => $form->createView(),
+                'count' => $count,
+                'limit' => self::LIST_LIMIT,
                 'page' => $page,
-                'fmore' => $fmore,
                 'persons' => $displaypersons,
             ]);
 
