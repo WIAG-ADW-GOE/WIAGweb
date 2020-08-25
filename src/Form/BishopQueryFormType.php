@@ -30,12 +30,18 @@ class BishopQueryFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'js-name-autocomplete',
-                    // 'data-autocomplete-url' => $this->router->generate('query_bishops_names_utility'),
-                ]
+                    'data-autocomplete-url' => $this->router->generate('query_bishops_utility_names'),
+                    'size' => '30',
+                ],
             ])
             ->add('place', TextType::class, [
                 'label' => 'Ort',
                 'required' => false,
+                'attr' => [
+                    'class' => 'js-place-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('query_bishops_utility_places'),
+                    'size' => '25',
+                ],
             ])
             ->add('year', NumberType::class, [
                 'label' => 'Jahr',

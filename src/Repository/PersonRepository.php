@@ -50,20 +50,41 @@ class PersonRepository extends ServiceEntityRepository {
     }
     */
 
-
-    public function findByFamilyname($name): array {
+    public function suggestName($name, $limit = 1000): array {
         $conn = $this->getEntityManager()->getConnection();
+
+        //         ORDER BY p.familyname ASC 
         
         $sql = "
-        SELECT * FROM person p
-        WHERE p.familyname like :name
-        ORDER BY p.familyname ASC 
-        LIMIT 12
+        SELECT DISTINCT(CONCAT_WS(' ', p.givenname, p.prefix, p.familyname)) as suggestion FROM person p
+        WHERE CONCAT_WS(' ', p.givenname, p.prefix, p.familyname) LIKE :name
+        LIMIT $limit
         ";
         $stmt = $conn->prepare($sql);
         // is it possible to reuse prepared statements?
         $stmt->execute([
-            'name' => "%{$name}%"
+            'name' => "%{$name}%",
+        ]);
+        
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAll();
+    }
+
+
+    public function findByFamilyname($name, $limit = 1000): array {
+        $conn = $this->getEntityManager()->getConnection();
+
+        //         ORDER BY p.familyname ASC 
+        
+        $sql = "
+        SELECT * FROM person p
+        WHERE p.familyname LIKE :name
+        LIMIT $limit
+        ";
+        $stmt = $conn->prepare($sql);
+        // is it possible to reuse prepared statements?
+        $stmt->execute([
+            'name' => "%{$name}%",
         ]);
         
         // returns an array of arrays (i.e. a raw data set)
@@ -73,11 +94,7 @@ class PersonRepository extends ServiceEntityRepository {
     public function findByQueryObject(BishopQueryFormModel $querydata, $limit, $page): array {
         $conn = $this->getEntityManager()->getConnection();
 
-        /* TODO split name elements and search for them in 'familyname' and 'givenname'
-         * or introduce a field 'name'. The latter makes more sense, because of the selection 
-         * hints that we will use.
-         */
-        /* Doctrine Querybuilder allows to combine conditions in a more flexible way. */
+        /* Doctrine Querybuilder may allow to combine conditions in a more flexible way. */
         $condclause = "";
         $offset = ($page - 1) * $limit;
         $sql = "";
@@ -100,8 +117,7 @@ class PersonRepository extends ServiceEntityRepository {
         
         if ($querydata->name) {
             $condclause = $condclause ? $condclause." AND" : "";
-            $condclause = $condclause." familyname like '%{$querydata->name}%' OR ".
-                        $condclause." givenname like '%{$querydata->name}%'";
+            $condclause = $condclause." CONCAT_WS(' ', givenname, prefix, familyname) LIKE '%{$querydata->name}%'";
         }
 
         if ($querydata->place) {

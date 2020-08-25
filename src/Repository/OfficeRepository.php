@@ -65,4 +65,24 @@ class OfficeRepository extends ServiceEntityRepository
         return $stmt->fetchAll();
     }
 
+    public function suggestPlace($place, $limit = 1000): array {
+        $conn = $this->getEntityManager()->getConnection();
+
+        
+        $sql = "
+        SELECT DISTINCT(diocese) as suggestion FROM office p
+        WHERE p.diocese LIKE :place
+        LIMIT $limit
+        ";
+        $stmt = $conn->prepare($sql);
+        // is it possible to reuse prepared statements?
+        $stmt->execute([
+            'place' => "%{$place}%",
+        ]);
+        
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAll();
+    }
+
+
 }
