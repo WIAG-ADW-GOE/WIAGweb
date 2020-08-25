@@ -17,12 +17,16 @@
 	<div class="mt-3"><h3>Suche nach Bischöfen</h3></div>
 	    {{ form_start(query_form) }}
 		<div class="col-12 row">
-		    {{ form_row(query_form.name) }}
+		    {% set form_elements %}
+		     {{  form_row(query_form.name) }}
 		    <div class="ml-2">{{ form_row(query_form.place) }}</div>
 		    <div class="ml-2">{{ form_row(query_form.year) }}</div>
 		    <div class="ml-2">{{ form_row(query_form.someid) }}</div>
+   		    {% endset %}
+		    {{ form_elements }}
 		</div>
 		<button type="submit" class="btn btn-primary">Suche</button>
+		{% set fb_elements %}
 		{% if count is defined %}
 		    <span class="ml-4">
 			<button type="submit"
@@ -32,14 +36,23 @@
 				{% endif %}
 				name="page" value="{{ page - 1 }}">&#9204; zurück</button>
 			<button type="submit"
-				      class="btn btn-secondary"
-				      {% if page * limit > count%}
-				disabled="disabled"
-				      {% endif %}
-				      name="page" value="{{ page + 1 }}">vor &#9205;</button>
-			</span>
+				class="btn btn-secondary"
+				{% if page * limit > count%}
+				      disabled="disabled"
+				{% endif %}
+				name="page" value="{{ page + 1 }}">vor &#9205;</button>
+		    </span>
 		{% endif %}
+		{% endset %}
+		{{ fb_elements }}
 	    {{ form_end(query_form) }}	    
     </div>
     {% block list_results %}{% endblock %}
+
+    {{ form_start(query_form) }}
+	<div hidden="hidden">{{ form_elements }}</div>
+	{{ fb_elements }}
+    {{ form_end(query_form) }}
+    
+
 {% endblock %}
