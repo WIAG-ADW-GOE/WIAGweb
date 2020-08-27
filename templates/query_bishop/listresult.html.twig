@@ -3,9 +3,15 @@
 {% block list_results %}
     <div class="container-fluid">
 	<!-- query result -->
-	<div class="mt-3 mb-1">Treffer: {{ (page - 1) * limit + 1 }} - {{ min(page * limit, count)}} von {{ count }}</div>
+	<div class="mt-3 mb-1">Treffer:
+	    {% if count == 1 %}
+		1
+	    {% else %}
+		{{ (page - 1) * limit + 1 }} - {{ min(page * limit, count)}} von {{ count }}
+	    {% endif %}
+	</div>
 	{% if count > 0 %}
-	    <div class="table-responsive">    
+	    <div class="table-responsive">
 		<table class="table">
 		    <thead class="thead-light">
 			<tr>
@@ -19,7 +25,7 @@
 			    <tr>
 				<th scope="row">
 				    <a href="{{ path('bishop', {id: person.wiagid}) }}">{{ person.wiagid }}</a>
-				</th>	    
+				</th>
 				<td>{{ person.givenname }} {{ person.prefix }} {{ person.familyname }}<br>
 				    <small text-truncate>{{ person.offices }}</small></td>
 				<td>{% if not person.date_birth and not person.date_death %}
@@ -37,13 +43,11 @@
 		</table>
 	    </div>
 
-	    
+
 	    {# {% for person in listpersons %}
 	    {{dump(person) }}
 	    {% endfor %} #}
-	    
+
 	{% endif %}
     </div>
 {% endblock %}
-
-

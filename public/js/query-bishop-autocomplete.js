@@ -1,3 +1,4 @@
+'use strict';
 $(document).ready(function() {
     $('.js-name-autocomplete').each(function() {
 	var autocompleteUrl = $(this).data('autocomplete-url');
