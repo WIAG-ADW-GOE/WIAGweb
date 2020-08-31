@@ -14,7 +14,9 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Person[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class PersonRepository extends ServiceEntityRepository {
-    const THYEAR = 50;
+
+    // Allow deviations in the query parameter `year`.
+    const MARGINYEAR = 50;
     
     public function __construct(ManagerRegistry $registry)
     {
@@ -50,6 +52,7 @@ class PersonRepository extends ServiceEntityRepository {
     }
     */
 
+    /* AJAX callback function */
     public function suggestName($name, $limit = 1000): array {
         $conn = $this->getEntityManager()->getConnection();
 
@@ -76,11 +79,10 @@ class PersonRepository extends ServiceEntityRepository {
 
         //         ORDER BY p.familyname ASC 
         
-        $sql = "
-        SELECT * FROM person p
+        $sql = "SELECT * FROM person p
         WHERE p.familyname LIKE :name
-        LIMIT $limit
-        ";
+        LIMIT $limit";
+        
         $stmt = $conn->prepare($sql);
         // is it possible to reuse prepared statements?
         $stmt->execute([
@@ -91,23 +93,24 @@ class PersonRepository extends ServiceEntityRepository {
         return $stmt->fetchAll();
     }
 
-    private function buildWhere(BishopQueryFormModel $querydata): string {
+    public function buildWhere(BishopQueryFormModel $querydata): string {
         $condclause = "";
         
         if ($querydata->year) {
-            // mysql is quit robust
-            $thyear = self::THYEAR;
-            $condclause = " ABS(date_death - {$querydata->year}) < {$thyear}";
+            // mysql is quite robust
+            $thyear = self::MARGINYEAR;
+            $condclause = " ABS(person.date_death - {$querydata->year}) < {$thyear}";
         }
         
         if ($querydata->someid) {
             $condclause = $condclause ? $condclause." AND" : "";
-            $condclause = $condclause." '{$querydata->someid}' IN (gsid, gndid, viafid)";
+            $condclause = $condclause." '{$querydata->someid}' IN (person.gsid, person.gndid, person.viafid)";
         }
         
         if ($querydata->name) {
             $condclause = $condclause ? $condclause." AND" : "";
-            $condclause = $condclause." CONCAT_WS(' ', givenname, prefix, familyname) LIKE '%{$querydata->name}%'";
+            $condclause = $condclause." CONCAT_WS(' ', person.givenname, person.prefix, person.familyname)".
+                        " LIKE '%{$querydata->name}%'";
         }
 
         if ($querydata->place) {
@@ -130,6 +133,24 @@ class PersonRepository extends ServiceEntityRepository {
         }
 
         $sql = "SELECT COUNT(DISTINCT(person.wiagid)) as count FROM ${sqltables} WHERE".
+             $this->buildWhere($querydata);
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+    public function findPlacesByQueryObject(BishopQueryFormModel $querydata) {
+        $conn = $this->getEntityManager()->getConnection();
+
+        if (is_null($querydata->place)) {
+            $sqltables = "person";
+        } else {
+            $sqltables = "person, office";
+        }
+
+        $sql = "SELECT DISTINCT(office.diocese) FROM ${sqltables} WHERE".
              $this->buildWhere($querydata);
 
         $stmt = $conn->prepare($sql);
@@ -162,9 +183,5 @@ class PersonRepository extends ServiceEntityRepository {
         // returns an array of arrays (i.e. a raw data set)
         return $stmt->fetchAll();
     }
-
-    
-
-
     
 }

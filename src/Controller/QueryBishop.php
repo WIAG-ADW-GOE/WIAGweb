@@ -3,13 +3,17 @@
 namespace App\Controller;
 
 use App\Form\BishopQueryFormType;
+use App\Form\Model\BishopQueryFormModel;
 use App\Entity\Person;
 use App\Entity\Office;
+use App\Service\DataBaseInteraction;
 
-use Ds\Vector;
+use Ds\Set;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class QueryBishop extends AbstractController {
     /**
@@ -21,55 +25,38 @@ class QueryBishop extends AbstractController {
 	/**
      * @Route("/query-bishops", name="launch_query")
      */
-    public function launch_query(Request $request) {
+    public function launch_query(Request $request, DataBaseInteraction $dbio) {
+        
         $form = $this->createForm(BishopQueryFormType::class);
+                
         $form->handlerequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var BishopQueryFormModel $bishopquery
-             */
-            $bishopquery = $form->getData();
+            
+            $data = $form->getData();
+            $bishopquery = new BishopQueryFormModel($data['name'], $data['place'], $data['year'], $data['someid']);
+            
+            // dd($bishopquery);
+            // dd($data);            
 
             $count = $this->getDoctrine()
                             ->getRepository(Person::class)
                             ->countByQueryObject($bishopquery)[0]['count'];
 
-            $page = $request->request->get('page');            
+            $page = $request->request->get('page');
             if (!$page) {
                 $page = 1;
             }
-            
-            $persons = $this->getDoctrine()
-                            ->getRepository(Person::class)
-                            ->findByQueryObject($bishopquery, self::LIST_LIMIT, $page);
 
+            $persons = $dbio->findPersonsAndOffices($bishopquery, self::LIST_LIMIT, $page);
 
-            // dd($persons[11]['familyname']);
-
-            // add offices
-
-            $officeRepository = $this->getDoctrine()
-                                     ->getRepository(Office::class);
-            $rawoffices = array();
-            $officetexts = new Vector();
-            $displaypersons = new Vector;
-
-            foreach ($persons as $person) {
-                $officetexts->clear();
-                $rawoffices = $officeRepository->findByIDPerson($person['wiagid']);
-                foreach ($rawoffices as $o) {
-                    $officetexts->push($o['office_name'].' ('.$o['diocese'].')');
-                }
-                $person['offices'] = $officetexts->join(', ');
-                $displaypersons->push($person);
-            }
 
             return $this->render('query_bishop/listresult.html.twig', [
                 'query_form' => $form->createView(),
                 'count' => $count,
                 'limit' => self::LIST_LIMIT,
                 'page' => $page,
-                'persons' => $displaypersons,
+                'persons' => $persons,
             ]);
 
         } else {
@@ -78,7 +65,7 @@ class QueryBishop extends AbstractController {
             ]);
         }
     }
-
+    
    
     /**
      * @Route("/bishop/{id}", name="bishop")
@@ -106,9 +93,11 @@ class QueryBishop extends AbstractController {
         $person = $this->getDoctrine()
                        ->getRepository(Person::class)
                        ->findOneByWiagid($id);
-        dd($person, $this->size_list);
+        dd($person, self::LIST_LIMIT);
     }
+
+
+    
 }
 
-// Example - $qb->andWhere($qb->expr()->orX($qb->expr()->lte('u.age', 40), 'u.numChild = 0'))
     
