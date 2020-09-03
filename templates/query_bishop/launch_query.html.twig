@@ -14,22 +14,22 @@
 {% block body %}
     <div class="container-fluid">
 	<div class="mt-3"><h3>Suche nach Bischöfen</h3></div>
-	{{ form_start(query_form) }}
+	{{ form_start(query_form, {'attr': {'id':'q_form'}}) }}
 	    <div class="col-12 row">
 		{% set form_elements %}
 		{{  form_row(query_form.name) }}
 		<div class="ml-2">{{ form_row(query_form.place) }}</div>
 		<div class="ml-2">{{ form_row(query_form.year) }}</div>
 		<div class="ml-2">{{ form_row(query_form.someid) }}</div>
-		    {% endset %}
-		    {{ form_elements }}
+		{% endset %}
+		{{ form_elements }}
 	    </div>
 	    {% set fb_elements %}
 	    {# add page forward and backward buttons #}
-	    {% if count is defined %}
+	    {% if count is defined and count > 0 %}
 		<span class="ml-4">
-		    <button type="submit" class="btn btn-secondary" {% if page < 2 %} disabled="disabled" {% endif %} name="page" value="{{ page - 1 }}">&#9204; zurück</button>
-		    <button type="submit" class="btn btn-secondary" {% if page * limit > count%}  disabled="disabled" {% endif %} name="page" value="{{ page + 1 }}">vor &#9205;</button>
+		    <button type="submit" form="q_form" class="btn btn-secondary" {% if page < 2 %} disabled="disabled" {% endif %} name="page" value="{{ page - 1 }}">&#9204; zurück</button>
+		    <button type="submit" form="q_form" class="btn btn-secondary" {% if page * limit > count%}  disabled="disabled" {% endif %} name="page" value="{{ page + 1 }}">vor &#9205;</button>
 		</span>
 	    {% endif %}
 		{% endset %}
@@ -37,12 +37,12 @@
 		<button type="submit" class="btn btn-primary">Suche</button>
 		{{ fb_elements }}
 
-		{% if query_form.placesFacet is defined %}
-		    <button class="btn btn-secondary ml-4" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Filter nach Orten</button>
-		    <div class="collapse" id="collapseExample">
+		{% if query_form.facetPlaces is defined %}
+		    <button class="btn btn-secondary ml-4" type="button" data-toggle="collapse" data-target="#facetPlaces" aria-expanded="false" aria-controls="collapseFacetPlaces">Filter nach Orten</button>
+		    <div class="collapse" id="facetPlaces">
 			<div class="card card-body container-fluid">
 			    <div class="row row-cols-6">
-				{% for place in query_form.placesFacet %}
+				{% for place in query_form.facetPlaces %}
 				    <div class="col-sm-2">{{ form_row(place) }}</div>
 				{% endfor %}
 			    </div>
@@ -54,9 +54,6 @@
     {% block list_results %}{% endblock %}
 
     {# add page forward and backward buttons after the result list #}
-    {{ form_start(query_form) }}
-	<div hidden="hidden">{{ form_elements }}</div>
-	{{ fb_elements }}
-    {{ form_end(query_form) }}    
+    {{ fb_elements }}
 
 {% endblock %}

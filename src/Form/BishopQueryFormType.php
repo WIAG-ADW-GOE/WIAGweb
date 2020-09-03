@@ -18,18 +18,15 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Routing\RouterInterface;
-use Doctrine\ORM\EntityManagerInterface;
 
 
 class BishopQueryFormType extends AbstractType
 {
     private $router;
-    private $entityManager;
     private $personRepository;
 
-    public function __construct(RouterInterface $rtr, EntityManagerInterface $emi, PersonRepository $pry) {
+    public function __construct(RouterInterface $rtr, PersonRepository $pry) {
         $this->router = $rtr;
-        $this->entityManager = $emi;
         $this->personRepository = $pry;
     }
     
@@ -66,40 +63,29 @@ class BishopQueryFormType extends AbstractType
 
     public function createPlacesFacet(FormEvent $event) {
         $data = $event->getData();
-        $bishopquery = new BishopQueryFormModel($data['name'], $data['place'], $data['year'], $data['someid']);
+        $bishopquery = new BishopQueryFormModel($data['name'],
+                                                $data['place'],
+                                                $data['year'],
+                                                $data['someid'],
+                                                array());
 
-        $db = $this->entityManager->getConnection();
-
-        // $sql = "SELECT office.diocese, COUNT(office.diocese) as n FROM person, office WHERE".
-        //      $this->personRepository->buildWhere($bishopquery).
-        //      " AND person.wiagid = office.wiagid_person".
-        //      " GROUP BY office.diocese";
-
-        $sql = "SELECT office.diocese FROM person, office WHERE".
-             $this->personRepository->buildWhere($bishopquery).
-             " AND person.wiagid = office.wiagid_person".
-             " GROUP BY office.diocese";        
-
-        // TODO avoid doubled 'AND person.wiagid = office.wiagid_person.
-
-        $stmt = $db->prepare($sql);
-        $stmt->execute();
-        $places = $stmt->fetchAll();
+        $places = $this->personRepository->findPlacesByQueryObject($bishopquery);
 
         //dd($places);
 
-        $formicb = $event->getForm();
+        if ($places) {
+            $formicb = $event->getForm();
 
-        $formicb->add('placesFacet', ChoiceType::class, [
-            'label' => 'Filter nach Orten',
-            'expanded' => true,
-            'multiple' => true,
-            'choices' => $places,
-            'choice_label' => function($choice, $key, $value) {
-                return $choice;
-            },
-        ]);
-
+            $formicb->add('facetPlaces', ChoiceType::class, [
+                'label' => 'Filter nach Orten',
+                'expanded' => true,
+                'multiple' => true,
+                'choices' => $places,
+                'choice_label' => function($choice, $key, $value) {
+                    return $choice;
+                },
+            ]);
+        }
     }
 
 

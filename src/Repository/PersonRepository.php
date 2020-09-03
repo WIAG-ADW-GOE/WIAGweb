@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use Ds\Vector;
 use App\Entity\Person;
 use App\Form\Model\BishopQueryFormModel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -59,8 +60,8 @@ class PersonRepository extends ServiceEntityRepository {
         //         ORDER BY p.familyname ASC 
         
         $sql = "
-        SELECT DISTINCT(CONCAT_WS(' ', p.givenname, p.prefix, p.familyname)) as suggestion FROM person p
-        WHERE CONCAT_WS(' ', p.givenname, p.prefix, p.familyname) LIKE :name
+        SELECT DISTINCT(CONCAT_WS(' ', p.givenname, p.prefix_name, p.familyname)) as suggestion FROM person p
+        WHERE CONCAT_WS(' ', p.givenname, p.prefix_name, p.familyname) LIKE :name
         LIMIT $limit
         ";
         $stmt = $conn->prepare($sql);
@@ -94,6 +95,13 @@ class PersonRepository extends ServiceEntityRepository {
     }
 
     public function buildWhere(BishopQueryFormModel $querydata): string {
+
+        if (is_null($querydata->place) and !$querydata->facetPlaces) {
+            $sqltables = "person";
+        } else {
+            $sqltables = "person, office";
+        }
+
         $condclause = "";
         
         if ($querydata->year) {
@@ -109,30 +117,34 @@ class PersonRepository extends ServiceEntityRepository {
         
         if ($querydata->name) {
             $condclause = $condclause ? $condclause." AND" : "";
-            $condclause = $condclause." CONCAT_WS(' ', person.givenname, person.prefix, person.familyname)".
+            $condclause = $condclause." CONCAT_WS(' ', person.givenname, person.prefix_name, person.familyname)".
                         " LIKE '%{$querydata->name}%'";
         }
 
         if ($querydata->place) {
             $condclause = $condclause ? $condclause." AND" : "";
-            $condclause = $condclause." person.wiagid = office.wiagid_person AND ".
-                        "diocese like '%{$querydata->place}%'";
+            $condclause = $condclause." office.diocese like '%{$querydata->place}%'";
         }
 
-        return $condclause;
+        if ($querydata->facetPlaces) {
+            $vp = new Vector($querydata->facetPlaces);
+            $set_of_dioceses = $vp->map(function ($pl) {return "'{$pl}'";})->join(", ");
+            $condclause = $condclause." AND office.diocese IN ({$set_of_dioceses})";
+        }
+
+        if ($querydata->place or $querydata->facetPlaces) {
+            $condclause = $condclause." AND person.wiagid = office.wiagid_person";
+        }
+
+        return " FROM ".$sqltables." WHERE". $condclause;
         
     }
 
     public function countByQueryObject(BishopQueryFormModel $querydata) {
         $conn = $this->getEntityManager()->getConnection();
 
-        if (is_null($querydata->place)) {
-            $sqltables = "person";
-        } else {
-            $sqltables = "person, office";
-        }
 
-        $sql = "SELECT COUNT(DISTINCT(person.wiagid)) as count FROM ${sqltables} WHERE".
+        $sql = "SELECT COUNT(DISTINCT(person.wiagid)) as count".
              $this->buildWhere($querydata);
 
         $stmt = $conn->prepare($sql);
@@ -141,23 +153,48 @@ class PersonRepository extends ServiceEntityRepository {
         return $stmt->fetchAll();
     }
 
-    public function findPlacesByQueryObject(BishopQueryFormModel $querydata) {
+    public function findPlacesByQueryObject(BishopQueryFormModel $bishopquery) {
         $conn = $this->getEntityManager()->getConnection();
 
-        if (is_null($querydata->place)) {
-            $sqltables = "person";
+        if (!$bishopquery->place) {
+            $sql = "SELECT DISTINCT(office.diocese)".
+                 $this->buildWhere($bishopquery).
+                 " AND person.wiagid = office.wiagid_person";
         } else {
-            $sqltables = "person, office";
+            $sql = "SELECT DISTINCT(office.diocese)".
+                 $this->buildWhere($bishopquery);        
         }
-
-        $sql = "SELECT DISTINCT(office.diocese) FROM ${sqltables} WHERE".
-             $this->buildWhere($querydata);
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
         return $stmt->fetchAll();
     }
+
+    public function findPlacesAndNByQueryObject(BishopQueryFormModel $bishopquery) {
+        $conn = $this->getEntityManager()->getConnection();
+
+        // ## TODO COUNT ...
+        if (is_null($bishopquery->place)) {
+            $sql = "SELECT DISTINCT(office.diocese)".
+                 $this->buildWhere($bishopquery).
+                 " AND person.wiagid = office.wiagid_person".
+                 " GROUP BY office.diocese";
+        } else {
+            $sql = "SELECT DISTINCT(office.diocese)".
+                 $this->buildWhere($bishopquery).
+                 " GROUP BY office.diocese";            
+        }
+
+        dd($sql);
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+
     
     public function findByQueryObject(BishopQueryFormModel $querydata, $limit, $page): array {
         $conn = $this->getEntityManager()->getConnection();
@@ -172,7 +209,7 @@ class PersonRepository extends ServiceEntityRepository {
 
         $offset = ($page - 1) * $limit;
 
-        $sql = "SELECT DISTINCT(person.wiagid), person.* FROM ${sqltables} WHERE".
+        $sql = "SELECT DISTINCT(person.wiagid), person.*".
              $this->buildWhere($querydata).
              " LIMIT {$limit} OFFSET {$offset}";
 
@@ -183,5 +220,6 @@ class PersonRepository extends ServiceEntityRepository {
         // returns an array of arrays (i.e. a raw data set)
         return $stmt->fetchAll();
     }
+
     
 }

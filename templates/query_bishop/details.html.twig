@@ -6,16 +6,16 @@
 	    <p class="em">Person nicht gefunden.</p>
 	{% else %}
 	    <div class="mt-3 mb-2">
-		<h2>{{ person.givenname }} {{ person.prefix }} {{ person.familyname }}</h2>
+		<h2>{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</h2>
 	    </div>
 	    <dl class="row">
 		{% if person.date_birth %}
 		    <dt class="col-sm-3">geboren</dt>
-		    <dd class="col-sm-9">{{ person.date_birth }}</dd>
+		    <dd class="col-sm-9">{{ person.datebirth }}</dd>
 		{% endif %}
 		{% if person.date_death %}
 		    <dt class="col-sm-3">gestorben</dt>
-		    <dd class="col-sm-9">{{ person.date_death }}</dd>
+		    <dd class="col-sm-9">{{ person.datedeath }}</dd>
 		{% endif %}
 		{% if offices %}
 		    <dt class="col-sm-3">Ämter</dt>
@@ -56,7 +56,7 @@
 		{% endif %}
 		{% if person.wikipediaurl %}
 		    <dt class="col-sm-3">Wikipedia</dt>
-		    <dd class="col-sm-9"><a href="{{ person.wikipediaurl }}">{{ person.givenname }} {{ person.prefix }} {{ person.familyname }}</a></dd>
+		    <dd class="col-sm-9"><a href="{{ person.wikipediaurl }}">{{ person.givenname }} {{ person.prefix_name }} {{ person.familyname }}</a></dd>
 		{% endif %}
 
 	    </dl>

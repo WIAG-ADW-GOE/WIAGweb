@@ -7,78 +7,159 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PersonRepository")
  */
-class Person
-{
+class Person {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
-
-    /**
      * @ORM\Column(type="string", length=63, nullable = false)
      */
     private $wiagid;
-    
+
     /**
-     * @ORM\Column(type="string", length=255, nullable = true)
+     * @ORM\Column(type="string", length=511, nullable=true)
+     */
+    private $ri_opac;
+
+    /**
+     * @ORM\Column(type="string", length=127, nullable=true)
+     */
+    private $authors_gatz;
+
+    /**
+     * @ORM\Column(type="string", length=41, nullable=true)
+     */
+    private $pages_gatz;
+
+    /**
+     * @ORM\Column(type="string", length=31, nullable=true)
+     */
+    private $prefix_name;
+
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
      */
     private $familyname;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable = false)
+     * @ORM\Column(type="string", length=63, nullable=true)
      */
     private $givenname;
 
     /**
-     * @ORM\Column(type="string", length=31, nullable = true)
+     * @ORM\Column(type="string", length=127, nullable=true)
      */
-    private $prefix;
-    
+    private $familyname_variant;
+
     /**
-     * @ORM\Column(type="string", length=63, nullable = true)
+     * @ORM\Column(type="string", length=127, nullable=true)
+     */
+    private $givenname_variant;
+
+    /**
+     * @ORM\Column(type="string", length=31, nullable=true)
      */
     private $date_birth;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable = true)
+     * @ORM\Column(type="string", length=31, nullable=true)
      */
     private $date_death;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable = true)
+     * @ORM\Column(type="string", length=31, nullable=true)
+     */
+    private $religious_order;
+
+    /**
+     * @ORM\Column(type="string", length=31, nullable=true)
      */
     private $gsid;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable = true)
+     * @ORM\Column(type="string", length=31, nullable=true)
      */
     private $gndid;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable = true)
+     * @ORM\Column(type="string", length=31, nullable=true)
      */
     private $viafid;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable = true)
+     * @ORM\Column(type="string", length=31, nullable=true)
+     */
+    private $wikidataid;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $wikipediaurl;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $reference;
+
+    /**
+     * @ORM\Column(type="string", length=511, nullable=true)
+     */
+    private $comment_person;
+
+
+    /**
+     * @ORM\Column(type="string", length=127, nullable=true)
+     */
+    private $comment_name;
+    
 
     public function getWiagid(): ?string
     {
         return $this->wiagid;
     }
 
-    public function setWiagid(string $wiagid): self
+    public function getRiOpac(): ?string
     {
-        $this->wiagid = $wiagid;
+        return $this->ri_opac;
+    }
+
+    public function setRiOpac(?string $ri_opac): self
+    {
+        $this->ri_opac = $ri_opac;
+
+        return $this;
+    }
+
+    public function getAuthorsGatz(): ?string
+    {
+        return $this->authors_gatz;
+    }
+
+    public function setAuthorsGatz(?string $authors_gatz): self
+    {
+        $this->authors_gatz = $authors_gatz;
+
+        return $this;
+    }
+
+    public function getPagesGatz(): ?string
+    {
+        return $this->pages_gatz;
+    }
+
+    public function setPagesGatz(?string $pages_gatz): self
+    {
+        $this->pages_gatz = $pages_gatz;
+
+        return $this;
+    }
+
+    public function getPrefixName(): ?string
+    {
+        return $this->prefix_name;
+    }
+    
+    public function setPrefixName(?string $prefix_name): self
+    {
+        $this->prefix_name = $prefix_name;
 
         return $this;
     }
@@ -107,38 +188,63 @@ class Person
         return $this;
     }
 
-    public function getPrefix(): ?string
+    public function getFamilynameVariant(): ?string
     {
-        return $this->prefix;
+        return $this->familyname_variant;
     }
-
-    public function setPrefix(?string $prefix): self
+    
+    public function setFamilynameVariant(?string $familyname_variant): self
     {
-        $this->prefix = $prefix;
+        $this->familyname_variant = $familyname_variant;
 
         return $this;
     }
 
-    public function getDate_birth(): ?string
+    public function getGivennameVariant(): ?string
+    {
+        return $this->givenname_variant;
+    }
+
+    
+    public function setGivennameVariant(?string $givenname_variant): self
+    {
+        $this->givenname_variant = $givenname_variant;
+
+        return $this;
+    }
+
+    public function getDateBirth(): ?string
     {
         return $this->date_birth;
     }
 
-    public function setDate_birth(?string $date_birth): self
+    public function setDateBirth(?string $date_birth): self
     {
         $this->date_birth = $date_birth;
 
         return $this;
     }
 
-    public function getDate_death(): ?string
+    public function getDateDeath(): ?string
     {
         return $this->date_death;
     }
-
-    public function setDate_death(?string $date_death): self
+    
+    public function setDateDeath(?string $date_death): self
     {
         $this->date_death = $date_death;
+
+        return $this;
+    }
+
+    public function getReligiousOrder(): ?string
+    {
+        return $this->religious_order;
+    }
+
+    public function setReligiousOrder(?string $religious_order): self
+    {
+        $this->religious_order = $religious_order;
 
         return $this;
     }
@@ -148,7 +254,7 @@ class Person
         return $this->gsid;
     }
 
-    public function setGsid(?string $gsid): self
+    public function setGsid(string $gsid): self
     {
         $this->gsid = $gsid;
 
@@ -179,40 +285,64 @@ class Person
         return $this;
     }
 
+    public function getWikidataid(): ?string
+    {
+        return $this->wikidataid;
+    }
+
+    public function setWikidataid(?string $wikidataid): self
+    {
+        $this->wikidataid = $wikidataid;
+
+        return $this;
+    }
+
     public function getWikipediaurl(): ?string
     {
         return $this->wikipediaurl;
     }
 
-    public function setWikipediaurl(?string $url_wikipedia): self
+    public function setWikipediaurl(?string $wikipediaurl): self
     {
         $this->wikipediaurl = $wikipediaurl;
 
         return $this;
     }
 
-    public function getDateBirth(): ?string
+    public function getReference(): ?string
     {
-        return $this->date_birth;
+        return $this->reference;
     }
 
-    public function setDateBirth(?string $date_birth): self
+    public function setReference(?string $reference): self
     {
-        $this->date_birth = $date_birth;
+        $this->reference = $reference;
 
         return $this;
     }
 
-    public function getDateDeath(): ?string
+    public function getCommentPerson(): ?string
     {
-        return $this->date_death;
+        return $this->comment_person;
     }
 
-    public function setDateDeath(?string $date_death): self
+    public function setCommentPerson(?string $comment_person): self
     {
-        $this->date_death = $date_death;
+        $this->comment_person = $comment_person;
 
         return $this;
     }
-    
+
+    public function getCommentName(): ?string
+    {
+        return $this->comment_name;
+    }
+
+    public function setCommentName(?string $comment_name): self
+    {
+        $this->comment_name = $comment_name;
+
+        return $this;
+    }
+
 }
