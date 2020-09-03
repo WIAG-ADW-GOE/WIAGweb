@@ -4,7 +4,9 @@
     <div class="container-fluid">
 	<!-- query result -->
 	<div class="mt-3 mb-1">Treffer:
-	    {% if count == 1 %}
+	    {% if count == 0 %}
+		keine
+	    {% elseif count == 1 %}
 		1
 	    {% else %}
 		{{ (page - 1) * limit + 1 }} - {{ min(page * limit, count)}} von {{ count }}
@@ -26,7 +28,7 @@
 				<th scope="row">
 				    <a href="{{ path('bishop', {id: person.wiagid}) }}">{{ person.wiagid }}</a>
 				</th>
-				<td>{{ person.givenname }} {{ person.prefix }} {{ person.familyname }}<br>
+				<td>{{ person.givenname }} {{ person.prefix_name }} {{ person.familyname }}<br>
 				    <small text-truncate>{{ person.offices }}</small></td>
 				<td>{% if not person.date_birth and not person.date_death %}
 				{% elseif person.date_birth and not person.date_death %}

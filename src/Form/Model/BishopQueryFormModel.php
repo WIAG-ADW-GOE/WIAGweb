@@ -7,14 +7,14 @@ class BishopQueryFormModel {
     public $place;
     public $year;
     public $someid;
-    public $placefacet;
+    public $facetPlaces;
 
-    public function __construct($n, $p, $y, $id) {
+    public function __construct($n, $p, $y, $id, $fpl) {
         $this->name = $n;
         $this->place = $p;
         $this->year = $y;
         $this->someid = $id;
-        $this->placefacet = array();
+        $this->facetPlaces = $fpl;
     }
 
 }

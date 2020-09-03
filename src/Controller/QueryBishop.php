@@ -34,11 +34,26 @@ class QueryBishop extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             
             $data = $form->getData();
-            $bishopquery = new BishopQueryFormModel($data['name'], $data['place'], $data['year'], $data['someid']);
+            
+            if (array_key_exists('facetPlaces', $data))
+                $facetPlaces = $data['facetPlaces'];
+            else
+                $facetPlaces = array();            
+                
+            $bishopquery = new BishopQueryFormModel($data['name'],
+                                                    $data['place'],
+                                                    $data['year'],
+                                                    $data['someid'],
+                                                    $facetPlaces);
             
             // dd($bishopquery);
-            // dd($data);            
+            // dd($data);
+            // if ($data['facetPlaces']) {
+            //     dd($data);
+            // }
+           
 
+            // get the number of results (without page limit restriction)
             $count = $this->getDoctrine()
                             ->getRepository(Person::class)
                             ->countByQueryObject($bishopquery)[0]['count'];
