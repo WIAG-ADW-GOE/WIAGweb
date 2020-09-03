@@ -9,11 +9,11 @@
 		<h2>{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</h2>
 	    </div>
 	    <dl class="row">
-		{% if person.date_birth %}
+		{% if person.datebirth %}
 		    <dt class="col-sm-3">geboren</dt>
 		    <dd class="col-sm-9">{{ person.datebirth }}</dd>
 		{% endif %}
-		{% if person.date_death %}
+		{% if person.datedeath %}
 		    <dt class="col-sm-3">gestorben</dt>
 		    <dd class="col-sm-9">{{ person.datedeath }}</dd>
 		{% endif %}
@@ -56,7 +56,7 @@
 		{% endif %}
 		{% if person.wikipediaurl %}
 		    <dt class="col-sm-3">Wikipedia</dt>
-		    <dd class="col-sm-9"><a href="{{ person.wikipediaurl }}">{{ person.givenname }} {{ person.prefix_name }} {{ person.familyname }}</a></dd>
+		    <dd class="col-sm-9"><a href="{{ person.wikipediaurl }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</a></dd>
 		{% endif %}
 
 	    </dl>
