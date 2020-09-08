@@ -9,7 +9,6 @@ use App\Entity\Office;
 use App\Entity\Familynamevariant;
 use App\Entity\Givennamevariant;
 
-use App\Service\DataBaseInteraction;
 
 use Ds\Set;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +27,7 @@ class QueryBishop extends AbstractController {
 	/**
      * @Route("/query-bishops", name="launch_query")
      */
-    public function launch_query(Request $request, DataBaseInteraction $dbio) {
+    public function launch_query(Request $request) {
         
         $form = $this->createForm(BishopQueryFormType::class);
                 
@@ -72,7 +71,9 @@ class QueryBishop extends AbstractController {
                 $page = 1;
             }
 
-            $persons = $dbio->findPersonsAndOffices($bishopquery, self::LIST_LIMIT, $page);
+            $persons = $this->getDoctrine()
+                            ->getRepository(Person::class)
+                            ->findPersonsAndOffices($bishopquery, self::LIST_LIMIT, $page);
 
 
             return $this->render('query_bishop/listresult.html.twig', [

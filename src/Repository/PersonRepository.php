@@ -57,7 +57,10 @@ class PersonRepository extends ServiceEntityRepository {
     public function suggestName($name, $limit = 1000): array {
         $conn = $this->getEntityManager()->getConnection();
 
-        //         ORDER BY p.familyname ASC 
+        /* TODO
+         * - ORDER BY p.familyname ASC 
+         * - include name variants
+         */
         
         $sql = "
         SELECT DISTINCT(CONCAT_WS(' ', p.givenname, p.prefix_name, p.familyname)) as suggestion FROM person p
@@ -92,68 +95,6 @@ class PersonRepository extends ServiceEntityRepository {
         
         // returns an array of arrays (i.e. a raw data set)
         return $stmt->fetchAll();
-    }
-
-    public function buildWhere(BishopQueryFormModel $querydata): string {
-
-        $tables = new Vector();
-
-        $tables->push("person");
-
-        
-        if ($querydata->place or $querydata->facetPlaces) {
-            $tables->push("office");
-        }
-
-        if ($querydata->name) {
-            $tables->push("familynamevariant");
-            $tables->push("givennamevariant");
-        }
-
-
-        $sqltables = "person, office, familynamevariant, givennamevariant";
-
-        // dd($tables, $sqltables);
-
-        $condclause = "";
-        
-        if ($querydata->year) {
-            // mysql is quite robust
-            $thyear = self::MARGINYEAR;
-            $condclause = " ABS(person.date_death - {$querydata->year}) < {$thyear}";
-        }
-        
-        if ($querydata->someid) {
-            $condclause = $condclause ? $condclause." AND" : "";
-            $condclause = $condclause." '{$querydata->someid}' IN (person.gsid, person.gndid, person.viafid, person.wiagid)";
-        }
-        
-        if ($querydata->place) {
-            $condclause = $condclause ? $condclause." AND" : "";
-            $condclause = $condclause." office.diocese like '%{$querydata->place}%'";
-        }
-
-        if ($querydata->facetPlaces) {
-            $vp = new Vector($querydata->facetPlaces);
-            $set_of_dioceses = $vp->map(function ($pl) {return "'{$pl}'";})->join(", ");
-            $condclause = $condclause." AND office.diocese IN ({$set_of_dioceses})";
-        }
-
-        if ($querydata->place or $querydata->facetPlaces) {
-            $condclause = $condclause." AND person.wiagid = office.wiagid_person";
-        }
-
-        if ($querydata->name) {
-            $n = $querydata->name;            
-            $condclause = $condclause ? $condclause." AND" : "";
-            $condname = "CONCAT_WS(' ', person.givenname, person.prefix_name, person.familyname) LIKE '%{$n}%'";
-            $condfnvar = "familynamevariant.familyname LIKE '%{$n}%' AND familynamevariant.wiagid = person.wiagid";
-            $condgnvar = "givennamevariant.givenname LIKE '%{$n}%' AND givennamevariant.wiagid = person.wiagid";
-            $condclause = $condclause."({$condname} OR {$condfnvar} OR {$condgnvar})";
-        }
-
-        return " FROM ".$sqltables." WHERE". $condclause;
-        
     }
 
     /**
@@ -283,6 +224,46 @@ class PersonRepository extends ServiceEntityRepository {
         
         // returns an array of arrays (i.e. a raw data set)
         return $stmt->fetchAll();
+    }
+
+    public function findOfficeByWiagid(string $wiagid) {
+        $conn = $this->getEntityManager()->getConnection();
+
+
+        $sql = "SELECT * FROM office WHERE office.wiagid_person = {$wiagid}";
+        
+        // dd($bishopquery, $sql);
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
+
+    public function findPersonsAndOffices(BishopQueryFormModel $bishopquery, $limit, $page) {
+        $persons = $this->findByQueryObject($bishopquery, $limit, $page);
+
+        $conn = $this->getEntityManager()->getConnection();
+
+
+        // add offices
+        $rawoffices = array();
+        $officetexts = new Vector();
+        $persons_with_offices = new Vector;
+        
+        foreach ($persons as $person) {
+            $officetexts->clear();
+            $rawoffices = $this->findOfficeByWiagid($person['wiagid']);
+            foreach ($rawoffices as $o) {
+                $officetexts->push($o['office_name'].' ('.$o['diocese'].')');
+            }
+            // $person['offices'] = $officetexts->toArray();
+            $person['offices'] = $rawoffices;
+            $persons_with_offices->push($person);
+        }
+
+        return $persons_with_offices;
     }
 
     
