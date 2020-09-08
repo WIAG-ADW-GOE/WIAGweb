@@ -6,6 +6,9 @@ use App\Form\BishopQueryFormType;
 use App\Form\Model\BishopQueryFormModel;
 use App\Entity\Person;
 use App\Entity\Office;
+use App\Entity\Familynamevariant;
+use App\Entity\Givennamevariant;
+
 use App\Service\DataBaseInteraction;
 
 use Ds\Set;
@@ -31,14 +34,18 @@ class QueryBishop extends AbstractController {
                 
         $form->handlerequest($request);
 
+        $facetPlacesState = 'hide';
+
         if ($form->isSubmitted() && $form->isValid()) {
             
             $data = $form->getData();
-            
-            if (array_key_exists('facetPlaces', $data))
+
+            if (array_key_exists('facetPlaces', $data)) {
                 $facetPlaces = $data['facetPlaces'];
-            else
-                $facetPlaces = array();            
+            } else {
+                $facetPlaces = array();
+            }
+
                 
             $bishopquery = new BishopQueryFormModel($data['name'],
                                                     $data['place'],
@@ -58,6 +65,8 @@ class QueryBishop extends AbstractController {
                             ->getRepository(Person::class)
                             ->countByQueryObject($bishopquery)[0]['count'];
 
+            $facetPlacesState = $request->request->get('facetPlacesState');
+
             $page = $request->request->get('page');
             if (!$page) {
                 $page = 1;
@@ -72,11 +81,13 @@ class QueryBishop extends AbstractController {
                 'limit' => self::LIST_LIMIT,
                 'page' => $page,
                 'persons' => $persons,
+                'facetPlacesState' => $facetPlacesState,
             ]);
 
         } else {
             return $this->render('query_bishop/launch_query.html.twig', [
                 'query_form' => $form->createView(),
+                'facetPlacesState' => $facetPlacesState,
             ]);
         }
     }
@@ -92,11 +103,21 @@ class QueryBishop extends AbstractController {
 
         $offices = $this->getDoctrine()
                         ->getRepository(Office::class)
-                        ->findByIDPerson($person->getWiagid());
+                        ->findByIDPerson($id);
+
+        $familynamevariants = $this->getDoctrine()
+                                   ->getRepository(Familynamevariant::class)
+                                   ->findByWiagid($id);
+        
+        $givennamevariants = $this->getDoctrine()
+                                   ->getRepository(Givennamevariant::class)
+                                   ->findByWiagid($id);
 
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,
             'offices' => $offices,
+            'familynamevariants' => $familynamevariants,
+            'givennamevariants' => $givennamevariants,
         ]);
     }
 

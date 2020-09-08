@@ -1,8 +1,33 @@
-{% extends 'query_bishop/launch_query.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block list_results %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
+    <script src="{{ asset('js/query-bishop-autocomplete.js') }}"></script>
+    {# TODO: check why the Symfony Profiler toolbar disappears #}
+    <script src="{{ asset('js/query-bishop-facet.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    {# add page forward and backward buttons #}
+    {% set fb_elements %}
+    {% if count > 0 %}
+	<span class="ml-4">
+	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page < 2 %} disabled="disabled" {% endif %} name="page" value="{{ page - 1 }}">&#9204; zurück</button>
+	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page * limit > count%}  disabled="disabled" {% endif %} name="page" value="{{ page + 1 }}">vor &#9205;</button>
+	</span>
+    {% endif %}
+    {% endset %}
+
     <div class="container-fluid">
-	<!-- query result -->
+	<div class="mt-3"><h3>Suche nach Bischöfen</h3></div>
+	{{ include('query_bishop/_form_elements.html.twig') }}
+    </div>
+    <div class="container-fluid">
 	<div class="mt-3 mb-1">Treffer:
 	    {% if count == 0 %}
 		keine
@@ -11,7 +36,10 @@
 	    {% else %}
 		{{ (page - 1) * limit + 1 }} - {{ min(page * limit, count)}} von {{ count }}
 	    {% endif %}
+	    {{ fb_elements }}
+	    
 	</div>
+
 	{% if count > 0 %}
 	    <div class="table-responsive">
 		<table class="table">
@@ -51,5 +79,7 @@
 	    {% endfor %} #}
 
 	{% endif %}
+	{{ fb_elements }}
     </div>
+
 {% endblock %}

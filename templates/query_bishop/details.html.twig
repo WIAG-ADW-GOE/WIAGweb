@@ -2,6 +2,7 @@
 
 {% block body %}
     <div class="container-fluid">
+	{# person is passed as an object #}
 	{% if not person%}
 	    <p class="em">Person nicht gefunden.</p>
 	{% else %}
@@ -17,6 +18,11 @@
 		    <dt class="col-sm-3">gestorben</dt>
 		    <dd class="col-sm-9">{{ person.datedeath }}</dd>
 		{% endif %}
+		{% if person.religiousorder %}
+		    <dt class="col-sm-3">Orden</dt>
+		    <dd class="col-sm-9">{{ person.religiousorder }}</dd>
+		{% endif %}
+		
 		{% if offices %}
 		    <dt class="col-sm-3">Ämter</dt>
 		    <dd class="col-sm-9">
@@ -41,6 +47,37 @@
 			</ul>
 		    </dd>
 		{% endif %}
+		{% if familynamevariants %}
+		    <dt class="col-sm-3">Varianten Familiennamen</dt>
+		    <dd class="col-sm-9">
+			<ul class="list-unstyled">
+			    {% for fnv in familynamevariants %}
+				<li>
+				    <ul class="list-inlined">
+					<li class="list-inline-item"> {{ fnv.familyname }}</li>
+				    </ul>
+				</li>
+			    {% endfor %}
+			</ul>
+		    </dd>
+		{% endif %}
+		{% if givennamevariants %}
+		    <dt class="col-sm-3">Varianten Vornamen</dt>
+		    <dd class="col-sm-9">
+			<ul class="list-unstyled">
+			    {% for fnv in givennamevariants %}
+				<li>
+				    <ul class="list-inlined">
+					<li class="list-inline-item"> {{ fnv.givenname }}</li>
+				    </ul>
+				</li>
+			    {% endfor %}
+			</ul>
+		    </dd>
+		{% endif %}
+
+		<dt class="col-sm-3">WIAG</dt>
+		<dd class="col-sm-9">{{ person.wiagid }}</dd>
 		{% if person.gsid %}
 		    <dt class="col-sm-3">Germania Sacra</dt>
 		    <dd class="col-sm-9">
@@ -58,8 +95,12 @@
 		    <dt class="col-sm-3">Wikipedia</dt>
 		    <dd class="col-sm-9"><a href="{{ person.wikipediaurl }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</a></dd>
 		{% endif %}
-
+		{% if person.reference %}
+		    <dt class="col-sm-3">Fundstelle</dt>
+		    {# Link einfügen #}
+		    <dd class="col-sm-9"><a href="{{ path('reference', {'short': person.reference}) }}">{{ person.reference }}</a>, S. {{ person.pagesgatz }}</dd>
+		{% endif %}
 	    </dl>
-	{% endif %}
+		{% endif %}
     </div>
 {% endblock %}
