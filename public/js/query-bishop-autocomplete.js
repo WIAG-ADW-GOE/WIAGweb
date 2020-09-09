@@ -36,5 +36,24 @@ $(document).ready(function() {
 	// window.alert('suggest place');
     });
 
+        $('.js-office-autocomplete').each(function() {
+	var autocompleteUrl = $(this).data('autocomplete-url');
+	$(this).autocomplete({hint: false}, [
+            {
+		source: function(query, cb) {
+		    $.ajax({
+			url: autocompleteUrl+'?query='+query
+		    }).then(function(data) {
+			cb(data.offices);
+		    });
+		},
+		displayKey: 'suggestion',
+		debounce: 400 // only request every 400 ms
+            }
+	]);
+	// window.alert('suggest office');
+    });
+
+
 });
 

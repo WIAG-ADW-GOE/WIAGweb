@@ -18,7 +18,7 @@ class PersonRepository extends ServiceEntityRepository {
 
     // Allow deviations in the query parameter `year`.
     const MARGINYEAR = 50;
-    
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Person::class);
@@ -54,45 +54,57 @@ class PersonRepository extends ServiceEntityRepository {
     */
 
     /* AJAX callback function */
-    public function suggestName($name, $limit = 1000): array {
+    public function suggestName($name, $limit = 40): array {
         $conn = $this->getEntityManager()->getConnection();
 
         /* TODO
-         * - ORDER BY p.familyname ASC 
-         * - include name variants
+         * - ORDER BY p.familyname ASC
+         * - [X] include name variants
          */
-        
-        $sql = "
-        SELECT DISTINCT(CONCAT_WS(' ', p.givenname, p.prefix_name, p.familyname)) as suggestion FROM person p
-        WHERE CONCAT_WS(' ', p.givenname, p.prefix_name, p.familyname) LIKE :name
-        LIMIT $limit
-        ";
+
+        $concat = "CONCAT_WS(' ', p.givenname, p.prefix_name, p.familyname)";
+
+        $sql = "SELECT DISTINCT({$concat}) as suggestion FROM person p".
+             " WHERE {$concat} LIKE '%{$name}%' LIMIT $limit";
+
+        dump($sql);
+
         $stmt = $conn->prepare($sql);
         // is it possible to reuse prepared statements?
-        $stmt->execute([
-            'name' => "%{$name}%",
-        ]);
-        
-        // returns an array of arrays (i.e. a raw data set)
-        return $stmt->fetchAll();
+        $stmt->execute();
+        $sqlres = $stmt->fetchAll();
+
+        if (count($sqlres) < $limit) {
+            $limiti = $limit - count($sqlres);
+            $sql = "SELECT DISTINCT(familyname) as suggestion FROM familynamevariant".
+                 " WHERE familyname like '%{$name}%'".
+                 " UNION SELECT DISTINCT(givenname) as suggestion FROM givennamevariant".
+                 " WHERE givenname like '%{$name}%' LIMIT $limiti";
+            $stmt = $conn->prepare($sql);
+            // is it possible to reuse prepared statements?
+            $stmt->execute();
+            $sqlres = array_merge($sqlres, $stmt->fetchAll());
+        }
+
+        return $sqlres;
     }
 
 
     public function findByFamilyname($name, $limit = 1000): array {
         $conn = $this->getEntityManager()->getConnection();
 
-        //         ORDER BY p.familyname ASC 
-        
+        //         ORDER BY p.familyname ASC
+
         $sql = "SELECT * FROM person p
         WHERE p.familyname LIKE :name
         LIMIT $limit";
-        
+
         $stmt = $conn->prepare($sql);
         // is it possible to reuse prepared statements?
         $stmt->execute([
             'name' => "%{$name}%",
         ]);
-        
+
         // returns an array of arrays (i.e. a raw data set)
         return $stmt->fetchAll();
     }
@@ -100,24 +112,40 @@ class PersonRepository extends ServiceEntityRepository {
     /**
      * return a subquery which yields a list of wiagids that fullfill all
      * conditions in `$qd`.
+     * Decide about a search strategy and set `$fextended` eventually to true in calls to `buildWiagidSet`.
      */
-    public function buildWiagidSet(BishopQueryFormModel $qd) {
+    public function buildWiagidSet(BishopQueryFormModel $qd, $fextended = false) {
 
         $csqlid = new Vector();
         $csqlwh = new Vector();
         $tno = 1;
         if ($qd->name) {
             $condname = "CONCAT_WS(' ', person.givenname, person.prefix_name, person.familyname) LIKE '%{$qd->name}%'";
-        
-            $csqlid->push("(SELECT wiagid FROM person WHERE {$condname}".
-                          " UNION SELECT wiagid from familynamevariant WHERE familyname LIKE '%{$qd->name}%'".
-                          " UNION SELECT wiagid from givennamevariant WHERE givenname LIKE '%{$qd->name}%') as t{$tno}");
+            $select = new Vector();
+            $select->push("SELECT wiagid FROM person WHERE {$condname}");
+            $select->push("UNION SELECT wiagid FROM person WHERE CONCAT_WS(' ', givenname, familyname) LIKE '%{$qd->name}%'");
+            $select->push("UNION SELECT wiagid from familynamevariant WHERE familyname LIKE '%{$qd->name}%'");
+            $select->push("UNION SELECT wiagid from givennamevariant WHERE givenname LIKE '%{$qd->name}%'");
+            if ($fextended) {
+                $nameelts = explode(" ", $qd->name);
+                if (count($nameelts) > 1) {
+                    foreach ($nameelts as $nameelt) {
+                        $nameelt = trim($nameelt, ",;. ");
+                        $select->push("UNION SELECT wiagid from person WHERE givenname LIKE '%{$nameelt}%'");
+                        $select->push("UNION SELECT wiagid from person WHERE prefix_name LIKE '%{$nameelt}%'");
+                        $select->push("UNION SELECT wiagid from person WHERE familyname LIKE '%{$nameelt}%'");
+                        $select->push("UNION SELECT wiagid from familynamevariant WHERE familyname LIKE '%{$nameelt}%'");
+                        $select->push("UNION SELECT wiagid from givennamevariant WHERE givenname LIKE '%{$nameelt}%'");
+                    }
+                }
+            }
+            $csqlid->push("(".$select->join(" ").") as t{$tno}");
             $tno += 1;
         }
 
         if ($qd->place) {
             $csqlid->push("(SELECT wiagid_person as wiagid FROM office".
-                       " WHERE office.diocese like '%{$qd->place}%') as t{$tno}");
+                          " WHERE office.diocese like '%{$qd->place}%') as t{$tno}");
             if ($tno > 1) $csqlwh->push("t1.wiagid = t{$tno}.wiagid");
             $tno += 1;
         }
@@ -125,9 +153,16 @@ class PersonRepository extends ServiceEntityRepository {
         if ($qd->facetPlaces) {
             $vp = new Vector($qd->facetPlaces);
             $set_of_dioceses = $vp->map(function ($pl) {return "'{$pl}'";})->join(', ');
-            
+
             $csqlid->push("(SELECT wiagid_person as wiagid FROM office".
                           " WHERE office.diocese IN ({$set_of_dioceses})) AS t{$tno}");
+            if ($tno > 1) $csqlwh->push("t1.wiagid = t{$tno}.wiagid");
+            $tno += 1;
+        }
+
+        if ($qd->office) {
+            $csqlid->push("(SELECT wiagid_person as wiagid FROM office".
+                          " WHERE office.office_name like '%{$qd->office}%') as t{$tno}");
             if ($tno > 1) $csqlwh->push("t1.wiagid = t{$tno}.wiagid");
             $tno += 1;
         }
@@ -144,26 +179,29 @@ class PersonRepository extends ServiceEntityRepository {
         if ($qd->someid) {
             $condsomeid = "'{$qd->someid}' IN (person.gsid, person.gndid, person.viafid, person.wiagid)";
             $csqlid->push("(SELECT wiagid FROM person".
-                       " WHERE {$condsomeid}) as t{$tno}");
+                          " WHERE {$condsomeid}) as t{$tno}");
             if ($tno > 1) $csqlwh->push("t1.wiagid = t{$tno}.wiagid");
             $tno += 1;
         }
-        
+
         $sqlwhere = $tno > 2 ? " WHERE ".$csqlwh->join(' AND ') : "";
         $sql = "(SELECT DISTINCT(t1.wiagid) as wiagid FROM ".$csqlid->join(', ').$sqlwhere.") AS twiagid";
-        
+
         return $sql;
-        
+
     }
-    
+
     public function countByQueryObject(BishopQueryFormModel $querydata) {
+
+        if ($querydata->isEmpty()) return 0;
+
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = "SELECT COUNT(twiagid.wiagid) AS count FROM ".
              $this->buildWiagidSet($querydata);
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
+        $sqlres = $stmt->execute();
 
         return $stmt->fetchAll();
     }
@@ -175,7 +213,7 @@ class PersonRepository extends ServiceEntityRepository {
         $sql = "SELECT DISTINCT(diocese) FROM office, ".
              $this->buildWiagidSet($querydata).
              " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''";
-        
+
         // dd($bishopquery, $sql);
 
         $stmt = $conn->prepare($sql);
@@ -191,13 +229,13 @@ class PersonRepository extends ServiceEntityRepository {
         if (is_null($bishopquery->place)) {
             $sql = "SELECT DISTINCT(office.diocese)".
                  $this->buildWhere($bishopquery).
-                 " AND office.diocese <> ''".                 
+                 " AND office.diocese <> ''".
                  " AND person.wiagid = office.wiagid_person".
                  " GROUP BY office.diocese";
         } else {
             $sql = "SELECT DISTINCT(office.diocese)".
                  $this->buildWhere($bishopquery).
-                 " GROUP BY office.diocese";            
+                 " GROUP BY office.diocese";
         }
 
         dd($sql);
@@ -207,7 +245,7 @@ class PersonRepository extends ServiceEntityRepository {
 
         return $stmt->fetchAll();
     }
-    
+
     public function findByQueryObject(BishopQueryFormModel $querydata, $limit, $page): array {
         $conn = $this->getEntityManager()->getConnection();
 
@@ -221,9 +259,11 @@ class PersonRepository extends ServiceEntityRepository {
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-        
+
         // returns an array of arrays (i.e. a raw data set)
-        return $stmt->fetchAll();
+        $sqlres = $stmt->fetchAll();
+
+        return $sqlres;
     }
 
     public function findOfficeByWiagid(string $wiagid) {
@@ -231,7 +271,7 @@ class PersonRepository extends ServiceEntityRepository {
 
 
         $sql = "SELECT * FROM office WHERE office.wiagid_person = {$wiagid}";
-        
+
         // dd($bishopquery, $sql);
 
         $stmt = $conn->prepare($sql);
@@ -243,6 +283,7 @@ class PersonRepository extends ServiceEntityRepository {
 
     public function findPersonsAndOffices(BishopQueryFormModel $bishopquery, $limit, $page) {
         $persons = $this->findByQueryObject($bishopquery, $limit, $page);
+        // dump($persons);
 
         $conn = $this->getEntityManager()->getConnection();
 
@@ -251,7 +292,7 @@ class PersonRepository extends ServiceEntityRepository {
         $rawoffices = array();
         $officetexts = new Vector();
         $persons_with_offices = new Vector;
-        
+
         foreach ($persons as $person) {
             $officetexts->clear();
             $rawoffices = $this->findOfficeByWiagid($person['wiagid']);
@@ -265,6 +306,4 @@ class PersonRepository extends ServiceEntityRepository {
 
         return $persons_with_offices;
     }
-
-    
 }

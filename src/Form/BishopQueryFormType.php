@@ -29,7 +29,7 @@ class BishopQueryFormType extends AbstractType
         $this->router = $rtr;
         $this->personRepository = $pry;
     }
-    
+
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
             ->add('name', TextType::class, [
@@ -50,9 +50,21 @@ class BishopQueryFormType extends AbstractType
                     'size' => '25',
                 ],
             ])
+            ->add('office', TextType::class, [
+                'label' => 'Amt',
+                'required' => false,
+                'attr' => [
+                    'class' => 'js-office-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('query_bishops_utility_offices'),
+                    'size' => '20',
+                ],
+            ])
             ->add('year', NumberType::class, [
                 'label' => 'Jahr',
                 'required' => false,
+                'attr' => [
+                    'size' => '12',
+                ],
             ])
             ->add('someid', TextType::class, [
                 'label' => 'Nummer',
@@ -68,6 +80,8 @@ class BishopQueryFormType extends AbstractType
                                                 $data['year'],
                                                 $data['someid'],
                                                 array());
+
+        if ($bishopquery->isEmpty()) return;
 
         $places = $this->personRepository->findPlacesByQueryObject($bishopquery);
 

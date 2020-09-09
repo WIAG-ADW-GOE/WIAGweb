@@ -50,7 +50,7 @@ class OfficeRepository extends ServiceEntityRepository
 
     public function findByIDPerson($id_person): array {
         $conn = $this->getEntityManager()->getConnection();
-        
+
         $sql = "
         SELECT * FROM office oe
         WHERE oe.wiagid_person = :id_person
@@ -60,7 +60,7 @@ class OfficeRepository extends ServiceEntityRepository
         // is it possible to reuse prepared statements?
         $stmt->execute(['id_person' => $id_person]);
 
-        
+
         // returns an array of arrays (i.e. a raw data set)
         return $stmt->fetchAll();
     }
@@ -68,7 +68,7 @@ class OfficeRepository extends ServiceEntityRepository
     public function suggestPlace($place, $limit = 1000): array {
         $conn = $this->getEntityManager()->getConnection();
 
-        
+
         $sql = "
         SELECT DISTINCT(diocese) as suggestion FROM office p
         WHERE p.diocese LIKE :place
@@ -79,7 +79,26 @@ class OfficeRepository extends ServiceEntityRepository
         $stmt->execute([
             'place' => "%{$place}%",
         ]);
-        
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAll();
+    }
+
+    public function suggestOffice($office, $limit = 1000): array {
+        $conn = $this->getEntityManager()->getConnection();
+
+
+        $sql = "
+        SELECT DISTINCT(office_name) as suggestion FROM office o
+        WHERE o.office_name LIKE :office
+        LIMIT $limit
+        ";
+        $stmt = $conn->prepare($sql);
+        // is it possible to reuse prepared statements?
+        $stmt->execute([
+            'office' => "%{$office}%",
+        ]);
+
         // returns an array of arrays (i.e. a raw data set)
         return $stmt->fetchAll();
     }

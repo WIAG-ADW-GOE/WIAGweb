@@ -23,20 +23,20 @@ class QueryBishop extends AbstractController {
      */
     const LIST_LIMIT = 30;
 
-    
-	/**
+
+    /**
      * @Route("/query-bishops", name="launch_query")
      */
     public function launch_query(Request $request) {
-        
+
         $form = $this->createForm(BishopQueryFormType::class);
-                
+
         $form->handlerequest($request);
 
         $facetPlacesState = 'hide';
 
         if ($form->isSubmitted() && $form->isValid()) {
-            
+
             $data = $form->getData();
 
             if (array_key_exists('facetPlaces', $data)) {
@@ -45,36 +45,39 @@ class QueryBishop extends AbstractController {
                 $facetPlaces = array();
             }
 
-                
+
             $bishopquery = new BishopQueryFormModel($data['name'],
                                                     $data['place'],
+                                                    $data['office'],
                                                     $data['year'],
                                                     $data['someid'],
                                                     $facetPlaces);
-            
+
             // dd($bishopquery);
             // dd($data);
             // if ($data['facetPlaces']) {
             //     dd($data);
             // }
-           
-
-            // get the number of results (without page limit restriction)
-            $count = $this->getDoctrine()
-                            ->getRepository(Person::class)
-                            ->countByQueryObject($bishopquery)[0]['count'];
-
-            $facetPlacesState = $request->request->get('facetPlacesState');
 
             $page = $request->request->get('page');
             if (!$page) {
                 $page = 1;
             }
 
-            $persons = $this->getDoctrine()
+            // get the number of results (without page limit restriction)
+            $count = $this->getDoctrine()
+                          ->getRepository(Person::class)
+                          ->countByQueryObject($bishopquery)[0]['count'];
+
+            $persons = array();
+            if ($count > 0) {
+                $facetPlacesState = $request->request->get('facetPlacesState');
+
+
+                $persons = $this->getDoctrine()
                             ->getRepository(Person::class)
                             ->findPersonsAndOffices($bishopquery, self::LIST_LIMIT, $page);
-
+            }
 
             return $this->render('query_bishop/listresult.html.twig', [
                 'query_form' => $form->createView(),
@@ -92,8 +95,8 @@ class QueryBishop extends AbstractController {
             ]);
         }
     }
-    
-   
+
+
     /**
      * @Route("/bishop/{id}", name="bishop")
      */
@@ -109,7 +112,7 @@ class QueryBishop extends AbstractController {
         $familynamevariants = $this->getDoctrine()
                                    ->getRepository(Familynamevariant::class)
                                    ->findByWiagid($id);
-        
+
         $givennamevariants = $this->getDoctrine()
                                    ->getRepository(Givennamevariant::class)
                                    ->findByWiagid($id);
@@ -133,8 +136,13 @@ class QueryBishop extends AbstractController {
         dd($person, self::LIST_LIMIT);
     }
 
-
-    
+    /**
+     * @Route("/query-test/apiname/{name}")
+     */
+    public function apiname($name) {
+        $person = $this->getDoctrine()
+                       ->getRepository(Person::class)
+                       ->suggestName($name);
+        dd($person);
+    }
 }
-
-    
