@@ -29,20 +29,33 @@ class QueryBishop extends AbstractController {
      */
     public function launch_query(Request $request) {
 
+        // $bishopquery = new BishopQueryFormModel();
+        // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
+
         $form = $this->createForm(BishopQueryFormType::class);
+
 
         $form->handlerequest($request);
 
         $facetPlacesState = 'hide';
+        $facetOfficesState = 'hide';
 
         if ($form->isSubmitted() && $form->isValid()) {
 
             $data = $form->getData();
 
+            dump($data);
+
             if (array_key_exists('facetPlaces', $data)) {
                 $facetPlaces = $data['facetPlaces'];
             } else {
                 $facetPlaces = array();
+            }
+
+            if (array_key_exists('facetOffices', $data)) {
+                $facetOffices = $data['facetPlaces'];
+            } else {
+                $facetOffices = array();
             }
 
 
@@ -51,13 +64,9 @@ class QueryBishop extends AbstractController {
                                                     $data['office'],
                                                     $data['year'],
                                                     $data['someid'],
-                                                    $facetPlaces);
+                                                    $facetPlaces,
+                                                    $facetOffices);
 
-            // dd($bishopquery);
-            // dd($data);
-            // if ($data['facetPlaces']) {
-            //     dd($data);
-            // }
 
             $page = $request->request->get('page');
             if (!$page) {
@@ -79,6 +88,7 @@ class QueryBishop extends AbstractController {
                             ->findPersonsAndOffices($bishopquery, self::LIST_LIMIT, $page);
             }
 
+
             return $this->render('query_bishop/listresult.html.twig', [
                 'query_form' => $form->createView(),
                 'count' => $count,
@@ -86,6 +96,7 @@ class QueryBishop extends AbstractController {
                 'page' => $page,
                 'persons' => $persons,
                 'facetPlacesState' => $facetPlacesState,
+                'facetOfficesState' => $facetOfficesState,
             ]);
 
         } else {

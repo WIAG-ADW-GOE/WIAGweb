@@ -152,7 +152,7 @@ class PersonRepository extends ServiceEntityRepository {
 
         if ($qd->facetPlaces) {
             $vp = new Vector($qd->facetPlaces);
-            $set_of_dioceses = $vp->map(function ($pl) {return "'{$pl}'";})->join(', ');
+            $set_of_dioceses = $vp->map(function ($pl) {return "'{$pl->name}'";})->join(', ');
 
             $csqlid->push("(SELECT wiagid_person as wiagid FROM office".
                           " WHERE office.diocese IN ({$set_of_dioceses})) AS t{$tno}");
@@ -210,9 +210,10 @@ class PersonRepository extends ServiceEntityRepository {
         $conn = $this->getEntityManager()->getConnection();
 
 
-        $sql = "SELECT DISTINCT(diocese) FROM office, ".
+        $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office, ".
              $this->buildWiagidSet($querydata).
-             " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''";
+             " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''".
+             " GROUP BY diocese";
 
         // dd($bishopquery, $sql);
 
@@ -222,29 +223,24 @@ class PersonRepository extends ServiceEntityRepository {
         return $stmt->fetchAll();
     }
 
-    public function findPlacesAndNByQueryObject(BishopQueryFormModel $bishopquery) {
+    public function findOfficesByQueryObject(BishopQueryFormModel $querydata) {
         $conn = $this->getEntityManager()->getConnection();
 
-        // ## TODO COUNT ...
-        if (is_null($bishopquery->place)) {
-            $sql = "SELECT DISTINCT(office.diocese)".
-                 $this->buildWhere($bishopquery).
-                 " AND office.diocese <> ''".
-                 " AND person.wiagid = office.wiagid_person".
-                 " GROUP BY office.diocese";
-        } else {
-            $sql = "SELECT DISTINCT(office.diocese)".
-                 $this->buildWhere($bishopquery).
-                 " GROUP BY office.diocese";
-        }
 
-        dd($sql);
+        $sql = "SELECT DISTINCT(office_name), COUNT(DISTINCT(wiagid_person)) as n FROM office, ".
+             $this->buildWiagidSet($querydata).
+             " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''".
+             " GROUP BY office_name";
+
+        // dd($bishopquery, $sql);
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
         return $stmt->fetchAll();
     }
+
+
 
     public function findByQueryObject(BishopQueryFormModel $querydata, $limit, $page): array {
         $conn = $this->getEntityManager()->getConnection();
