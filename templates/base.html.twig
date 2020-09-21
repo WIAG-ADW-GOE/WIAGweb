@@ -16,23 +16,32 @@
     <body>
 	<nav class="navbar navbar-light bg-light" style="height: 100px;">
 	    <div><img src="{{ asset('images/WIAG-logo.png') }}" width="70" height="70">
-		<a class="navbar-brand" href="{{ path('welcome') }}">		    
+		<a class="navbar-brand" href="{{ path('wiag_welcome') }}">		    
 		    <i style="color: #444; font-size: 2rem;" class="pb-1 fad fa-cauldron"></i>
 		    <p class="pl-2 d-inline font-weight-bold" style="color: #444;">Wissensaggregator Mittelalter und Frühe Neuzeit</p>
 		</a>
 	    </div>
 	    <div>
-		<a href="{{ path('about_wiag') }}"><button class="btn btn-dark">Über WIAG</button></a>
-		<a href="{{ path('launch_query') }}"<button class="btn btn-dark">Bischöfe</button></a>
+		{% if is_granted('ROLE_USER') %}
+		    <a href="{{ path('wiag_about') }}"><button class="btn btn-dark">Über WIAG</button></a>
+		    {% if is_granted('ROLE_QUERY') %}
+			<a href="{{ path('launch_query') }}"<button class="btn btn-dark">Bischöfe</button></a>
+		    {% endif %}
+		    <a href="{{ path('wiag_logout') }}"><button class="btn btn-dark">Logout</button></a>
+		{% endif %}
+		{% if not is_granted('ROLE_USER') %}
+		    <a href="{{ path('wiag_login') }}"<button class="btn btn-dark">Login</button></a>
+		{% endif %}		
 	    </div>
 	</nav>
 
 	{% block body %}{% endblock %}
 	<footer class="mt-5 p-3 text-center">
-	    Ein Projekt von
-	    <a class="dio" href="https://adw-goe.de/forschung/forschungsprojekte-akademienprogramm/deutsche-inschriften/">Deutsche Inschriften</a>
-	    und
-	    <a class="gs" href="https://adw-goe.de/forschung/forschungsprojekte-akademienprogramm/germania-sacra/">Germania Sacra</a>.
+	    <p>Ein Projekt von
+		<a class="dio" href="https://adw-goe.de/forschung/forschungsprojekte-akademienprogramm/deutsche-inschriften/">Deutsche Inschriften</a>
+		und
+		<a class="gs" href="https://adw-goe.de/forschung/forschungsprojekte-akademienprogramm/germania-sacra/">Germania Sacra</a>.</p>
+	    <p><a href="https://adw-goe.de/impressum/">Impressum</a></p>
 	</footer>
 	{% block javascripts %}
 	    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>

@@ -91,20 +91,7 @@ class BishopQueryFormType extends AbstractType
         $data = $event->getData();
 
         if (!$data) return;
-        dump($data);
-
-        if (array_key_exists('facetPlaces', $data)) {
-                $facetPlaces = $data['facetPlaces'];
-        } else {
-            $facetPlaces = array();
-        }
-
-        if (array_key_exists('facetOffices', $data)) {
-            $facetOffices = $data['facetPlaces'];
-        } else {
-            $facetOffices = array();
-        }
-
+        // dump($data);
 
         $bishopquery = new BishopQueryFormModel($data['name'],
                                                 $data['place'],
@@ -112,15 +99,26 @@ class BishopQueryFormType extends AbstractType
                                                 $data['year'],
                                                 $data['someid'],
                                                 array(),
-                                                $facetOffices);
+                                                array());
 
 
         if ($bishopquery->isEmpty()) return;
-        // $bishopquery->setFacetPlaces(array());
 
         $places = $this->personRepository->findPlacesByQueryObject($bishopquery);
 
+        // TODO set up the facet as a collection of checkboxes
+        // $formicb = $event->getForm();
+        // $ip = 0;
+        // foreach ($places as $place) {
+        //     $formicb->add("fpl_{$ip}", CheckboxType::class, [
+        //         'label' => $place['diocese']." (".$place['n'].")",
+        //         'required' => false,
+        //     ]);
+        //     $ip += 1;
+        // }
+
         $choices = new Vector();
+        
         foreach($places as $place) {
             $choices->push(new PlaceCount($place['diocese'], $place['n']));
         }

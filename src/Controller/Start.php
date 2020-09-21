@@ -6,14 +6,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Start extends AbstractController {
     /**
-     * @Route("/", name="welcome")
+     * @Route("/", name="wiag_welcome")
      */
 	public function welcome() {
         return $this->render('start/welcome.html.twig');
     }
 
     /**
-     * @Route("/about", name="about_wiag")
+     * @Route("/about", name="wiag_about")
      */
 	public function about() {
         return $this->render('start/about.html.twig');
