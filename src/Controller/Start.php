@@ -19,5 +19,12 @@ class Start extends AbstractController {
         return $this->render('start/about.html.twig');
     }
 
+    /**
+     * @Route("/phpinfo", name="wiag_phpinfo")
+     */
+	public function show_phpinfo() {
+        phpinfo();
+    }
+
     
 }

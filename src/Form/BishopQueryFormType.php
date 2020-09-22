@@ -6,7 +6,6 @@ use App\Repository\PersonRepository;
 use App\Entity\PlaceCount;
 use App\Entity\OfficeCount;
 
-use Ds\Vector;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -117,10 +116,10 @@ class BishopQueryFormType extends AbstractType
         //     $ip += 1;
         // }
 
-        $choices = new Vector();
+        $choices = array();
         
         foreach($places as $place) {
-            $choices->push(new PlaceCount($place['diocese'], $place['n']));
+            $choices[] = new PlaceCount($place['diocese'], $place['n']);
         }
 
         if ($places) {
@@ -148,9 +147,9 @@ class BishopQueryFormType extends AbstractType
 
         $offices = $this->personRepository->findOfficesByQueryObject($bishopquery);
 
-        $choices = new Vector();
+        $choices = array();
         foreach($offices as $office) {
-            $choices->push(new OfficeCount($office['office_name'], $office['n']));
+            $choices[] = new OfficeCount($office['office_name'], $office['n']);
         }
 
         if ($offices) {
