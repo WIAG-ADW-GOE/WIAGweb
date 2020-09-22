@@ -21,7 +21,7 @@
 		    <p class="pl-2 d-inline font-weight-bold" style="color: #444;">Wissensaggregator Mittelalter und Frühe Neuzeit</p>
 		</a>
 	    </div>
-	    <div>
+	    <div class="mt-2">
 		{% if is_granted('ROLE_USER') %}
 		    <a href="{{ path('wiag_about') }}"><button class="btn btn-dark">Über WIAG</button></a>
 		    {% if is_granted('ROLE_QUERY') %}

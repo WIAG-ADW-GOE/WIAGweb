@@ -21,6 +21,7 @@ class QueryBishopUtility extends AbstractController {
         $persons = $personRepository->suggestName($request->query->get('query'),
                                                   self::HINT_LIST_LIMIT);
         // $persons = $personRepository->findByFamilyname("ege");
+        // dump($request->query->get('query'));
         return $this->json([
             'persons' => $persons,
         ]);

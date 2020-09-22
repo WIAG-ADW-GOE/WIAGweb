@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use Ds\Vector;
 use App\Entity\Person;
 use App\Form\Model\BishopQueryFormModel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -116,76 +115,80 @@ class PersonRepository extends ServiceEntityRepository {
      */
     public function buildWiagidSet(BishopQueryFormModel $qd, $fextended = false) {
 
-        $csqlid = new Vector();
-        $csqlwh = new Vector();
+        $csqlid = array();
+        $csqlwh = array();
         $tno = 1;
         if ($qd->name) {
             $condname = "CONCAT_WS(' ', person.givenname, person.prefix_name, person.familyname) LIKE '%{$qd->name}%'";
-            $select = new Vector();
-            $select->push("SELECT wiagid FROM person WHERE {$condname}");
-            $select->push("UNION SELECT wiagid FROM person WHERE CONCAT_WS(' ', givenname, familyname) LIKE '%{$qd->name}%'");
-            $select->push("UNION SELECT wiagid from familynamevariant WHERE familyname LIKE '%{$qd->name}%'");
-            $select->push("UNION SELECT wiagid from givennamevariant WHERE givenname LIKE '%{$qd->name}%'");
+            $select = array();
+            $select[] = "SELECT wiagid FROM person WHERE {$condname}";
+            $select[] = "UNION SELECT wiagid FROM person WHERE CONCAT_WS(' ', givenname, familyname) LIKE '%{$qd->name}%'";
+            $select[] = "UNION SELECT wiagid from familynamevariant WHERE familyname LIKE '%{$qd->name}%'";
+            $select[] = "UNION SELECT wiagid from givennamevariant WHERE givenname LIKE '%{$qd->name}%'";
             if ($fextended) {
                 $nameelts = explode(" ", $qd->name);
                 if (count($nameelts) > 1) {
                     foreach ($nameelts as $nameelt) {
                         $nameelt = trim($nameelt, ",;. ");
-                        $select->push("UNION SELECT wiagid from person WHERE givenname LIKE '%{$nameelt}%'");
-                        $select->push("UNION SELECT wiagid from person WHERE prefix_name LIKE '%{$nameelt}%'");
-                        $select->push("UNION SELECT wiagid from person WHERE familyname LIKE '%{$nameelt}%'");
-                        $select->push("UNION SELECT wiagid from familynamevariant WHERE familyname LIKE '%{$nameelt}%'");
-                        $select->push("UNION SELECT wiagid from givennamevariant WHERE givenname LIKE '%{$nameelt}%'");
+                        $select[] = "UNION SELECT wiagid from person WHERE givenname LIKE '%{$nameelt}%'";
+                        $select[] = "UNION SELECT wiagid from person WHERE prefix_name LIKE '%{$nameelt}%'";
+                        $select[] = "UNION SELECT wiagid from person WHERE familyname LIKE '%{$nameelt}%'";
+                        $select[] = "UNION SELECT wiagid from familynamevariant WHERE familyname LIKE '%{$nameelt}%'";
+                        $select[] = "UNION SELECT wiagid from givennamevariant WHERE givenname LIKE '%{$nameelt}%'";
                     }
                 }
             }
-            $csqlid->push("(".$select->join(" ").") as t{$tno}");
+            $csqlid[] = "(".implode(" ", $select).") as t{$tno}";
             $tno += 1;
         }
 
         if ($qd->place) {
-            $csqlid->push("(SELECT wiagid_person as wiagid FROM office".
-                          " WHERE office.diocese like '%{$qd->place}%') as t{$tno}");
-            if ($tno > 1) $csqlwh->push("t1.wiagid = t{$tno}.wiagid");
+            $csqlid[] = "(SELECT wiagid_person as wiagid FROM office".
+                      " WHERE office.diocese like '%{$qd->place}%') as t{$tno}";
+            if ($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
             $tno += 1;
         }
 
         if ($qd->facetPlaces) {
-            $vp = new Vector($qd->facetPlaces);
-            $set_of_dioceses = $vp->map(function ($pl) {return "'{$pl->name}'";})->join(', ');
 
-            $csqlid->push("(SELECT wiagid_person as wiagid FROM office".
-                          " WHERE office.diocese IN ({$set_of_dioceses})) AS t{$tno}");
-            if ($tno > 1) $csqlwh->push("t1.wiagid = t{$tno}.wiagid");
+            $dioceses = array();
+            foreach($qd->facetPlaces as $d) {
+                $dioceses[] = "'{$d->name}'";
+            }
+            $set_of_dioceses = implode(", ", $dioceses);
+
+            $csqlid[] = "(SELECT wiagid_person as wiagid FROM office".
+                      " WHERE office.diocese IN ({$set_of_dioceses})) AS t{$tno}";
+            if ($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
             $tno += 1;
         }
 
         if ($qd->office) {
-            $csqlid->push("(SELECT wiagid_person as wiagid FROM office".
-                          " WHERE office.office_name like '%{$qd->office}%') as t{$tno}");
-            if ($tno > 1) $csqlwh->push("t1.wiagid = t{$tno}.wiagid");
+            $csqlid[] = "(SELECT wiagid_person as wiagid FROM office".
+                      " WHERE office.office_name like '%{$qd->office}%') as t{$tno}";
+            if ($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
             $tno += 1;
         }
 
         // TODO create table with upper and lower time boundary.
         if ($qd->year) {
             $myear = self::MARGINYEAR;
-            $csqlid->push("(SELECT wiagid FROM person".
-                          " WHERE ABS(person.date_death - {$qd->year}) < {$myear}) as t{$tno}");
-            if ($tno > 1) $csqlwh->push("t1.wiagid = t{$tno}.wiagid");
+            $csqlid[] = "(SELECT wiagid FROM person".
+                      " WHERE ABS(person.date_death - {$qd->year}) < {$myear}) as t{$tno}";
+            if ($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
             $tno += 1;
         }
 
         if ($qd->someid) {
             $condsomeid = "'{$qd->someid}' IN (person.gsid, person.gndid, person.viafid, person.wiagid)";
-            $csqlid->push("(SELECT wiagid FROM person".
-                          " WHERE {$condsomeid}) as t{$tno}");
-            if ($tno > 1) $csqlwh->push("t1.wiagid = t{$tno}.wiagid");
+            $csqlid[] = "(SELECT wiagid FROM person".
+                      " WHERE {$condsomeid}) as t{$tno}";
+            if ($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
             $tno += 1;
         }
 
-        $sqlwhere = $tno > 2 ? " WHERE ".$csqlwh->join(' AND ') : "";
-        $sql = "(SELECT DISTINCT(t1.wiagid) as wiagid FROM ".$csqlid->join(', ').$sqlwhere.") AS twiagid";
+        $sqlwhere = $tno > 2 ? " WHERE ".join(' AND ', $csqlwh) : "";
+        $sql = "(SELECT DISTINCT(t1.wiagid) as wiagid FROM ".join(', ', $csqlid).$sqlwhere.") AS twiagid";
 
         return $sql;
 
@@ -286,18 +289,17 @@ class PersonRepository extends ServiceEntityRepository {
 
         // add offices
         $rawoffices = array();
-        $officetexts = new Vector();
-        $persons_with_offices = new Vector;
+        $persons_with_offices = array();
 
         foreach ($persons as $person) {
-            $officetexts->clear();
+            $officetexts = array();
             $rawoffices = $this->findOfficeByWiagid($person['wiagid']);
             foreach ($rawoffices as $o) {
-                $officetexts->push($o['office_name'].' ('.$o['diocese'].')');
+                $officetexts[] = $o['office_name'].' ('.$o['diocese'].')';
             }
             // $person['offices'] = $officetexts->toArray();
             $person['offices'] = $rawoffices;
-            $persons_with_offices->push($person);
+            $persons_with_offices[] = $person;
         }
 
         return $persons_with_offices;
