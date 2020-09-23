@@ -66,8 +66,6 @@ class PersonRepository extends ServiceEntityRepository {
         $sql = "SELECT DISTINCT({$concat}) as suggestion FROM person p".
              " WHERE {$concat} LIKE '%{$name}%' LIMIT $limit";
 
-        dump($sql);
-
         $stmt = $conn->prepare($sql);
         // is it possible to reuse prepared statements?
         $stmt->execute();
@@ -282,7 +280,6 @@ class PersonRepository extends ServiceEntityRepository {
 
     public function findPersonsAndOffices(BishopQueryFormModel $bishopquery, $limit, $page) {
         $persons = $this->findByQueryObject($bishopquery, $limit, $page);
-        // dump($persons);
 
         $conn = $this->getEntityManager()->getConnection();
 
