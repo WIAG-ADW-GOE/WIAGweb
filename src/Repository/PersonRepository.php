@@ -210,11 +210,16 @@ class PersonRepository extends ServiceEntityRepository {
     public function findPlacesByQueryObject(BishopQueryFormModel $querydata) {
         $conn = $this->getEntityManager()->getConnection();
 
-
-        $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office, ".
-             $this->buildWiagidSet($querydata).
-             " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''".
-             " GROUP BY diocese";
+        if ($querydata->isEmpty()) {
+            $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office ".
+                 " WHERE diocese <> ''".
+                 " GROUP BY diocese";
+        } else {
+            $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office, ".
+                 $this->buildWiagidSet($querydata).
+                 " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''".
+                 " GROUP BY diocese";
+        }
 
         // dd($bishopquery, $sql);
 

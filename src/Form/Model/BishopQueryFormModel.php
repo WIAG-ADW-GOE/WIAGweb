@@ -11,11 +11,11 @@ class BishopQueryFormModel {
     public $facetPlaces;
     public $facetOffices;
 
-    public function __construct($n = "",
-                                $p = "",
-                                $o = "",
+    public function __construct($n = null,
+                                $p = null,
+                                $o = null,
                                 $y = null,
-                                $id = "",
+                                $id = null,
                                 $fpl = array(),
                                 $fof = array()) {
         $this->name = $n;

@@ -40,6 +40,8 @@ class BishopQueryFormType extends AbstractType
     // }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
+        $bishopquery = $options['data'] ?? null;
+        
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Name',
@@ -81,29 +83,71 @@ class BishopQueryFormType extends AbstractType
                 'attr' => [
                     'size' => '14',
                 ],
-            ])
-            ->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'createPlacesFacet'));
-        // ->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'createOfficesFacet'));
+            ]);
+
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            function(FormEvent $event) {
+                $this->createPlacesFacet($event);
+            });
+
+        if (false && $bishopquery) {
+
+            $places = $this->personRepository->findPlacesByQueryObject($bishopquery);
+
+            if ($places) {
+            
+                $choicespl = array();
+
+                foreach($places as $place) {
+                    $choicespl[] = new PlaceCount($place['diocese'], $place['n']);
+                }
+                
+                $builder->add('facetPlaces', ChoiceType::class, [
+                    'label' => 'Filter nach Orten',
+                    'expanded' => true,
+                    'multiple' => true,
+                    'choices' => $choicespl,
+                    'choice_label' => ChoiceList::label($this, 'label'),
+                ]);
+            }
+
+            // $choicespl[] = new PlaceCount('Mainz', '2');
+            // $choicespl[] = new PlaceCount('Osnabrück', '12');
+
+            // $builder->add('facetPlaces', ChoiceType::class, [
+            //     'label' => 'Filter nach Orten',
+            //     'expanded' => true,
+            //     'multiple' => true,
+            //     'choices' => $choicespl,
+            //     'choice_label' => ChoiceList::label($this, 'label'),
+                
+            // ]);
+            
+
+            $choicesoc[] = new OfficeCount('Amt P', '2');
+            $choicesoc[] = new OfficeCount('Amt Q', '12');
+
+            $builder->add('facetOffices', ChoiceType::class, [
+                'label' => 'Filter nach Orten',
+                'expanded' => true,
+                'multiple' => true,
+                'choices' => $choicesoc,
+                'choice_label' => ChoiceList::label($this, 'label'),
+            ]);
+        }
+        
     }
 
     public function createPlacesFacet(FormEvent $event) {
-        $data = $event->getData();
+        $formicb = $event->getForm();
+        $bishopquery = $formicb->getData();
 
-        if (!$data) return;
-        // dump($data);
-
-        $bishopquery = new BishopQueryFormModel($data['name'],
-                                                $data['place'],
-                                                $data['office'],
-                                                $data['year'],
-                                                $data['someid'],
-                                                array(),
-                                                array());
-
-
+        dump($bishopquery);
         if ($bishopquery->isEmpty()) return;
 
         $places = $this->personRepository->findPlacesByQueryObject($bishopquery);
+        dump($places);
 
         // TODO set up the facet as a collection of checkboxes
         // $formicb = $event->getForm();
@@ -123,7 +167,6 @@ class BishopQueryFormType extends AbstractType
         }
 
         if ($places) {
-            $formicb = $event->getForm();
 
             $formicb->add('facetPlaces', ChoiceType::class, [
                 'label' => 'Filter nach Orten',
@@ -133,6 +176,13 @@ class BishopQueryFormType extends AbstractType
                 'choice_label' => ChoiceList::label($this, 'label'),
             ]);
         }
+    }
+
+    public function configureOptions(OptionsResolver $resolver) {
+        $resolver->setDefaults([
+            'data_class' => BishopQueryFormModel::class,
+        ]);
+        
     }
 
     public function createOfficesFacet(FormEvent $event) {

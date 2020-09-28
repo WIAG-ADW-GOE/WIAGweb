@@ -33,11 +33,11 @@ class QueryBishop extends AbstractController {
      */
     public function launch_query(Request $request) {
 
-        // $bishopquery = new BishopQueryFormModel();
-        // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
+        // we need to pass an instance of BishopQueryFormModel, because facets depend on it's data
+        $bishopquery = new BishopQueryFormModel();
+        $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
 
-        $form = $this->createForm(BishopQueryFormType::class);
-
+        // $form = $this->createForm(BishopQueryFormType::class, array());
 
         $form->handlerequest($request);
 
@@ -46,30 +46,29 @@ class QueryBishop extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $data = $form->getData();
+            $bishopquery = $form->getData();
 
-            // dump($data);
+            // if (array_key_exists('facetPlaces', $data)) {
+                
+            //     $facetPlaces = $data['facetPlaces'];
+            // } else {
+            //     $facetPlaces = array();
+            // }
 
-            if (array_key_exists('facetPlaces', $data)) {
-                $facetPlaces = $data['facetPlaces'];
-            } else {
-                $facetPlaces = array();
-            }
-
-            if (array_key_exists('facetOffices', $data)) {
-                $facetOffices = $data['facetPlaces'];
-            } else {
-                $facetOffices = array();
-            }
+            // if (array_key_exists('facetOffices', $data)) {
+            //     $facetOffices = $data['facetPlaces'];
+            // } else {
+            //     $facetOffices = array();
+            // }
 
 
-            $bishopquery = new BishopQueryFormModel($data['name'],
-                                                    $data['place'],
-                                                    $data['office'],
-                                                    $data['year'],
-                                                    $data['someid'],
-                                                    $facetPlaces,
-                                                    $facetOffices);
+            // $bishopquery = new BishopQueryFormModel($data['name'],
+            //                                         $data['place'],
+            //                                         $data['office'],
+            //                                         $data['year'],
+            //                                         $data['someid'],
+            //                                         $facetPlaces,
+            //                                         $facetOffices);
 
 
             $page = $request->request->get('page');
@@ -92,6 +91,17 @@ class QueryBishop extends AbstractController {
                             ->findPersonsAndOffices($bishopquery, self::LIST_LIMIT, $page);
             }
 
+            dump($bishopquery);
+            
+            // $bishopquery = new BishopQueryFormModel($bishopquery->name,
+            //                                         $bishopquery->place,
+            //                                         $bishopquery->office,
+            //                                         $bishopquery->year,
+            //                                         $bishopquery->someid,
+            //                                         $bishopquery->facetPlaces,
+            //                                         $bishopquery->facetOffices);
+
+            // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
 
             return $this->render('query_bishop/listresult.html.twig', [
                 'query_form' => $form->createView(),
@@ -107,6 +117,7 @@ class QueryBishop extends AbstractController {
             return $this->render('query_bishop/launch_query.html.twig', [
                 'query_form' => $form->createView(),
                 'facetPlacesState' => $facetPlacesState,
+                'facetOfficesState' => $facetOfficesState,
             ]);
         }
     }
@@ -119,6 +130,20 @@ class QueryBishop extends AbstractController {
         $person = $this->getDoctrine()
                        ->getRepository(Person::class)
                         ->findOneByWiagid($id);
+
+        $wikipediaurl = $person->wikipediaurl;
+        $wikipediaurlbase = 'https://de.wikipedia.org/wiki/';
+        $wikipediaurlp = explode($wikipediaurlbase, $wikipediaurl);
+        /**
+         * prüfe ob es ein element 1 gibt array_has_key
+         * lies es aus
+         * wende urldecode an
+         * wende str_replace('_', ' ', wikipediadisplay) an.
+         */
+        
+        
+        
+                       
 
         $offices = $this->getDoctrine()
                         ->getRepository(Office::class)

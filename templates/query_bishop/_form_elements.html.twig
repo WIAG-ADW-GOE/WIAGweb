@@ -13,11 +13,11 @@
 
     {% if query_form.facetPlaces is defined %}
 	<button id="toggleFacetPlaces" class="btn btn-secondary ml-4" type="button" data-toggle="collapse" data-target="#facetPlaces" aria-expanded="false" aria-controls="collapseFacetPlaces">Filter Orte</button>
-	<input type="hidden" id ="facetPlacesState" name="facetPlacesState" value="{{ facetPlacesState }}">
+	{# <input type="hidden" id ="facetPlacesState" name="facetPlacesState" value="{{ facetPlacesState }}">  #}
     {% endif %}
     {% if query_form.facetOffices is defined %}
 	<button id="toggleFacetOffices" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#facetOffices" aria-expanded="false" aria-controls="collapseFacetPlaces">Filter Ämter</button>
-	<input type="hidden" id ="facetOfficesState" name="facetOfficesState" value="{{ facetOfficesState }}">
+	{# <input type="hidden" id ="facetOfficesState" name="facetOfficesState" value="{{ facetOfficesState }}">  #}
     {% endif %}
     {% if query_form.facetPlaces is defined %}
 	<div class="collapse" id="facetPlaces">

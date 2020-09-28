@@ -15,7 +15,8 @@
     </head>
     <body>
 	<nav class="navbar navbar-light bg-light" style="height: 100px;">
-	    <div><img src="{{ asset('images/WIAG-logo.png') }}" width="70" height="70">
+	    <div>
+		<a href="{{ path('wiag_welcome') }}"><img src="{{ asset('images/WIAG-logo.png') }}" width="70" height="70"></a>
 		<a class="navbar-brand" href="{{ path('wiag_welcome') }}">		    
 		    <i style="color: #444; font-size: 2rem;" class="pb-1 fad fa-cauldron"></i>
 		    <p class="pl-2 d-inline font-weight-bold" style="color: #444;">Wissensaggregator Mittelalter und Frühe Neuzeit</p>
