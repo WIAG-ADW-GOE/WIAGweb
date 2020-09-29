@@ -26,7 +26,7 @@
 		{% if is_granted('ROLE_USER') %}
 		    <a href="{{ path('wiag_about') }}"><button class="btn btn-dark">Über WIAG</button></a>
 		    {% if is_granted('ROLE_QUERY') %}
-			<a href="{{ path('launch_query') }}"<button class="btn btn-dark">Bischöfe</button></a>
+			<a href="{{ path('launch_query') }}"><button class="btn btn-dark">Bischöfe</button></a>
 		    {% endif %}
 		    <a href="{{ path('wiag_logout') }}"><button class="btn btn-dark">Logout</button></a>
 		{% endif %}

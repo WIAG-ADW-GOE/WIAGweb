@@ -14,4 +14,12 @@ class PlaceCount {
         return $this->name.' ('.$this->count.')';
     }
 
+    public function getAttr() {
+        $attr = array();
+        if ($this->name == 'Pedena') {
+            $attr[] = ['checked' => 'checked'];
+        }            
+        return $attr;
+    }
+
 }

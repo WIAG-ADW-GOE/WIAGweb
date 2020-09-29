@@ -34,7 +34,7 @@ class QueryBishop extends AbstractController {
     public function launch_query(Request $request) {
 
         // we need to pass an instance of BishopQueryFormModel, because facets depend on it's data
-        $bishopquery = new BishopQueryFormModel();
+        $bishopquery = new BishopQueryFormModel;
         $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
 
         // $form = $this->createForm(BishopQueryFormType::class, array());
@@ -90,8 +90,8 @@ class QueryBishop extends AbstractController {
                             ->getRepository(Person::class)
                             ->findPersonsAndOffices($bishopquery, self::LIST_LIMIT, $page);
             }
-
-            dump($bishopquery);
+            
+            
             
             // $bishopquery = new BishopQueryFormModel($bishopquery->name,
             //                                         $bishopquery->place,
@@ -101,8 +101,8 @@ class QueryBishop extends AbstractController {
             //                                         $bishopquery->facetPlaces,
             //                                         $bishopquery->facetOffices);
 
-            // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
-
+            $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
+            
             return $this->render('query_bishop/listresult.html.twig', [
                 'query_form' => $form->createView(),
                 'count' => $count,
@@ -114,6 +114,7 @@ class QueryBishop extends AbstractController {
             ]);
 
         } else {
+            # dd($form, $facetPlacesState, $facetOfficesState);
             return $this->render('query_bishop/launch_query.html.twig', [
                 'query_form' => $form->createView(),
                 'facetPlacesState' => $facetPlacesState,
@@ -185,4 +186,6 @@ class QueryBishop extends AbstractController {
                        ->suggestName($name);
         dd($person);
     }
+
+    
 }
