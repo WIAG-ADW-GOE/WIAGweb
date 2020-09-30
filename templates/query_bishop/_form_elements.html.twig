@@ -11,7 +11,7 @@
 	{% endset %}
 	{{ form_elements }}
     </div>
-    <button type="submit" class="btn btn-primary">Suche</button>
+    <button id="bishop_query_form_submit" type="submit" class="btn btn-primary">Suche</button>
 
     {% if query_form.facetPlaces is defined %}
 	<button id="toggleFacetPlaces" class="btn btn-secondary ml-4" type="button" data-toggle="collapse" data-target="#facetPlaces" aria-expanded="false" aria-controls="collapseFacetPlaces">Filter Orte</button>
