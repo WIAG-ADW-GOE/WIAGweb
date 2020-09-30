@@ -7,6 +7,7 @@ use App\Repository\OfficeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class QueryBishopUtility extends AbstractController {
     /**
@@ -49,5 +50,15 @@ class QueryBishopUtility extends AbstractController {
             'offices' => $offices,
         ]);
     }
+
+    /**
+     *@Route("/query-bishops/utility/facetplaces", methods="POST", name="qb_utility_facetplaces")
+     */
+    public function facetPlaces(Request $request) {
+        $par = $request->request;
+        $name = $par->get('name');
+        return new Response('This is facetPlaces with '.$name);
+    }
+
 
 }

@@ -5,33 +5,36 @@
 	<div class="ml-2">{{ form_row(query_form.place) }}</div>
 	<div class="ml-2">{{ form_row(query_form.office) }}</div>
 	<div class="ml-2">{{ form_row(query_form.year) }}</div>
-	<div class="ml-2">{{ form_row(query_form.someid) }}</div>
+	{% if query_form.someid is defined %}
+	    <div class="ml-2">{{ form_row(query_form.someid) }}</div>
+	{% endif %}
 	{% endset %}
 	{{ form_elements }}
     </div>
-    <button type="submit" class="btn btn-primary">Suche</button>
+    <button id="bishop_query_form_submit" type="submit" class="btn btn-primary">Suche</button>
 
     {% if query_form.facetPlaces is defined %}
 	<button id="toggleFacetPlaces" class="btn btn-secondary ml-4" type="button" data-toggle="collapse" data-target="#facetPlaces" aria-expanded="false" aria-controls="collapseFacetPlaces">Filter Orte</button>
-	<input type="hidden" id ="facetPlacesState" name="facetPlacesState" value="{{ facetPlacesState }}">
+	{# <input type="hidden" id ="facetPlacesState" name="facetPlacesState" value="{{ facetPlacesState }}">  #}
     {% endif %}
     {% if query_form.facetOffices is defined %}
 	<button id="toggleFacetOffices" class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#facetOffices" aria-expanded="false" aria-controls="collapseFacetPlaces">Filter Ämter</button>
-	<input type="hidden" id ="facetOfficesState" name="facetOfficesState" value="{{ facetOfficesState }}">
+	{# <input type="hidden" id ="facetOfficesState" name="facetOfficesState" value="{{ facetOfficesState }}">  #}
     {% endif %}
     {% if query_form.facetPlaces is defined %}
 	<div class="collapse" id="facetPlaces">
 	    <div class="card card-body container-fluid">
 		{% if  query_form.facetPlaces|length > 8 %}
 		    <div class="row row-cols-6">
-			{% for place in query_form.facetPlaces %}
-			    <div class="col-sm-2">{{ form_row(place) }}</div>
+			{% for fpl in query_form.facetPlaces%}
+			    {# fpl.vars.label could be used to build the label?! #}
+			    <div class="col-sm-2">{{ form_row(fpl) }}</div>
 			{% endfor %}
 		    </div>
 		{% else %}
 		    <div class="row row-cols-4">
-			{% for place in query_form.facetPlaces %}
-			    <div class="col-sm-3">{{ form_row(place) }}</div>
+			{% for fpl in query_form.facetPlaces %}
+			    <div class="col-sm-3">{{ form_row(fpl) }}</div>
 			{% endfor %}
 		    </div>
 		{% endif %}

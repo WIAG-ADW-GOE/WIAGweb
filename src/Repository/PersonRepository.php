@@ -168,6 +168,18 @@ class PersonRepository extends ServiceEntityRepository {
             $tno += 1;
         }
 
+        if ($qd->facetOffices) {
+            $offices = array();
+            foreach($qd->facetOffices as $oc) {
+                $offices[] = "'{$oc->name}'";
+            }
+            $set_of_offices = implode(", ", $offices);
+            $csqlid[] = "(SELECT wiagid_person as wiagid FROM office".
+                      " WHERE office.office_name IN ({$set_of_offices})) AS t{$tno}";
+            if ($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
+            $tno += 1;
+        }
+
         // TODO create table with upper and lower time boundary.
         if ($qd->year) {
             $myear = self::MARGINYEAR;
@@ -210,11 +222,16 @@ class PersonRepository extends ServiceEntityRepository {
     public function findPlacesByQueryObject(BishopQueryFormModel $querydata) {
         $conn = $this->getEntityManager()->getConnection();
 
-
-        $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office, ".
-             $this->buildWiagidSet($querydata).
-             " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''".
-             " GROUP BY diocese";
+        if ($querydata->isEmpty()) {
+            $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office ".
+                 " WHERE diocese <> ''".
+                 " GROUP BY diocese";
+        } else {
+            $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office, ".
+                 $this->buildWiagidSet($querydata).
+                 " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''".
+                 " GROUP BY diocese";
+        }
 
         // dd($bishopquery, $sql);
 

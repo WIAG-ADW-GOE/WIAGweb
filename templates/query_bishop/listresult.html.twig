@@ -8,13 +8,13 @@
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
     <script src="{{ asset('js/query-bishop-autocomplete.js') }}"></script>
-    <script src="{{ asset('js/query-bishop-facet.js') }}"></script>
+    <script src="{{ asset('js/query-bishop-fire-facet.js') }}"></script>
 {% endblock %}
 
 {% block body %}
     {# add page forward and backward buttons #}
     {% set fb_elements %}
-    {% if count > 0 %}
+    {% if 1 < 1 and count > 0 %}
 	<span class="ml-4">
 	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page < 2 %} disabled="disabled" {% endif %} name="page" value="{{ page - 1 }}">&#9204; zurück</button>
 	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page * limit > count%}  disabled="disabled" {% endif %} name="page" value="{{ page + 1 }}">vor &#9205;</button>
@@ -36,7 +36,7 @@
 		{{ (page - 1) * limit + 1 }} - {{ min(page * limit, count)}} von {{ count }}
 	    {% endif %}
 	    {{ fb_elements }}
-	    
+
 	</div>
 
 	{% if count > 0 %}
@@ -53,8 +53,7 @@
 			{% for person in persons %}
 			    <tr>
 				<th scope="row">
-				    <a href="{{ path('bishop', {id: person.wiagid}) }}">{{ person.wiagid }}</a>
-				</th>
+				    <a href="{{ path('bishop', {id: person.wiagid}) }}">{{ person.wiagid }}</a></th>
 				<td>{{ person.givenname }} {{ person.prefix_name }} {{ person.familyname }}
 				    {% if not person.date_birth and not person.date_death %}
 				    {% elseif person.date_birth and not person.date_death %}
@@ -63,30 +62,20 @@
 					(† {{ person.date_death }})
 				    {% else %}
 					({{ person.date_birth }}-{{ person.date_death }})
-				    {% endif %}
-				</td>
+				    {% endif %}</td>
 				<td>{% for o in person.offices %}
 				    <small>{{ o.office_name }}
 					{% if o.diocese %}({{ o.diocese }}){% endif %}
 					{% if o.date_start and not o.date_start %}{{ o.date_start }}
 					{% elseif o.date_end and not o.date_end %}{{ o.date_end }}
 					{% elseif o.date_end and o.date_end %}{{ o.date_start }}-{{ o.date_end }}{% endif %}
-				    </small><br/>
-				    {% endfor %}
-				</td>
+				    </small><br/>{% endfor %}</td>
 			    </tr>
 			{% endfor %}
 		    </tbody>
 		</table>
 	    </div>
-
-
-	    {# {% for person in listpersons %}
-	    {{dump(person) }}
-	    {% endfor %} #}
-
 	{% endif %}
 	{{ fb_elements }}
     </div>
-
 {% endblock %}
