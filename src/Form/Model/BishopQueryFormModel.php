@@ -41,4 +41,27 @@ class BishopQueryFormModel {
         return $this;
     }
 
+    public function setTextFields(array $a) {
+        $this->name = $a['name'];
+        $this->place = $a['place'];
+        $this->office = $a['office'];
+        $this->year = $a['year'];
+        $this->someid = $a['someid'];
+        $this->facetPlaces = null;
+        $this->facetOffices = null;
+        return null;
+    }
+
+    public function copy(BishopQueryFormModel $a) {
+        $this->name = $a->name;
+        $this->place = $a->place;
+        $this->office = $a->office;
+        $this->year = $a->year;
+        $this->someid = $a->someid;
+        $this->facetPlaces = $a->facetPlaces;
+        $this->facetOffices = $a->facetOffices;
+        return null;
+    }
+
+
 }

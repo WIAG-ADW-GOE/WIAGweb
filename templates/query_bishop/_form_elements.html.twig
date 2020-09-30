@@ -5,7 +5,9 @@
 	<div class="ml-2">{{ form_row(query_form.place) }}</div>
 	<div class="ml-2">{{ form_row(query_form.office) }}</div>
 	<div class="ml-2">{{ form_row(query_form.year) }}</div>
-	<div class="ml-2">{{ form_row(query_form.someid) }}</div>
+	{% if query_form.someid is defined %}
+	    <div class="ml-2">{{ form_row(query_form.someid) }}</div>
+	{% endif %}
 	{% endset %}
 	{{ form_elements }}
     </div>
@@ -24,14 +26,15 @@
 	    <div class="card card-body container-fluid">
 		{% if  query_form.facetPlaces|length > 8 %}
 		    <div class="row row-cols-6">
-			{% for place in query_form.facetPlaces %}
-			    <div class="col-sm-2">{{ form_row(place) }}</div>
+			{% for fpl in query_form.facetPlaces%}
+			    {# fpl.vars.label could be used to build the label?! #}
+			    <div class="col-sm-2">{{ form_row(fpl) }}</div>
 			{% endfor %}
 		    </div>
 		{% else %}
 		    <div class="row row-cols-4">
-			{% for place in query_form.facetPlaces %}
-			    <div class="col-sm-3">{{ form_row(place) }}</div>
+			{% for fpl in query_form.facetPlaces %}
+			    <div class="col-sm-3">{{ form_row(fpl) }}</div>
 			{% endfor %}
 		    </div>
 		{% endif %}

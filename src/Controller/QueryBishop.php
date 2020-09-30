@@ -8,6 +8,7 @@ use App\Entity\Person;
 use App\Entity\Office;
 use App\Entity\Familynamevariant;
 use App\Entity\Givennamevariant;
+use App\Entity\PlaceCount;
 
 
 use Ds\Set;
@@ -91,7 +92,16 @@ class QueryBishop extends AbstractController {
                             ->findPersonsAndOffices($bishopquery, self::LIST_LIMIT, $page);
             }
             
-            
+            $places = array();
+            if ($count > 0) {
+                $places_raw = $this->getDoctrine()
+                                   ->getRepository(Person::class)->findPlacesByQueryObject($bishopquery);
+                foreach ($places_raw as $pl) {
+                    $places[] = new PlaceCount($pl['diocese'], $pl['n']);
+                }
+            }
+            // dd($places);
+
             
             // $bishopquery = new BishopQueryFormModel($bishopquery->name,
             //                                         $bishopquery->place,
@@ -101,7 +111,9 @@ class QueryBishop extends AbstractController {
             //                                         $bishopquery->facetPlaces,
             //                                         $bishopquery->facetOffices);
 
-            $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
+            // combination of POST_SET_DATA and POST_SUBMIT
+            // dump($bishopquery);
+            // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
             
             return $this->render('query_bishop/listresult.html.twig', [
                 'query_form' => $form->createView(),
@@ -111,6 +123,7 @@ class QueryBishop extends AbstractController {
                 'persons' => $persons,
                 'facetPlacesState' => $facetPlacesState,
                 'facetOfficesState' => $facetOfficesState,
+                'places' => $places,
             ]);
 
         } else {

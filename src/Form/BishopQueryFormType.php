@@ -49,6 +49,7 @@ class BishopQueryFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $bishopquery = $options['data'] ?? null;
+        dump($bishopquery);
         
         $builder
             ->add('name', TextType::class, [
@@ -84,8 +85,7 @@ class BishopQueryFormType extends AbstractType
                 'attr' => [
                     'size' => '8',
                 ],
-            ])
-            ->add('someid', TextType::class, [
+            ])->add('someid', TextType::class, [
                 'label' => 'Nummer',
                 'required' => false,
                 'attr' => [
@@ -102,64 +102,64 @@ class BishopQueryFormType extends AbstractType
         //     'choice_label' => ChoiceList::label($this, 'label'),
         // ]);
 
-        $builder->get('name')->addEventListener(
-            FormEvents::POST_SET_DATA,
-            function(FormEvent $event) {
-                // dump($event->getData());
-                // dump($event->getForm()->getData());
-                $form = $event->getForm()->getParent();
-                $name = $event->getForm()->getData();
-                // if buildForm is called with the last instance of bishopquery
-                // all fields of bishopquery are available
-                // TODO recover selected fields
-                // if everything fails, pass the state of the facet via the controller
-                // and set the Checkboxes via JavaScript
-                $bishopquery = $form->getData();
-                dump($bishopquery);
-                if ($name == 'aul') {
-                    $choicespl[5] = new PlaceCount('Prag', '12');
-                    $choicespl[6] = new PlaceCount('Pedena', '12');
-                    $choicespl[7] = new PlaceCount('Köln', '3');
-                } else {
-                    $choicespl[11] = new PlaceCount('Mainz', '12');
-                    $choicespl[12] = new PlaceCount('Worms', '12');
-                }
-                $form->add('facetPlaces', ChoiceType::class, [
-                    'label' => 'Filter nach Orten',
-                    'expanded' => true,
-                    'multiple' => true,
-                    'choices' => $choicespl,
-                    'choice_label' => ChoiceList::label($this, 'label'),
-                    'choice_attr' => function ($choice, $key, $value) {
-                        return ['checked' => 'checked'];
-                    }
-                    // ChoiceList::attr($this, 'attr'),
-                ]);                
-            });
+        // $builder->get('name')->addEventListener(
+        //     FormEvents::POST_SET_DATA,
+        //     function(FormEvent $event) {
+        //         // dump($event->getData());
+        //         // dump($event->getForm()->getData());
+        //         $form = $event->getForm()->getParent();
+        //         $name = $event->getForm()->getData();
+        //         // if buildForm is called with the last instance of bishopquery
+        //         // all fields of bishopquery are available
+        //         // TODO recover selected fields
+        //         // if everything fails, pass the state of the facet via the controller
+        //         // and set the Checkboxes via JavaScript
+        //         $bishopquery = $form->getData();
+        //         dump($bishopquery);
+        //         if ($name == 'aul') {
+        //             $choicespl[5] = new PlaceCount('Prag', '12');
+        //             $choicespl[6] = new PlaceCount('Pedena', '12');
+        //             $choicespl[7] = new PlaceCount('Köln', '3');
+        //         } else {
+        //             $choicespl[11] = new PlaceCount('Mainz', '12');
+        //             $choicespl[12] = new PlaceCount('Worms', '12');
+        //         }
+        //         $form->add('facetPlaces', ChoiceType::class, [
+        //             'label' => 'Filter nach Orten',
+        //             'expanded' => true,
+        //             'multiple' => true,
+        //             'choices' => $choicespl,
+        //             'choice_label' => ChoiceList::label($this, 'label'),
+        //             'choice_attr' => function ($choice, $key, $value) {
+        //                 return ['checked' => 'checked'];
+        //             }
+        //             // ChoiceList::attr($this, 'attr'),
+        //         ]);                
+        //     });
 
-        $builder->get('name')->addEventListener(
-            FormEvents::POST_SUBMIT,
-            function(FormEvent $event) {
-                // dump($event->getData());
-                // dump($event->getForm()->getData());
-                $form = $event->getForm()->getParent();
-                $name = $event->getForm()->getData();
-                if ($name == 'aul') {
-                    $choicespl[] = new PlaceCount('Prag', '12');
-                    $choicespl[] = new PlaceCount('Pedena', '12');
-                    $choicespl[] = new PlaceCount('Salzburg', '12');
-                } else {
-                    $choicespl[] = new PlaceCount('Mainz', '12');
-                    $choicespl[] = new PlaceCount('Worms', '12');
-                }
-                $form->add('facetPlaces', ChoiceType::class, [
-                    'label' => 'Filter nach Orten',
-                    'expanded' => true,
-                    'multiple' => true,
-                    'choices' => $choicespl,
-                    'choice_label' => ChoiceList::label($this, 'label'),
-                ]);                
-            });
+        // $builder->get('name')->addEventListener(
+        //     FormEvents::POST_SUBMIT,
+        //     function(FormEvent $event) {
+        //         // dump($event->getData());
+        //         // dump($event->getForm()->getData());
+        //         $form = $event->getForm()->getParent();
+        //         $name = $event->getForm()->getData();
+        //         if ($name == 'aul') {
+        //             $choicespl[] = new PlaceCount('Prag', '12');
+        //             $choicespl[] = new PlaceCount('Pedena', '12');
+        //             $choicespl[] = new PlaceCount('Salzburg', '12');
+        //         } else {
+        //             $choicespl[] = new PlaceCount('Mainz', '12');
+        //             $choicespl[] = new PlaceCount('Worms', '12');
+        //         }
+        //         $form->add('facetPlaces', ChoiceType::class, [
+        //             'label' => 'Filter nach Orten',
+        //             'expanded' => true,
+        //             'multiple' => true,
+        //             'choices' => $choicespl,
+        //             'choice_label' => ChoiceList::label($this, 'label'),
+        //         ]);                
+        //     });
         
         
         // $builder->get('facetOffices')->addEventListener(
@@ -202,15 +202,14 @@ class BishopQueryFormType extends AbstractType
         // ]);
 
 
-        // $builder->addEventListener(
-        //     FormEvents::PRE_SUBMIT,
-        //     array($this, 'createFacetPlaces'));
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            array($this, 'createFacetPlaces'));
 
 
-        // $builder->addEventListener(
-        //     FormEvents::PRE_SUBMIT,
-        //     array($this, 'createFacetOffices'));
-
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            array($this, 'createFacetOffices'));
         
 
         if (false && $bishopquery) {
@@ -287,19 +286,72 @@ class BishopQueryFormType extends AbstractType
         }
     }
 
-    public function createFacetOffices(FormEvent $event) {
+    public function createFacetPlaces(FormEvent $event) {        
         $data = $event->getData();
         if (!$data) return;
+        if (is_a($data, BishopQueryFormModel::class)) {
+            $bishopquery = $data;
+        } else {
+            $bishopquery = new BishopQueryFormModel();
+            $bishopquery->setTextFields($data);
+        }
+        dump($bishopquery);
+        
+        if ($bishopquery->isEmpty()) return;
 
-        $facetPlaces = array_key_exists('facetPlaces', $data) ? $data['facetPlaces'] : null;
+        $places = $this->personRepository->findPlacesByQueryObject($bishopquery);
+        
+        $choices = array();
+        
+        foreach($places as $place) {
+            $choices[] = new PlaceCount($place['diocese'], $place['n']);
+        }
 
-        $bishopquery = new BishopQueryFormModel($data['name'],
-                                                $data['place'],
-                                                $data['office'],
-                                                $data['year'],
-                                                $data['someid'],
-                                                $facetPlaces,
-                                                null);
+        if ($places) {
+            $form = $event->getForm();
+            $form->add('facetPlaces', ChoiceType::class, [
+                'label' => 'Filter nach Orten',
+                'expanded' => true,
+                'multiple' => true,
+                'choices' => $choices,
+                'choice_label' => ChoiceList::label($this, 'label'),
+            ]);
+        }
+    }
+
+    public function createFacetPlacesWithObject(FormEvent $event, $bishopquery) {        
+        dump($bishopquery);
+        if ($bishopquery->isEmpty()) return;
+
+        $places = $this->personRepository->findPlacesByQueryObject($bishopquery);
+        
+        $choices = array();
+        
+        foreach($places as $place) {
+            $choices[] = new PlaceCount($place['diocese'], $place['n']);
+        }
+
+        if ($places) {
+            $form = $event->getForm();
+            $form->add('facetPlaces', ChoiceType::class, [
+                'label' => 'Filter nach Orten',
+                'expanded' => true,
+                'multiple' => true,
+                'choices' => $choices,
+                'choice_label' => ChoiceList::label($this, 'label'),
+            ]);
+        }
+    }
+
+    public function createFacetOffices(FormEvent $event) {
+        $data = $event->getData();       
+        if (!$data) return;
+         if (is_a($data, BishopQueryFormModel::class)) {
+            $bishopquery = $data;
+        } else {
+            $bishopquery = new BishopQueryFormModel();
+            $bishopquery->setTextFields($data);
+        }
 
         if ($bishopquery->isEmpty()) return;
 

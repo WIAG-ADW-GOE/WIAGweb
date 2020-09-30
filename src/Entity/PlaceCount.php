@@ -11,7 +11,8 @@ class PlaceCount {
     }
 
     public function getLabel(): string {
-        return $this->name.' ('.$this->count.')';
+        $label = $this->name.' ('.$this->count.')';
+        return $label;
     }
 
     public function getAttr() {
