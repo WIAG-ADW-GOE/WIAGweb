@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+	<h2 class="my-3">Referenzwerke</h2>
+	<dl class="row">
+	    {% for reference in references %}
+		<dt class="col-sm-3">{{ reference.bibshort }}</dt>
+		<dd class="col-sm-9">{{ reference.biblong }}</dd>
+	    {% endfor %}
+	</dl>
+    </div>
+{% endblock %}

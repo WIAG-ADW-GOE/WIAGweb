@@ -3,9 +3,22 @@ body {
     color: #444;
 }
 
+.wiag-large {
+    font-size: large;
+}
+
+.wiag-id {
+    font-size: normal;
+}
+
+.comment {
+    color: #668;
+}
+
+
 .dio {
     text-transform: uppercase;
-    color: #667;
+    color: #068;
 }
 
 .gs {

@@ -6,36 +6,41 @@
 	{% if not person%}
 	    <p class="em">Person nicht gefunden.</p>
 	{% else %}
-	    <div class="mt-3 mb-2">
-		<h2>{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</h2>
-		{% if person.commentname %}
-		    <p>{{ person.commentname }}</p>
-		{% endif %}
-		{% if person.commentperson %}
-		    <p>{{ person.commentperson }}</p>
-		{% endif %}
+	    {% set displayname %}{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}{% endset %}
+	    <div class="mt-3 mb-3"><div class="row"><div class="col-9">
+		<h2>{{ displayname }}</h2>
 	    </div>
+	    <div class="col-3 wiag-id">{{ wiagidlong }}</div></div>
+	    {% if not person.datebirth and not person.datedeath %}
+	    {% elseif person.datebirth and not person.datedeath %}
+		<span font-size="large">* {{ person.datebirth }}</span>
+	    {% elseif not person.datebirth and person.datedeath %}
+		&dagger; {{ person.datedeath }}
+	    {% else %}
+		<span class="wiag-large">* {{ person.datebirth }} <span class="pl-3">&dagger; {{ person.datedeath }}</span></span>
+	    {% endif %}
+	    </div>
+	    {% if person.commentname or person.commentperson %}
+		<p class="comment">Kommentar (Name oder Person):
+		{% if person.commentname and not person.commentperson %} {{ person.commentname }}
+		{% elseif not person.commentname and  person.commentperson %} {{ person.commentperson }}
+		{% else %} {{ person.commentname }}; {{ person.commentperson }}</p>
+		{% endif %}
+	    {% endif %}
+
 	    <dl class="row">
-		{% if person.datebirth %}
-		    <dt class="col-sm-3">geboren</dt>
-		    <dd class="col-sm-9">{{ person.datebirth }}</dd>
-		{% endif %}
-		{% if person.datedeath %}
-		    <dt class="col-sm-3">gestorben</dt>
-		    <dd class="col-sm-9">{{ person.datedeath }}</dd>
-		{% endif %}
 		{% if person.religiousorder %}
 		    <dt class="col-sm-3">Orden</dt>
 		    <dd class="col-sm-9">{{ person.religiousorder }}</dd>
 		{% endif %}
-		
+
 		{% if offices %}
 		    <dt class="col-sm-3">Ämter</dt>
 		    <dd class="col-sm-9">
 			<ul class="list-unstyled">
 			    {% for office in offices %}
 				<li>
-				    <ul class="list-inlined">
+				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item"> {{ office.office_name }}</li>
 					<li class="list-inline-item">{{ office.diocese }}</li>
 					<li class="list-inline-item">
@@ -48,11 +53,18 @@
 						{{ office.date_start }}–{{ office.date_end }}
 					    {% endif %}
 					</li>
-					{% if office.comment %}
-					    <li class="list-inline-item"> – {{ office.comment }}</li>
+					{% if office.id_monastery %}
+					    <li class="list-inline-item">
+						<a href="https://adw-goe.de/forschung/forschungsprojekte-akademienprogramm/germania-sacra/klosterdatenbank/datenbankabfrage/gsn/{{ office.id_monastery }}">Kloster</a>
+					    </li>
 					{% endif %}
 				    </ul>
 				</li>
+				{% if office.comment %}
+				    <li class="comment">Kommentar: {{ office.comment }}</li>
+				{% endif %}
+
+
 			    {% endfor %}
 			</ul>
 		    </dd>
@@ -63,7 +75,7 @@
 			<ul class="list-unstyled">
 			    {% for fnv in familynamevariants %}
 				<li>
-				    <ul class="list-inlined">
+				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item"> {{ fnv.familyname }}</li>
 				    </ul>
 				</li>
@@ -75,42 +87,74 @@
 		    <dt class="col-sm-3">Varianten Vornamen</dt>
 		    <dd class="col-sm-9">
 			<ul class="list-unstyled">
-			    {% for fnv in givennamevariants %}
+			    {% for gnv in givennamevariants %}
 				<li>
-				    <ul class="list-inlined">
-					<li class="list-inline-item"> {{ fnv.givenname }}</li>
+				    <ul class="list-inlined list-unstyled">
+					<li class="list-inline-item"> {{ gnv.givenname }}</li>
 				    </ul>
 				</li>
 			    {% endfor %}
 			</ul>
 		    </dd>
 		{% endif %}
-
-		<dt class="col-sm-3">WIAG</dt>
-		<dd class="col-sm-9">{{ person.wiagid }}</dd>
-		{% if person.gsid %}
-		    <dt class="col-sm-3">Germania Sacra</dt>
-		    <dd class="col-sm-9">
-			<a href="http://germania-sacra-datenbank.uni-goettingen.de/index/gsn/{{ person.gsid }}">{{ person.gsid }}</a></dd>
-		{% endif %}
-		{% if person.gndid %}
-		    <dt class="col-sm-3">GND</dt>
-		    <dd class="col-sm-9"><a href="http://lobid.org/gnd/{{ person.gndid }}">{{ person.gndid }}</a></dd>
-		{% endif %}
-		{% if person.viafid %}
-		    <dt class="col-sm-3">VIAF</dt>
-		    <dd class="col-sm-9"><a href="https://viaf.org/viaf/{{ person.viafid }}">{{ person.viafid }}</a></dd>
-		{% endif %}
-		{% if person.wikipediaurl %}
-		    <dt class="col-sm-3">Wikipedia</dt>
-		    <dd class="col-sm-9"><a href="{{ person.wikipediaurl }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</a></dd>
-		{% endif %}
 		{% if person.reference %}
-		    <dt class="col-sm-3">Fundstelle</dt>
+		    <dt class="col-sm-3">Referenzwerk</dt>
 		    {# Link einfügen #}
-		    <dd class="col-sm-9"><a href="{{ path('reference', {'short': person.reference}) }}">{{ person.reference }}</a>, S. {{ person.pagesgatz }}</dd>
+		    <dd class="col-sm-9"><a href="{{ path('reference', {'shortenc': person.reference|url_encode}) }}">{{ person.reference }}</a>, S. {{ person.pagesgatz }}</dd>
+		{% endif %}
+		{% if hasNormdata %}
+		<dt class="col-sm-3">Siehe auch</dt>
+		<dd class="col-sm-9">
+			<ul class ="list-unstyled">
+			    {% if person.gsid %}
+				<li>
+				    <ul class="list-inlined list-unstyled">
+					<li class="list-inline-item">Germania Sacra</li>
+					<li class="list-inline-item">
+					    <a href="http://germania-sacra-datenbank.uni-goettingen.de/index/gsn/{{ person.gsid }}">{{ person.gsid }}</a></li>
+				    </ul>
+				</li>
+			    {% endif %}
+			    {% if person.gndid %}
+				<li>
+				    <ul class="list-inlined list-unstyled">
+					<li class="list-inline-item">GND</li>
+					<li class="list-inline-item"><a href="http://d-nb.info/gnd/{{ person.gndid }}">{{ person.gndid }}</a></li>
+				    </ul>
+				</li>
+			    {% endif %}
+			    {% if person.viafid %}
+				<li>
+				    <ul class="list-inlined list-unstyled">
+					<li class="list-inline-item">VIAF</li>
+					<li class="list-inline-item"><a href="https://viaf.org/viaf/{{ person.viafid }}">{{ person.viafid }}</a></li>
+				    </ul>
+				</li>
+			    {% endif %}
+			    {% if person.wikidataid %}
+				<li>
+				    <ul class="list-inlined list-unstyled">
+					<li class="list-inline-item">WikiData</li>
+					<li class="list-inline-item"><a href="https://www.wikidata.org/wiki/{{ person.wikidataid }}">{{ person.wikidataid }}</a></li>
+				    </ul>
+				</li>
+			    {% endif %}
+			    {% if wikipediatitle %}
+				<li>
+				    <ul class="list-inlined list-unstyled">
+					<li class="list-inline-item">Wikipedia</li>
+					<li class="list-inline-item"><a href="{{ person.wikipediaurl }}">{{ wikipediatitle }}</a></li>
+				    </ul>
+				</li>
+			    {% endif %}
+			</ul>
+		</dd>
 		{% endif %}
 	    </dl>
-		{% endif %}
+	{% endif %}
+	<p>Empfohlene Zitierweise:<br/>
+	"{{ displayname }}" (WIAGID: {{ wiagidlong }}),
+	    in: WIAG, {{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ path('bishop', {wiagidlong: wiagidlong}) }},
+	    (Abgerufen: {{ "now"|date('d.m.Y') }}).</p>
     </div>
 {% endblock %}

@@ -14,7 +14,7 @@
 {% block body %}
     {# add page forward and backward buttons #}
     {% set fb_elements %}
-    {% if 1 < 1 and count > 0 %}
+    {% if count > 0 %}
 	<span class="ml-4">
 	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page < 2 %} disabled="disabled" {% endif %} name="page" value="{{ page - 1 }}">&#9204; zurück</button>
 	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page * limit > count%}  disabled="disabled" {% endif %} name="page" value="{{ page + 1 }}">vor &#9205;</button>
@@ -22,12 +22,10 @@
     {% endif %}
     {% endset %}
 
-    <div class="container-fluid">
-	<div class="mt-3"><h3>Suche nach Bischöfen</h3></div>
+    <div class="container-fluid mt-3">
+	<h3>Suche nach Bischöfen</h3>
 	{{ include('query_bishop/_form_elements.html.twig') }}
-    </div>
-    <div class="container-fluid">
-	<div class="mt-3 mb-1">Treffer:
+	<div class="row col-12 mt-3 mb-1">Treffer:
 	    {% if count == 0 %}
 		keine
 	    {% elseif count == 1 %}
@@ -36,46 +34,52 @@
 		{{ (page - 1) * limit + 1 }} - {{ min(page * limit, count)}} von {{ count }}
 	    {% endif %}
 	    {{ fb_elements }}
-
 	</div>
+    </div>
 
+    <div class="container-fluid">
 	{% if count > 0 %}
-	    <div class="table-responsive">
-		<table class="table">
-		    <thead class="thead-light">
-			<tr>
-			    <th scope="col">WIAG ID</th>
-			    <th scope="col">Name</th>
-			    <th scope="col">Ämter</th>
-			</tr>
-		    </thead>
-		    <tbody>
-			{% for person in persons %}
-			    <tr>
-				<th scope="row">
-				    <a href="{{ path('bishop', {id: person.wiagid}) }}">{{ person.wiagid }}</a></th>
-				<td>{{ person.givenname }} {{ person.prefix_name }} {{ person.familyname }}
-				    {% if not person.date_birth and not person.date_death %}
-				    {% elseif person.date_birth and not person.date_death %}
-					(* {{ person.date_birth }})
-				    {% elseif not person.date_birth and person.date_death %}
-					(† {{ person.date_death }})
-				    {% else %}
-					({{ person.date_birth }}-{{ person.date_death }})
-				    {% endif %}</td>
-				<td>{% for o in person.offices %}
-				    <small>{{ o.office_name }}
-					{% if o.diocese %}({{ o.diocese }}){% endif %}
-					{% if o.date_start and not o.date_start %}{{ o.date_start }}
-					{% elseif o.date_end and not o.date_end %}{{ o.date_end }}
-					{% elseif o.date_end and o.date_end %}{{ o.date_start }}-{{ o.date_end }}{% endif %}
-				    </small><br/>{% endfor %}</td>
-			    </tr>
-			{% endfor %}
-		    </tbody>
-		</table>
+	    <div class="row">
+		<div class="col-12">
+		    <div class="table-responsive">
+			<table class="table">
+			    <thead class="thead-light">
+				<tr>
+				    <th scope="col"></th>
+				    <th scope="col">Name</th>
+				    <th scope="col">Ämter</th>
+				</tr>
+			    </thead>
+			    <tbody>
+				{% for person in persons %}
+				    <tr>
+					<th scope="row">
+					    <a href="{{ path('bishop', {wiagidlong: person.wiagidlong}) }}">&#10150;</a></th>
+					<td>{{ person.givenname }} {{ person.prefix_name }} {{ person.familyname }}
+					    {% if not person.date_birth and not person.date_death %}
+					    {% elseif person.date_birth and not person.date_death %}
+						<br/>* {{ person.date_birth }}
+					    {% elseif not person.date_birth and person.date_death %}
+						<br/>&dagger; {{ person.date_death }}
+					    {% else %}
+						<br/>* {{ person.date_birth }} <span class="ml-2">&dagger; {{ person.date_death }}</span>
+					    {% endif %}
+					</td>
+					<td>{% for o in person.offices %}
+					    <small>{{ o.office_name }}
+						{% if o.diocese %}({{ o.diocese }}){% endif %}
+						{% if o.date_start and not o.date_start %}{{ o.date_start }}
+						{% elseif o.date_end and not o.date_end %}{{ o.date_end }}
+						{% elseif o.date_end and o.date_end %}{{ o.date_start }}-{{ o.date_end }}{% endif %}
+					    </small><br/>{% endfor %}
+					</td>
+				    </tr>
+				{% endfor %}
+			    </tbody>
+			</table>
+		    </div> {# table-responsive #}
+		</div>
 	    </div>
 	{% endif %}
-	{{ fb_elements }}
     </div>
 {% endblock %}

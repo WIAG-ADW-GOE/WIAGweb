@@ -18,6 +18,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 
 /**
  * @IsGranted("ROLE_QUERY")
@@ -27,6 +29,8 @@ class QueryBishop extends AbstractController {
      * Parameters
      */
     const LIST_LIMIT = 30;
+    const WIAGID_PREFIX = 'WIAG-Pers-EPISCGatz-';
+    const WIAGID_POSTFIX = '-001';
 
 
     /**
@@ -49,29 +53,6 @@ class QueryBishop extends AbstractController {
 
             $bishopquery = $form->getData();
 
-            // if (array_key_exists('facetPlaces', $data)) {
-                
-            //     $facetPlaces = $data['facetPlaces'];
-            // } else {
-            //     $facetPlaces = array();
-            // }
-
-            // if (array_key_exists('facetOffices', $data)) {
-            //     $facetOffices = $data['facetPlaces'];
-            // } else {
-            //     $facetOffices = array();
-            // }
-
-
-            // $bishopquery = new BishopQueryFormModel($data['name'],
-            //                                         $data['place'],
-            //                                         $data['office'],
-            //                                         $data['year'],
-            //                                         $data['someid'],
-            //                                         $facetPlaces,
-            //                                         $facetOffices);
-
-
             $page = $request->request->get('page');
             if (!$page) {
                 $page = 1;
@@ -90,8 +71,12 @@ class QueryBishop extends AbstractController {
                 $persons = $this->getDoctrine()
                             ->getRepository(Person::class)
                             ->findPersonsAndOffices($bishopquery, self::LIST_LIMIT, $page);
+                dump($persons[0]);
+                foreach($persons as $key => $person) {
+                    $persons[$key]['wiagidlong'] = self::WIAGID_PREFIX.$person['wiagid'].self::WIAGID_POSTFIX;
+                }
             }
-            
+
             $places = array();
             if ($count > 0) {
                 $places_raw = $this->getDoctrine()
@@ -100,21 +85,10 @@ class QueryBishop extends AbstractController {
                     $places[] = new PlaceCount($pl['diocese'], $pl['n']);
                 }
             }
-            // dd($places);
-
-            
-            // $bishopquery = new BishopQueryFormModel($bishopquery->name,
-            //                                         $bishopquery->place,
-            //                                         $bishopquery->office,
-            //                                         $bishopquery->year,
-            //                                         $bishopquery->someid,
-            //                                         $bishopquery->facetPlaces,
-            //                                         $bishopquery->facetOffices);
 
             // combination of POST_SET_DATA and POST_SUBMIT
-            // dump($bishopquery);
             // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
-            
+
             return $this->render('query_bishop/listresult.html.twig', [
                 'query_form' => $form->createView(),
                 'count' => $count,
@@ -138,14 +112,23 @@ class QueryBishop extends AbstractController {
 
 
     /**
-     * @Route("/bishop/{id}", name="bishop")
+     * @Route("/bishop/{wiagidlong}", name="bishop")
      */
-    public function getperson($id) {
+    public function getperson($wiagidlong) {
+
+        // remove prefix and suffix
+        $pos = strlen(self::WIAGID_PREFIX);
+        $id = substr($wiagidlong, $pos, -4);
+
         $person = $this->getDoctrine()
                        ->getRepository(Person::class)
                         ->findOneByWiagid($id);
 
-        $wikipediaurl = $person->wikipediaurl;
+        if (!$person) {
+            $this->createNotFoundException('Person wurde nicht gefunden');
+        }
+
+        $wikipediaurl = $person->getWikipediaurl();
         $wikipediaurlbase = 'https://de.wikipedia.org/wiki/';
         $wikipediaurlp = explode($wikipediaurlbase, $wikipediaurl);
         /**
@@ -154,10 +137,11 @@ class QueryBishop extends AbstractController {
          * wende urldecode an
          * wende str_replace('_', ' ', wikipediadisplay) an.
          */
-        
-        
-        
-                       
+        $wikipediatitle = $wikipediaurl;
+        if (count($wikipediaurlp) > 1) {
+            $wpurl_decoded = urldecode($wikipediaurlp[1]);
+            $wikipediatitle = str_replace('_', ' ', $wpurl_decoded);
+        }
 
         $offices = $this->getDoctrine()
                         ->getRepository(Office::class)
@@ -173,9 +157,12 @@ class QueryBishop extends AbstractController {
 
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,
+            'wiagidlong' => $wiagidlong,
             'offices' => $offices,
             'familynamevariants' => $familynamevariants,
             'givennamevariants' => $givennamevariants,
+            'hasNormdata' => $person->hasNormdata(),
+            'wikipediatitle' => $wikipediatitle,
         ]);
     }
 
@@ -200,5 +187,5 @@ class QueryBishop extends AbstractController {
         dd($person);
     }
 
-    
+
 }

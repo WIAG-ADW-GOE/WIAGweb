@@ -17,14 +17,20 @@
 	<nav class="navbar navbar-light bg-light" style="height: 100px;">
 	    <div>
 		<a href="{{ path('wiag_welcome') }}"><img src="{{ asset('images/WIAG-logo.png') }}" width="70" height="70"></a>
-		<a class="navbar-brand" href="{{ path('wiag_welcome') }}">		    
+		<a class="navbar-brand" href="{{ path('wiag_welcome') }}">
 		    <i style="color: #444; font-size: 2rem;" class="pb-1 fad fa-cauldron"></i>
 		    <p class="pl-2 d-inline font-weight-bold" style="color: #444;">Wissensaggregator Mittelalter und Frühe Neuzeit</p>
 		</a>
 	    </div>
 	    <div class="mt-2">
 		{% if is_granted('ROLE_USER') %}
-		    <a href="{{ path('wiag_about') }}"><button class="btn btn-dark">Über WIAG</button></a>
+		    <div class="btn-group"><div class="dropdown">
+			<button class="btn btn-dark" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Über WIAG</button>
+			<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+			    <a class="dropdown-item" href="{{ path('wiag_about') }}">Ziele</a>
+			    <a class="dropdown-item" href="{{ path('reference_list') }}">Referenzwerke</a>
+			</div>
+		    </div></div>
 		    {% if is_granted('ROLE_QUERY') %}
 			<a href="{{ path('launch_query') }}"><button class="btn btn-dark">Bischöfe</button></a>
 		    {% endif %}
@@ -32,7 +38,7 @@
 		{% endif %}
 		{% if not is_granted('ROLE_USER') %}
 		    <a href="{{ path('wiag_login') }}"<button class="btn btn-dark">Login</button></a>
-		{% endif %}		
+		{% endif %}
 	    </div>
 	</nav>
 

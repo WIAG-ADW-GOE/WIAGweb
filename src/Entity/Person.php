@@ -109,6 +109,11 @@ class Person {
      * @ORM\Column(type="string", length=127, nullable=true)
      */
     private $comment_name;
+
+    /**
+     * not mapped to the database
+     */
+    private $wiagpathid;
     
 
     public function getWiagid(): ?string
@@ -343,6 +348,27 @@ class Person {
         $this->comment_name = $comment_name;
 
         return $this;
+    }
+
+    
+    public function getWiagpathid(): ?string
+    {
+        return $this->wiagpathid;
+    }
+
+    public function setwiagpathid(?string $wiagpathid): self
+    {
+        $this->wiagpathid = $wiagpathid;
+
+        return $this;
+    }
+
+    public function hasNormdata() {
+        return ($this->gsid
+                || $this->viafid
+                || $this->wikipediaurl
+                || $this->wikidataid
+                || $this->gndid);                        
     }
 
 }
