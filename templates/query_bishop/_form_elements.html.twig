@@ -1,4 +1,4 @@
-{{ form_start(query_form, {'attr': {'id':'q_form'}}) }}
+{# {{ form_start(query_form, {'attr': {'id':'q_form'}}) }} #}
     <div class="row col-12">
 	{% set form_elements %}
 	{{  form_row(query_form.name) }}
@@ -12,7 +12,7 @@
 	{{ form_elements }}
     </div>
     <button id="bishop_query_form_submit" type="submit" class="btn btn-primary">Suche</button>
-
+    {% if false %}
     {% if query_form.facetPlaces is defined %}
 	<button id="toggleFacetPlaces" class="btn btn-secondary ml-4" type="button" data-toggle="collapse" data-target="#facetPlaces" aria-expanded="false" aria-controls="collapseFacetPlaces">Filter Orte</button>
 	{# <input type="hidden" id ="facetPlacesState" name="facetPlacesState" value="{{ facetPlacesState }}">  #}
@@ -60,4 +60,6 @@
 	    </div>
 	</div>
     {% endif %}
-{{ form_end(query_form) }}
+    {% endif %}
+
+{# {{ form_end(query_form) }} #}

@@ -163,7 +163,7 @@ class PersonRepository extends ServiceEntityRepository {
 
         if ($qd->office) {
             $csqlid[] = "(SELECT wiagid_person as wiagid FROM office".
-                      " WHERE office.office_name like '%{$qd->office}%') as t{$tno}";
+                      " WHERE office.office_name like '%{$qd->office}%') AS t{$tno}";
             if ($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
             $tno += 1;
         }
@@ -182,9 +182,9 @@ class PersonRepository extends ServiceEntityRepository {
 
         // TODO create table with upper and lower time boundary.
         if ($qd->year) {
-            $myear = self::MARGINYEAR;
-            $csqlid[] = "(SELECT wiagid FROM person".
-                      " WHERE ABS(person.date_death - {$qd->year}) < {$myear}) as t{$tno}";
+            $mgnyear = self::MARGINYEAR;
+            $csqlid[] = "(SELECT wiagid_person as wiagid, era_start, era_end FROM era".
+                      " WHERE (era_start - {$mgnyear} < {$qd->year} AND {$qd->year} < era_end + {$mgnyear})) as t{$tno}";
             if ($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
             $tno += 1;
         }

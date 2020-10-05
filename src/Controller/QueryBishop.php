@@ -71,7 +71,7 @@ class QueryBishop extends AbstractController {
                 $persons = $this->getDoctrine()
                             ->getRepository(Person::class)
                             ->findPersonsAndOffices($bishopquery, self::LIST_LIMIT, $page);
-                dump($persons[0]);
+
                 foreach($persons as $key => $person) {
                     $persons[$key]['wiagidlong'] = self::WIAGID_PREFIX.$person['wiagid'].self::WIAGID_POSTFIX;
                 }

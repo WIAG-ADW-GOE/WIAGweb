@@ -8,7 +8,7 @@
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
     <script src="{{ asset('js/query-bishop-autocomplete.js') }}"></script>
-    <script src="{{ asset('js/query-bishop-fire-facet.js') }}"></script>
+    <script src="{{ asset('js/query-bishop-facet.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -22,64 +22,91 @@
     {% endif %}
     {% endset %}
 
-    <div class="container-fluid mt-3">
-	<h3>Suche nach Bischöfen</h3>
-	{{ include('query_bishop/_form_elements.html.twig') }}
-	<div class="row col-12 mt-3 mb-1">Treffer:
-	    {% if count == 0 %}
-		keine
-	    {% elseif count == 1 %}
-		1
-	    {% else %}
-		{{ (page - 1) * limit + 1 }} - {{ min(page * limit, count)}} von {{ count }}
-	    {% endif %}
-	    {{ fb_elements }}
-	</div>
-    </div>
-
-    <div class="container-fluid">
-	{% if count > 0 %}
-	    <div class="row">
-		<div class="col-12">
-		    <div class="table-responsive">
-			<table class="table">
-			    <thead class="thead-light">
-				<tr>
-				    <th scope="col"></th>
-				    <th scope="col">Name</th>
-				    <th scope="col">Ämter</th>
-				</tr>
-			    </thead>
-			    <tbody>
-				{% for person in persons %}
-				    <tr>
-					<th scope="row">
-					    <a href="{{ path('bishop', {wiagidlong: person.wiagidlong}) }}">&#10150;</a></th>
-					<td>{{ person.givenname }} {{ person.prefix_name }} {{ person.familyname }}
-					    {% if not person.date_birth and not person.date_death %}
-					    {% elseif person.date_birth and not person.date_death %}
-						<br/>* {{ person.date_birth }}
-					    {% elseif not person.date_birth and person.date_death %}
-						<br/>&dagger; {{ person.date_death }}
-					    {% else %}
-						<br/>* {{ person.date_birth }} <span class="ml-2">&dagger; {{ person.date_death }}</span>
-					    {% endif %}
-					</td>
-					<td>{% for o in person.offices %}
-					    <small>{{ o.office_name }}
-						{% if o.diocese %}({{ o.diocese }}){% endif %}
-						{% if o.date_start and not o.date_start %}{{ o.date_start }}
-						{% elseif o.date_end and not o.date_end %}{{ o.date_end }}
-						{% elseif o.date_end and o.date_end %}{{ o.date_start }}-{{ o.date_end }}{% endif %}
-					    </small><br/>{% endfor %}
-					</td>
-				    </tr>
-				{% endfor %}
-			    </tbody>
-			</table>
-		    </div> {# table-responsive #}
-		</div>
+    {{ form_start(query_form, {'attr': {'id':'q_form'}}) }}
+	<div class="container-fluid mt-3">
+	    <h3>Suche nach Bischöfen</h3>
+	    {{ include('query_bishop/_form_elements.html.twig') }}
+	    <div class="row col-12 mt-3 mb-1">Treffer:
+		{% if count == 0 %}
+		    keine
+		{% elseif count == 1 %}
+		    1
+		{% else %}
+		    {{ (page - 1) * limit + 1 }} - {{ min(page * limit, count)}} von {{ count }}
+		{% endif %}
+		{{ fb_elements }}
 	    </div>
+	</div>
+
+	<div class="container-fluid">
+	    {% if count > 0 %}
+		<div class="row">
+		    <div class="col-9">
+			<div class="table-responsive">
+			    <table class="table">
+				<thead class="thead-light">
+				    <tr>
+					<th scope="col"></th>
+					<th scope="col">Name</th>
+					<th scope="col">Ämter</th>
+				    </tr>
+				</thead>
+				<tbody>
+				    {% for person in persons %}
+					<tr>
+					    <th scope="row">
+						<a href="{{ path('bishop', {wiagidlong: person.wiagidlong}) }}">&#10150;</a></th>
+					    <td>{{ person.givenname }} {{ person.prefix_name }} {{ person.familyname }}
+						{% if not person.date_birth and not person.date_death %}
+						{% elseif person.date_birth and not person.date_death %}
+						    <br/>* {{ person.date_birth }}
+						{% elseif not person.date_birth and person.date_death %}
+						    <br/>&dagger; {{ person.date_death }}
+						{% else %}
+						    <br/>* {{ person.date_birth }} <span class="ml-2">&dagger; {{ person.date_death }}</span>
+						{% endif %}
+					    </td>
+					    <td>{% for o in person.offices %}
+						<small>{{ o.office_name }}
+						    {% if o.diocese %}({{ o.diocese }}){% endif %}
+						    {% if o.date_start and not o.date_end %}{{ o.date_start }}
+						    {% elseif not o.date_start and o.date_end %}{{ o.date_end }}
+						    {% elseif o.date_start and o.date_end %}{{ o.date_start }}-{{ o.date_end }}{% endif %}
+						</small><br/>{% endfor %}
+					    </td>
+					</tr>
+				    {% endfor %}
+				</tbody>
+			    </table>
+			</div> {# table-responsive #}
+			{{ fb_elements }}
+		    </div>
+		    {# facets #}
+		    <div class="col-3">
+			{% if query_form.facetPlaces is defined %}
+			    <div class="card card-body container-fluid">
+				<strong class="card-title">Filter Orte</strong>
+				{% for fpl in query_form.facetPlaces%}
+				    <div class="form-group mb-2">
+					{{ form_widget(fpl) }}
+				    </div>
+				{% endfor %}
+			    </div>
+			{% endif %}
+			{% if query_form.facetOffices is defined %}
+			    <div class="card card-body container-fluid">
+				<strong class="card-title">Filter Ämter</strong>
+				{% for foc in query_form.facetOffices%}
+				    <div class="form-group mb-2">
+					{{ form_widget(foc) }}
+				    </div>
+				{% endfor %}
+			    </div>
+			{% endif %}
+		    </div>
+		</div>
 	{% endif %}
     </div>
+    {{ form_end(query_form) }}
+
 {% endblock %}

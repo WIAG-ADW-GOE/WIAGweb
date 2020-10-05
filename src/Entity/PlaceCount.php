@@ -19,8 +19,15 @@ class PlaceCount {
         $attr = array();
         if ($this->name == 'Pedena') {
             $attr[] = ['checked' => 'checked'];
-        }            
+        }
         return $attr;
+    }
+
+    public static function find($name, array $a) {
+        foreach($a as $pc) {
+            if ($name == $pc->name) return true;
+        }
+        return false;
     }
 
 }
