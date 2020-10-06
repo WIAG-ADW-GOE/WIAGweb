@@ -22,17 +22,17 @@ class UserFixture extends BaseFixture
             switch($i) {
             case 0:
                 $user->setEmail('bkroege@gwdg.de');
-                $user->setPassword($this->passwordEncoder->encodePassword($user, 'potens&pauper'));
+                $user->setPassword($this->passwordEncoder->encodePassword($user, 'geheim'));
                 $user->setRoles(['ROLE_QUERY']);
                 break;
             case 1:
                 $user->setEmail('cpopp@gwdg.de');
-                $user->setPassword($this->passwordEncoder->encodePassword($user, 'potens&pauper'));
+                $user->setPassword($this->passwordEncoder->encodePassword($user, 'geheim'));
                 $user->setRoles(['ROLE_QUERY']);
                 break;
             case 2:
                 $user->setEmail('ghertko@gwdg.de');
-                $user->setPassword($this->passwordEncoder->encodePassword($user, 'kücheundkeller'));
+                $user->setPassword($this->passwordEncoder->encodePassword($user, 'streng geheim'));
                 $user->setRoles(['ROLE_QUERY', 'ROLE_ADMIN']);
                 break;
             }
