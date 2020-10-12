@@ -84,9 +84,14 @@ class BishopQueryFormType extends AbstractType
                 'attr' => [
                     'size' => '14',
                 ],
+            ])->add('searchHTML', SubmitType::class, [
+                'label' => 'Suche',
+            ])->add('searchJSON', SubmitType::class, [
+                'label' => 'JSON',
+                'attr' => [
+                    'class' => 'btn-secondary',
+                ]
             ]);
-
-
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,

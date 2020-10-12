@@ -13,6 +13,13 @@ use App\Entity\PlaceCount;
 
 use Ds\Set;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
+
+
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,6 +59,9 @@ class QueryBishop extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
 
             $bishopquery = $form->getData();
+            if($form->get('searchJSON')->isClicked()) {
+                return $this->redirectToRoute('api_query_bishops', $bishopquery->getQueryArray());
+            }
 
             $page = $request->request->get('page');
             if (!$page) {
@@ -77,15 +87,6 @@ class QueryBishop extends AbstractController {
                 }
             }
 
-            $places = array();
-            if ($count > 0) {
-                $places_raw = $this->getDoctrine()
-                                   ->getRepository(Person::class)->findPlacesByQueryObject($bishopquery);
-                foreach ($places_raw as $pl) {
-                    $places[] = new PlaceCount($pl['diocese'], $pl['n']);
-                }
-            }
-
             // combination of POST_SET_DATA and POST_SUBMIT
             // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
 
@@ -97,7 +98,6 @@ class QueryBishop extends AbstractController {
                 'persons' => $persons,
                 'facetPlacesState' => $facetPlacesState,
                 'facetOfficesState' => $facetOfficesState,
-                'places' => $places,
             ]);
 
         } else {
@@ -114,7 +114,16 @@ class QueryBishop extends AbstractController {
     /**
      * @Route("/bishop/{wiagidlong}", name="bishop")
      */
-    public function getperson($wiagidlong) {
+    public function getperson($wiagidlong, Request $request) {
+
+        $format = $request->query->get('format');
+        dump($format);
+        if(! is_null($format)) {
+            return $this->redirectToRoute('bishop_api', [
+                'wiagidlong' => $wiagidlong,
+                'format' => $format,
+            ]);
+        }
 
         // remove prefix and suffix
         $pos = strlen(self::WIAGID_PREFIX);

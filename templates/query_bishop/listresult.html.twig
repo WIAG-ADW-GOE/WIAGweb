@@ -26,15 +26,17 @@
 	<div class="container-fluid mt-3">
 	    <h3>Suche nach Bischöfen</h3>
 	    {{ include('query_bishop/_form_elements.html.twig') }}
-	    <div class="row col-12 mt-3 mb-1">Treffer:
-		{% if count == 0 %}
-		    keine
-		{% elseif count == 1 %}
-		    1
-		{% else %}
-		    {{ (page - 1) * limit + 1 }} - {{ min(page * limit, count)}} von {{ count }}
-		{% endif %}
-		{{ fb_elements }}
+	    <div class="row">
+		<div class="col-8 mt-3 mb-1">Treffer:
+		    {% if count == 0 %}
+			keine
+		    {% elseif count == 1 %}
+			1
+		    {% else %}
+			{{ (page - 1) * limit + 1 }} - {{ min(page * limit, count)}} von {{ count }}
+		    {% endif %}
+		    {{ fb_elements }}
+		</div>
 	    </div>
 	</div>
 
@@ -67,11 +69,11 @@
 						{% endif %}
 					    </td>
 					    <td>{% for o in person.offices %}
-						<small>{{ o.office_name }}
+						<small>{{ o.officename }}
 						    {% if o.diocese %}({{ o.diocese }}){% endif %}
-						    {% if o.date_start and not o.date_end %}{{ o.date_start }}
-						    {% elseif not o.date_start and o.date_end %}{{ o.date_end }}
-						    {% elseif o.date_start and o.date_end %}{{ o.date_start }}-{{ o.date_end }}{% endif %}
+						    {% if o.datestart and not o.dateend %}{{ o.datestart }}
+						    {% elseif not o.datestart and o.dateend %}{{ o.dateend }}
+						    {% elseif o.datestart and o.dateend %}{{ o.datestart }}-{{ o.dateend }}{% endif %}
 						</small><br/>{% endfor %}
 					    </td>
 					</tr>

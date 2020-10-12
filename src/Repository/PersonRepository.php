@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Person;
+use App\Entity\Office;
 use App\Form\Model\BishopQueryFormModel;
+
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -107,7 +109,7 @@ class PersonRepository extends ServiceEntityRepository {
     }
 
     /**
-     * return a subquery which yields a list of wiagids that fullfill all
+     * return a SQL subquery which yields a list of wiagids that fullfill all
      * conditions in `$qd`.
      * Decide about a search strategy and set `$fextended` eventually to true in calls to `buildWiagidSet`.
      */
@@ -180,7 +182,6 @@ class PersonRepository extends ServiceEntityRepository {
             $tno += 1;
         }
 
-        // TODO create table with upper and lower time boundary.
         if ($qd->year) {
             $mgnyear = self::MARGINYEAR;
             $csqlid[] = "(SELECT wiagid_person as wiagid, era_start, era_end FROM era".
@@ -190,7 +191,7 @@ class PersonRepository extends ServiceEntityRepository {
         }
 
         if ($qd->someid) {
-            $condsomeid = "'{$qd->someid}' IN (person.gsid, person.gndid, person.viafid, person.wiagid)";
+            $condsomeid = "'{$qd->someid}' IN (person.gsid, person.gndid, person.viafid, person.wikidataid, person.wiagid)";
             $csqlid[] = "(SELECT wiagid FROM person".
                       " WHERE {$condsomeid}) as t{$tno}";
             if ($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
@@ -267,9 +268,8 @@ class PersonRepository extends ServiceEntityRepository {
 
         $sql = "SELECT person.* FROM person, ".
              $this->buildWiagidSet($querydata).
-             " WHERE person.wiagid = twiagid.wiagid".
-             " LIMIT {$limit} OFFSET {$offset}";
-
+             " WHERE person.wiagid = twiagid.wiagid";
+        if($limit > 0) $sql = $sql." LIMIT {$limit} OFFSET {$offset}";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
@@ -280,22 +280,55 @@ class PersonRepository extends ServiceEntityRepository {
         return $sqlres;
     }
 
-    public function findOfficeByWiagid(string $wiagid) {
+    public function findWiagidByQueryObject(BishopQueryFormModel $querydata, $limit, $page) {
         $conn = $this->getEntityManager()->getConnection();
 
+        $offset = ($page - 1) * $limit;
 
-        $sql = "SELECT * FROM office WHERE office.wiagid_person = {$wiagid}";
-
-        // dd($bishopquery, $sql);
+        $sql = "SELECT person.wiagid FROM person, ".
+             $this->buildWiagidSet($querydata).
+             " WHERE person.wiagid = twiagid.wiagid";
+        if($limit > 0) $sql = $sql." LIMIT {$limit} OFFSET {$offset}";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetchAll();
+        // returns an array of arrays (i.e. a raw data set)
+        $sqlres = $stmt->fetchAll();
+
+        return $sqlres;
+    }
+
+    public function findObjectsByQueryObject(BishopQueryFormModel $querydata, $limit = 0, $page = 0): array {
+
+        $wiagids = $this->findWiagidByQueryObject($querydata, $limit, $page);
+
+        $strWiagids = implode(",", array_map(function($v) {return $v['wiagid'];}, $wiagids));
+
+        $persons = $this->createQueryBuilder('p')
+                        ->andWhere('p.wiagid in ('.$strWiagids.')')
+                        ->getQuery()
+                        ->getResult();
+        foreach($persons as $p) {
+            $p->setOffices($this->findOfficeByWiagid($p->getWiagid()));
+        }
+        return $persons;
+    }
+
+    public function findOfficeByWiagid(string $wiagid) {
+        $conn = $this->getEntityManager()->getConnection();
+
+        // TODO use OfficeRepository
+        $ocRep = $this->getEntityManager()->getRepository(Office::class);
+
+        return $ocRep->createQueryBuilder('o')
+                     ->andWhere("o.wiagid_person = {$wiagid}")
+                     ->getQuery()
+                     ->getResult();
     }
 
 
-    public function findPersonsAndOffices(BishopQueryFormModel $bishopquery, $limit, $page) {
+    public function findPersonsAndOffices(BishopQueryFormModel $bishopquery, $limit = 0, $page = 0) {
         $persons = $this->findByQueryObject($bishopquery, $limit, $page);
 
         $conn = $this->getEntityManager()->getConnection();
@@ -306,16 +339,34 @@ class PersonRepository extends ServiceEntityRepository {
         $persons_with_offices = array();
 
         foreach ($persons as $person) {
-            $officetexts = array();
-            $rawoffices = $this->findOfficeByWiagid($person['wiagid']);
-            foreach ($rawoffices as $o) {
-                $officetexts[] = $o['office_name'].' ('.$o['diocese'].')';
-            }
-            // $person['offices'] = $officetexts->toArray();
-            $person['offices'] = $rawoffices;
+            $offices = $this->findOfficeByWiagid($person['wiagid']);
+            $person['offices'] = $offices;
             $persons_with_offices[] = $person;
         }
 
         return $persons_with_offices;
     }
+
+    public function findOnePersonAndOffices($wiagid) {
+        $person = $this->findOneByWiagid($wiagid);
+
+        $conn = $this->getEntityManager()->getConnection();
+
+
+        // add offices
+        $rawoffices = array();
+        $officetexts = array();
+
+        dump($person);
+        $rawoffices = $this->findOfficeByWiagid($wiagid);
+
+        foreach ($rawoffices as $o) {
+            $officetexts[] = $o['office_name'].' ('.$o['diocese'].')';
+        }
+
+        $person->setOffices($rawoffices);
+
+        return $person;
+    }
+
 }

@@ -151,10 +151,17 @@
 		</dd>
 		{% endif %}
 	    </dl>
+
+	<div class="row col-12">Empfohlene Zitierweise:<br/>
+	    "{{ displayname }}" (WIAGID: {{ wiagidlong }}),
+	    in: WIAG, {{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ path('bishop', {wiagidlong: wiagidlong}) }}
+	    (Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
+
+	<div class="row col-12 mt-4">
+	    <input type="button" class="btn btn-secondary" onclick="window.history.back()" value="Ergebnisliste"/>
+	    <a href="{{ path('launch_query') }}"<button class="btn btn-secondary ml-1">Neue Suche</button></a>
+	    <a href="{{ path('bishop_api', {wiagidlong: wiagidlong, format: 'json'}) }}"<button class="btn btn-secondary btn-light ml-3">JSON</button></a>
+	</div>
 	{% endif %}
-	<p>Empfohlene Zitierweise:<br/>
-	"{{ displayname }}" (WIAGID: {{ wiagidlong }}),
-	    in: WIAG, {{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ path('bishop', {wiagidlong: wiagidlong}) }},
-	    (Abgerufen: {{ "now"|date('d.m.Y') }}).</p>
     </div>
 {% endblock %}

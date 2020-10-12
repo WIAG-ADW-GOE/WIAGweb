@@ -111,6 +111,15 @@
     "php-ds/php-ds": {
         "version": "v1.2.0"
     },
+    "phpdocumentor/reflection-common": {
+        "version": "2.2.0"
+    },
+    "phpdocumentor/reflection-docblock": {
+        "version": "5.2.2"
+    },
+    "phpdocumentor/type-resolver": {
+        "version": "1.4.0"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -357,6 +366,12 @@
     "symfony/security-http": {
         "version": "v5.1.5"
     },
+    "symfony/serializer": {
+        "version": "v5.1.7"
+    },
+    "symfony/serializer-pack": {
+        "version": "v1.0.3"
+    },
     "symfony/service-contracts": {
         "version": "v2.1.3"
     },
@@ -437,6 +452,9 @@
     },
     "twig/twig": {
         "version": "v3.0.5"
+    },
+    "webmozart/assert": {
+        "version": "1.9.1"
     },
     "zendframework/zend-code": {
         "version": "3.4.1"

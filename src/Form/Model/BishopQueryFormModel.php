@@ -2,7 +2,6 @@
 namespace App\Form\Model;
 
 class BishopQueryFormModel {
-    /* Validation: not all fields altogether should be empty */
     public $name;
     public $place;
     public $office;
@@ -62,6 +61,18 @@ class BishopQueryFormModel {
         $this->facetOffices = $a->facetOffices;
         return null;
     }
+
+    public function getQueryArray() {
+        $qelts = array();
+        if($this->name) $qelts['name'] = $this->name;
+        if($this->place) $qelts['place'] = $this->place;
+        if($this->office) $qelts['office'] = $this->office;
+        if($this->year) $qelts['year'] = $this->year;
+        if($this->someid) $qelts['someid'] = $this->someid;
+        
+        return $qelts;
+    }
+
 
 
 }

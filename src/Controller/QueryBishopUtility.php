@@ -8,7 +8,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+/**
+ * @IsGranted("ROLE_QUERY")
+ */
 class QueryBishopUtility extends AbstractController {
     /**
      * Paramters
@@ -16,7 +20,8 @@ class QueryBishopUtility extends AbstractController {
     const HINT_LIST_LIMIT = 12;
 
     /**
-     *@Route("/query-bishops/utility/names", methods="GET", name="query_bishops_utility_names")
+     * @Route("/query-bishops/utility/names", methods="GET", name="query_bishops_utility_names")
+
      */
     public function getNamesApi(PersonRepository $personRepository, Request $request) {
         $persons = $personRepository->suggestName($request->query->get('query'),

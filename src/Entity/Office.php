@@ -9,14 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Office
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
     /**
+     * @ORM\Id
      * @ORM\Column(type="string", length=63, nullable = false)
      */
     private $wiagid;
@@ -40,7 +35,7 @@ class Office
      * @ORM\Column(type="string", length=31, nullable = true)
      */
     private $date_end;
-    
+
     /**
      * @ORM\Column(type="string", length=63, nullable = true)
      */

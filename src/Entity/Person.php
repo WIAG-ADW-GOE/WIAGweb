@@ -114,7 +114,11 @@ class Person {
      * not mapped to the database
      */
     private $wiagpathid;
-    
+
+    /**
+     * not mapped to the database
+     */
+    private $offices;
 
     public function getWiagid(): ?string
     {
@@ -359,6 +363,16 @@ class Person {
     public function setwiagpathid(?string $wiagpathid): self
     {
         $this->wiagpathid = $wiagpathid;
+
+        return $this;
+    }
+
+    public function getOffices(): ?array {
+        return $this->offices;
+    }
+
+    public function setOffices($offices) {
+        $this->offices = $offices;
 
         return $this;
     }
