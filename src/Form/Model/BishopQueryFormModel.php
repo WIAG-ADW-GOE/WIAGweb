@@ -1,6 +1,8 @@
 <?php
 namespace App\Form\Model;
 
+use App\Entity\Person;
+
 class BishopQueryFormModel {
     public $name;
     public $place;
@@ -71,6 +73,16 @@ class BishopQueryFormModel {
         if($this->someid) $qelts['someid'] = $this->someid;
         
         return $qelts;
+    }
+
+    public function updateSomeid() {
+        $someid = $this->someid;
+
+        if($someid and Person::isWiagidLong($someid)) {
+            $this->someid = Person::wiagidLongToWiagid($someid);
+        }
+        dump($this->someid);
+        return null;
     }
 
 

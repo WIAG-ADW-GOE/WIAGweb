@@ -3,6 +3,7 @@ namespace App\Form;
 
 use App\Form\Model\BishopQueryFormModel;
 use App\Repository\PersonRepository;
+use App\Repository\OfficeRepository;
 use App\Entity\PlaceCount;
 use App\Entity\OfficeCount;
 
@@ -28,10 +29,14 @@ class BishopQueryFormType extends AbstractType
 {
     private $router;
     private $personRepository;
+    private $officeRepository;
 
-    public function __construct(RouterInterface $rtr, PersonRepository $pry) {
+    public function __construct(RouterInterface $rtr,
+                                PersonRepository $personRepository,
+                                OfficeRepository $officeRepository) {
         $this->router = $rtr;
-        $this->personRepository = $pry;
+        $this->personRepository = $personRepository;
+        $this->officeRepository = $officeRepository;
     }
 
     public function configureOptions(OptionsResolver $resolver) {
@@ -123,7 +128,7 @@ class BishopQueryFormType extends AbstractType
 
         if ($bishopquery->isEmpty()) return;
 
-        $places = $this->personRepository->findPlacesByQueryObject($bishopquery);
+        $places = $this->officeRepository->findDiocesesByQueryObject($bishopquery);
 
         $choices = array();
 
@@ -173,7 +178,7 @@ class BishopQueryFormType extends AbstractType
 
         if ($bishopquery->isEmpty()) return;
 
-        $offices = $this->personRepository->findOfficesByQueryObject($bishopquery);
+        $offices = $this->officeRepository->findOfficeNamesByQueryObject($bishopquery);
 
         $choices = array();
         foreach($offices as $office) {

@@ -48,7 +48,7 @@ class BishopApiController extends AbstractController {
 
         $person = $this->getDoctrine()
                        ->getRepository(Person::class)
-                       ->findOnePersonAndOffices($id);
+                       ->findOneWithOffices($id);
 
         if (!$person) {
             $this->createNotFoundException('Person wurde nicht gefunden');
@@ -96,7 +96,7 @@ class BishopApiController extends AbstractController {
 
     public function filter_person(Person $person) {
         $pj = array();
-        $pj['wiagId'] = $person->getWiagid();
+        $pj['wiagId'] = $person->getWiagidLong();
 
         $fv = $person->getFamilyname();
         if($fv) $pj['familyName'] = $fv;

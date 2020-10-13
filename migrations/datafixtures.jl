@@ -42,12 +42,12 @@ function updateera(tablename::AbstractString)::Int
                                    "SELECT wiagid, date_birth, date_death FROM person") |> DataFrame;
 
     rgx = r"[1-9][0-9]+";
-    tblid = 1;
+    tblid = 0;
 
     # officestmt = DBInterface.prepare(dbwiag, "SELECT date_start, date_end FROM office"
     #                                  * " WHERE wiagid_person = ?")
 
-    dfoffice = DBInterface.prepare(dbwiag, "SELECT wiagid_person, date_start, date_end FROM office")
+    dfoffice = DBInterface.execute(dbwiag, "SELECT wiagid_person, date_start, date_end FROM office") |> DataFrame;
     insertstmt = DBInterface.prepare(dbwiag, "INSERT INTO " * tablename * " VALUES (?, ?, ?)")
 
     for row in eachrow(dfperson)
@@ -94,6 +94,46 @@ function updateera(tablename::AbstractString)::Int
 
         DBInterface.execute(insertstmt, (wiagid, erastartstr, eraendstr));
 
+        tblid += 1
+        # if tblid > 25 break end
+    end
+    return tblid
+end
+
+function updateofficedate(tablename::AbstractString)::Int
+    dbwiag = DBInterface.connect(MySQL.Connection, "localhost", "wiag", "Wogen&Wellen", db="wiag");
+
+    DBInterface.execute(dbwiag, "DELETE FROM " * tablename);
+
+    dfoffice = DBInterface.execute(dbwiag,
+                                   "SELECT wiagid, date_start, date_end FROM office") |> DataFrame;
+
+    rgx = r"[1-9][0-9]+";
+    tblid = 0;
+
+    # officestmt = DBInterface.prepare(dbwiag, "SELECT date_start, date_end FROM office"
+    #                                  * " WHERE wiagid_person = ?")
+
+    insertstmt = DBInterface.prepare(dbwiag, "INSERT INTO " * tablename * " VALUES (?, ?, ?)")
+
+    for row in eachrow(dfoffice)
+        dstdate_start = missing
+        dstdate_end = missing
+        wiagid, date_start, date_end = row
+        rgm = match(rgx, date_start)
+        # println("Start: ", date_start)
+        if rgm != nothing
+            dstdate_start = parse(Int, rgm.match)
+        end
+        # println("Int: ", dstdate_start)
+        
+        rgm = match(rgx, date_end)
+        if rgm != nothing
+            dstdate_end = parse(Int, rgm.match)
+        end
+        
+        DBInterface.execute(insertstmt, (wiagid, dstdate_start, dstdate_end));
+        
         tblid += 1
         # if tblid > 25 break end
     end

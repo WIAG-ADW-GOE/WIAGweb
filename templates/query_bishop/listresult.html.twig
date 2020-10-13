@@ -48,7 +48,6 @@
 			    <table class="table">
 				<thead class="thead-light">
 				    <tr>
-					<th scope="col"></th>
 					<th scope="col">Name</th>
 					<th scope="col">Ämter</th>
 				    </tr>
@@ -56,16 +55,14 @@
 				<tbody>
 				    {% for person in persons %}
 					<tr>
-					    <th scope="row">
-						<a href="{{ path('bishop', {wiagidlong: person.wiagidlong}) }}">&#10150;</a></th>
-					    <td>{{ person.givenname }} {{ person.prefix_name }} {{ person.familyname }}
-						{% if not person.date_birth and not person.date_death %}
-						{% elseif person.date_birth and not person.date_death %}
-						    <br/>* {{ person.date_birth }}
-						{% elseif not person.date_birth and person.date_death %}
-						    <br/>&dagger; {{ person.date_death }}
+					    <td><a href="{{ path('bishop', {wiagidlong: person.wiagidlong}) }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</a>
+						{% if not person.datebirth and not person.datedeath %}
+						{% elseif person.datebirth and not person.datedeath %}
+						    <br/>* {{ person.datebirth }}
+						{% elseif not person.datebirth and person.datedeath %}
+						    <br/>&dagger; {{ person.datedeath }}
 						{% else %}
-						    <br/>* {{ person.date_birth }} <span class="ml-2">&dagger; {{ person.date_death }}</span>
+						    <br/>* {{ person.datebirth }} <span class="ml-2">&dagger; {{ person.datedeath }}</span>
 						{% endif %}
 					    </td>
 					    <td>{% for o in person.offices %}
@@ -107,7 +104,7 @@
 			{% endif %}
 		    </div>
 		</div>
-	{% endif %}
+	    {% endif %}
     </div>
     {{ form_end(query_form) }}
 

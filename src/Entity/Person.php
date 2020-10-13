@@ -8,6 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\PersonRepository")
  */
 class Person {
+    const WIAGID_PREFIX = 'WIAG-Pers-EPISCGatz-';
+    const WIAGID_POSTFIX = '-001';
+    
     /**
      * @ORM\Id
      * @ORM\Column(type="string", length=63, nullable = false)
@@ -44,15 +47,6 @@ class Person {
      */
     private $givenname;
 
-    /**
-     * @ORM\Column(type="string", length=127, nullable=true)
-     */
-    private $familyname_variant;
-
-    /**
-     * @ORM\Column(type="string", length=127, nullable=true)
-     */
-    private $givenname_variant;
 
     /**
      * @ORM\Column(type="string", length=31, nullable=true)
@@ -111,14 +105,55 @@ class Person {
     private $comment_name;
 
     /**
-     * not mapped to the database
+     * do not map this field to the table of person directly but to 
+     * the extra table of name variants
+     * @ORM\OneToMany(targetEntity="Familynamevariant", mappedBy="wiagid")
+     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid")
      */
-    private $wiagpathid;
+    private $familyname_variant;
 
     /**
-     * not mapped to the database
+     * do not map this field to the table of person directly but to 
+     * the extra table of name variants
+     * @ORM\OneToMany(targetEntity="Givennamevariant", mappedBy="wiagid")
+     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid")
+     */
+    private $givenname_variant;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="Office", mappedBy="wiagid_person")
+     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
      */
     private $offices;
+
+    public static function isWiagidLong($wiagidlong) {
+        $match = stristr($wiagidlong, self::WIAGID_PREFIX);
+        dump($match);
+        return strlen($match) > 0;
+    }
+
+    public static function wiagidLongToWiagid($wiagidlong) {
+        $pos = strlen(self::WIAGID_PREFIX);
+        return substr($wiagidlong, $pos, -4);
+    }
+    
+    public function setFields($p) {
+        $this->wiagid = $p['wiagid'];
+        $this->authors_gatz = $p['authors_gatz'];
+        $this->pages_gatz = $p['pages_gatz'];
+        $this->familyname = $p['familyname'];
+        $this->givenname = $p['givenname'];
+        $this->prefix_name = $p['prefix_name'];
+        $this->date_birth = $p['date_birth'];
+        $this->date_death = $p['date_death'];
+        $this->religious_order = $p['religious_order'];
+        $this->gsid = $p['gsid'];
+        $this->gndid = $p['gndid'];
+        $this->wikidataid = $p['wikidataid'];
+        $this->wikipediaurl = $p['wikipediaurl'];
+
+        return $this;
+    }
 
     public function getWiagid(): ?string
     {
@@ -197,7 +232,7 @@ class Person {
         return $this;
     }
 
-    public function getFamilynameVariant(): ?string
+    public function getFamilynameVariant()
     {
         return $this->familyname_variant;
     }
@@ -209,7 +244,7 @@ class Person {
         return $this;
     }
 
-    public function getGivennameVariant(): ?string
+    public function getGivennameVariant()
     {
         return $this->givenname_variant;
     }
@@ -355,19 +390,12 @@ class Person {
     }
 
     
-    public function getWiagpathid(): ?string
+    public function getWiagidLong(): ?string
     {
-        return $this->wiagpathid;
+        return self::WIAGID_PREFIX.$this->wiagid.self::WIAGID_POSTFIX;
     }
 
-    public function setwiagpathid(?string $wiagpathid): self
-    {
-        $this->wiagpathid = $wiagpathid;
-
-        return $this;
-    }
-
-    public function getOffices(): ?array {
+    public function getOffices() {
         return $this->offices;
     }
 

@@ -33,29 +33,28 @@
 		    <dt class="col-sm-3">Orden</dt>
 		    <dd class="col-sm-9">{{ person.religiousorder }}</dd>
 		{% endif %}
-
-		{% if offices %}
+		{% if person.offices and true %}
 		    <dt class="col-sm-3">Ämter</dt>
 		    <dd class="col-sm-9">
 			<ul class="list-unstyled">
-			    {% for office in offices %}
+			    {% for office in person.offices %}
 				<li>
 				    <ul class="list-inlined list-unstyled">
-					<li class="list-inline-item"> {{ office.office_name }}</li>
+					<li class="list-inline-item"> {{ office.officename }}</li>
 					<li class="list-inline-item">{{ office.diocese }}</li>
 					<li class="list-inline-item">
-					    {% if not office.date_start and not office.date_end %}
-					    {% elseif office.date_start and not office.date_end %}
-						{{ office.date_start }}
-					    {% elseif not office.date_start and office.date_end %}
-						bis {{ office.date_end }}
+					    {% if not office.datestart and not office.dateend %}
+					    {% elseif office.datestart and not office.dateend %}
+						{{ office.datestart }}
+					    {% elseif not office.datestart and office.dateend %}
+						bis {{ office.dateend }}
 					    {% else %}
-						{{ office.date_start }}–{{ office.date_end }}
+						{{ office.datestart }}–{{ office.dateend }}
 					    {% endif %}
 					</li>
-					{% if office.id_monastery %}
+					{% if office.idmonastery %}
 					    <li class="list-inline-item">
-						<a href="https://adw-goe.de/forschung/forschungsprojekte-akademienprogramm/germania-sacra/klosterdatenbank/datenbankabfrage/gsn/{{ office.id_monastery }}">Kloster</a>
+						<a href="https://adw-goe.de/forschung/forschungsprojekte-akademienprogramm/germania-sacra/klosterdatenbank/datenbankabfrage/gsn/{{ office.idmonastery }}">Kloster</a>
 					    </li>
 					{% endif %}
 				    </ul>
@@ -69,11 +68,11 @@
 			</ul>
 		    </dd>
 		{% endif %}
-		{% if familynamevariants %}
+		{% if person.familynamevariant %}
 		    <dt class="col-sm-3">Varianten Familiennamen</dt>
 		    <dd class="col-sm-9">
 			<ul class="list-unstyled">
-			    {% for fnv in familynamevariants %}
+			    {% for fnv in person.familynamevariant %}
 				<li>
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item"> {{ fnv.familyname }}</li>
@@ -83,11 +82,11 @@
 			</ul>
 		    </dd>
 		{% endif %}
-		{% if givennamevariants %}
+		{% if person.givennamevariant %}
 		    <dt class="col-sm-3">Varianten Vornamen</dt>
 		    <dd class="col-sm-9">
 			<ul class="list-unstyled">
-			    {% for gnv in givennamevariants %}
+			    {% for gnv in person.givennamevariant %}
 				<li>
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item"> {{ gnv.givenname }}</li>

@@ -36,8 +36,6 @@ class QueryBishop extends AbstractController {
      * Parameters
      */
     const LIST_LIMIT = 30;
-    const WIAGID_PREFIX = 'WIAG-Pers-EPISCGatz-';
-    const WIAGID_POSTFIX = '-001';
 
 
     /**
@@ -53,19 +51,17 @@ class QueryBishop extends AbstractController {
 
         $form->handlerequest($request);
 
-        $facetPlacesState = 'hide';
-        $facetOfficesState = 'hide';
+        // $facetPlacesState = 'hide';
+        // $facetOfficesState = 'hide';
+        $facetPlacesState = 'show';
+        $facetOfficesState = 'show';
 
         if ($form->isSubmitted() && $form->isValid()) {
 
             $bishopquery = $form->getData();
+
             if($form->get('searchJSON')->isClicked()) {
                 return $this->redirectToRoute('api_query_bishops', $bishopquery->getQueryArray());
-            }
-
-            $page = $request->request->get('page');
-            if (!$page) {
-                $page = 1;
             }
 
             // get the number of results (without page limit restriction)
@@ -73,20 +69,29 @@ class QueryBishop extends AbstractController {
                           ->getRepository(Person::class)
                           ->countByQueryObject($bishopquery)[0]['count'];
 
-            $persons = array();
+            $page = 0;
+            $persons = null;
+            
             if ($count > 0) {
-                $facetPlacesState = $request->request->get('facetPlacesState');
+                $page = $request->request->get('page') ?? 1;
+
+                if(!$bishopquery->name && $bishopquery->place) {
+                    $persons = $this->getDoctrine()
+                                    ->getRepository(Person::class)
+                                    ->findByPlaceWithOffices($bishopquery, self::LIST_LIMIT, $page);
+                } 
 
 
-                $persons = $this->getDoctrine()
-                            ->getRepository(Person::class)
-                            ->findPersonsAndOffices($bishopquery, self::LIST_LIMIT, $page);
-
-                foreach($persons as $key => $person) {
-                    $persons[$key]['wiagidlong'] = self::WIAGID_PREFIX.$person['wiagid'].self::WIAGID_POSTFIX;
+                $someid = $bishopquery->someid;
+                if($someid and Person::isWiagidLong($someid)) {
+                    $bishopquery->updateSomeid();
                 }
-            }
 
+                // $persons = $this->getDoctrine()
+                //             ->getRepository(Person::class)
+                //             ->findWithOffices($bishopquery, self::LIST_LIMIT, $page);
+            }
+            
             // combination of POST_SET_DATA and POST_SUBMIT
             // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
 
@@ -117,7 +122,7 @@ class QueryBishop extends AbstractController {
     public function getperson($wiagidlong, Request $request) {
 
         $format = $request->query->get('format');
-        dump($format);
+        
         if(! is_null($format)) {
             return $this->redirectToRoute('bishop_api', [
                 'wiagidlong' => $wiagidlong,
@@ -125,14 +130,12 @@ class QueryBishop extends AbstractController {
             ]);
         }
 
-        // remove prefix and suffix
-        $pos = strlen(self::WIAGID_PREFIX);
-        $id = substr($wiagidlong, $pos, -4);
+        $id = Person::wiagidLongToWiagid($wiagidlong);
 
         $person = $this->getDoctrine()
                        ->getRepository(Person::class)
-                        ->findOneByWiagid($id);
-
+                       ->findOneWithOffices($id);
+        
         if (!$person) {
             $this->createNotFoundException('Person wurde nicht gefunden');
         }
@@ -152,24 +155,17 @@ class QueryBishop extends AbstractController {
             $wikipediatitle = str_replace('_', ' ', $wpurl_decoded);
         }
 
-        $offices = $this->getDoctrine()
-                        ->getRepository(Office::class)
-                        ->findByIDPerson($id);
+        // $familynamevariants = $this->getDoctrine()
+        //                            ->getRepository(Familynamevariant::class)
+        //                            ->findByWiagid($id);
 
-        $familynamevariants = $this->getDoctrine()
-                                   ->getRepository(Familynamevariant::class)
-                                   ->findByWiagid($id);
-
-        $givennamevariants = $this->getDoctrine()
-                                   ->getRepository(Givennamevariant::class)
-                                   ->findByWiagid($id);
+        // $givennamevariants = $this->getDoctrine()
+        //                            ->getRepository(Givennamevariant::class)
+        //                            ->findByWiagid($id);
 
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,
             'wiagidlong' => $wiagidlong,
-            'offices' => $offices,
-            'familynamevariants' => $familynamevariants,
-            'givennamevariants' => $givennamevariants,
             'hasNormdata' => $person->hasNormdata(),
             'wikipediatitle' => $wikipediatitle,
         ]);
@@ -196,5 +192,16 @@ class QueryBishop extends AbstractController {
         dd($person);
     }
 
+    /**
+     * @Route("/query-test/office/{id}")
+     */
+    public function queryoffice($id) {
+        $office = $this->getDoctrine()
+                       ->getRepository(Office::class)
+                       ->findByWiagid($id);
+        dd($office);
+    }
+
+    
 
 }

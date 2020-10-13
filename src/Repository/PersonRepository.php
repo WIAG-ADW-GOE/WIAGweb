@@ -209,6 +209,7 @@ class PersonRepository extends ServiceEntityRepository {
 
         if ($querydata->isEmpty()) return 0;
 
+        // check if we got a wiagid with prefix and suffix
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = "SELECT COUNT(twiagid.wiagid) AS count FROM ".
@@ -220,52 +221,12 @@ class PersonRepository extends ServiceEntityRepository {
         return $stmt->fetchAll();
     }
 
-    public function findPlacesByQueryObject(BishopQueryFormModel $querydata) {
-        $conn = $this->getEntityManager()->getConnection();
-
-        if ($querydata->isEmpty()) {
-            $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office ".
-                 " WHERE diocese <> ''".
-                 " GROUP BY diocese";
-        } else {
-            $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office, ".
-                 $this->buildWiagidSet($querydata).
-                 " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''".
-                 " GROUP BY diocese";
-        }
-
-        // dd($bishopquery, $sql);
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-
-        return $stmt->fetchAll();
-    }
-
-    public function findOfficesByQueryObject(BishopQueryFormModel $querydata) {
-        $conn = $this->getEntityManager()->getConnection();
-
-
-        $sql = "SELECT DISTINCT(office_name), COUNT(DISTINCT(wiagid_person)) as n FROM office, ".
-             $this->buildWiagidSet($querydata).
-             " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''".
-             " GROUP BY office_name";
-
-        // dd($bishopquery, $sql);
-
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-
-        return $stmt->fetchAll();
-    }
-
-
-
     public function findByQueryObject(BishopQueryFormModel $querydata, $limit, $page): array {
         $conn = $this->getEntityManager()->getConnection();
 
         $offset = ($page - 1) * $limit;
 
+        # ## TODO do this query with DQL
         $sql = "SELECT person.* FROM person, ".
              $this->buildWiagidSet($querydata).
              " WHERE person.wiagid = twiagid.wiagid";
@@ -274,10 +235,73 @@ class PersonRepository extends ServiceEntityRepository {
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
-        // returns an array of arrays (i.e. a raw data set)
-        $sqlres = $stmt->fetchAll();
+        return $stmt->fetchAll();
+    }
 
-        return $sqlres;
+    public function findByPlaceWithOffices(BishopQueryFormModel $querydata, $limit, $page) {
+        # ## TODO observe facets
+
+        $puresql = false;
+        if($puresql) {
+            $sql = "SELECT pn.* FROM person as pn, office as oce, officedate as ocedate".
+                 " WHERE oce.diocese LIKE :place".
+                 " AND oce.wiagid = ocedate.wiagid_office ".
+                 " AND pn.wiagid = oce.wiagid_person".
+                 " ORDER BY ocedate.date_start ASC";
+                
+        $offset = ($page - 1) * $limit;
+        if($limit > 0) $sql = $sql." LIMIT {$limit} OFFSET {$offset}";
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(['place' => '%'.$querydata->place.'%']);
+
+        // returns an array of arrays (i.e. a raw data set)
+        $persons_raw = $stmt->fetchAll();
+
+        $persons = $this->getObjects($persons_raw);
+        } else {
+            $puredql = false;
+            if($puredql) {
+                $dql = "SELECT pn FROM App\Entity\Person as pn".
+                     " JOIN App\Entity\Office as oce".
+                     " JOIN App\Entity\Officedate as ocedate".
+                     " WHERE oce.diocese LIKE :place".
+                     " AND pn.wiagid = oce.wiagid_person".
+                     " AND oce.wiagid = ocedate.wiagid_office".
+                     " ORDER BY ocedate.date_start ASC";
+
+            
+            $query = $this->getEntityManager()->createQuery($dql);
+            $query->setParameter('place', '%'.$querydata->place.'%');
+            } else {
+                $query = $this->createQueryBuilder('person')
+                              ->leftJoin('person.offices', 'oc')
+                              ->addSelect('oc')
+                              ->andWhere('oc.diocese LIKE :place')
+                              ->leftJoin('oc.numdate', 'ocdate')
+                              ->orderBy('ocdate.date_start', 'ASC')
+                              ->setParameter('place', '%'.$querydata->place.'%')
+                              ->getQuery();
+            }
+
+            if($limit > 0) {
+                $offset = ($page - 1) * $limit;
+                $query->setMaxResults($limit);
+                $query->setFirstResult($offset);
+            }
+
+            $persons = $query->getResult();
+            
+            // $ocRep = $this->getEntityManager()->getRepository(Office::class);
+            
+            // foreach($persons as $person) {
+            //     $offices = $ocRep->findByIDPerson($person->getWiagid());      
+            //     $person->setOffices($offices);
+            // }
+        }
+
+        return $persons;
     }
 
     public function findWiagidByQueryObject(BishopQueryFormModel $querydata, $limit, $page) {
@@ -300,7 +324,7 @@ class PersonRepository extends ServiceEntityRepository {
     }
 
     public function findObjectsByQueryObject(BishopQueryFormModel $querydata, $limit = 0, $page = 0): array {
-
+        # ## TODO does this work?
         $wiagids = $this->findWiagidByQueryObject($querydata, $limit, $page);
 
         $strWiagids = implode(",", array_map(function($v) {return $v['wiagid'];}, $wiagids));
@@ -315,7 +339,7 @@ class PersonRepository extends ServiceEntityRepository {
         return $persons;
     }
 
-    public function findOfficeByWiagid(string $wiagid) {
+    public function findOfficeByWiagid_obsolete(string $wiagid) {
         $conn = $this->getEntityManager()->getConnection();
 
         // TODO use OfficeRepository
@@ -328,43 +352,43 @@ class PersonRepository extends ServiceEntityRepository {
     }
 
 
-    public function findPersonsAndOffices(BishopQueryFormModel $bishopquery, $limit = 0, $page = 0) {
-        $persons = $this->findByQueryObject($bishopquery, $limit, $page);
+    public function findWithOffices(BishopQueryFormModel $bishopquery, $limit = 0, $page = 0) {
+        $persons_raw = $this->findByQueryObject($bishopquery, $limit, $page);
 
-        $conn = $this->getEntityManager()->getConnection();
-
-
-        // add offices
-        $rawoffices = array();
-        $persons_with_offices = array();
-
-        foreach ($persons as $person) {
-            $offices = $this->findOfficeByWiagid($person['wiagid']);
-            $person['offices'] = $offices;
-            $persons_with_offices[] = $person;
-        }
-
-        return $persons_with_offices;
+        $persons = $this->getObjects($persons_raw);
+        return $persons;
     }
 
-    public function findOnePersonAndOffices($wiagid) {
-        $person = $this->findOneByWiagid($wiagid);
-
-        $conn = $this->getEntityManager()->getConnection();
-
-
-        // add offices
-        $rawoffices = array();
-        $officetexts = array();
-
-        dump($person);
-        $rawoffices = $this->findOfficeByWiagid($wiagid);
-
-        foreach ($rawoffices as $o) {
-            $officetexts[] = $o['office_name'].' ('.$o['diocese'].')';
+    public function getObjects($persons_raw) {
+        $ocRep = $this->getEntityManager()->getRepository(Office::class);
+        
+        $persons = array();
+        foreach($persons_raw as $p) {
+            $person = new Person();
+            $person->setFields($p);
+            $offices = $ocRep->findByIDPerson($person->getWiagid());            
+            $person->setOffices($offices);
+            $persons[] = $person;
         }
+        return $persons;
+    }   
 
-        $person->setOffices($rawoffices);
+    public function findOneWithOffices($wiagid) {
+        // fetch all data related to this person
+        $query = $this->createQueryBuilder('person')
+                      ->andWhere('person.wiagid = :wiagid')
+                      ->setParameter('wiagid', $wiagid)
+                      ->leftJoin('person.familyname_variant', 'fnv')
+                      ->addSelect('fnv')
+                      ->leftJoin('person.givenname_variant', 'gnv')
+                      ->addSelect('gnv')
+                      ->leftJoin('person.offices', 'oc')
+                      ->addSelect('oc')
+                      ->leftJoin('oc.numdate', 'ocdate')
+                      ->orderBy('ocdate.date_start', 'ASC')
+                      ->getQuery();
+
+        $person = $query->getOneOrNullResult();
 
         return $person;
     }

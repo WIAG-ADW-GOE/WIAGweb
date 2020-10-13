@@ -18,7 +18,8 @@ class Familynamevariant
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=31)
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="familyname_variant")
+     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid")
      */
     private $wiagid;
 

@@ -17,7 +17,8 @@ class Office
     private $wiagid;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable = false)
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="offices")
+     * @ORM\JoinColumn(name="wiagid_person", referencedColumnName="wiagid")
      */
     private $wiagid_person;
 
@@ -66,10 +67,16 @@ class Office
      */
     private $comment;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    /**
+     * @ORM\Column(type="string", length=31, nullable=true)
+     */
+    private $id_monastery;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Officedate", mappedBy="wiagid_office")
+     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_office")
+     */
+    private $numdate;
 
     public function getWiagid(): ?string
     {
@@ -214,6 +221,31 @@ class Office
 
         return $this;
     }
+
+    public function getIdMonastery(): ?string
+    {
+        return $this->id_monastery;
+    }
+
+    public function setIdMonastery(?string $id_monastery): self
+    {
+        $this->id_monastery = $id_monastery;
+
+        return $this;
+    }
+
+    // public function getNumdate()
+    // {
+    //     return $this->numdate;
+    // }
+
+    // public function setNumdate($numdate): self
+    // {
+    //     $this->numdate = $numdate;
+
+    //     return $this;
+    // }
+
 
     
 }
