@@ -3,7 +3,6 @@ namespace App\Form;
 
 use App\Form\Model\BishopQueryFormModel;
 use App\Repository\PersonRepository;
-use App\Repository\OfficeRepository;
 use App\Entity\PlaceCount;
 use App\Entity\OfficeCount;
 
@@ -29,14 +28,11 @@ class BishopQueryFormType extends AbstractType
 {
     private $router;
     private $personRepository;
-    private $officeRepository;
 
     public function __construct(RouterInterface $rtr,
-                                PersonRepository $personRepository,
-                                OfficeRepository $officeRepository) {
+                                PersonRepository $personRepository) {
         $this->router = $rtr;
         $this->personRepository = $personRepository;
-        $this->officeRepository = $officeRepository;
     }
 
     public function configureOptions(OptionsResolver $resolver) {
@@ -60,7 +56,7 @@ class BishopQueryFormType extends AbstractType
                 ],
             ])
             ->add('place', TextType::class, [
-                'label' => 'Ort',
+                'label' => 'Bistum',
                 'required' => false,
                 'attr' => [
                     'class' => 'js-place-autocomplete',
@@ -128,7 +124,8 @@ class BishopQueryFormType extends AbstractType
 
         if ($bishopquery->isEmpty()) return;
 
-        $places = $this->officeRepository->findDiocesesByQueryObject($bishopquery);
+        $places = $this->personRepository->findOfficePlaces($bishopquery);
+
 
         $choices = array();
 
@@ -143,7 +140,9 @@ class BishopQueryFormType extends AbstractType
                     $choices[] = new PlaceCount($fpl, '0');
                 }
             }
+            # TODO sort $choices (again)
         }
+
 
 
         if ($places) {
@@ -178,7 +177,8 @@ class BishopQueryFormType extends AbstractType
 
         if ($bishopquery->isEmpty()) return;
 
-        $offices = $this->officeRepository->findOfficeNamesByQueryObject($bishopquery);
+        $offices = $this->personRepository->findOfficeNames($bishopquery);
+
 
         $choices = array();
         foreach($offices as $office) {

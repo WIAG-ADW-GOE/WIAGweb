@@ -2,7 +2,9 @@
 // src/Entity/Person.php
 namespace App\Entity;
 
+use App\Entity\Office;
 use Doctrine\ORM\Mapping as ORM;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PersonRepository")
@@ -10,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Person {
     const WIAGID_PREFIX = 'WIAG-Pers-EPISCGatz-';
     const WIAGID_POSTFIX = '-001';
-    
+
     /**
      * @ORM\Id
      * @ORM\Column(type="string", length=63, nullable = false)
@@ -98,28 +100,33 @@ class Person {
      */
     private $comment_person;
 
-
     /**
      * @ORM\Column(type="string", length=127, nullable=true)
      */
     private $comment_name;
 
     /**
-     * do not map this field to the table of person directly but to 
-     * the extra table of name variants
-     * @ORM\OneToMany(targetEntity="Familynamevariant", mappedBy="wiagid")
-     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid")
+     * @ORM\Column(type="string", length=127, nullable=true)
      */
     private $familyname_variant;
 
     /**
-     * do not map this field to the table of person directly but to 
-     * the extra table of name variants
-     * @ORM\OneToMany(targetEntity="Givennamevariant", mappedBy="wiagid")
-     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid")
+     * @ORM\Column(type="string", length=127, nullable=true)
      */
     private $givenname_variant;
-    
+
+    /**
+     * @ORM\OneToMany(targetEntity="Namelookup", mappedBy="wiagid_person")
+     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
+     */
+    private $namelookup;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Era", mappedBy="wiagid_person")
+     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
+     */
+    private $era;
+
     /**
      * @ORM\OneToMany(targetEntity="Office", mappedBy="wiagid_person")
      * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
@@ -127,8 +134,8 @@ class Person {
     private $offices;
 
     public static function isWiagidLong($wiagidlong) {
+        dump($wiagidlong);
         $match = stristr($wiagidlong, self::WIAGID_PREFIX);
-        dump($match);
         return strlen($match) > 0;
     }
 
@@ -136,7 +143,7 @@ class Person {
         $pos = strlen(self::WIAGID_PREFIX);
         return substr($wiagidlong, $pos, -4);
     }
-    
+
     public function setFields($p) {
         $this->wiagid = $p['wiagid'];
         $this->authors_gatz = $p['authors_gatz'];
@@ -200,7 +207,7 @@ class Person {
     {
         return $this->prefix_name;
     }
-    
+
     public function setPrefixName(?string $prefix_name): self
     {
         $this->prefix_name = $prefix_name;
@@ -236,7 +243,7 @@ class Person {
     {
         return $this->familyname_variant;
     }
-    
+
     public function setFamilynameVariant(?string $familyname_variant): self
     {
         $this->familyname_variant = $familyname_variant;
@@ -249,7 +256,7 @@ class Person {
         return $this->givenname_variant;
     }
 
-    
+
     public function setGivennameVariant(?string $givenname_variant): self
     {
         $this->givenname_variant = $givenname_variant;
@@ -273,7 +280,7 @@ class Person {
     {
         return $this->date_death;
     }
-    
+
     public function setDateDeath(?string $date_death): self
     {
         $this->date_death = $date_death;
@@ -389,7 +396,6 @@ class Person {
         return $this;
     }
 
-    
     public function getWiagidLong(): ?string
     {
         return self::WIAGID_PREFIX.$this->wiagid.self::WIAGID_POSTFIX;
@@ -405,12 +411,119 @@ class Person {
         return $this;
     }
 
-    public function hasNormdata() {
-        return ($this->gsid
-                || $this->viafid
-                || $this->wikipediaurl
-                || $this->wikidataid
-                || $this->gndid);                        
+    public function getEra() {
+        return $this->era;
     }
+
+    public function setEra($era) {
+        $this->era = $era;
+
+        return $this;
+    }
+
+    public function getNamelookup() {
+        return $this->namelookup;
+    }
+
+    public function setNamelookup($namelookup) {
+        $this->namelookup = $namelookup;
+
+        return $this;
+    }
+
+    public function hasExternalIdentifier() {
+        return ($this->viafid
+                || $this->wikidataid
+                || $this->gndid);
+    }
+
+    public function hasOtherIdentifier() {
+        return ($this->gsid
+                || $this->wikipediaurl);
+    }
+
+    public function getFlagComment() {
+        return ($this->givenname_variant and
+                $this->givenname_variant != ''
+                or $this->familyname_variant and
+                $this->familyname_variant != ''
+                or $this->comment_name and
+                $this->comment_name != ''
+                or $this->comment_person and
+                $this->comment_person != '');
+    }
+
+    public function toJSON() {
+        $pj = array();
+        $pj['wiagId'] = $this->getWiagidLong();
+
+        $fv = $this->getFamilyname();
+        if($fv) $pj['familyName'] = $fv;
+
+        $pj['givenName'] = $this->getGivenname();
+
+        $fv = $this->getPrefixName();
+        if($fv) $pj['prefix'] = $fv;
+
+        $fv = $this->getFamilynameVariant();
+        if($fv) $pj['variantFamilyName'] = $fv;
+
+        $fv = $this->getGivennameVariant();
+        if($fv) $pj['variantGivenName'] = $fv;
+
+        $fv = $this->comment_name;
+        if($fv) $pj['comment_name'] = $fv;
+
+        $fv = $this->comment_person;
+        if($fv) $pj['comment_person'] = $fv;
+
+        $fv = $this->getGivennameVariant();
+        if($fv) $pj['variantGivenName'] = $fv;
+
+
+        $fv = $this->getDateBirth();
+        if($fv) $pj['dateOfBirth'] = $fv;
+
+        $fv = $this->getDateDeath();
+        if($fv) $pj['dateOfDeath'] = $fv;
+
+        $fv = $this->getReligiousOrder();
+        if($fv) $pj['religiousOrder'] = $fv;
+
+        if($this->hasExternalIdentifier() || $this->hasOtherIdentifier()) {
+            $pj['identifier'] = array();
+            $nd = &$pj['identifier'];
+            $fv = $this->getGsid();
+            if($fv) $nd['gsId'] = $fv;
+
+            $fv = $this->getGndid();
+            if($fv) $nd['gndId'] = $fv;
+
+            $fv = $this->getViafid();
+            if($fv) $nd['viafId'] = $fv;
+
+            $fv = $this->getWikidataid();
+            if($fv) $nd['wikidataId'] = $fv;
+
+            $fv = $this->getWikipediaurl();
+            if($fv) $nd['wikipediaUrl'] = $fv;
+        }
+
+        $offices = $this->getOffices();
+        if($offices) {
+            $pj['offices'] = array();
+            $ocJSON = &$pj['offices'];
+            foreach($offices as $oc) {
+                $ocJSON[] = $oc->toJSON();
+            }
+        }
+
+        $fv = $this->getReference();
+        if($fv) $pj['reference'] = $fv;
+
+        return array('person' => $pj);
+    }
+
+
 
 }

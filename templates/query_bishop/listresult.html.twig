@@ -17,7 +17,7 @@
     {% if count > 0 %}
 	<span class="ml-4">
 	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page < 2 %} disabled="disabled" {% endif %} name="page" value="{{ page - 1 }}">&#9204; zurück</button>
-	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page * limit > count%}  disabled="disabled" {% endif %} name="page" value="{{ page + 1 }}">vor &#9205;</button>
+	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page * limit >= count%}  disabled="disabled" {% endif %} name="page" value="{{ page + 1 }}">vor &#9205;</button>
 	</span>
     {% endif %}
     {% endset %}
@@ -55,7 +55,7 @@
 				<tbody>
 				    {% for person in persons %}
 					<tr>
-					    <td><a href="{{ path('bishop', {wiagidlong: person.wiagidlong}) }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</a>
+					    <td><a href="{{ path('bishop', {wiagidlong: person.wiagidlong, flaglist: 'flaglist'}) }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</a>
 						{% if not person.datebirth and not person.datedeath %}
 						{% elseif person.datebirth and not person.datedeath %}
 						    <br/>* {{ person.datebirth }}
@@ -65,7 +65,7 @@
 						    <br/>* {{ person.datebirth }} <span class="ml-2">&dagger; {{ person.datedeath }}</span>
 						{% endif %}
 					    </td>
-					    <td>{% for o in person.offices %}
+					    <td>{% for o in person.offices|sort((a, b) => a.numdate.datestart <=> b.numdate.datestart) %}
 						<small>{{ o.officename }}
 						    {% if o.diocese %}({{ o.diocese }}){% endif %}
 						    {% if o.datestart and not o.dateend %}{{ o.datestart }}
@@ -84,7 +84,7 @@
 		    <div class="col-3">
 			{% if query_form.facetPlaces is defined %}
 			    <div class="card card-body container-fluid">
-				<strong class="card-title">Filter Orte</strong>
+				<strong class="card-title">Filter Bistum</strong>
 				{% for fpl in query_form.facetPlaces%}
 				    <div class="form-group mb-2">
 					{{ form_widget(fpl) }}
@@ -94,7 +94,7 @@
 			{% endif %}
 			{% if query_form.facetOffices is defined %}
 			    <div class="card card-body container-fluid">
-				<strong class="card-title">Filter Ämter</strong>
+				<strong class="card-title">Filter Amt</strong>
 				{% for foc in query_form.facetOffices%}
 				    <div class="form-group mb-2">
 					{{ form_widget(foc) }}

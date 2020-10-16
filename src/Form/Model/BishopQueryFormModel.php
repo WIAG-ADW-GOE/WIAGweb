@@ -75,15 +75,15 @@ class BishopQueryFormModel {
         return $qelts;
     }
 
-    public function updateSomeid() {
-        $someid = $this->someid;
+    // public function updateSomeid() {
+    //     $someid = $this->someid;
 
-        if($someid and Person::isWiagidLong($someid)) {
-            $this->someid = Person::wiagidLongToWiagid($someid);
-        }
-        dump($this->someid);
-        return null;
-    }
+    //     if($someid and Person::isWiagidLong($someid)) {
+    //         $this->someid = Person::wiagidLongToWiagid($someid);
+    //     }
+    //     dump($this->someid);
+    //     return null;
+    // }
 
 
 

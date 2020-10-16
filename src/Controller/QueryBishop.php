@@ -6,19 +6,10 @@ use App\Form\BishopQueryFormType;
 use App\Form\Model\BishopQueryFormModel;
 use App\Entity\Person;
 use App\Entity\Office;
-use App\Entity\Familynamevariant;
-use App\Entity\Givennamevariant;
 use App\Entity\PlaceCount;
 
 
-use Ds\Set;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
-
 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +26,7 @@ class QueryBishop extends AbstractController {
     /**
      * Parameters
      */
-    const LIST_LIMIT = 30;
+    const LIST_LIMIT = 20;
 
 
     /**
@@ -59,39 +50,42 @@ class QueryBishop extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
 
             $bishopquery = $form->getData();
+            $someid = $bishopquery->someid;
 
-            if($form->get('searchJSON')->isClicked()) {
-                return $this->redirectToRoute('api_query_bishops', $bishopquery->getQueryArray());
+            if($someid && Person::isWiagidLong($someid)) {
+                $bishopquery->someid = Person::wiagidLongToWiagid($someid);
             }
 
             // get the number of results (without page limit restriction)
             $count = $this->getDoctrine()
                           ->getRepository(Person::class)
-                          ->countByQueryObject($bishopquery)[0]['count'];
+                          ->countByQueryObject($bishopquery)[1];
 
             $page = 0;
             $persons = null;
-            
-            if ($count > 0) {
-                $page = $request->request->get('page') ?? 1;
 
-                if(!$bishopquery->name && $bishopquery->place) {
+            if($count > 0) {
+                if($form->get('searchJSON')->isClicked()) {
                     $persons = $this->getDoctrine()
                                     ->getRepository(Person::class)
-                                    ->findByPlaceWithOffices($bishopquery, self::LIST_LIMIT, $page);
-                } 
+                                    ->findWithOffices($bishopquery);
 
+                    $personExports = array();
+                    foreach($persons as $p) {
+                        $personExports[] = $p->toJSON();
+                    }
 
-                $someid = $bishopquery->someid;
-                if($someid and Person::isWiagidLong($someid)) {
-                    $bishopquery->updateSomeid();
+                    return $this->json(array('persons' => $personExports));
                 }
 
-                // $persons = $this->getDoctrine()
-                //             ->getRepository(Person::class)
-                //             ->findWithOffices($bishopquery, self::LIST_LIMIT, $page);
+
+                $page = $request->request->get('page') ?? 1;
+
+                $persons = $this->getDoctrine()
+                                ->getRepository(Person::class)
+                                ->findWithOffices($bishopquery, self::LIST_LIMIT, $page);
             }
-            
+
             // combination of POST_SET_DATA and POST_SUBMIT
             // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
 
@@ -122,20 +116,22 @@ class QueryBishop extends AbstractController {
     public function getperson($wiagidlong, Request $request) {
 
         $format = $request->query->get('format');
-        
-        if(! is_null($format)) {
+
+        if(!is_null($format)) {
             return $this->redirectToRoute('bishop_api', [
                 'wiagidlong' => $wiagidlong,
                 'format' => $format,
             ]);
         }
 
+        $flaglist = $request->query->get('flaglist');
+
         $id = Person::wiagidLongToWiagid($wiagidlong);
 
         $person = $this->getDoctrine()
                        ->getRepository(Person::class)
                        ->findOneWithOffices($id);
-        
+
         if (!$person) {
             $this->createNotFoundException('Person wurde nicht gefunden');
         }
@@ -155,19 +151,11 @@ class QueryBishop extends AbstractController {
             $wikipediatitle = str_replace('_', ' ', $wpurl_decoded);
         }
 
-        // $familynamevariants = $this->getDoctrine()
-        //                            ->getRepository(Familynamevariant::class)
-        //                            ->findByWiagid($id);
-
-        // $givennamevariants = $this->getDoctrine()
-        //                            ->getRepository(Givennamevariant::class)
-        //                            ->findByWiagid($id);
-
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,
             'wiagidlong' => $wiagidlong,
-            'hasNormdata' => $person->hasNormdata(),
             'wikipediatitle' => $wikipediatitle,
+            'flaglist' => $flaglist,
         ]);
     }
 
@@ -193,15 +181,13 @@ class QueryBishop extends AbstractController {
     }
 
     /**
-     * @Route("/query-test/office/{id}")
+     * @Route("/query-test/person/{id}")
      */
-    public function queryoffice($id) {
-        $office = $this->getDoctrine()
-                       ->getRepository(Office::class)
-                       ->findByWiagid($id);
-        dd($office);
+    public function querytestperson($id) {
+        $person = $this->getDoctrine()
+                      ->getRepository(Person::class)
+                      ->findtest($id);
+        dd($person);
     }
-
-    
 
 }

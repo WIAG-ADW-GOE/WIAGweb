@@ -23,16 +23,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
  */
 class BishopApiController extends AbstractController {
-    /**
-     * Parameters
-     */
-    const LIST_LIMIT = 30;
-    const WIAGID_PREFIX = 'WIAG-Pers-EPISCGatz-';
-    const WIAGID_POSTFIX = '-001';
-
 
     /**
-     * @Route("/bishop-api/{wiagidlong}", name="bishop_api")
+     * @Route("/api/bishop/{wiagidlong}", name="api_bishop")
      */
     public function getperson($wiagidlong, Request $request) {
 
@@ -43,8 +36,7 @@ class BishopApiController extends AbstractController {
         }
 
         // remove prefix and suffix
-        $pos = strlen(self::WIAGID_PREFIX);
-        $id = substr($wiagidlong, $pos, -4);
+        $id = Person::wiagidLongToWiagid($wiagidlong);
 
         $person = $this->getDoctrine()
                        ->getRepository(Person::class)
@@ -54,23 +46,29 @@ class BishopApiController extends AbstractController {
             $this->createNotFoundException('Person wurde nicht gefunden');
         }
 
-        $personExport = $this->filter_person($person);
+        $personExport = $person->toJSON();
         return $this->json($personExport);
 
     }
 
+
     /**
      * @Route("/api/query-bishops", name="api_query_bishops")
      */
-    public function getpersons(Request $request) {
+    public function apigetpersons(Request $request) {
+
+        #dd($request);
 
         $name = $request->query->get('name');
-        $place = $request->query->get('place');
+        $place = $request->query->get('diocese');
         $office = $request->query->get('office');
         $year = $request->query->get('year');
         $someid = $request->query->get('someid');
 
-        // ## TODO Facetten auslesen
+        if($someid && Person::isWiagidLong($someid)) {
+            $someid = Person::wiagidLongToWiagid($someid);
+        }
+
         $bishopquery = new BishopQueryFormModel($name,
                                                 $place,
                                                 $office,
@@ -81,98 +79,20 @@ class BishopApiController extends AbstractController {
 
         $persons = $this->getDoctrine()
                         ->getRepository(Person::class)
-                        ->findObjectsByQueryObject($bishopquery);
+                        ->findWithOffices($bishopquery);
 
-        dump($persons);
+        # dump($persons);
 
         $personExports = array();
         foreach($persons as $p) {
-            $personExports[] = $this->filter_person($p);
+            $personExports[] = $p->toJSON();
         }
 
-        return $this->json($personExports);
+        return $this->json(array(
+            'count' => count($persons),
+            'persons' => $personExports)
+        );
         // return $this->render('start/welcome.html.twig');
     }
 
-    public function filter_person(Person $person) {
-        $pj = array();
-        $pj['wiagId'] = $person->getWiagidLong();
-
-        $fv = $person->getFamilyname();
-        if($fv) $pj['familyName'] = $fv;
-
-        $pj['givenName'] = $person->getGivenname();
-
-        $fv = $person->getPrefixName();
-        if($fv) $pj['prefix'] = $fv;
-
-        $fv = $person->getFamilynameVariant();
-        if($fv) $pj['variantFamilyName'] = $fv;
-
-        $fv = $person->getGivennameVariant();
-        if($fv) $pj['variantGivenName'] = $fv;
-
-        $fv = $person->getDateBirth();
-        if($fv) $pj['dateOfBirth'] = $fv;
-
-        $fv = $person->getDateDeath();
-        if($fv) $pj['dateOfDeath'] = $fv;
-
-        $fv = $person->getReligiousOrder();
-        if($fv) $pj['religiousOrder'] = $fv;
-
-        if($person->hasNormdata()) {
-            $pj['normdata'] = array();
-            $nd = &$pj['normdata'];
-            $fv = $person->getGsid();
-            if($fv) $nd['gsId'] = $fv;
-
-            $fv = $person->getGndid();
-            if($fv) $nd['gndId'] = $fv;
-
-            $fv = $person->getViafid();
-            if($fv) $nd['viafId'] = $fv;
-
-            $fv = $person->getWikidataid();
-            if($fv) $nd['wikidataId'] = $fv;
-
-            $fv = $person->getWikipediaurl();
-            if($fv) $nd['wikipediaUrl'] = $fv;
-        }
-
-        $offices = $person->getOffices();
-        dump($offices);
-        if($offices) {
-            $pj['offices'] = $this->filter_offices($offices);
-        }
-
-        $fv = $person->getReference();
-        if($fv) $pj['reference'] = $fv;
-
-        return $pj;
-    }
-
-    public function filter_offices($offices) {
-        $ocjs = array();
-        foreach($offices as $oc) {
-            $ocj = array();
-
-            $ocj['officeTitle'] = $oc->getOfficeName();
-
-            $fv = $oc->getDiocese();
-            if($fv) $ocj['diocese'] = $fv;
-
-            $fv = $oc->getDateStart();
-            if($fv) $ocj['dateStart'] = $fv;
-
-            $fv = $oc->getDateEnd();
-            if($fv) $ocj['dateEnd'] = $fv;
-
-            $fv = $oc->getComment();
-            if($fv) $ocj['comment'] = $fv;
-
-            $ocjs[] = $ocj;
-        }
-        return $ocjs;
-    }
 }

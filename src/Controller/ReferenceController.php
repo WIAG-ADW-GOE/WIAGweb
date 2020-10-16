@@ -33,8 +33,8 @@ class ReferenceController extends AbstractController {
     public function list() {
 
         $references = $this->getDoctrine()
-                          ->getRepository(Reference::class)
-                          ->findAll();
+                           ->getRepository(Reference::class)
+                           ->findAll();
 
         return $this->render("reference/list.html.twig", [
             'references' => $references,

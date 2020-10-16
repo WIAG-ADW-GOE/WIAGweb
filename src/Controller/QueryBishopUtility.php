@@ -2,8 +2,9 @@
 
 namespace App\Controller;
 
-use App\Repository\PersonRepository;
-use App\Repository\OfficeRepository;
+use App\Entity\Person;
+use App\Entity\Office;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,9 +24,13 @@ class QueryBishopUtility extends AbstractController {
      * @Route("/query-bishops/utility/names", methods="GET", name="query_bishops_utility_names")
 
      */
-    public function getNamesApi(PersonRepository $personRepository, Request $request) {
-        $persons = $personRepository->suggestName($request->query->get('query'),
-                                                  self::HINT_LIST_LIMIT);
+    public function getNamesApi(Request $request) {
+        $persons = $this->getDoctrine()
+                        ->getRepository(Person::class)
+                        ->suggestName($request->query->get('query'),
+                                      self::HINT_LIST_LIMIT);
+
+        // $persons = ["Adam Erst", "Johann Bischpinck"];
         // $persons = $personRepository->findByFamilyname("ege");
         // dump($request->query->get('query'));
         return $this->json([
@@ -36,9 +41,11 @@ class QueryBishopUtility extends AbstractController {
     /**
      *@Route("/query-bishops/utility/places", methods="GET", name="query_bishops_utility_places")
      */
-    public function getPlacesApi(OfficeRepository $officeRepository, Request $request) {
-        $places = $officeRepository->suggestPlace($request->query->get('query'),
-                                                  self::HINT_LIST_LIMIT);
+    public function getPlacesApi(Request $request) {
+        $places = $this->getDoctrine()
+                       ->getRepository(Office::class)
+                       ->suggestPlace($request->query->get('query'),
+                                      self::HINT_LIST_LIMIT);
         return $this->json([
             'places' => $places,
         ]);
@@ -47,22 +54,15 @@ class QueryBishopUtility extends AbstractController {
     /**
      *@Route("/query-bishops/utility/offices", methods="GET", name="query_bishops_utility_offices")
      */
-    public function getOfficeApi(OfficeRepository $officeRepository, Request $request) {
-        $offices = $officeRepository->suggestOffice($request->query->get('query'),
+    public function getOfficeApi(Request $request) {
+        $offices = $this->getDoctrine()
+                       ->getRepository(Office::class)
+                       ->suggestOffice($request->query->get('query'),
                                                     self::HINT_LIST_LIMIT);
         dump($offices);
         return $this->json([
             'offices' => $offices,
         ]);
-    }
-
-    /**
-     *@Route("/query-bishops/utility/facetplaces", methods="POST", name="qb_utility_facetplaces")
-     */
-    public function facetPlaces(Request $request) {
-        $par = $request->request;
-        $name = $par->get('name');
-        return new Response('This is facetPlaces with '.$name);
     }
 
 

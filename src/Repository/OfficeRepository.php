@@ -52,118 +52,138 @@ class OfficeRepository extends ServiceEntityRepository
 
     public function findByIDPerson($wiagid): array {
 
-        $qb = $this->getEntityManager()
+        $query = $this->getEntityManager()
                    ->createQuery('SELECT o FROM App\Entity\Office o'.
                                  ' JOIN App\Entity\Officedate od '.
                                  ' WHERE o.wiagid_person = '.$wiagid.
                                  ' AND od.wiagid_office = o.wiagid '.
                                  ' ORDER BY od.date_start, od.date_end');
-         return $qb->getResult();
-        
-        // $conn = $this->getEntityManager()->getConnection();        
+         return $query->getResult();
+
+    }
+
+    public function suggestPlace($place, $limit = 200): array {
+        $qb = $this->createQueryBuilder('oc')
+                   ->select('DISTINCT oc.diocese AS suggestion')
+                   ->andWhere('oc.diocese LIKE :place')
+                   ->setParameter('place', '%'.$place.'%')
+                   ->setMaxResults($limit);
+        $query = $qb->getQuery();
+
+        # dd($query->getDQL());
+
+        return $query->getResult();
+
+
+
+        // $conn = $this->getEntityManager()->getConnection();
+
 
         // $sql = "
-        // SELECT oe.* FROM office oe, officedate od
-        // WHERE oe.wiagid_person = :id_person AND oe.wiagid = od.wiagid_office
-        // ORDER BY od.date_start ASC
+        // SELECT DISTINCT(diocese) as suggestion FROM office p
+        // WHERE p.diocese LIKE :place
+        // LIMIT $limit
         // ";
         // $stmt = $conn->prepare($sql);
         // // is it possible to reuse prepared statements?
-        // $stmt->execute(['id_person' => $id_person]);
-
+        // $stmt->execute([
+        //     'place' => "%{$place}%",
+        // ]);
 
         // // returns an array of arrays (i.e. a raw data set)
         // return $stmt->fetchAll();
     }
 
-    public function suggestPlace($place, $limit = 1000): array {
-        $conn = $this->getEntityManager()->getConnection();
+    public function suggestOffice($office, $limit = 200): array {
+        $qb = $this->createQueryBuilder('oc')
+                   ->select('DISTINCT oc.office_name AS suggestion')
+                   ->andWhere('oc.office_name LIKE :title')
+                   ->setParameter('title', '%'.$office.'%')
+                   ->setMaxResults($limit);
+
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+
+        // $conn = $this->getEntityManager()->getConnection();
 
 
-        $sql = "
-        SELECT DISTINCT(diocese) as suggestion FROM office p
-        WHERE p.diocese LIKE :place
-        LIMIT $limit
-        ";
-        $stmt = $conn->prepare($sql);
-        // is it possible to reuse prepared statements?
-        $stmt->execute([
-            'place' => "%{$place}%",
-        ]);
+        // $sql = "
+        // SELECT DISTINCT(office_name) as suggestion FROM office o
+        // WHERE o.office_name LIKE :office
+        // LIMIT $limit
+        // ";
+        // $stmt = $conn->prepare($sql);
+        // // is it possible to reuse prepared statements?
+        // $stmt->execute([
+        //     'office' => "%{$office}%",
+        // ]);
 
-        // returns an array of arrays (i.e. a raw data set)
-        return $stmt->fetchAll();
-    }
-
-    public function suggestOffice($office, $limit = 1000): array {
-        $conn = $this->getEntityManager()->getConnection();
-
-
-        $sql = "
-        SELECT DISTINCT(office_name) as suggestion FROM office o
-        WHERE o.office_name LIKE :office
-        LIMIT $limit
-        ";
-        $stmt = $conn->prepare($sql);
-        // is it possible to reuse prepared statements?
-        $stmt->execute([
-            'office' => "%{$office}%",
-        ]);
-
-        // returns an array of arrays (i.e. a raw data set)
-        return $stmt->fetchAll();
+        // // returns an array of arrays (i.e. a raw data set)
+        // return $stmt->fetchAll();
     }
 
     /**
      * Find all offices (with frequency) for a given query.
      */
-    public function findOfficeNamesByQueryObject(BishopQueryFormModel $querydata) {
-        $conn = $this->getEntityManager()->getConnection();
+    // public function findOfficeNamesByQueryObject(BishopQueryFormModel $querydata) {
 
-        $pRep = $this->getEntityManager()->getRepository(Person::class);
-        
-        $sql = "SELECT DISTINCT(office_name), COUNT(DISTINCT(wiagid_person)) as n FROM office, ".
-             $pRep->buildWiagidSet($querydata).
-             " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''".
-             " GROUP BY office_name ORDER BY NULL";
+    //     $conn = $this->getEntityManager()->getConnection();
 
-        // dd($bishopquery, $sql);
+    //     $pRep = $this->getEntityManager()->getRepository(Person::class);
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
+    //     $sql = "SELECT DISTINCT(office_name), COUNT(DISTINCT(wiagid_person)) as n FROM office, ".
+    //          $pRep->buildWiagidSet($querydata).
+    //          " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''".
+    //          " GROUP BY office_name ORDER BY NULL";
 
-        return $stmt->fetchAll();
-    }
+    //     $stmt = $conn->prepare($sql);
+    //     $stmt->execute();
+
+    //     return $stmt->fetchAll();
+    // }
 
     /**
      * Find all dioceses (with frequency) for a given query.
      */
-    public function findDiocesesByQueryObject(BishopQueryFormModel $querydata) {
-        
-        $conn = $this->getEntityManager()->getConnection();
-        $pRep = $this->getEntityManager()->getRepository(Person::class);
+    // public function findDiocesesByQueryObject(BishopQueryFormModel $querydata) {
 
-        /** 
-         * 'ORDER BY NULL' is the most efficient way to order by the column used in 'GROUP BY' see
-         * https://dev.mysql.com/doc/refman/5.7/en/select.html
-         */
-        if ($querydata->isEmpty()) {
-            $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office ".
-                 " WHERE diocese <> ''".
-                 " GROUP BY diocese ORDER BY NULL"; 
-        } else {
-            $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office, ".
-                 $pRep->buildWiagidSet($querydata).
-                 " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''".
-                 " GROUP BY diocese ORDER BY NULL";
-        }
+    //     $conn = $this->getEntityManager()->getConnection();
+    //     $pRep = $this->getEntityManager()->getRepository(Person::class);
 
-        // dd($bishopquery, $sql);
+    //     /**
+    //      * 'ORDER BY NULL' is the most efficient way to order by the column used in 'GROUP BY' see
+    //      * https://dev.mysql.com/doc/refman/5.7/en/select.html
+    //      */
+    //     if ($querydata->isEmpty()) {
+    //         $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office ".
+    //              " WHERE diocese <> ''".
+    //              " GROUP BY diocese ORDER BY NULL";
+    //     } else {
+    //         $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office, ".
+    //              $pRep->buildWiagidSet($querydata).
+    //              " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''".
+    //              " GROUP BY diocese ORDER BY NULL";
+    //     }
 
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
+    //     // dd($bishopquery, $sql);
 
-        return $stmt->fetchAll();
+    //     $stmt = $conn->prepare($sql);
+    //     $stmt->execute();
+
+    //     return $stmt->fetchAll();
+    // }
+
+    public function findPersonIdsByTitle(BishopQueryFormModel $bishopquery) {
+        $qb = $this->createQueryBuilder('oc')
+                   ->select('wiagid_person')
+                   ->andWhere('oc.office_name LIKE :title')
+                   ->setParameter('title', '%'.$bishopquery->office.'%');
+
+            $query = $qb->getQuery();
+            $wiagids = $query->getResult();
+
+            return $wiagids;
     }
 
 }

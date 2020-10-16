@@ -1,4 +1,5 @@
 using MySQL
+using Infiltrator
 
 function updatenamevariant(fieldsrc::AbstractString, tablename::AbstractString)::Int
     dbwiag = DBInterface.connect(MySQL.Connection, "localhost", "wiag", "Wogen&Wellen", db="wiag");
@@ -58,6 +59,7 @@ function updateera(tablename::AbstractString)::Int
         if rgm != nothing
             erastart = parse(Int, rgm.match)
         end
+
         rgm = match(rgx, datedeath)
         if rgm != nothing
             eraend = parse(Int, rgm.match)
@@ -65,7 +67,8 @@ function updateera(tablename::AbstractString)::Int
         ixperson = dfoffice[:wiagid_person] .== wiagid
         dfofficeperson = dfoffice[ixperson, :];
         for oc in eachrow(dfofficeperson)
-            datestart, dateend = oc
+            datestart = oc[:date_start]
+            dateend = oc[:date_end]
             rgm = match(rgx, datestart)
             if rgm != nothing
                 datestartint = parse(Int, rgm.match)
@@ -80,6 +83,7 @@ function updateera(tablename::AbstractString)::Int
                     eraend = dateendint
                 end
             end
+            @infiltrate wiagid == "10028"
         end
 
         if erastart == Inf && eraend != -Inf
@@ -88,11 +92,18 @@ function updateera(tablename::AbstractString)::Int
             eraend = erastart
         end
 
-        erastartstr = erastart == Inf ? "" : string(erastart)
-        eraendstr = eraend == Inf ? "" : string(eraend)
+        erastartdb = erastart == Inf ? missing : erastart
+        eraenddb = eraend == -Inf ? missing : eraend
+        @infiltrate wiagid == "10028"
 
+        if !ismissing(erastartdb) && !(typeof(erastartdb) == Int)
+            println("start: ", erastartdb)
+        end
+        if !ismissing(eraenddb) && !(typeof(eraenddb) == Int)
+            println("end: ", eraenddb)
+        end
 
-        DBInterface.execute(insertstmt, (wiagid, erastartstr, eraendstr));
+        DBInterface.execute(insertstmt, (wiagid, erastartdb, eraenddb));
 
         tblid += 1
         # if tblid > 25 break end
@@ -126,16 +137,99 @@ function updateofficedate(tablename::AbstractString)::Int
             dstdate_start = parse(Int, rgm.match)
         end
         # println("Int: ", dstdate_start)
-        
+
         rgm = match(rgx, date_end)
         if rgm != nothing
             dstdate_end = parse(Int, rgm.match)
         end
-        
+
         DBInterface.execute(insertstmt, (wiagid, dstdate_start, dstdate_end));
-        
+
         tblid += 1
         # if tblid > 25 break end
     end
     return tblid
+end
+
+function fillnamelookup(tablename::AbstractString)::Int
+    msg = 200
+    dbwiag = DBInterface.connect(MySQL.Connection, "localhost", "wiag", "Wogen&Wellen", db="wiag");
+
+    DBInterface.execute(dbwiag, "DELETE FROM " * tablename);
+
+    dfperson = DBInterface.execute(dbwiag,
+                                   "SELECT wiagid, givenname, prefix_name, familyname, givenname_variant, familyname_variant FROM person") |> DataFrame;
+
+    insertstmt = DBInterface.prepare(dbwiag, "INSERT INTO " * tablename * " VALUES (?, ?, ?, ?, ?)")
+
+    # structure
+    # gn[:] prefix fn|fnv
+    # gn[1] prefix fn|fnv
+    # gnv[:] prefix fn|fnv
+    # gnv[1] prefix fn|fnv
+
+    # app: test with or without prefix
+
+    irowout = 0
+    for row in eachrow(dfperson)
+        wiagid = row[:wiagid]
+        gn = row[:givenname]
+        prefix = row[:prefix_name]
+        fn = row[:familyname]
+        gnv = row[:givenname_variant]
+        fnv = row[:familyname_variant]
+
+
+
+        irowout = fillnamelookupgn(insertstmt, wiagid, gn, prefix, fn, fnv)
+
+        if !ismissing(gnv) && gnv != ""
+            # sets of givennames
+            cgnv = split(gnv, r", *")
+            for gnve in cgnv
+                irowout = fillnamelookupgn(insertstmt, wiagid, gnve, prefix, fn, fnv)
+            end            
+        end
+
+        if irowout % msg == 0
+            println("write row: ", irowout)
+        end        
+
+    end
+    return irowout
+
+end
+
+let irowout = 1
+    global fillnamelookupgn
+    
+    function fillnamelookupgn(insertstmt, wiagid, gn, prefix, fn, fnv)
+
+        function dbinsert(gni, fni)
+            DBInterface.execute(insertstmt, (irowout, wiagid, String(gni), prefix, String(fni)))
+            irowout += 1
+        end
+
+        dbinsert(gn, fn)
+        cgn = split(gn);
+        # more than one givenname
+        if length(cgn) > 1
+            dbinsert(cgn[1], fn)
+        end
+
+        # familyname variants
+        if !ismissing(fnv) && fnv != ""
+            cfnv = split(fnv, r", *")
+            for fnve in cfnv
+                dbinsert(gn, fnve)
+                # more than one givenname
+                if length(cgn) > 1
+                    dbinsert(cgn[1], fnve)
+                end
+            end
+        end
+
+        return(irowout)
+    end
+
 end
