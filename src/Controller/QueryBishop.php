@@ -6,8 +6,6 @@ use App\Form\BishopQueryFormType;
 use App\Form\Model\BishopQueryFormModel;
 use App\Entity\Person;
 use App\Entity\Office;
-use App\Entity\PlaceCount;
-
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -136,25 +134,11 @@ class QueryBishop extends AbstractController {
             $this->createNotFoundException('Person wurde nicht gefunden');
         }
 
-        $wikipediaurl = $person->getWikipediaurl();
-        $wikipediaurlbase = 'https://de.wikipedia.org/wiki/';
-        $wikipediaurlp = explode($wikipediaurlbase, $wikipediaurl);
-        /**
-         * prüfe ob es ein element 1 gibt array_has_key
-         * lies es aus
-         * wende urldecode an
-         * wende str_replace('_', ' ', wikipediadisplay) an.
-         */
-        $wikipediatitle = $wikipediaurl;
-        if (count($wikipediaurlp) > 1) {
-            $wpurl_decoded = urldecode($wikipediaurlp[1]);
-            $wikipediatitle = str_replace('_', ' ', $wpurl_decoded);
-        }
+        
 
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,
             'wiagidlong' => $wiagidlong,
-            'wikipediatitle' => $wikipediatitle,
             'flaglist' => $flaglist,
         ]);
     }

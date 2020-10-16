@@ -3,46 +3,48 @@
 {% block body %}
     <div class="ml-3 mt-2">
 	<h2>Tests</h2>
-	<h3>Famliennamenvariante, Kommentare</h3>
+	<h5>Famliennamenvariante, Kommentare</h5>
 	<p><a href="{{ path('bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-10211-001'}) }}">Johann Theodor von Franken-Siersdorf</a></p>
 	<p><a href="{{ path('bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-20113-001'}) }}">Simon Brosius Horstein von Horstein</a></p>
 
 
-	<h3>Refenrenz 'Gatz, Bischöfe 1785/1803 bis 1945'</h3>
+	<h5>Refenrenz 'Gatz, Bischöfe 1785/1803 bis 1945'</h5>
 	<p><a href="{{ path('bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-10256-001'}) }}">
 	    Urs Franz Josef Glutz von Boltzheim</a></p>
 
-	<h3>Kloster Link</h3>
+	<h5>Kloster Link</h5>
 	<p><a href="{{ path('bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-2707-001'}) }}">
 	    Hermann von Bekeshovede</a></p>
 
-	<h3>Kommentare Ämter</h3>
+	<h5>Kommentare Ämter</h5>
 	<p><a href="{{ path('bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-2707-001'}) }}">
 	    Hermann von Bekeshovede</a></p>
+	<p><a href="{{ path('bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-10860-001'}) }}">
+	    Johann Philipp Reichsfreiherr von Walderdorff</a>
 
-	<h3>Normdaten</h3>
+	<h6>Normdaten</h6>
 	<p><a href="{{ path('bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-20988-001'}) }}">
 	    Incelerius Proditz</a></p>
 
-	<h3>Link auf Wikpedia</h3>
+	<h5>Link auf Wikpedia</h5>
 	<p><a href="{{ path('bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-2707-001'}) }}">
 	    Hermann von Bekeshovede</a></p>
 	<p><a href="{{ path('bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-4098-001'}) }}">
 	    Thietgrim/Thiatgrim</a></p>
 
-	<h3>Langer Name</h3>
+	<h5>Langer Name</h5>
 	<p><a href="{{ path('bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-10338-001'}) }}">
 	    Johann Nepomuk Augustin Fidelis Maria Anton Reichsfreiherr von Hornstein zu Hohenstoffen und Grieningen</a></p>
 
 	<h3>API</h3>
 
-	<h4>Einzelperson</h4>
+	<h5>Einzelperson</h5>
 	<p><a href="{{ path('api_bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-10338-001', format: 'json'}) }}">
 	    Hornstein zu Hohenstoffen und Grieningen</a></p>
 	<p><a href="{{ path('api_bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-12626-001', format: 'json'}) }}">
 	    Schrattenbach</a></p>
 
-	<h4>Liste</h4>
+	<h5>Liste</h5>
 	<p><a href="{{ path('api_query_bishops', {'diocese': 'Worms'}) }}">
 	    diocese=Worms</a></p>
 	<p><a href="{{ path('api_query_bishops', {'name': 'hohen', 'office': 'elekt'}) }}">

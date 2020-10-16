@@ -68,223 +68,13 @@ class PersonRepository extends ServiceEntityRepository {
 
         $suggestions = $qb->getQuery()->getResult();
 
-        # dd(array_map(function($a) {return $a['suggestion'];}, $suggestions));
         return $suggestions;
 
-        // $conn = $this->getEntityManager()->getConnection();
-
-        // /* TODO
-        //  * - ORDER BY p.familyname ASC
-        //  * - [X] include name variants
-        //  */
-
-        // $concat = "CONCAT_WS(' ', p.givenname, p.prefix_name, p.familyname)";
-
-        // $sql = "SELECT DISTINCT({$concat}) as suggestion FROM person p".
-        //      " WHERE {$concat} LIKE '%{$name}%' LIMIT $limit";
-
-        // $stmt = $conn->prepare($sql);
-        // // is it possible to reuse prepared statements?
-        // $stmt->execute();
-        // $sqlres = $stmt->fetchAll();
-
-        // if(count($sqlres) < $limit) {
-        //     $limiti = $limit - count($sqlres);
         //     $sql = "SELECT DISTINCT(familyname) as suggestion FROM familynamevariant".
         //          " WHERE familyname like '%{$name}%'".
         //          " UNION SELECT DISTINCT(givenname) as suggestion FROM givennamevariant".
         //          " WHERE givenname like '%{$name}%' LIMIT $limiti";
-        //     $stmt = $conn->prepare($sql);
-        //     // is it possible to reuse prepared statements?
-        //     $stmt->execute();
-        //     $sqlres = array_merge($sqlres, $stmt->fetchAll());
-        // }
-
-        // // dd($sqlres);
-        // return $sqlres;
     }
-
-
-    public function findByFamilyname($name, $limit = 1000): array {
-        $conn = $this->getEntityManager()->getConnection();
-
-        //         ORDER BY p.familyname ASC
-
-        $sql = "SELECT * FROM person p
-        WHERE p.familyname LIKE :name
-        LIMIT $limit";
-
-        $stmt = $conn->prepare($sql);
-        // is it possible to reuse prepared statements?
-        $stmt->execute([
-            'name' => "%{$name}%",
-        ]);
-
-        // returns an array of arrays (i.e. a raw data set)
-        return $stmt->fetchAll();
-    }
-
-    /**
-     * return a SQL subquery which yields a list of wiagids that fullfill all
-     * conditions in `$qd`.
-     * Decide about a search strategy and set `$fextended` eventually to true in calls to `buildWiagidSet`.
-     */
-    public function buildWiagidSet(BishopQueryFormModel $qd, $fextended = false) {
-
-        $csqlid = array();
-        $csqlwh = array();
-        $tno = 1;
-        if($qd->name) {
-            $condname = "CONCAT_WS(' ', person.givenname, person.prefix_name, person.familyname) LIKE '%{$qd->name}%'";
-            $select = array();
-            $select[] = "SELECT wiagid FROM person WHERE {$condname}";
-            $select[] = "UNION SELECT wiagid FROM person WHERE CONCAT_WS(' ', givenname, familyname) LIKE '%{$qd->name}%'";
-            $select[] = "UNION SELECT wiagid from familynamevariant WHERE familyname LIKE '%{$qd->name}%'";
-            $select[] = "UNION SELECT wiagid from givennamevariant WHERE givenname LIKE '%{$qd->name}%'";
-            if($fextended) {
-                $nameelts = explode(" ", $qd->name);
-                if(count($nameelts) > 1) {
-                    foreach ($nameelts as $nameelt) {
-                        $nameelt = trim($nameelt, ",;. ");
-                        $select[] = "UNION SELECT wiagid from person WHERE givenname LIKE '%{$nameelt}%'";
-                        $select[] = "UNION SELECT wiagid from person WHERE prefix_name LIKE '%{$nameelt}%'";
-                        $select[] = "UNION SELECT wiagid from person WHERE familyname LIKE '%{$nameelt}%'";
-                        $select[] = "UNION SELECT wiagid from familynamevariant WHERE familyname LIKE '%{$nameelt}%'";
-                        $select[] = "UNION SELECT wiagid from givennamevariant WHERE givenname LIKE '%{$nameelt}%'";
-                    }
-                }
-            }
-            $csqlid[] = "(".implode(" ", $select).") as t{$tno}";
-            $tno += 1;
-        }
-
-        if($qd->place) {
-            $csqlid[] = "(SELECT wiagid_person as wiagid FROM office".
-                      " WHERE office.diocese like '%{$qd->place}%') as t{$tno}";
-            if($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
-            $tno += 1;
-        }
-
-        if($qd->facetPlaces) {
-
-            $dioceses = array();
-            foreach($qd->facetPlaces as $d) {
-                $dioceses[] = "'{$d->name}'";
-            }
-            $set_of_dioceses = implode(", ", $dioceses);
-
-            $csqlid[] = "(SELECT wiagid_person as wiagid FROM office".
-                      " WHERE office.diocese IN ({$set_of_dioceses})) AS t{$tno}";
-            if($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
-            $tno += 1;
-        }
-
-        if($qd->office) {
-            $csqlid[] = "(SELECT wiagid_person as wiagid FROM office".
-                      " WHERE office.office_name like '%{$qd->office}%') AS t{$tno}";
-            if($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
-            $tno += 1;
-        }
-
-        if($qd->facetOffices) {
-            $offices = array();
-            foreach($qd->facetOffices as $oc) {
-                $offices[] = "'{$oc->name}'";
-            }
-            $set_of_offices = implode(", ", $offices);
-            $csqlid[] = "(SELECT wiagid_person as wiagid FROM office".
-                      " WHERE office.office_name IN ({$set_of_offices})) AS t{$tno}";
-            if($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
-            $tno += 1;
-        }
-
-        if($qd->year) {
-            $mgnyear = self::MARGINYEAR;
-            $csqlid[] = "(SELECT wiagid_person as wiagid, era_start, era_end FROM era".
-                      " WHERE (era_start - {$mgnyear} < {$qd->year} AND {$qd->year} < era_end + {$mgnyear})) as t{$tno}";
-            if($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
-            $tno += 1;
-        }
-
-        if($qd->someid) {
-            $condsomeid = "'{$qd->someid}' IN (person.gsid, person.gndid, person.viafid, person.wikidataid, person.wiagid)";
-            $csqlid[] = "(SELECT wiagid FROM person".
-                      " WHERE {$condsomeid}) as t{$tno}";
-            if($tno > 1) $csqlwh[] = "t1.wiagid = t{$tno}.wiagid";
-            $tno += 1;
-        }
-
-        $sqlwhere = $tno > 2 ? " WHERE ".join(' AND ', $csqlwh) : "";
-        $sql = "(SELECT DISTINCT(t1.wiagid) as wiagid FROM ".join(', ', $csqlid).$sqlwhere.") AS twiagid";
-
-        return $sql;
-
-    }
-
-    // public function findByQueryObject(BishopQueryFormModel $querydata, $limit, $page): array {
-    //     $conn = $this->getEntityManager()->getConnection();
-
-    //     $offset = ($page - 1) * $limit;
-
-    //     # ## TODO do this query with DQL
-    //     $sql = "SELECT person.* FROM person, ".
-    //          $this->buildWiagidSet($querydata).
-    //          " WHERE person.wiagid = twiagid.wiagid";
-    //     if($limit > 0) $sql = $sql." LIMIT {$limit} OFFSET {$offset}";
-
-    //     $stmt = $conn->prepare($sql);
-    //     $stmt->execute();
-
-    //     return $stmt->fetchAll();
-    // }
-
-    // public function findByNameWithOffices(BishopQueryFormModel $querydata, $limit, $page) {
-    //     $qb = $this->createQueryBuilder('person')
-    //                ->join('person.familyname_variant', 'fnv')
-    //                ->join('person.givenname_variant', 'gnv')
-    //                ->andWhere('person.familyname LIKE :name'.
-    //                           ' OR fnv.familyname LIKE :name')
-    //                ->setParameter('name', '%knopf%');
-
-    //     if($limit > 0) {
-    //         $offset = ($page - 1) * $limit;
-    //         $qb->setMaxResults($limit);
-    //         $qb->setFirstResult($offset);
-    //     }
-
-    //     $query = $qb->getQuery();
-    //     $persons = $query->getResult();
-    //     dump($persons);
-
-
-    //     return $persons;
-    // }
-
-    // public function findByPlaceWithOffices(BishopQueryFormModel $querydata, $limit, $page) {
-    //     $qb = $this->createQueryBuilder('person')
-    //                ->join('person.offices', 'oc')
-    //                ->addSelect('oc')
-    //                ->join('person.offices', 'ocplace')
-    //                ->andWhere('ocplace.diocese LIKE :place');
-
-    //     $this->addFacets($querydata, $qb);
-
-    //     # sort by office date
-    //     $qb->join('oc.numdate', 'ocdate')
-    //        ->orderBy('ocdate.date_start', 'ASC')
-    //        ->setParameter('place', '%'.$querydata->place.'%');
-
-    //     if($limit > 0) {
-    //         $offset = ($page - 1) * $limit;
-    //         $qb->setMaxResults($limit);
-    //         $qb->setFirstResult($offset);
-    //     }
-
-    //     $query = $qb->getQuery();
-    //     $persons = $query->getResult();
-
-    //     return $persons;
-    // }
 
     public function addFacets($querydata, $qb) {
         if($querydata->facetPlaces) {
@@ -309,55 +99,6 @@ class PersonRepository extends ServiceEntityRepository {
         return $qb;
     }
 
-
-    // public function findWiagidByQueryObject(BishopQueryFormModel $querydata, $limit, $page) {
-    //     $conn = $this->getEntityManager()->getConnection();
-
-    //     $offset = ($page - 1) * $limit;
-
-    //     $sql = "SELECT person.wiagid FROM person, ".
-    //          $this->buildWiagidSet($querydata).
-    //          " WHERE person.wiagid = twiagid.wiagid";
-    //     if($limit > 0) $sql = $sql." LIMIT {$limit} OFFSET {$offset}";
-
-    //     $stmt = $conn->prepare($sql);
-    //     $stmt->execute();
-
-    //     // returns an array of arrays (i.e. a raw data set)
-    //     $sqlres = $stmt->fetchAll();
-
-    //     return $sqlres;
-    // }
-
-    // public function findObjectsByQueryObject(BishopQueryFormModel $querydata, $limit = 0, $page = 0): array {
-    //     # ## TODO does this work?
-    //     $wiagids = $this->findWiagidByQueryObject($querydata, $limit, $page);
-
-    //     $strWiagids = implode(",", array_map(function($v) {return $v['wiagid'];}, $wiagids));
-
-    //     $persons = $this->createQueryBuilder('p')
-    //                     ->andWhere('p.wiagid in ('.$strWiagids.')')
-    //                     ->getQuery()
-    //                     ->getResult();
-    //     foreach($persons as $p) {
-    //         $p->setOffices($this->findOfficeByWiagid($p->getWiagid()));
-    //     }
-    //     return $persons;
-    // }
-
-    // public function findOfficeByWiagid_obsolete(string $wiagid) {
-    //     $conn = $this->getEntityManager()->getConnection();
-
-    //     // TODO use OfficeRepository
-    //     $ocRep = $this->getEntityManager()->getRepository(Office::class);
-
-    //     return $ocRep->createQueryBuilder('o')
-    //                  ->andWhere("o.wiagid_person = {$wiagid}")
-    //                  ->getQuery()
-    //                  ->getResult();
-    // }
-
-
     public function countByQueryObject(BishopQueryFormModel $bishopquery) {
         if($bishopquery->isEmpty()) return 0;
 
@@ -373,9 +114,6 @@ class PersonRepository extends ServiceEntityRepository {
     }
 
     public function findWithOffices(BishopQueryFormModel $bishopquery, $limit = 0, $page = 0) {
-        // $persons_raw = $this->findByQueryObject($bishopquery, $limit, $page);
-        // $persons = $this->getObjects($persons_raw);
-        // return $persons;
 
         $qb = $this->createQueryBuilder('person')
                    ->join('person.offices', 'oc')
@@ -475,20 +213,6 @@ class PersonRepository extends ServiceEntityRepository {
         // for each individual person sort offices by start date in the template
         return $qb;
     }
-
-    // public function getObjects($persons_raw) {
-    //     $ocRep = $this->getEntityManager()->getRepository(Office::class);
-
-    //     $persons = array();
-    //     foreach($persons_raw as $p) {
-    //         $person = new Person();
-    //         $person->setFields($p);
-    //         $offices = $ocRep->findByIDPerson($person->getWiagid());
-    //         $person->setOffices($offices);
-    //         $persons[] = $person;
-    //     }
-    //     return $persons;
-    // }
 
     public function findOneWithOffices($wiagid) {
         // fetch all data related to this person

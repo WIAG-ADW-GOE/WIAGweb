@@ -248,23 +248,23 @@ class Office
 
     public function toJSON() {
         $ocj = array();
-        
+
         $ocj['officeTitle'] = $this->getOfficeName();
 
         $fv = $this->getDiocese();
         if($fv) $ocj['diocese'] = $fv;
-        
+
         $fv = $this->getDateStart();
         if($fv) $ocj['dateStart'] = $fv;
-        
+
         $fv = $this->getDateEnd();
         if($fv) $ocj['dateEnd'] = $fv;
-        
+
         $fv = $this->getComment();
         if($fv) $ocj['comment'] = $fv;
-        
+
         return $ocj;
     }
-    
-    
+
+
 }

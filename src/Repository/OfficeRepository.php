@@ -62,6 +62,7 @@ class OfficeRepository extends ServiceEntityRepository
 
     }
 
+    /* AJAX callback */
     public function suggestPlace($place, $limit = 200): array {
         $qb = $this->createQueryBuilder('oc')
                    ->select('DISTINCT oc.diocese AS suggestion')
@@ -74,26 +75,9 @@ class OfficeRepository extends ServiceEntityRepository
 
         return $query->getResult();
 
-
-
-        // $conn = $this->getEntityManager()->getConnection();
-
-
-        // $sql = "
-        // SELECT DISTINCT(diocese) as suggestion FROM office p
-        // WHERE p.diocese LIKE :place
-        // LIMIT $limit
-        // ";
-        // $stmt = $conn->prepare($sql);
-        // // is it possible to reuse prepared statements?
-        // $stmt->execute([
-        //     'place' => "%{$place}%",
-        // ]);
-
-        // // returns an array of arrays (i.e. a raw data set)
-        // return $stmt->fetchAll();
     }
 
+    /* AJAX callback */
     public function suggestOffice($office, $limit = 200): array {
         $qb = $this->createQueryBuilder('oc')
                    ->select('DISTINCT oc.office_name AS suggestion')
@@ -105,74 +89,7 @@ class OfficeRepository extends ServiceEntityRepository
 
         return $query->getResult();
 
-        // $conn = $this->getEntityManager()->getConnection();
-
-
-        // $sql = "
-        // SELECT DISTINCT(office_name) as suggestion FROM office o
-        // WHERE o.office_name LIKE :office
-        // LIMIT $limit
-        // ";
-        // $stmt = $conn->prepare($sql);
-        // // is it possible to reuse prepared statements?
-        // $stmt->execute([
-        //     'office' => "%{$office}%",
-        // ]);
-
-        // // returns an array of arrays (i.e. a raw data set)
-        // return $stmt->fetchAll();
     }
-
-    /**
-     * Find all offices (with frequency) for a given query.
-     */
-    // public function findOfficeNamesByQueryObject(BishopQueryFormModel $querydata) {
-
-    //     $conn = $this->getEntityManager()->getConnection();
-
-    //     $pRep = $this->getEntityManager()->getRepository(Person::class);
-
-    //     $sql = "SELECT DISTINCT(office_name), COUNT(DISTINCT(wiagid_person)) as n FROM office, ".
-    //          $pRep->buildWiagidSet($querydata).
-    //          " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''".
-    //          " GROUP BY office_name ORDER BY NULL";
-
-    //     $stmt = $conn->prepare($sql);
-    //     $stmt->execute();
-
-    //     return $stmt->fetchAll();
-    // }
-
-    /**
-     * Find all dioceses (with frequency) for a given query.
-     */
-    // public function findDiocesesByQueryObject(BishopQueryFormModel $querydata) {
-
-    //     $conn = $this->getEntityManager()->getConnection();
-    //     $pRep = $this->getEntityManager()->getRepository(Person::class);
-
-    //     /**
-    //      * 'ORDER BY NULL' is the most efficient way to order by the column used in 'GROUP BY' see
-    //      * https://dev.mysql.com/doc/refman/5.7/en/select.html
-    //      */
-    //     if ($querydata->isEmpty()) {
-    //         $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office ".
-    //              " WHERE diocese <> ''".
-    //              " GROUP BY diocese ORDER BY NULL";
-    //     } else {
-    //         $sql = "SELECT DISTINCT(diocese), COUNT(DISTINCT(wiagid_person)) as n FROM office, ".
-    //              $pRep->buildWiagidSet($querydata).
-    //              " WHERE office.wiagid_person = twiagid.wiagid AND diocese <> ''".
-    //              " GROUP BY diocese ORDER BY NULL";
-    //     }
-
-    //     // dd($bishopquery, $sql);
-
-    //     $stmt = $conn->prepare($sql);
-    //     $stmt->execute();
-
-    //     return $stmt->fetchAll();
-    // }
 
     public function findPersonIdsByTitle(BishopQueryFormModel $bishopquery) {
         $qb = $this->createQueryBuilder('oc')

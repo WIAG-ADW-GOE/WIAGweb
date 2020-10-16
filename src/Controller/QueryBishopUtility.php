@@ -21,8 +21,8 @@ class QueryBishopUtility extends AbstractController {
     const HINT_LIST_LIMIT = 12;
 
     /**
+     * AJAX callback
      * @Route("/query-bishops/utility/names", methods="GET", name="query_bishops_utility_names")
-
      */
     public function getNamesApi(Request $request) {
         $persons = $this->getDoctrine()
@@ -30,15 +30,13 @@ class QueryBishopUtility extends AbstractController {
                         ->suggestName($request->query->get('query'),
                                       self::HINT_LIST_LIMIT);
 
-        // $persons = ["Adam Erst", "Johann Bischpinck"];
-        // $persons = $personRepository->findByFamilyname("ege");
-        // dump($request->query->get('query'));
         return $this->json([
             'persons' => $persons,
         ]);
     }
 
     /**
+     * AJAX callback
      *@Route("/query-bishops/utility/places", methods="GET", name="query_bishops_utility_places")
      */
     public function getPlacesApi(Request $request) {
@@ -52,6 +50,7 @@ class QueryBishopUtility extends AbstractController {
     }
 
     /**
+     * AJAX callback
      *@Route("/query-bishops/utility/offices", methods="GET", name="query_bishops_utility_offices")
      */
     public function getOfficeApi(Request $request) {
@@ -59,7 +58,7 @@ class QueryBishopUtility extends AbstractController {
                        ->getRepository(Office::class)
                        ->suggestOffice($request->query->get('query'),
                                                     self::HINT_LIST_LIMIT);
-        dump($offices);
+
         return $this->json([
             'offices' => $offices,
         ]);

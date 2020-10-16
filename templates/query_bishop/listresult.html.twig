@@ -41,7 +41,7 @@
 	</div>
 
 	<div class="container-fluid">
-	    {% if count > 0 %}
+	    {% if count > 0 or query_form.facetPlaces is defined or query_form.facetOffices is defined%}
 		<div class="row">
 		    <div class="col-9">
 			<div class="table-responsive">

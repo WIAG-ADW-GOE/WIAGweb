@@ -18,7 +18,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
-
 /**
  * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
  */

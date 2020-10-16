@@ -134,17 +134,17 @@ class Person {
     private $offices;
 
     public static function isWiagidLong($wiagidlong) {
-        dump($wiagidlong);
         $match = stristr($wiagidlong, self::WIAGID_PREFIX);
         return strlen($match) > 0;
     }
 
     public static function wiagidLongToWiagid($wiagidlong) {
-        $pos = strlen(self::WIAGID_PREFIX);
-        return substr($wiagidlong, $pos, -4);
+        $head = strlen(self::WIAGID_PREFIX);
+        $tail = strlen(self::WIAGID_POSTFIX);
+        return substr($wiagidlong, $head, -$tail);
     }
 
-    public function setFields($p) {
+    public function setFields_obsolete($p) {
         $this->wiagid = $p['wiagid'];
         $this->authors_gatz = $p['authors_gatz'];
         $this->pages_gatz = $p['pages_gatz'];
@@ -399,6 +399,21 @@ class Person {
     public function getWiagidLong(): ?string
     {
         return self::WIAGID_PREFIX.$this->wiagid.self::WIAGID_POSTFIX;
+    }
+
+    public function getWikipediaTitle(): ?string {
+        $url = $this->wikipediaurl;
+        if(!$url || $url == '') return null;
+        
+        $wikipediaurlbase = 'https://de.wikipedia.org/wiki/';
+
+        
+        $head = strlen($wikipediaurlbase);
+        $wikipediatitle = substr($url, $head);
+        $wikipediatitle = urldecode($wikipediatitle);
+        $wikipediatitle = str_replace('_', ' ', $wikipediatitle);
+
+        return $wikipediatitle;
     }
 
     public function getOffices() {

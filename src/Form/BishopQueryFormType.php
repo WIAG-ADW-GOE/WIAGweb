@@ -140,7 +140,7 @@ class BishopQueryFormType extends AbstractType
                     $choices[] = new PlaceCount($fpl, '0');
                 }
             }
-            # TODO sort $choices (again)
+            uasort($choices, array('App\Entity\PlaceCount', 'isless'));
         }
 
 
@@ -148,7 +148,7 @@ class BishopQueryFormType extends AbstractType
         if ($places) {
             $form = $event->getForm();
             $form->add('facetPlaces', ChoiceType::class, [
-                'label' => 'Filter nach Orten',
+                'label' => 'Filter Bistum',
                 'expanded' => true,
                 'multiple' => true,
                 'choices' => $choices,
@@ -192,12 +192,13 @@ class BishopQueryFormType extends AbstractType
                     $choices[] = new OfficeCount($foc, '0');
                 }
             }
+            uasort($choices, array('App\Entity\OfficeCount', 'isless'));
         }
 
         if ($offices) {
             $formicb = $event->getForm();
             $formicb->add('facetOffices', ChoiceType::class, [
-                'label' => 'Filter nach Orten',
+                'label' => 'Filter Amt',
                 'expanded' => true,
                 'multiple' => true,
                 'choices' => $choices,
