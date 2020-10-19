@@ -69,7 +69,14 @@
 				<li>
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item"> {{ office.officename }}</li>
-					<li class="list-inline-item">{{ office.diocese }}</li>
+					{% if office.diocese %}
+					    <li class="list-inline-item">{{ office.diocese }}</li>
+					{% endif %}
+					{% if office.idmonastery %}
+					    <li class="list-inline-item">
+						<a href="https://adw-goe.de/forschung/forschungsprojekte-akademienprogramm/germania-sacra/klosterdatenbank/datenbankabfrage/gsn/{{ office.idmonastery }}">Kloster</a>
+					    </li>
+					{% endif %}
 					<li class="list-inline-item">
 					    {% if not office.datestart and not office.dateend %}
 					    {% elseif office.datestart and not office.dateend %}
@@ -80,11 +87,6 @@
 						{{ office.datestart }}–{{ office.dateend }}
 					    {% endif %}
 					</li>
-					{% if office.idmonastery %}
-					    <li class="list-inline-item">
-						<a href="https://adw-goe.de/forschung/forschungsprojekte-akademienprogramm/germania-sacra/klosterdatenbank/datenbankabfrage/gsn/{{ office.idmonastery }}">Kloster</a>
-					    </li>
-					{% endif %}
 					{% if office.comment %}
 					    <li class="list-inline-item comment"> ({{ office.comment }}) </li>
 					{% endif %}
