@@ -6,6 +6,10 @@ use App\Form\BishopQueryFormType;
 use App\Form\Model\BishopQueryFormModel;
 use App\Entity\Person;
 use App\Entity\Office;
+use App\Entity\Officedate;
+use App\Entity\Monastery;
+use App\Entity\MonasteryLocation;
+
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -79,9 +83,17 @@ class QueryBishop extends AbstractController {
 
                 $page = $request->request->get('page') ?? 1;
 
-                $persons = $this->getDoctrine()
-                                ->getRepository(Person::class)
-                                ->findWithOffices($bishopquery, self::LIST_LIMIT, $page);
+                $personRepository = $this->getDoctrine()
+                                         ->getRepository(Person::class);
+
+                $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $page);
+
+                # debug
+                foreach($persons as $p) {
+                    if($p->hasMonastery()) {
+                        $personRepository->addMonasteryPlaces($p);
+                    }
+                }
             }
 
             // combination of POST_SET_DATA and POST_SUBMIT
@@ -173,5 +185,27 @@ class QueryBishop extends AbstractController {
                       ->findtest($id);
         dd($person);
     }
+
+    /**
+     * @Route("/query-test/monastery/{id}")
+     */
+    public function querytestmonastery($id) {
+        $monastery = $this->getDoctrine()
+                      ->getRepository(Monastery::class)
+                      ->findOneByWiagid($id);
+        dd($monastery);
+    }
+
+    /**
+     * @Route("/query-test/officedate/{id}")
+     */
+    public function querytestofficedate($id) {
+        $obj = $this->getDoctrine()
+                      ->getRepository(Officedate::class)
+                      ->findOneByWiagid_office($id);
+        dd($obj);
+    }
+
+
 
 }

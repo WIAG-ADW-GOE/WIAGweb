@@ -157,6 +157,7 @@ class PersonRepository extends ServiceEntityRepository {
         $query = $qb->getQuery();
 
         $persons = new Paginator($query, true);
+
         // $persons = $query->getResult();
 
         return $persons;
@@ -223,6 +224,8 @@ class PersonRepository extends ServiceEntityRepository {
                       ->addSelect('oc')
                       ->leftJoin('oc.numdate', 'ocdate')
                       ->orderBy('ocdate.date_start', 'ASC')
+                      ->leftJoin('oc.monastery', 'monastery')
+                      ->addSelect('monastery')
                       ->getQuery();
 
         $person = $query->getOneOrNullResult();
@@ -272,5 +275,53 @@ class PersonRepository extends ServiceEntityRepository {
         return($person);
     }
 
+    public function addMonasteryPlaces(Person $person) {
+        // The QueryBuilder ends up in a feed back loop
+        // $qb = $this->getEntityManager()
+        //            ->createQueryBuilder();
+        // foreach($person->getOffices() as $oc) {
+        //     if($oc->getIdMonastery()) {
+        //         $ocid = $oc->getWiagid();
+        //         $qb->from('App\Entity\Office', 'oc')
+        //            ->andWhere('oc.wiagid = :ocid')
+        //            ->setParameter('ocid', $ocid)
+        //            ->join('oc.monastery.loactions',  'moy')
+        //            ->join('moy.locations', 'locations')
+        //            ->join('locations.place', 'place')
+        //            ->select('place.place_name');
+        //         $query = $qb->getQuery();
+        //         $qrplacenames = $query->getResult();
+        //         $placenames = array_map(
+        //             function($el) {
+        //                 return $el['place_name'];
+        //             },
+        //             $qrplacenames
+        //         );
+        //         $oc->setMonasteryplacestr(implode(', ', $placenames));
+        //     }
+        // }
+
+        $em = $this->getEntityManager();
+        foreach($person->getOffices() as $oc) {
+            if($oc->getIdMonastery()) {
+                $ocid = $oc->getWiagid();
+                $query = $em->createQuery("SELECT place.place_name FROM App\Entity\Office oc ".
+                                          "INNER JOIN oc.monastery monastery ".
+                                          "INNER JOIN monastery.locations locations ".
+                                          "INNER JOIN locations.place place ".
+                                          "WHERE oc.wiagid = :ocid");
+                $query->setParameter('ocid', $ocid);
+
+                $qrplacenames = $query->getResult();
+                $placenames = array_map(
+                    function($el) {
+                        return $el['place_name'];
+                    },
+                    $qrplacenames
+                );
+                $oc->setMonasteryplacestr(implode(', ', $placenames));
+            }
+        }
+    }
 
 }

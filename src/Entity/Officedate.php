@@ -13,8 +13,7 @@ class Officedate
 
     /**
      * @ORM\id
-     * @ORM\OneToOne(targetEntity="Office", inversedBy="numdate")
-     * @ORM\JoinColumn(name="wiagid_office", referencedColumnName="wiagid")
+     * @ORM\Column(type="string", length=63, nullable = false)
      */
     private $wiagid_office;
 
@@ -28,10 +27,12 @@ class Officedate
      */
     private $date_end;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    /**
+     * @ORM\OneToOne(targetEntity="Office", inversedBy="numdate")
+     * @ORM\JoinColumn(name="wiagid_office", referencedColumnName="wiagid")
+     */
+    private $office;
+    
 
     public function getWiagidOffice(): ?string
     {
@@ -68,4 +69,9 @@ class Officedate
 
         return $this;
     }
+
+    public function getOffice() {
+        return $this->office;
+    }
+        
 }

@@ -539,6 +539,12 @@ class Person {
         return array('person' => $pj);
     }
 
+    public function hasMonastery(): bool {
+        foreach($this->offices as $oc) {
+            if($oc->getIdMonastery()) return true;
+        }
+        return false;
+    }
 
 
 }

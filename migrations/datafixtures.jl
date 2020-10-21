@@ -1,6 +1,7 @@
 using MySQL
 using Infiltrator
 
+
 function updatenamevariant(fieldsrc::AbstractString, tablename::AbstractString)::Int
     dbwiag = DBInterface.connect(MySQL.Connection, "localhost", "wiag", "Wogen&Wellen", db="wiag");
 
@@ -233,3 +234,18 @@ let irowout = 1
     end
 
 end
+
+function fillperson(AbstractString::excelfile, AbstractString::sheet, AbstractString::tablename)::Int
+    df = load(excelfile, sheet) |> DataFrame;
+
+    dbwiag = DBInterface.connect(MySQL.Connection, "localhost", "wiag", "Wogen&Wellen", db="wiag");
+
+    DBInterface.execute(dbwiag, "DELETE FROM " * tablename);
+
+    function inserttomysql(row)
+        insertstmt = DBInterface.prepare(dbwiag, "INSERT INTO " * tablename * " VALUES (?, ?, ?, ?, ?)")
+
+    
+
+end
+

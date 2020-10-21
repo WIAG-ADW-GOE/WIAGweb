@@ -73,7 +73,18 @@ class Office
     private $id_monastery;
 
     /**
-     * @ORM\OneToOne(targetEntity="Officedate", mappedBy="wiagid_office")
+     * @ORM\ManyToOne(targetEntity="Monastery", inversedBy="office")
+     * @ORM\JoinColumn(nullable=true, name="id_monastery", referencedColumnName="wiagid")
+     */
+    private $monastery;
+
+    /**
+     * if an office is at a monastery we lookup it's place(s) (see PersonRepository)
+     */
+    private $monasteryplacestr;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Officedate", mappedBy="office")
      * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_office")
      */
     private $numdate;
@@ -246,6 +257,23 @@ class Office
         return $this;
     }
 
+    public function getMonasteryplacestr()
+    {
+        return $this->monasteryplacestr;
+    }
+
+    public function setMonasteryplacestr($monasteryplacestr): self
+    {
+        $this->monasteryplacestr = $monasteryplacestr;
+
+        return $this;
+    }
+
+    public function getMonastery()
+    {
+        return $this->monastery;
+    }
+
     public function toJSON() {
         $ocj = array();
 
@@ -265,6 +293,5 @@ class Office
 
         return $ocj;
     }
-
-
+    
 }
