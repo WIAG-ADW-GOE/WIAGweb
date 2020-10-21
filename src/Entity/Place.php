@@ -38,7 +38,7 @@ class Place
      */
     private $locations;
 
-    
+
     public function getIdPlaces(): ?int
     {
         return $this->id_places;

@@ -88,7 +88,6 @@ class QueryBishop extends AbstractController {
 
                 $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $page);
 
-                # debug
                 foreach($persons as $p) {
                     if($p->hasMonastery()) {
                         $personRepository->addMonasteryPlaces($p);
@@ -146,7 +145,7 @@ class QueryBishop extends AbstractController {
             $this->createNotFoundException('Person wurde nicht gefunden');
         }
 
-        
+
 
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,

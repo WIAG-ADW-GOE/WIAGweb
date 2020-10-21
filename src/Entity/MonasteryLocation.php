@@ -101,5 +101,5 @@ class MonasteryLocation
     public function getPlace() {
         return $this->place;
     }
-    
+
 }

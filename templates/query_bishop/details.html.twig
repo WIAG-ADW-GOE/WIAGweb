@@ -43,7 +43,7 @@
 		    {% endif %}
 		</div>
 	    {% endif %}
-	    
+
 	    {% if not person.datebirth and not person.datedeath %}
 	    {% else %}
 		<div class="row col-12 mt-2">
@@ -164,7 +164,7 @@
 		"{{ displayname }}" {# (WIAGID: {{ wiagidlong }}), #}
 		in: WIAG, {{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ path('bishop', {wiagidlong: wiagidlong}) }}
 		(Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
-	    
+
 	    <div class="row col-12 mt-4">
 		{% if flaglist %}<input type="button" class="btn btn-secondary" onclick="window.history.back()" value="Ergebnisliste"/>{% endif %}
 		<a href="{{ path('launch_query') }}"<button class="btn btn-secondary ml-1">Neue Suche</button></a>
