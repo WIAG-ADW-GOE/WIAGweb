@@ -91,9 +91,9 @@ class Person {
     private $wikipediaurl;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
-    private $reference;
+    private $reference_id;
 
     /**
      * @ORM\Column(type="string", length=511, nullable=true)
@@ -126,6 +126,13 @@ class Person {
      * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
      */
     private $era;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Reference")
+     * @ORM\JoinColumn(name="reference_id", referencedColumnName="reference_id")
+     */
+    private $reference;
+
 
     /**
      * @ORM\OneToMany(targetEntity="Office", mappedBy="wiagid_person")
@@ -350,7 +357,7 @@ class Person {
 
     public function getWikipediaurl(): ?string
     {
-        return $this->wikipediaurl;
+        return trim($this->wikipediaurl, " \t\n#");
     }
 
     public function setWikipediaurl(?string $wikipediaurl): self
@@ -360,14 +367,14 @@ class Person {
         return $this;
     }
 
-    public function getReference(): ?string
+    public function getReferenceId(): ?string
     {
-        return $this->reference;
+        return $this->reference_id;
     }
 
-    public function setReference(?string $reference): self
+    public function setReferenceId(?string $reference): self
     {
-        $this->reference = $reference;
+        $this->reference = $reference_id;
 
         return $this;
     }
@@ -402,12 +409,12 @@ class Person {
     }
 
     public function getWikipediaTitle(): ?string {
-        $url = $this->wikipediaurl;
+        $url = $this->getWikipediaurl();
         if(!$url || $url == '') return null;
-        
+
         $wikipediaurlbase = 'https://de.wikipedia.org/wiki/';
 
-        
+
         $head = strlen($wikipediaurlbase);
         $wikipediatitle = substr($url, $head);
         $wikipediatitle = urldecode($wikipediatitle);
@@ -445,6 +452,17 @@ class Person {
 
         return $this;
     }
+
+    public function getReference() {
+        return $this->reference;
+    }
+
+    public function getDisplayname() {
+        $prefixpart = strlen($this->prefix_name) > 0 ? ' '.$this->prefix_name : '';
+        $familypart = strlen($this->familyname) > 0 ? ' '.$this->familyname : '';
+        return $this->givenname.$prefixpart.$familypart;
+    }
+
 
     public function hasExternalIdentifier() {
         return ($this->viafid

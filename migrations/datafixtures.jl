@@ -12,9 +12,7 @@ function updatenamevariant(fieldsrc::AbstractString, tablename::AbstractString):
     dfsrc = DBInterface.execute(dbwiag,
                                 "SELECT wiagid, " * fieldsrc
                                 * " FROM person") |> DataFrame;
-
-
-
+    
     tblid = 1
     for row in eachrow(dfsrc)
         id, fns = row
@@ -180,8 +178,6 @@ function fillnamelookup(tablename::AbstractString)::Int
         gnv = row[:givenname_variant]
         fnv = row[:familyname_variant]
 
-
-
         irowout = fillnamelookupgn(insertstmt, wiagid, gn, prefix, fn, fnv)
 
         if !ismissing(gnv) && gnv != ""
@@ -207,7 +203,9 @@ let irowout = 1
     function fillnamelookupgn(insertstmt, wiagid, gn, prefix, fn, fnv)
 
         function dbinsert(gni, fni)
-            DBInterface.execute(insertstmt, (irowout, wiagid, String(gni), prefix, String(fni)))
+            sgni = ismissing(gni) ? missing : String(gni)
+            sfni = ismissing(fni) ? missing : String(fni)
+            DBInterface.execute(insertstmt, (irowout, wiagid, sgni, prefix, sfni))
             irowout += 1
         end
 
@@ -235,17 +233,4 @@ let irowout = 1
 
 end
 
-function fillperson(AbstractString::excelfile, AbstractString::sheet, AbstractString::tablename)::Int
-    df = load(excelfile, sheet) |> DataFrame;
-
-    dbwiag = DBInterface.connect(MySQL.Connection, "localhost", "wiag", "Wogen&Wellen", db="wiag");
-
-    DBInterface.execute(dbwiag, "DELETE FROM " * tablename);
-
-    function inserttomysql(row)
-        insertstmt = DBInterface.prepare(dbwiag, "INSERT INTO " * tablename * " VALUES (?, ?, ?, ?, ?)")
-
-    
-
-end
 

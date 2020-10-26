@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% set displayname %}{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}{% endset %}
 {% set urlgspersons %}http://personendatenbank.germania-sacra.de/{% endset %}
 {% set urlgsmonasteries %}http://klosterdatenbank.germania-sacra.de/{% endset %}
 
@@ -12,7 +11,7 @@
 	    <p class="em">Person nicht gefunden.</p>
 	{% else %}
 	    <div class="row mt-3 mb-0"><div class="col-9">
-		<h2>{{ displayname }}</h2>
+		<h2>{{ person.displayname }}</h2>
 	    </div>
 	    <div class="col-3 wiag-id">{{ wiagidlong }}</div></div>
 
@@ -158,14 +157,13 @@
 		{% endif %}
 		{% if person.reference %}
 		    <dt class="col-sm-3">Referenzwerk</dt>
-		    {# Link einfügen #}
-		    <dd class="col-sm-9"><a href="{{ path('reference', {'shortenc': person.reference|url_encode}) }}">{{ person.reference }}</a>, S. {{ person.pagesgatz }}</dd>
+		    <dd class="col-sm-9"><a href="{{ path('reference', {'id': person.referenceid}) }}">{{ person.reference.short }}</a>, S. {{ person.pagesgatz }}</dd>
 		{% endif %}
 
 	    </dl>
 
 	    <div class="row col-12">Empfohlene Zitierweise:<br/>
-		"{{ displayname }}" {# (WIAGID: {{ wiagidlong }}), #}
+		"{{ person.displayname }}" {# (WIAGID: {{ wiagidlong }}), #}
 		in: WIAG, {{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ path('bishop', {wiagidlong: wiagidlong}) }}
 		(Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
 
