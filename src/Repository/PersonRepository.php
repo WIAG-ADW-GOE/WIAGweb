@@ -276,19 +276,20 @@ class PersonRepository extends ServiceEntityRepository {
     }
 
     public function addMonasteryPlaces(Person $person) {
-        // The QueryBuilder ends up in a feed back loop
+        // The QueryBuilder joins to 'monastery' twice!?
         // $qb = $this->getEntityManager()
         //            ->createQueryBuilder();
         // foreach($person->getOffices() as $oc) {
         //     if($oc->getIdMonastery()) {
         //         $ocid = $oc->getWiagid();
-        //         $qb->from('App\Entity\Office', 'oc')
-        //            ->andWhere('oc.wiagid = :ocid')
-        //            ->setParameter('ocid', $ocid)
-        //            ->join('oc.monastery.loactions',  'moy')
-        //            ->join('moy.locations', 'locations')
+        //         $qb->select('place.place_name')
+        //            ->from('App\Entity\Office', 'oc')
+        //            ->join('oc.monastery',  'monastery')
+        //            ->join('monastery.locations', 'locations')
         //            ->join('locations.place', 'place')
-        //            ->select('place.place_name');
+        //            ->andWhere('oc.wiagid = :ocid')
+        //            ->setParameter('ocid', $ocid);
+
         //         $query = $qb->getQuery();
         //         $qrplacenames = $query->getResult();
         //         $placenames = array_map(
