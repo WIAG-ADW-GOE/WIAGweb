@@ -97,4 +97,22 @@ class Reference
         return $this;
     }
 
+    public function toArray(): array {
+        $rfj = array();
+
+        $rfj['title'] = $this->getTitle();
+
+        $fv = $this->getAuthor();
+        if($fv) $rfj['author'] = $fv;
+
+        $fv = $this->getOnlineressource();
+        if($fv) $rfj['online'] = $fv;
+
+        $fv = $this->getShort();
+        if($fv) $rfj['short'] = $fv;
+
+        return $rfj;
+
+    }
+
 }

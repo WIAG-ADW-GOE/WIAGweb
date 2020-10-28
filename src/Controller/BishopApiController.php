@@ -45,7 +45,7 @@ class BishopApiController extends AbstractController {
             $this->createNotFoundException('Person wurde nicht gefunden');
         }
 
-        $personExport = $person->toJSON();
+        $personExport = $person->toArray();
         return $this->json($personExport);
 
     }
@@ -84,7 +84,7 @@ class BishopApiController extends AbstractController {
 
         $personExports = array();
         foreach($persons as $p) {
-            $personExports[] = $p->toJSON();
+            $personExports[] = $p->toArray();
         }
 
         return $this->json(array(

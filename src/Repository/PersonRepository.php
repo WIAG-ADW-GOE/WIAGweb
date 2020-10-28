@@ -58,6 +58,7 @@ class PersonRepository extends ServiceEntityRepository {
     /* AJAX callback function */
     public function suggestName($name, $limit = 40): array {
 
+        // get suggestion directly from the lookup table 2020-10-27
         $qb = $this->createQueryBuilder('p')
                    ->select("DISTINCT CASE WHEN p.prefix_name <> '' THEN CONCAT(p.givenname, ' ', p.prefix_name, ' ', p.familyname) ELSE CONCAT(p.givenname, ' ', p.familyname)END as suggestion")
                    ->join('p.namelookup', 'nlt')
@@ -275,7 +276,7 @@ class PersonRepository extends ServiceEntityRepository {
         return($person);
     }
 
-    public function addMonasteryPlaces(Person $person) {
+    public function addMonasteryLocation(Person $person) {
         // The QueryBuilder joins to 'monastery' twice!?
         // $qb = $this->getEntityManager()
         //            ->createQueryBuilder();
@@ -303,25 +304,9 @@ class PersonRepository extends ServiceEntityRepository {
         // }
 
         $em = $this->getEntityManager();
+        $officeRepository = $em->getRepository(Office::class);
         foreach($person->getOffices() as $oc) {
-            if($oc->getIdMonastery()) {
-                $ocid = $oc->getWiagid();
-                $query = $em->createQuery("SELECT place.place_name FROM App\Entity\Office oc ".
-                                          "INNER JOIN oc.monastery monastery ".
-                                          "INNER JOIN monastery.locations locations ".
-                                          "INNER JOIN locations.place place ".
-                                          "WHERE oc.wiagid = :ocid");
-                $query->setParameter('ocid', $ocid);
-
-                $qrplacenames = $query->getResult();
-                $placenames = array_map(
-                    function($el) {
-                        return $el['place_name'];
-                    },
-                    $qrplacenames
-                );
-                $oc->setMonasteryplacestr(implode(', ', $placenames));
-            }
+            $officeRepository->setMonasteryLocation($oc);
         }
     }
 

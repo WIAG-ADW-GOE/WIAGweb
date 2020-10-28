@@ -68,7 +68,7 @@
 					    <td>{% for o in person.offices|sort((a, b) => a.numdate.datestart <=> b.numdate.datestart) %}
 						<small>{{ o.officename }}
 						    {% if o.diocese %}({{ o.diocese }}){% endif %}
-						    {% if o.idmonastery %}({{ o.monasteryplacestr }}){% endif %}
+						    {% if o.idmonastery %}({{ o.monasterylocationstr }}){% endif %}
 						    {% if o.datestart and not o.dateend %}{{ o.datestart }}
 						    {% elseif not o.datestart and o.dateend %}{{ o.dateend }}
 						    {% elseif o.datestart and o.dateend %}{{ o.datestart }}-{{ o.dateend }}{% endif %}

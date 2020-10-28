@@ -78,10 +78,11 @@ class Office
      */
     private $monastery;
 
+
     /**
-     * if an office is at a monastery we lookup it's place(s) (see PersonRepository)
+     * if an office is at a monastery we lookup it's place(s) (see OfficeRepository)
      */
-    private $monasteryplacestr;
+    private $monasterylocationstr;
 
     /**
      * @ORM\OneToOne(targetEntity="Officedate", mappedBy="office")
@@ -257,30 +258,39 @@ class Office
         return $this;
     }
 
-    public function getMonasteryplacestr()
+    public function getMonasterylocation()
     {
-        return $this->monasteryplacestr;
+        return $this->monasterylocation;
     }
 
-    public function setMonasteryplacestr($monasteryplacestr): self
+    public function getMonasterylocationstr()
     {
-        $this->monasteryplacestr = $monasteryplacestr;
+        return $this->monasterylocationstr;
+    }
+
+    public function setMonasterylocationstr($monasterylocationstr): self
+    {
+        $this->monasterylocationstr = $monasterylocationstr;
 
         return $this;
     }
+
 
     public function getMonastery()
     {
         return $this->monastery;
     }
 
-    public function toJSON() {
+    public function toArray() {
         $ocj = array();
 
         $ocj['officeTitle'] = $this->getOfficeName();
 
         $fv = $this->getDiocese();
         if($fv) $ocj['diocese'] = $fv;
+
+        $fv = $this->getMonastery();
+        if($fv) $ocj['monastery'] = $fv->getMonasteryName();
 
         $fv = $this->getDateStart();
         if($fv) $ocj['dateStart'] = $fv;
@@ -293,5 +303,5 @@ class Office
 
         return $ocj;
     }
-    
+
 }

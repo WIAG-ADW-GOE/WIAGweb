@@ -74,7 +74,7 @@ class QueryBishop extends AbstractController {
 
                     $personExports = array();
                     foreach($persons as $p) {
-                        $personExports[] = $p->toJSON();
+                        $personExports[] = $p->toArray();
                     }
 
                     return $this->json(array('persons' => $personExports));
@@ -90,7 +90,7 @@ class QueryBishop extends AbstractController {
 
                 foreach($persons as $p) {
                     if($p->hasMonastery()) {
-                        $personRepository->addMonasteryPlaces($p);
+                        $personRepository->addMonasteryLocation($p);
                     }
                 }
             }
@@ -144,8 +144,6 @@ class QueryBishop extends AbstractController {
         if (!$person) {
             $this->createNotFoundException('Person wurde nicht gefunden');
         }
-
-
 
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,

@@ -486,7 +486,7 @@ class Person {
                 $this->comment_person != '');
     }
 
-    public function toJSON() {
+    public function toArray() {
         $pj = array();
         $pj['wiagId'] = $this->getWiagidLong();
 
@@ -547,12 +547,17 @@ class Person {
             $pj['offices'] = array();
             $ocJSON = &$pj['offices'];
             foreach($offices as $oc) {
-                $ocJSON[] = $oc->toJSON();
+                $ocJSON[] = $oc->toArray();
             }
         }
 
         $fv = $this->getReference();
-        if($fv) $pj['reference'] = $fv;
+        if($fv) {
+            $pj['reference'] = $fv->toArray();
+            $fiv = $this->getPagesGatz();
+            if($fiv)
+                $pj['reference']['pages'] = $fiv;
+        }
 
         return array('person' => $pj);
     }
