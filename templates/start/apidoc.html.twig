@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% set urlgspersons = 'http://personendatenbank.germania-sacra.de' %}
+{% set urlgnd = 'https://www.dnb.de/DE/Professionell/Standardisierung/GND/gnd.html' %}
+{% set urlwikidata = 'https://www.wikidata.org' %}
+{% set urlviaf = 'https://viaf.org' %}
+
+{% block body %}
+    <div class="container-md p-2">
+	{{ include('start/apidoc.md')|markdown_to_html }}
+    </div>
+{% endblock %}

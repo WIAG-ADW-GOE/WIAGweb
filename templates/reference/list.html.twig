@@ -5,8 +5,8 @@
 	<h2 class="my-3">Referenzwerke</h2>
 	<dl class="row">
 	    {% for reference in references %}
-		<dt class="col-sm-3">{{ reference.short }}</dt>
-		<dd class="col-sm-9">{% if reference.author %}{{ reference.author }}: {% endif %}{{ reference.title }}</dd>
+		<dt class="col-sm-4">{{ reference.short }}</dt>
+		<dd class="col-sm-8">{% if reference.author %}{{ reference.author }}: {% endif %}{{ reference.title }}</dd>
 	    {% endfor %}
 	</dl>
     </div>

@@ -197,14 +197,23 @@ function fillnamelookup(tablename::AbstractString)::Int
 
 end
 
+function striplabel(s::AbstractString)
+    poslabel = findfirst(':', s)
+    if !isnothing(poslabel)
+        s = strip(s[poslabel + 1:end])
+    end
+    return s
+end
+   
+
 let irowout = 1
     global fillnamelookupgn
     
     function fillnamelookupgn(insertstmt, wiagid, gn, prefix, fn, fnv)
 
         function dbinsert(gni, fni)
-            sgni = ismissing(gni) ? missing : String(gni)
-            sfni = ismissing(fni) ? missing : String(fni)
+            sgni = ismissing(gni) ? missing : String(striplabel(gni))
+            sfni = ismissing(fni) ? missing : String(striplabel(fni))
             DBInterface.execute(insertstmt, (irowout, wiagid, sgni, prefix, sfni))
             irowout += 1
         end

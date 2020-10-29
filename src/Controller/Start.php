@@ -20,6 +20,14 @@ class Start extends AbstractController {
     }
 
     /**
+     * @Route("/api-doc", name="api_documentation")
+     */
+	public function apidoc() {
+        return $this->render('start/apidoc.html.twig');
+    }
+
+
+    /**
      * @Route("/phpinfo", name="wiag_phpinfo")
      */
 	public function show_phpinfo() {
