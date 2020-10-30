@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    {# add page forward and backward buttons #}
+    {% set fb_elements %}
+    {% if count > 0 %}
+	<span class="ml-4">
+	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page < 2 %} disabled="disabled" {% endif %} name="page" value="{{ page - 1 }}">&#9204; zurück</button>
+	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page * limit >= count%}  disabled="disabled" {% endif %} name="page" value="{{ page + 1 }}">vor &#9205;</button>
+	</span>
+    {% endif %}
+    {% endset %}
+
+    <div class="container-fluid mt-3">
+	<h2>Bistümer</h2>
+	<div class="row">
+	    <div class="col-8 mt-3 mb-1">Treffer:
+		{% if count == 0 %}
+		    keine
+		{% elseif count == 1 %}
+		    1
+		{% else %}
+		    {{ (page - 1) * limit + 1 }} - {{ min(page * limit, count)}} von {{ count }}
+		{% endif %}
+		{{ fb_elements }}
+	    </div>
+	</div>
+    </div>
+    <div class="container-fluid">
+	<div class="row">
+	    <div class="col-9">
+		<div class="table-responsive">
+		    <table class="table">
+			<thead class="thead-light">
+			    <tr>
+				<th scope="col">Name</th>
+				<th scope="col"></th>
+			    </tr>
+			</thead>
+			<tbody>
+			    {% for diocese in dioceses %}
+				<tr>
+				    <td><a href="{{ path('diocese', {idorname: diocese.wiagidlong, flaglist: 'flaglist'}) }}">{{ diocese.diocesestatus }} {{ diocese.diocese }}</a>
+					{% if not diocese.dateoffounding and not diocese.dateofdissolution %}
+					{% elseif diocese.dateoffounding and not diocese.dateofdissolution %}
+					    <br/>Gründung {{ diocese.dateoffounding }}
+					{% elseif not diocese.dateoffounding and diocese.dateofdissolution %}
+					    <br/>Aufhebung {{ diocese.dateofdissolution }}
+					{% else %}
+					    <br/>Gründung {{ diocese.dateoffounding }} <span class="ml-2">Aufhebung {{ diocese.dateofdissolution }}</span>
+					{% endif %}
+				    </td>
+				    <td>
+					<small>Bischofssitz: {{ diocese.bishopricseatobj.placename }}</small>
+					{% if diocese.ecclesiasticalprovince %}<br/><small>Kirchenprovinz: {{ diocese.ecclesiasticalprovince }}</small>{% endif %}
+				    </td>
+				</tr>
+			    {% endfor %}
+			</tbody>
+		    </table>
+		</div> {# table-responsive #}
+		{{ fb_elements }}
+	    </div>
+	</div>
+    </div>
+{% endblock %}

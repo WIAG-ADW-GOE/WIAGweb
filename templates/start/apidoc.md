@@ -8,8 +8,8 @@ Abfrage von Daten aus dem WIAG Datenbestand. Die Daten werden als ein
 ### Einzelabfrage
 Mit der Angabe einer WIAG-Kennung erhält man alle Elemente eines Datensatzes, zum Beispiel zu einer Person. Die URL hat folgenden Aufbau: `BaseUrl/ID?format=json` oder `BaseUrl/ID?format=csv`.
 
-Beispiel:
-{{ url('api_bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-10076-001', format: 'json'}) }}
+Beispiel:  
+{{ url('api_bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-10076-001', format: 'json'}) }}  
 {{ url('api_bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-10076-001', format: 'csv'}) }}
 
 #### Struktur
@@ -87,18 +87,18 @@ Die Suchparameter sind logisch UND-verknüpft: Es werden nur solche Datensätze 
 Die Suchparameter werden an die URL jeweils mit dem Schlüsselwort angehängt. JSON ist das Standard-Format, d.h. hier kann die Angabe des Formats entfallen:
 `BaseUrl?key1=valuet&key2=value&format=[json|csv]`
 
-Beispiele (JSON):
-{{ url('api_query_bishops', {name: 'gondo', format: 'json'})|raw }}
-{{ url('api_query_bishops', {name: 'Hohenlohe', diocese: 'Bamberg'})|raw }}
-{{ url('api_query_bishops', {diocese: 'Trier', year: '1450', format: 'json'})|raw }}
-{{ url('api_query_bishops', {someid: 'WIAG-Pers-EPISCGatz-3302-001', format: 'json'})|raw }}
+Beispiele (JSON):  
+{{ url('api_query_bishops', {name: 'gondo', format: 'json'})|raw }}  
+{{ url('api_query_bishops', {name: 'Hohenlohe', diocese: 'Bamberg'})|raw }}  
+{{ url('api_query_bishops', {diocese: 'Trier', year: '1450', format: 'json'})|raw }}  
+{{ url('api_query_bishops', {someid: 'WIAG-Pers-EPISCGatz-3302-001', format: 'json'})|raw }}  
 {{ url('api_query_bishops', {someid: 'Q1506604'})|raw }}
 
-Beispiele (CSV):
-{{ url('api_query_bishops', {name: 'gondo', format: 'csv'})|raw }}
-{{ url('api_query_bishops', {name: 'Hohenlohe', diocese: 'Bamberg', format: 'csv'})|raw }}
-{{ url('api_query_bishops', {diocese: 'Trier', year: '1450', format: 'csv'})|raw }}
-{{ url('api_query_bishops', {someid: 'WIAG-Pers-EPISCGatz-3302-001', format: 'csv'})|raw }}
+Beispiele (CSV):  
+{{ url('api_query_bishops', {name: 'gondo', format: 'csv'})|raw }}  
+{{ url('api_query_bishops', {name: 'Hohenlohe', diocese: 'Bamberg', format: 'csv'})|raw }}  
+{{ url('api_query_bishops', {diocese: 'Trier', year: '1450', format: 'csv'})|raw }}  
+{{ url('api_query_bishops', {someid: 'WIAG-Pers-EPISCGatz-3302-001', format: 'csv'})|raw }}  
 {{ url('api_query_bishops', {someid: 'Q1506604', format: 'csv'})|raw }}
 
 #### Struktur
@@ -138,3 +138,4 @@ WIAG-Pers-EPISCGatz-21477-001	Eydel	Tilman			von	"Ep. tit. Azotensis ?"	...
 WIAG-Pers-EPISCGatz-3673-001	Blankenheim	Friedrich			von		...
 WIAG-Pers-EPISCGatz-21281-001	"Franqueloy de Vico"	Joannes				"Ep. tit. Taurisiensis"	....
 ```
+{# do not cleanup whitespaces #}

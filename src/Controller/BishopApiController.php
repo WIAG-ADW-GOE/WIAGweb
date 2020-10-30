@@ -41,10 +41,10 @@ class BishopApiController extends AbstractController {
                        ->getRepository(Person::class)
                        ->findOneWithOffices($id);
 
-        if (!$person) {
-            $this->createNotFoundException('Person wurde nicht gefunden');
+        if (!$person || $person === null) {
+            throw $this->createNotFoundException('Person wurde nicht gefunden');
         }
-
+        
         $personExport = $person->toArray();
         switch($format) {
         case 'json':

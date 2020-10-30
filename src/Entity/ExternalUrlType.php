@@ -34,9 +34,14 @@ class ExternalUrlType
     private $url_value_example;
 
     /**
-     * @ORM\Column(type="string", length=31, nullable=true)
+     * @ORM\Column(type="integer", length=31, nullable=true)
      */
     private $display_order;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $url_formatter;
 
     public function getIdUrlType(): ?int
     {
@@ -94,6 +99,18 @@ class ExternalUrlType
     public function setDisplayOrder(?string $display_order): self
     {
         $this->display_order = $display_order;
+
+        return $this;
+    }
+
+    public function getUrlFormatter(): ?string
+    {
+        return $this->url_formatter;
+    }
+
+    public function setUrlFormatter(string $url_formatter): self
+    {
+        $this->url_formatter = $url_formatter;
 
         return $this;
     }

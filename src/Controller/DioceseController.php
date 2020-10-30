@@ -30,102 +30,46 @@ class DioceseController extends AbstractController {
     /**
      * @Route("/query-dioceses", name="query_dioceses")
      */
-    public function launch_query(Request $request) {
+    public function dioceses (Request $request) {
 
-        $diocesequery = new DioceseQueryFormModel;
-        $form = $this->createForm(DioceseQueryFormType::class, $diocesequery);
+        $page = 1;
 
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $diocesequery = $form->getData();
-            $someid = $diocesequery->someid;
-
-            if($someid && Person::isWiagidLong($someid)) {
-                $diocesequery->someid = Person::wiagidLongToWiagid($someid);
-            }
-
-            // get the number of results (without page limit restriction)
-            $count = $this->getDoctrine()
-                          ->getRepository(Person::class)
-                          ->countByQueryObject($diocesequery)[1];
-
-            $page = 0;
-            $persons = null;
-
-            if($count > 0) {
-                if($form->get('searchJSON')->isClicked()) {
-                    $persons = $this->getDoctrine()
-                                    ->getRepository(Person::class)
-                                    ->findWithOffices($diocesequery);
-
-                    $personExports = array();
-                    foreach($persons as $p) {
-                        $personExports[] = $p->toJSON();
-                    }
-
-                    return $this->json(array('persons' => $personExports));
-                }
+        $dioceses = $this->getDoctrine()
+                         ->getRepository(Diocese::class)
+                         ->findAllWithBishopricSeat($page, self::LIST_LIMIT);
 
 
-                $page = $request->request->get('page') ?? 1;
-
-                $personRepository = $this->getDoctrine()
-                                         ->getRepository(Person::class);
-
-                $persons = $personRepository->findWithOffices($diocesequery, self::LIST_LIMIT, $page);
-
-                foreach($persons as $p) {
-                    if($p->hasMonastery()) {
-                        $personRepository->addMonasteryPlaces($p);
-                    }
-                }
-            }
-
-            // combination of POST_SET_DATA and POST_SUBMIT
-            // $form = $this->createForm(DioceseQueryFormType::class, $diocesequery);
-
-            return $this->render('query_diocese/listresult.html.twig', [
-                'query_form' => $form->createView(),
-                'count' => $count,
-                'limit' => self::LIST_LIMIT,
-                'page' => $page,
-                'persons' => $persons,
-                'facetPlacesState' => $facetPlacesState,
-                'facetOfficesState' => $facetOfficesState,
-            ]);
-
-        } else {
-            return $this->render('query_diocese/launch_query.html.twig', [
-                'query_form' => $form->createView(),
-            ]);
-        }
+        return $this->render('query_diocese/listresult.html.twig', [
+            'dioceses' => $dioceses,
+            'page' => $page,
+            'count' => count($dioceses),
+            'limit' => self::LIST_LIMIT,
+        ]);
     }
 
 
     /**
-     * @Route("/diocese/{wiagid}", name="diocese")
+     * @Route("/diocese/{idorname}", name="diocese")
      */
-    public function getdiocese($wiagid, Request $request) {
+    public function getdiocese($idorname, Request $request) {
 
         $format = $request->query->get('format');
 
         if(!is_null($format)) {
             return $this->redirectToRoute('diocese_api', [
-                'wiagid' => $wiagid,
+                'wiagid' => $idorname,
                 'format' => $format,
             ]);
         }
 
         $flaglist = $request->query->get('flaglist');
 
-
         $diocese = $this->getDoctrine()
                         ->getRepository(Diocese::class)
-                        ->findOneWithOffices($id);
+                        ->findWithBishopricSeat($idorname);
 
         if (!$diocese) {
-            $this->createNotFoundException('Bistum wurde nicht gefunden');
+            throw $this->createNotFoundException("Bistum wurde nicht gefunden: {$id}");
         }
 
 

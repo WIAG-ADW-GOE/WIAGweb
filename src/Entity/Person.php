@@ -146,6 +146,8 @@ class Person {
     }
 
     public static function wiagidLongToWiagid($wiagidlong) {
+        if(strpos($wiagidlong, self::WIAGID_PREFIX) === false)
+            return $wiagidlong;
         $head = strlen(self::WIAGID_PREFIX);
         $tail = strlen(self::WIAGID_POSTFIX);
         return substr($wiagidlong, $head, -$tail);

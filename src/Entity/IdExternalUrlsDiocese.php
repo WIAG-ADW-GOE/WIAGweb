@@ -38,8 +38,21 @@ class IdExternalUrlsDiocese
      */
     private $url_type_id;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Diocese::class, inversedBy="external_urls")
+     * @ORM\JoinColumn(name="diocese_id", referencedColumnName="id_diocese")
+     */
+    private $diocese;
+
+    /**
+     * @ORM\OneToOne(targetEntity=ExternalUrlType::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="url_type_id", referencedColumnName="id_url_type")
+     */
+    private $authority;
+
     public function getIdExternalUrlDiocese(): ?int
     {
+
         return $this->id_external_url_diocese;
     }
 
@@ -79,6 +92,15 @@ class IdExternalUrlsDiocese
         return $this->url_value;
     }
 
+    public function getPrettyUrlValue(): ? string {
+        $prettyurl = $this->url_value;
+        if(array_search($this->url_type_id, [3, 12, 44]) !== false) {
+            $prettyurl = urldecode($prettyurl);
+            $prettyurl = str_replace('_', ' ', $prettyurl);
+        }
+        return $prettyurl;
+    }
+
     public function setUrlValue(string $url_value): self
     {
         $this->url_value = $url_value;
@@ -94,6 +116,30 @@ class IdExternalUrlsDiocese
     public function setUrlTypeId(int $url_type_id): self
     {
         $this->url_type_id = $url_type_id;
+
+        return $this;
+    }
+
+    public function getDiocese(): ?Diocese
+    {
+        return $this->diocese;
+    }
+
+    public function setDiocese(?Diocese $diocese): self
+    {
+        $this->diocese = $diocese;
+
+        return $this;
+    }
+
+    public function getAuthority(): ?ExternalUrlType
+    {
+        return $this->authority;
+    }
+
+    public function setAuthority(?ExternalUrlType $authority): self
+    {
+        $this->authority = $authority;
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DioceseRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Diocese
 {
+    const WIAGID_PREFIX = 'WIAG-Dioc-';
+    const WIAGID_POSTFIX = '-001';
 
     /**
      * @ORM\Id
@@ -76,6 +80,33 @@ class Diocese
      * @ORM\Column(type="string", length=4000, nullable=true)
      */
     private $note_bishopric_seat;
+
+
+    /**
+     * @ORM\OneToOne(targetEntity=Place::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="bishopric_seat", referencedColumnName="id_places")
+     */
+    private $bishopricseatobj;
+
+    /**
+     * @ORM\OneToMany(targetEntity=IdExternalUrlsDiocese::class, mappedBy="diocese")
+     * @ORM\JoinColumn(name="id_diocese", referencedColumnName="diocese_id")
+     */
+    private $external_urls;
+
+    public function __construct()
+    {
+        $this->external_urls = new ArrayCollection();
+    }
+
+    public static function wiagidLongToId($wiagidlong) {
+        if(strpos($wiagidlong, self::WIAGID_PREFIX) === false)
+            return $wiagidlong;
+        $head = strlen(self::WIAGID_PREFIX);
+        $tail = strlen(self::WIAGID_POSTFIX);
+        return substr($wiagidlong, $head, -$tail);
+    }
+
 
     public function getId(): ?int
     {
@@ -237,4 +268,54 @@ class Diocese
 
         return $this;
     }
+
+    public function getWiagidLong(): ?string
+    {
+        return self::WIAGID_PREFIX.$this->id_diocese.self::WIAGID_POSTFIX;
+    }
+
+
+    public function getBishopricseatobj(): ?Place
+    {
+        return $this->bishopricseatobj;
+    }
+
+    public function setBishopricseatobj(?Place $bishopricseatobj): self
+    {
+        $this->bishopricseatobj = $bishopricseatobj;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|IdExternalUrlsDiocese[]
+     */
+    public function getExternalUrls(): Collection
+    {
+        return $this->external_urls;
+    }
+
+    public function addExternalUrl(IdExternalUrlsDiocese $externalUrl): self
+    {
+        if (!$this->external_urls->contains($externalUrl)) {
+            $this->external_urls[] = $externalUrl;
+            $externalUrl->setDiocese($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExternalUrl(IdExternalUrlsDiocese $externalUrl): self
+    {
+        if ($this->external_urls->contains($externalUrl)) {
+            $this->external_urls->removeElement($externalUrl);
+            // set the owning side to null (unless already changed)
+            if ($externalUrl->getDiocese() === $this) {
+                $externalUrl->setDiocese(null);
+            }
+        }
+
+        return $this;
+    }
+
 }
