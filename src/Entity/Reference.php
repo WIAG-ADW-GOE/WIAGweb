@@ -13,58 +13,106 @@ class Reference
 
     /**
      * @ORM\Id
-     * @ORM\Column(type="string", length=31)
+     * @ORM\Column(type="integer")
      */
-    private $wiagid;
+    private $reference_id;
+
+    /**
+     * @ORM\Column(type="string", length=127, nullable=true)
+     */
+    private $title;
 
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
      */
-    private $bibshort;
+    private $author;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=127, nullable=true)
      */
-    private $biblong;
+    private $onlineressource;
 
-    public function getId(): ?int
+    /**
+     * @ORM\Column(type="string", length=63)
+     */
+    private $short;
+
+    public function getReferenceId(): ?int
     {
-        return $this->id;
+        return $this->reference_id;
     }
 
-    public function getWiagid(): ?string
+    public function setReferenceId(int $reference_id): self
     {
-        return $this->wiagid;
-    }
-
-    public function setWiagid(string $wiagid): self
-    {
-        $this->wiagid = $wiagid;
+        $this->reference_id = $reference_id;
 
         return $this;
     }
 
-    public function getBibshort(): ?string
+    public function getTitle(): ?string
     {
-        return $this->bibshort;
+        return $this->title;
     }
 
-    public function setBibshort(?string $bibshort): self
+    public function setTitle(?string $title): self
     {
-        $this->bibshort = $bibshort;
+        $this->title = $title;
 
         return $this;
     }
 
-    public function getBiblong(): ?string
+    public function getAuthor(): ?string
     {
-        return $this->biblong;
+        return $this->author;
     }
 
-    public function setBiblong(?string $biblong): self
+    public function setAuthor(?string $author): self
     {
-        $this->biblong = $biblong;
+        $this->author = $author;
 
         return $this;
     }
+
+    public function getOnlineressource(): ?string
+    {
+        return $this->onlineressource;
+    }
+
+    public function setOnlineressource(?string $onlineressource): self
+    {
+        $this->onlineressource = $onlineressource;
+
+        return $this;
+    }
+
+    public function getShort(): ?string
+    {
+        return $this->short;
+    }
+
+    public function setShort(string $short): self
+    {
+        $this->short = $short;
+
+        return $this;
+    }
+
+    public function toArray(): array {
+        $rfj = array();
+
+        $rfj['title'] = $this->getTitle();
+
+        $fv = $this->getAuthor();
+        if($fv) $rfj['author'] = $fv;
+
+        $fv = $this->getOnlineressource();
+        if($fv) $rfj['online'] = $fv;
+
+        $fv = $this->getShort();
+        if($fv) $rfj['short'] = $fv;
+
+        return $rfj;
+
+    }
+
 }

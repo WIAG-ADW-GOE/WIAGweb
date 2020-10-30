@@ -6,9 +6,9 @@ use App\Entity\Person;
 use App\Entity\Office;
 use App\Form\Model\BishopQueryFormModel;
 
-
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,9 +28,9 @@ class BishopApiController extends AbstractController {
      */
     public function getperson($wiagidlong, Request $request) {
 
-        $format = $request->query->get('format');
-
-        if($format != 'json') {
+        $format = $request->query->get('format') ?? 'json';
+        
+        if(array_search($format, ['json', 'csv']) === false) {
             throw $this->createNotFoundException('Unbekanntes Format: '.$format.'.');
         }
 
@@ -45,8 +45,22 @@ class BishopApiController extends AbstractController {
             $this->createNotFoundException('Person wurde nicht gefunden');
         }
 
-        $personExport = $person->toJSON();
-        return $this->json($personExport);
+        $personExport = $person->toArray();
+        switch($format) {
+        case 'json':
+            return $this->json($personExport);
+        case 'csv':
+            $csvencoder = new CsvEncoder();
+            $csvdata = $csvencoder->encode($personExport, 'csv', [
+                'csv_delimiter' => "\t",
+            ]);
+            $response =  new Response($csvdata);
+            $response->headers->set('Content-Type', "text/csv; charset=utf-8");
+            $response->headers->set('Content-Disposition', "filename={$wiagidlong}.csv");
+            return $response;
+        }
+            
+
 
     }
 
@@ -56,7 +70,12 @@ class BishopApiController extends AbstractController {
      */
     public function apigetpersons(Request $request) {
 
-        #dd($request);
+        $format = $request->query->get('format') ?? 'json';
+        
+        if(array_search($format, ['json', 'csv']) === false) {
+            throw $this->createNotFoundException('Unbekanntes Format: '.$format.'.');
+        }
+
 
         $name = $request->query->get('name');
         $place = $request->query->get('diocese');
@@ -82,15 +101,30 @@ class BishopApiController extends AbstractController {
 
         # dump($persons);
 
-        $personExports = array();
+        $personsExport = array();
         foreach($persons as $p) {
-            $personExports[] = $p->toJSON();
+            $personsExport[] = $p->toArray();
         }
 
-        return $this->json(array(
-            'count' => count($persons),
-            'persons' => $personExports)
-        );
+        switch($format) {
+        case 'json':
+            return $this->json(array(
+                'persons' => [
+                    'count' => count($persons),
+                    'list' => $personsExport,
+                ]
+            ));            
+        case 'csv':
+            $csvencoder = new CsvEncoder();
+            $csvdata = $csvencoder->encode($personsExport, 'csv', [
+                'csv_delimiter' => "\t",
+            ]);
+            $response =  new Response($csvdata);
+            $response->headers->set('Content-Type', "text/csv; charset=utf-8");
+            $response->headers->set('Content-Disposition', "filename=WIAGResult.csv");
+            return $response;
+        }
+
         // return $this->render('start/welcome.html.twig');
     }
 

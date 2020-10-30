@@ -45,6 +45,16 @@ class MonasteryLocation
      */
     private $place;
 
+    /**
+     * @ORM\Column(type="string", length=31, nullable=true)
+     */
+    private $location_begin_tpq;
+
+    /**
+     * @ORM\Column(type="string", length=31, nullable=true)
+     */
+    private $location_end_tpq;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -100,6 +110,30 @@ class MonasteryLocation
 
     public function getPlace() {
         return $this->place;
+    }
+
+    public function getLocationBeginTpq(): ?string
+    {
+        return $this->location_begin_tpq;
+    }
+
+    public function setLocationBeginTpq(?string $location_begin_tpq): self
+    {
+        $this->location_begin_tpq = $location_begin_tpq;
+
+        return $this;
+    }
+
+    public function getLocationEndTpq(): ?string
+    {
+        return $this->location_end_tpq;
+    }
+
+    public function setLocationEndTpq(?string $location_end_tpq): self
+    {
+        $this->location_end_tpq = $location_end_tpq;
+
+        return $this;
     }
 
 }

@@ -1,9 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% set displayname %}{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}{% endset %}
-{% set urlgspersons %}http://personendatenbank.germania-sacra.de/{% endset %}
-{% set urlgsmonasteries %}http://klosterdatenbank.germania-sacra.de/{% endset %}
-
+{% set urlgspersons = 'http://personendatenbank.germania-sacra.de/' %}
+{% set urlgsmonasteries = 'http://klosterdatenbank.germania-sacra.de/' %}
+{% set urlgnd = 'http://d-nb.info/gnd/' %}
+{% set urlwikidata = 'https://www.wikidata.org/wiki/' %}
+{% set urlviaf = 'https://viaf.org/viaf/' %}
 
 {% block body %}
     <div class="container-fluid">
@@ -12,7 +13,7 @@
 	    <p class="em">Person nicht gefunden.</p>
 	{% else %}
 	    <div class="row mt-3 mb-0"><div class="col-9">
-		<h2>{{ displayname }}</h2>
+		<h2>{{ person.displayname }}</h2>
 	    </div>
 	    <div class="col-3 wiag-id">{{ wiagidlong }}</div></div>
 
@@ -109,7 +110,7 @@
 				<li>
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item">GND</li>
-					<li class="list-inline-item"><a href="http://d-nb.info/gnd/{{ person.gndid }}">{{ person.gndid }}</a></li>
+					<li class="list-inline-item"><a href="{{ urlgnd }}{{ person.gndid }}">{{ person.gndid }}</a></li>
 				    </ul>
 				</li>
 			    {% endif %}
@@ -117,7 +118,7 @@
 				<li>
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item">VIAF</li>
-					<li class="list-inline-item"><a href="https://viaf.org/viaf/{{ person.viafid }}">{{ person.viafid }}</a></li>
+					<li class="list-inline-item"><a href="{{ urlviaf }}{{ person.viafid }}">{{ person.viafid }}</a></li>
 				    </ul>
 				</li>
 			    {% endif %}
@@ -125,7 +126,7 @@
 				<li>
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item">Wikidata</li>
-					<li class="list-inline-item"><a href="https://www.wikidata.org/wiki/{{ person.wikidataid }}">{{ person.wikidataid }}</a></li>
+					<li class="list-inline-item"><a href="{{ urlwikidata }}{{ person.wikidataid }}">{{ person.wikidataid }}</a></li>
 				    </ul>
 				</li>
 			    {% endif %}
@@ -158,21 +159,21 @@
 		{% endif %}
 		{% if person.reference %}
 		    <dt class="col-sm-3">Referenzwerk</dt>
-		    {# Link einfügen #}
-		    <dd class="col-sm-9"><a href="{{ path('reference', {'shortenc': person.reference|url_encode}) }}">{{ person.reference }}</a>, S. {{ person.pagesgatz }}</dd>
+		    <dd class="col-sm-9"><a href="{{ path('reference', {'id': person.referenceid}) }}">{{ person.reference.short }}</a>, S. {{ person.pagesgatz }}</dd>
 		{% endif %}
 
 	    </dl>
 
 	    <div class="row col-12">Empfohlene Zitierweise:<br/>
-		"{{ displayname }}" {# (WIAGID: {{ wiagidlong }}), #}
-		in: WIAG, {{ app.request.schemeAndHttpHost ~ app.request.baseUrl ~ path('bishop', {wiagidlong: wiagidlong}) }}
-		(Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
+		"{{ person.displayname }}" {# (WIAGID: {{ wiagidlong }}), #}
+		{# app.request.schemeAndHttpHost ~ app.request.baseUrl  #}
+		in: WIAG, {{ url('bishop', {wiagidlong: wiagidlong}) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
 
 	    <div class="row col-12 mt-4">
 		{% if flaglist %}<input type="button" class="btn btn-secondary" onclick="window.history.back()" value="Ergebnisliste"/>{% endif %}
 		<a href="{{ path('launch_query') }}"<button class="btn btn-secondary ml-1">Neue Suche</button></a>
 		<a href="{{ path('api_bishop', {wiagidlong: wiagidlong, format: 'json'}) }}"<button class="btn btn-secondary btn-light ml-3">JSON</button></a>
+		<a href="{{ path('api_bishop', {wiagidlong: wiagidlong, format: 'csv'}) }}"<button class="btn btn-secondary btn-light ml-3">CSV</button></a>
 	    </div>
 	{% endif %}
     </div>

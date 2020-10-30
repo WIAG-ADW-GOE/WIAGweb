@@ -47,4 +47,18 @@ class NamelookupRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function suggestName($name, $limit = 40): array {
+        $qb = $this->createQueryBuilder('cl')
+                   ->select("DISTINCT CASE WHEN cl.prefix_name <> '' THEN CONCAT(cl.givenname, ' ', cl.prefix_name, ' ', cl.familyname) ELSE CONCAT(cl.givenname, ' ', cl.familyname)END as suggestion")
+                   ->andWhere("CONCAT(cl.givenname, ' ', cl.prefix_name, ' ', cl.familyname) LIKE :qname".
+                              " OR CONCAT(cl.givenname, ' ', cl.familyname)LIKE :qname")
+                   ->setParameter('qname', '%'.$name.'%')
+                   ->setMaxResults($limit);
+
+        $suggestions = $qb->getQuery()->getResult();
+
+        return $suggestions;
+    }
+
 }

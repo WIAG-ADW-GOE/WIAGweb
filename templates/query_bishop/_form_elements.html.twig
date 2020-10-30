@@ -1,17 +1,18 @@
 {# {{ form_start(query_form, {'attr': {'id':'q_form'}}) }} #}
-    <div class="row col-12">
-	{% set form_elements %}
-	{{  form_row(query_form.name) }}
-	<div class="ml-2">{{ form_row(query_form.place) }}</div>
-	<div class="ml-2">{{ form_row(query_form.office) }}</div>
-	<div class="ml-2">{{ form_row(query_form.year) }}</div>
-	{% if query_form.someid is defined %}
-	    <div class="ml-2">{{ form_row(query_form.someid) }}</div>
-	{% endif %}
+<div class="row col-12">
+    {% set form_elements %}
+    {{  form_row(query_form.name) }}
+    <div class="ml-2">{{ form_row(query_form.place) }}</div>
+    <div class="ml-2">{{ form_row(query_form.office) }}</div>
+    <div class="ml-2">{{ form_row(query_form.year) }}</div>
+    {% if query_form.someid is defined %}
+	<div class="ml-2">{{ form_row(query_form.someid) }}</div>
+    {% endif %}
 	{% endset %}
 	{{ form_elements }}
-    </div>
-    {{ form_widget(query_form.searchHTML) }}
-    <span class="ml-3">{{ form_widget(query_form.searchJSON) }}</span>
+</div>
+{{ form_widget(query_form.searchHTML) }}
+<span class="ml-3">{{ form_widget(query_form.searchJSON) }}</span>
+<span class="ml-3">{{ form_widget(query_form.searchCSV) }}</span>
 
 {# {{ form_end(query_form) }} #}

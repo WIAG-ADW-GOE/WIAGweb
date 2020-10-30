@@ -8,7 +8,7 @@ $(document).ready(function() {
 		    $.ajax({
 			url: autocompleteUrl+'?query='+query
 		    }).then(function(data) {
-			cb(data.persons);
+			cb(data.names);
 		    });
 		},
 		displayKey: 'suggestion',

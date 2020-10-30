@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Person;
+use App\Entity\Namelookup;
 use App\Entity\Office;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,13 +25,13 @@ class QueryBishopUtility extends AbstractController {
      * @Route("/query-bishops/utility/names", methods="GET", name="query_bishops_utility_names")
      */
     public function getNamesApi(Request $request) {
-        $persons = $this->getDoctrine()
-                        ->getRepository(Person::class)
-                        ->suggestName($request->query->get('query'),
-                                      self::HINT_LIST_LIMIT);
+        $suggestions = $this->getDoctrine()
+                            ->getRepository(Namelookup::class)
+                            ->suggestName($request->query->get('query'),
+                                          self::HINT_LIST_LIMIT);
 
         return $this->json([
-            'persons' => $persons,
+            'names' => $suggestions,
         ]);
     }
 

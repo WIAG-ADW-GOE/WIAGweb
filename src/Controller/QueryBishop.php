@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
+use Symfony\Component\Serializer\Encoder\CsvEncoder;
 
 /**
  * @IsGranted("ROLE_QUERY")
@@ -67,30 +67,46 @@ class QueryBishop extends AbstractController {
             $persons = null;
 
             if($count > 0) {
+                $personRepository = $this->getDoctrine()
+                                         ->getRepository(Person::class);
+
                 if($form->get('searchJSON')->isClicked()) {
-                    $persons = $this->getDoctrine()
-                                    ->getRepository(Person::class)
-                                    ->findWithOffices($bishopquery);
+                    # respect facets do not redirect to API
+                    $persons = $personRepository->findWithOffices($bishopquery);
 
                     $personExports = array();
                     foreach($persons as $p) {
-                        $personExports[] = $p->toJSON();
+                        $personExports[] = $p->toArray();
                     }
 
                     return $this->json(array('persons' => $personExports));
+                } elseif($form->get('searchCSV')->isClicked()) {
+                    # respect facets do not redirect to API
+                    $persons = $personRepository->findWithOffices($bishopquery);
+
+                    $personExports = array();
+                    foreach($persons as $p) {
+                        $personExports[] = $p->toArray();
+                    }
+                    
+                    $csvencoder = new CsvEncoder();
+                    $csvdata = $csvencoder->encode($personExports, 'csv', [
+                        'csv_delimiter' => "\t",
+                    ]);
+
+                    $response =  new Response($csvdata);
+                    $response->headers->set('Content-Type', "text/csv; charset=utf-8");
+                    $response->headers->set('Content-Disposition', "filename=WIAGResult.csv");
+                    return $response;                    
                 }
 
-
                 $page = $request->request->get('page') ?? 1;
-
-                $personRepository = $this->getDoctrine()
-                                         ->getRepository(Person::class);
 
                 $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $page);
 
                 foreach($persons as $p) {
                     if($p->hasMonastery()) {
-                        $personRepository->addMonasteryPlaces($p);
+                        $personRepository->addMonasteryLocation($p);
                     }
                 }
             }
@@ -144,8 +160,6 @@ class QueryBishop extends AbstractController {
         if (!$person) {
             $this->createNotFoundException('Person wurde nicht gefunden');
         }
-
-
 
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,

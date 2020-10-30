@@ -11,14 +11,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class ReferenceController extends AbstractController {
 
     /**
-     * @Route("/reference/{shortenc}", name="reference");
+     * @Route("/reference/{id}", name="reference");
      */
-    public function detailsByShort($shortenc) {
+    public function detailsByShort($id) {
 
-        $short = urldecode($shortenc);
         $reference = $this->getDoctrine()
                           ->getRepository(Reference::class)
-                          ->findOneByBibshort($short);
+                          ->find($id);
         if (!$reference) {
             throw $this->createNotFoundException('Dieses Referenzwerk wurde nicht gefunden.');
         }
