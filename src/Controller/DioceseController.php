@@ -24,7 +24,7 @@ class DioceseController extends AbstractController {
     /**
      * Parameters
      */
-    const LIST_LIMIT = 20;
+    const LIST_LIMIT = 25;
 
 
     /**
@@ -32,17 +32,20 @@ class DioceseController extends AbstractController {
      */
     public function dioceses (Request $request) {
 
-        $page = 1;
+        $page = $request->query->get('page') ?? 1;
 
-        $dioceses = $this->getDoctrine()
-                         ->getRepository(Diocese::class)
-                         ->findAllWithBishopricSeat($page, self::LIST_LIMIT);
+        $repository = $this->getDoctrine()
+                           ->getRepository(Diocese::class);
+
+        $count = $repository->count([]);
+
+        $dioceses = $repository->findAllWithBishopricSeat($page, self::LIST_LIMIT);
 
 
         return $this->render('query_diocese/listresult.html.twig', [
             'dioceses' => $dioceses,
             'page' => $page,
-            'count' => count($dioceses),
+            'count' => $count,
             'limit' => self::LIST_LIMIT,
         ]);
     }

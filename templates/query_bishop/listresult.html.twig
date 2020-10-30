@@ -1,3 +1,4 @@
+{# query_bishop/listresult.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block stylesheets %}
@@ -17,7 +18,7 @@
     {% if count > 0 %}
 	<span class="ml-4">
 	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page < 2 %} disabled="disabled" {% endif %} name="page" value="{{ page - 1 }}">&#9204; zurück</button>
-	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page * limit >= count%}  disabled="disabled" {% endif %} name="page" value="{{ page + 1 }}">vor &#9205;</button>
+	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page * limit >= count%}disabled="disabled"{% endif %} name="page" value="{{ page + 1 }}">vor &#9205;</button>
 	</span>
     {% endif %}
     {% endset %}

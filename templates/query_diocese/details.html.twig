@@ -45,7 +45,8 @@
 		{% if diocese.bishopricseatobj %}
 		    <dt class="col-sm-3">Bischofssitz</dt>
 		    <dd class="col-sm-9">{{ diocese.bishopricseatobj.placename }}</dd>
-		    {% if diocese.notebishopricseat %}<span class="comment ml-2">{{ diocese.notebishopricseat }}</span>{% endif %}
+		    {% if diocese.notebishopricseat %}<dt class ="col-sm-3"></dt>
+			<dd class="col-sm-9"><span class="comment">{{- diocese.notebishopricseat -}}</span></dd>{% endif %}
 		{% endif %}
 
 		{% if diocese.externalurls %}

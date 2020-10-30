@@ -1,3 +1,4 @@
+{# query-diocese/listresult.html.twig #}
 {% extends 'base.html.twig' %}
 
 
@@ -6,8 +7,8 @@
     {% set fb_elements %}
     {% if count > 0 %}
 	<span class="ml-4">
-	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page < 2 %} disabled="disabled" {% endif %} name="page" value="{{ page - 1 }}">&#9204; zurück</button>
-	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page * limit >= count%}  disabled="disabled" {% endif %} name="page" value="{{ page + 1 }}">vor &#9205;</button>
+	    <a href="{{ path('query_dioceses', {'page': page - 1 }) }}"><button class="btn btn-secondary" {% if page < 2 >= count%}disabled="disabled"{% endif %}>&#9204; zurück</button></a>
+	    <a href="{{ path('query_dioceses', {'page': page + 1 }) }}"><button class="btn btn-secondary" {% if page * limit >= count%}disabled="disabled"{% endif %}>vor &#9205;</button></a>
 	</span>
     {% endif %}
     {% endset %}
@@ -41,19 +42,16 @@
 			<tbody>
 			    {% for diocese in dioceses %}
 				<tr>
-				    <td><a href="{{ path('diocese', {idorname: diocese.wiagidlong, flaglist: 'flaglist'}) }}">{{ diocese.diocesestatus }} {{ diocese.diocese }}</a>
+				    <td><a href="{{ path('diocese', {idorname: diocese.wiagidlong, flaglist: 'flaglist'}) }}">{{ diocese.diocesestatus }} {{ diocese.diocese }}</a></td>
+				    <td>
 					{% if not diocese.dateoffounding and not diocese.dateofdissolution %}
 					{% elseif diocese.dateoffounding and not diocese.dateofdissolution %}
-					    <br/>Gründung {{ diocese.dateoffounding }}
+					    <small>Gründung {{ diocese.dateoffounding }}</small>
 					{% elseif not diocese.dateoffounding and diocese.dateofdissolution %}
-					    <br/>Aufhebung {{ diocese.dateofdissolution }}
+					    <small>Aufhebung {{ diocese.dateofdissolution }}</small>
 					{% else %}
-					    <br/>Gründung {{ diocese.dateoffounding }} <span class="ml-2">Aufhebung {{ diocese.dateofdissolution }}</span>
+					    <small>Gründung {{ diocese.dateoffounding }} <br/>Aufhebung {{ diocese.dateofdissolution }}</small>
 					{% endif %}
-				    </td>
-				    <td>
-					<small>Bischofssitz: {{ diocese.bishopricseatobj.placename }}</small>
-					{% if diocese.ecclesiasticalprovince %}<br/><small>Kirchenprovinz: {{ diocese.ecclesiasticalprovince }}</small>{% endif %}
 				    </td>
 				</tr>
 			    {% endfor %}
