@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Office;
 use App\Entity\Person;
 use App\Form\Model\BishopQueryFormModel;
+
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -124,22 +125,30 @@ class OfficeRepository extends ServiceEntityRepository
             // );
             // $oc->setMonasterylocation(implode(', ', $placenames));
 
+            // DQL
             $em = $this->getEntityManager();
 
             $query = $em->createQuery("SELECT loc.location_name, loc.location_begin_tpq, loc.location_end_tpq ".
                                       "FROM App\Entity\Office oc ".
-                                      "INNER JOIN App\Entity\Monasterylocation loc ".
+                                      "INNER JOIN App\Entity\MonasteryLocation loc ".
                                       "WITH loc.wiagid_monastery = oc.id_monastery ".
                                       "WHERE oc.wiagid = :ocid ".
                                       "AND loc.location_name IS NOT NULL")
                         ->setParameter('ocid', $oc->getWiagid());
 
+            // $qb = $this->createQueryBuilder('oc')
+            //          ->select('loc.location_name, loc.location_begin_tpq, loc.location_end_tpq')
+            //          ->join('oc.monasterylocationobj', 'loc')
+            //          ->andWhere('oc.wiagid = :ocid')
+            //          ->andWhere('loc.location_name IS NOT NULL')
+            //          ->setParameter('ocid', $oc->getWiagid());
+            
+            // $query = $qb->getQuery();
+
             $qrplaces = $query->getResult();
 
             $qrplaces_count = count($qrplaces);
 
-            if($oc->getWiagid() == '21911')
-                dump($qrplaces);
 
             $places = "";
             if($qrplaces_count == 1) {
@@ -170,8 +179,6 @@ class OfficeRepository extends ServiceEntityRepository
                 continue;
             $locations_s[] = $el;
         }
-        if($oc->getWiagid() == '21911')
-            dump($locations, $locations_s);
         return $locations_s;
     }
 

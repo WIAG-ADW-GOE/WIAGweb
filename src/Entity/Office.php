@@ -2,6 +2,9 @@
 // src/Entity/Office.php
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -89,6 +92,7 @@ class Office
      * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_office")
      */
     private $numdate;
+
 
     public function getWiagid(): ?string
     {
@@ -303,5 +307,6 @@ class Office
 
         return $ocj;
     }
+
 
 }

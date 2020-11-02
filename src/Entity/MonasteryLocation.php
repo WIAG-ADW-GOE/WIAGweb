@@ -55,6 +55,7 @@ class MonasteryLocation
      */
     private $location_end_tpq;
 
+
     public function getId(): ?int
     {
         return $this->id;
@@ -135,5 +136,6 @@ class MonasteryLocation
 
         return $this;
     }
+
 
 }
