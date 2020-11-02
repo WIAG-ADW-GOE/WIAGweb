@@ -29,12 +29,17 @@
 			<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 			    <a class="dropdown-item" href="{{ path('wiag_about') }}">Ziele</a>
 			    <a class="dropdown-item" href="{{ path('reference_list') }}">Referenzwerke</a>
-			    <a class="dropdown-item" href="{{ path('query_dioceses') }}">Bistümer</a>
 			    <a class="dropdown-item" href="{{ path('api_documentation') }}">API</a>
 			</div>
 		    </div></div>
 		    {% if is_granted('ROLE_QUERY') %}
-			<a href="{{ path('launch_query') }}"><button class="btn btn-dark">Bischöfe</button></a>
+			<div class="btn-group"><div class="dropdown">
+			    <button class="btn btn-dark" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Verzeichnisse</button>
+			    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+				<a class="dropdown-item" href="{{ path('launch_query') }}">Bischöfe</a>
+				<a class="dropdown-item" href="{{ path('query_dioceses') }}">Bistümer</a>
+			    </div>
+			</div></div>
 		    {% endif %}
 		    <a href="{{ path('wiag_logout') }}"><button class="btn btn-dark">Logout</button></a>
 		{% endif %}

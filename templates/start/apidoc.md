@@ -14,8 +14,7 @@ Beispiel:
 
 #### Struktur
 Das JSON-Dokument enthält ein Element `person`, das die einzelnen Angaben zu der
-Person umfasst. Dazu gehört auch eine Liste von Ämtern im Element `offices` und
-meistens eine Gruppe von externen Kennungen im Element `identifiers`.
+Person umfasst. Dazu gehört bei fast allen Personen eine Gruppe von externen Kennungen im Element `identifiers` sowie eine Liste von Ämtern im Element `offices`.
 
 Beispiel:
 ``` json
@@ -49,12 +48,12 @@ Beispiel:
 }
 ```
 
-Das CSV Dokument ist ein UTF-8-Text. Die erste Zeile enthält die Feldbezeichner. Die folgende Zeile die Feldwerte. Die Feldinhalte einer Zeile sind durch Tabulator voneinander getrennt.
+Das CSV Dokument ist ein UTF-8-Text. Die erste Zeile enthält die Feldbezeichner. Die folgende Zeile enthält die Feldwerte. Die Feldinhalte einer Zeile sind durch Tabulator voneinander getrennt.
 
 Beispiel:
 ``` text
-person.wiagId	person.familyName	person.givenName	person.prefix	person.comment_person	...
-WIAG-Pers-EPISCGatz-10076-001	Braida	"Franz Julian"	"Graf von"	"Ep. tit. Hipponensis"	...
+person.wiagId                   person.familyName   person.givenName    person.prefix   person.comment_person   ...
+WIAG-Pers-EPISCGatz-10076-001   Braida              "Franz Julian"      "Graf von"      "Ep. tit. Hipponensis"  ...
 
 ```
 
@@ -73,8 +72,8 @@ entsprechen. Gesucht werden kann nach folgenden Eigenschaften:
   Beispiele: `vikar`,
   `administrator`.
 - **year**: Finde Übereinstimmungen für einen Zeitraum von plus/minus 50 Jahren zu der
-  angegebenen Jahreszahl. Berücksichtigt wird der größte Zeitraum, der sich ergibt
-  aus Geburtsdatum, Sterbedaten, Amtsbeginn und Amtsende.
+  angegebenen Jahreszahl. Berücksichtigt wird für die einzelne Person der größte
+  Zeitraum, der sich ergibt aus Geburtsdatum, Sterbedaten, Amtsbeginn und Amtsende.
 - **someid**: Finde eine exakte Übereinstimmungen mit einer Kennung für eine Person in
   folgenden Verzeichnissen:
   - [WIAG]({{ url('wiag_welcome') }})
@@ -84,7 +83,9 @@ entsprechen. Gesucht werden kann nach folgenden Eigenschaften:
   - [Personendatenbank der Germania Sacra]({{ urlgspersons }})
 
 Die Suchparameter sind logisch UND-verknüpft: Es werden nur solche Datensätze angezeigt, für die alle Parameter/Wert-Kombinationen zutreffen.
-Die Suchparameter werden an die URL jeweils mit dem Schlüsselwort angehängt. JSON ist das Standard-Format, d.h. hier kann die Angabe des Formats entfallen:
+Die Suchparameter werden an die URL jeweils mit dem Schlüsselwort angehängt. Ebenso
+wird das gewünschte Format mit dem Schlüsselwort `format` angehängt. JSON ist das
+Standard-Format, d.h. hier kann die Angabe des Formats entfallen:  
 `BaseUrl?key1=valuet&key2=value&format=[json|csv]`
 
 Beispiele (JSON):  
@@ -127,15 +128,16 @@ Beispiel:
 
 ```
 
-Das CSV Dokument ist ein UTF-8-Text. Die erste Zeile enthält die Feldbezeichner. Die folgende Zeile die Feldwerte. Die Feldinhalte einer Zeile sind durch Tabulator voneinander getrennt.
+Das CSV Dokument ist ein UTF-8-Text. Die erste Zeile enthält die Feldbezeichner. Die
+folgenden Zeilen enthalten die Feldwerte. Die Feldinhalte einer Zeile sind durch Tabulator voneinander getrennt.
 
 Beispiel:
 ```text
-person.wiagId	person.familyName	person.givenName	person.variantFamilyName	person.comment_name	person.prefix	person.comment_person	...
-WIAG-Pers-EPISCGatz-3627-001	"Falkenstein und Königstein"	Werner			von		...
-WIAG-Pers-EPISCGatz-21476-001	Aldendorf	Konrad			von	"Ep. tit. Azotensis"	...
-WIAG-Pers-EPISCGatz-21477-001	Eydel	Tilman			von	"Ep. tit. Azotensis ?"	...
-WIAG-Pers-EPISCGatz-3673-001	Blankenheim	Friedrich			von		...
-WIAG-Pers-EPISCGatz-21281-001	"Franqueloy de Vico"	Joannes				"Ep. tit. Taurisiensis"	....
+person.wiagId                   person.familyName               person.givenName    person.variantFamilyName    person.comment_name    person.prefix   person.comment_person   ...
+WIAG-Pers-EPISCGatz-3627-001    "Falkenstein und Königstein"    Werner                                                                 von             ...
+WIAG-Pers-EPISCGatz-21476-001   Aldendorf                       Konrad                                                                 von             "Ep. tit. Azotensis"    ...
+WIAG-Pers-EPISCGatz-21477-001   Eydel                           Tilman                                                                 von             "Ep. tit. Azotensis ?"  ...
+WIAG-Pers-EPISCGatz-3673-001    Blankenheim                     Friedrich                                                              von             ...
+WIAG-Pers-EPISCGatz-21281-001   "Franqueloy de Vico"            Joannes                                                                                "Ep. tit. Taurisiensis" ...
 ```
 {# do not cleanup whitespaces #}
