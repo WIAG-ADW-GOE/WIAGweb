@@ -56,7 +56,7 @@ class PersonRepository extends ServiceEntityRepository {
     */
 
     /* AJAX callback function */
-    public function suggestName($name, $limit = 40): array {
+    public function suggestNameObsolete($name, $limit = 40): array {
 
         // get suggestion directly from the lookup table 2020-10-27
         $qb = $this->createQueryBuilder('p')
@@ -205,7 +205,9 @@ class PersonRepository extends ServiceEntityRepository {
         if($bishopquery->name) {
             $qb->join('person.namelookup', 'nlt')
                 ->andWhere("CONCAT(nlt.givenname, ' ', nlt.prefix_name, ' ', nlt.familyname) LIKE :qname".
-                           " OR CONCAT(nlt.givenname, ' ', nlt.familyname)LIKE :qname")
+                           " OR CONCAT(nlt.givenname, ' ', nlt.familyname)LIKE :qname".
+                           " OR nlt.givenname LIKE :qname".
+                           " OR nlt.familyname LIKE :qname")
                ->setParameter('qname', '%'.$bishopquery->name.'%');
         }
 

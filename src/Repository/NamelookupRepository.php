@@ -50,9 +50,16 @@ class NamelookupRepository extends ServiceEntityRepository
 
     public function suggestName($name, $limit = 40): array {
         $qb = $this->createQueryBuilder('cl')
-                   ->select("DISTINCT CASE WHEN cl.prefix_name <> '' THEN CONCAT(cl.givenname, ' ', cl.prefix_name, ' ', cl.familyname) ELSE CONCAT(cl.givenname, ' ', cl.familyname)END as suggestion")
+                   ->select("DISTINCT CASE WHEN cl.prefix_name <> '' AND cl.familyname <> ''".
+                            " THEN CONCAT(cl.givenname, ' ', cl.prefix_name, ' ', cl.familyname)".
+                            " WHEN cl.familyname <> ''".
+                            " THEN CONCAT(cl.givenname, ' ', cl.familyname)".
+                            " ELSE cl.givenname END".
+                            " AS suggestion")
                    ->andWhere("CONCAT(cl.givenname, ' ', cl.prefix_name, ' ', cl.familyname) LIKE :qname".
-                              " OR CONCAT(cl.givenname, ' ', cl.familyname)LIKE :qname")
+                              " OR CONCAT(cl.givenname, ' ', cl.familyname)LIKE :qname".
+                              " OR cl.givenname LIKE :qname".
+                              " OR cl.familyname LIKE :qname")
                    ->setParameter('qname', '%'.$name.'%')
                    ->setMaxResults($limit);
 
