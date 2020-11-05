@@ -7,28 +7,19 @@
 
 
 {% block body %}
-    <div class="container-fluid">
+    <div class="container-fluid mt-3">
 	{% if not diocese%}
 	    <p class="em">Bistum nicht gefunden.</p>
 	{% else %}
+	    <div class="row-col-12 topic-title">Die Bistümer des Alten Reiches (nach Erwin Gatz)</div>
 	    <div class="row mt-3 mb-0"><div class="col-9">
 		<h2>{{ displayname }}</h2>
 	    </div>
-	    <div class="col-3 wiag-id">{{ diocese.wiagidlong }}</div></div>
-
-	    {% if diocese.notediocese %}
-		<div class="row col-12">
-		    <span class="comment">{{ diocese.notediocese }}</span>
-		</div>
-	    {% endif %}
-
-
-
-	    {% if not diocese.dateoffounding and not diocese.dateofdissolution %}
-	    {% else %}
-		<div class="row col-12 mt-2">
-		    {% if diocese.dateoffounding and not diocese.dateofdissolution %}
-			<span class="wiag-large">Gründung {{ diocese.dateoffounding }}</span>
+	    <div class="col-3 wiag-id text-right">{{ diocese.wiagidlong }}</div></div>
+	    {% if diocese.dateoffounding or diocese.dateofdissolution %}
+		<div class="row col-12 mt-1">
+		    {% if diocese.dateoffounding and not diocese.dateofdissolution or diocese.dateofdissolution == "keine" %}
+			<span class="wiag-large">Gründung {{ diocese.dateoffounding }}<span class ="pl-3">besteht bis heute</span></span>
 		    {% elseif not diocese.dateoffounding and diocese.dateofdissolution %}
 			<span class="wiag-large">Aufhebung {{ person.datedeath }}</span>
 		    {% else %}
@@ -36,6 +27,12 @@
 		    {% endif %}
 		</div>
 	    {% endif %}
+	    {% if diocese.notediocese %}
+		<div class="row col-12 mt-1">
+		    <span class="comment">{{ diocese.notediocese }}</span>
+		</div>
+	    {% endif %}
+
 	    <dl class="row mt-3">
 		{% if diocese.ecclesiasticalprovince %}
 		    <dt class="col-sm-3">Kirchenprovinz</dt>
@@ -69,7 +66,7 @@
 
 		{% if diocese.gatzpages %}
 		    <dt class="col-sm-3">Referenzwerk</dt>
-		    <dd class="col-sm-9">Gatz, S. {{ diocese.gatzpages }}</dd>
+		    <dd class="col-sm-9"><a href="{{ path('reference', {'id': 2}) }}">Gatz, Bistümer</a>, S. {{ diocese.gatzpages }}</dd>
 		{% endif %}
 	    </dl>
 

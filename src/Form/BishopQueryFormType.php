@@ -99,18 +99,24 @@ class BishopQueryFormType extends AbstractType
                 ]
             ]);
 
+
+        if($bishopquery && !$bishopquery->isEmpty()) {
+            $this->createFacetPlaces($builder, $bishopquery);
+            $this->createFacetOffices($builder, $bishopquery);
+        }
+
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
-            array($this, 'createFacetPlaces'));
+            array($this, 'createFacetPlacesByEvent'));
 
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
-            array($this, 'createFacetOffices'));
+            array($this, 'createFacetOfficesByEvent'));
 
     }
 
-    public function createFacetPlaces(FormEvent $event) {
+    public function createFacetPlacesByEvent(FormEvent $event) {
         $data = $event->getData();
         if (!$data) return;
         if (is_a($data, BishopQueryFormModel::class)) {
@@ -129,8 +135,14 @@ class BishopQueryFormType extends AbstractType
 
         if ($bishopquery->isEmpty()) return;
 
-        $places = $this->personRepository->findOfficePlaces($bishopquery);
+        $facetPlaces = array_key_exists('facetPlaces', $data) ? $data['facetPlaces'] : null;
 
+        $this->createFacetPlaces($event->getForm(), $bishopquery, $facetPlaces);
+        
+    }
+
+    public function createFacetPlaces($form, $bishopquery, $facetPlaces = array()) {
+        $places = $this->personRepository->findOfficePlaces($bishopquery);
 
         $choices = array();
 
@@ -139,19 +151,16 @@ class BishopQueryFormType extends AbstractType
         }
 
         // add selected fields with frequency 0
-        if (array_key_exists('facetPlaces', $data)) {
-            foreach($data['facetPlaces'] as $fpl) {
+        if ($facetPlaces) {
+            foreach($facetPlaces as $fpl) {
                 if (!PlaceCount::find($fpl, $choices)) {
                     $choices[] = new PlaceCount($fpl, '0');
                 }
             }
             uasort($choices, array('App\Entity\PlaceCount', 'isless'));
         }
-
-
-
+        dump($places);
         if ($places) {
-            $form = $event->getForm();
             $form->add('facetPlaces', ChoiceType::class, [
                 'label' => 'Filter Bistum',
                 'expanded' => true,
@@ -164,7 +173,7 @@ class BishopQueryFormType extends AbstractType
     }
 
 
-    public function createFacetOffices(FormEvent $event) {
+    public function createFacetOfficesByEvent(FormEvent $event) {
         $data = $event->getData();
         if (!$data) return;
         if (is_a($data, BishopQueryFormModel::class)) {
@@ -182,6 +191,15 @@ class BishopQueryFormType extends AbstractType
 
         if ($bishopquery->isEmpty()) return;
 
+        $facetOffices = array_key_exists('facetOffices', $data) ? $data['facetOffices'] : null;
+
+        $form = $event->getForm();
+        $this->createFacetOffices($form, $bishopquery, $facetOffices);
+        
+    }
+
+    public function createFacetOffices($form, $bishopquery, $facetOffices = array()) {
+
         $offices = $this->personRepository->findOfficeNames($bishopquery);
 
 
@@ -191,8 +209,8 @@ class BishopQueryFormType extends AbstractType
         }
 
         // add selected fields with frequency 0
-        if (array_key_exists('facetOffices', $data)) {
-            foreach($data['facetOffices'] as $foc) {
+        if ($facetOffices) {
+            foreach($facetOffices as $foc) {
                 if (!PlaceCount::find($foc, $choices)) {
                     $choices[] = new OfficeCount($foc, '0');
                 }
@@ -201,8 +219,7 @@ class BishopQueryFormType extends AbstractType
         }
 
         if ($offices) {
-            $formicb = $event->getForm();
-            $formicb->add('facetOffices', ChoiceType::class, [
+            $form->add('facetOffices', ChoiceType::class, [
                 'label' => 'Filter Amt',
                 'expanded' => true,
                 'multiple' => true,
@@ -212,4 +229,6 @@ class BishopQueryFormType extends AbstractType
             ]);
         }
     }
+
+    
 }

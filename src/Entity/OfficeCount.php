@@ -10,6 +10,10 @@ class OfficeCount {
         $this->count = $c;
     }
 
+    public function getName(): ?string {
+        return $this->name;
+    }
+
     public function getLabel(): string {
         return $this->name.' ('.$this->count.')';
     }

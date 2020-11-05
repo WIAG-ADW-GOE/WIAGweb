@@ -38,9 +38,8 @@ class QueryBishop extends AbstractController {
 
         // we need to pass an instance of BishopQueryFormModel, because facets depend on it's data
         $bishopquery = new BishopQueryFormModel;
-        $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
 
-        // $form = $this->createForm(BishopQueryFormType::class, array());
+        $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
 
         $form->handlerequest($request);
 
@@ -88,7 +87,7 @@ class QueryBishop extends AbstractController {
                     foreach($persons as $p) {
                         $personExports[] = $p->toArray();
                     }
-                    
+
                     $csvencoder = new CsvEncoder();
                     $csvdata = $csvencoder->encode($personExports, 'csv', [
                         'csv_delimiter' => "\t",
@@ -97,29 +96,34 @@ class QueryBishop extends AbstractController {
                     $response =  new Response($csvdata);
                     $response->headers->set('Content-Type', "text/csv; charset=utf-8");
                     $response->headers->set('Content-Disposition', "filename=WIAGResult.csv");
-                    return $response;                    
+                    return $response;
                 }
 
-                $page = $request->request->get('page') ?? 1;
+                $offset = $request->request->get('offset') ?? 0;
 
-                $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $page);
+                $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset);
 
                 foreach($persons as $p) {
                     if($p->hasMonastery()) {
                         $personRepository->addMonasteryLocation($p);
                     }
                 }
+
+                // query elements for links to detail pages
+                $querystr = http_build_query($bishopquery->toArray());
             }
 
             // combination of POST_SET_DATA and POST_SUBMIT
             // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
 
+
             return $this->render('query_bishop/listresult.html.twig', [
                 'query_form' => $form->createView(),
                 'count' => $count,
                 'limit' => self::LIST_LIMIT,
-                'page' => $page,
+                'offset' => $offset,
                 'persons' => $persons,
+                'querystr' => $querystr,
                 'facetPlacesState' => $facetPlacesState,
                 'facetOfficesState' => $facetOfficesState,
             ]);
@@ -132,6 +136,61 @@ class QueryBishop extends AbstractController {
                 'facetOfficesState' => $facetOfficesState,
             ]);
         }
+    }
+
+    /**
+     * @Route("/requery-bishops", name="requery_bishops")
+     */
+    public function reloadForm(Request $request) {
+        $bishopquery = new BishopQueryFormModel();
+        $bishopquery->setByRequest($request);
+        // querystr without offset
+        $querystr = http_build_query($bishopquery->toArray());
+        $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
+
+
+        $someid = $bishopquery->someid;
+
+        if($someid && Person::isWiagidLong($someid)) {
+            $bishopquery->someid = Person::wiagidLongToWiagid($someid);
+        }
+
+        // get the number of results (without page limit restriction)
+        $count = $this->getDoctrine()
+                      ->getRepository(Person::class)
+                      ->countByQueryObject($bishopquery)[1];
+
+        $facetPlacesState = 'show';
+        $facetOfficesState = 'show';
+        $persons = null;
+
+        if($count > 0) {
+            $personRepository = $this->getDoctrine()
+                                     ->getRepository(Person::class);
+            $offset = $request->query->get('offset') ?? 0;
+            # map to pages
+            $offset = floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
+
+            $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset);
+
+            foreach($persons as $p) {
+                if($p->hasMonastery()) {
+                    $personRepository->addMonasteryLocation($p);
+                }
+            }
+        }
+
+        return $this->render('query_bishop/listresult.html.twig', [
+                'query_form' => $form->createView(),
+                'count' => $count,
+                'limit' => self::LIST_LIMIT,
+                'offset' => $offset,
+                'querystr' => $querystr,
+                'persons' => $persons,
+                'facetPlacesState' => $facetPlacesState,
+                'facetOfficesState' => $facetOfficesState,
+            ]);
+
     }
 
 
@@ -166,6 +225,45 @@ class QueryBishop extends AbstractController {
             'wiagidlong' => $wiagidlong,
             'flaglist' => $flaglist,
         ]);
+    }
+
+    /**
+     * @Route("/bishop-in-list", name="bishop_in_list")
+     */
+    public function bishopInList(Request $request) {
+
+        $offset = $request->query->get('offset');
+
+        $bishopquery = new BishopQueryFormModel();
+        $bishopquery->setByRequest($request);
+        $querystr = http_build_query($bishopquery->toArray());
+
+        $personRepository = $this->getDoctrine()
+                                 ->getRepository(Person::class);
+        $hassuccessor = false;
+        if($offset == 0) {
+            $queryback = null;
+            $persons = $personRepository->findWithOffices($bishopquery, 2, $offset);
+            $iterator = $persons->getIterator();
+            if(count($iterator) == 2) $hassuccessor = true;
+            $person = $iterator->current();
+        } else {
+            $persons = $personRepository->findWithOffices($bishopquery, 3, $offset - 1);
+            $iterator = $persons->getIterator();
+            if(count($iterator) == 3) $hassuccessor = true;
+            $iterator->next();
+            $person = $iterator->current();
+        }
+
+        return $this->render('query_bishop/details.html.twig', [
+            'person' => $person,
+            'wiagidlong' => $person->getWiagidlong(),
+            'flaglist' => null,
+            'querystr' => $querystr,
+            'offset' => $offset,
+            'hassuccessor' => $hassuccessor,
+        ]);
+
     }
 
 

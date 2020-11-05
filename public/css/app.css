@@ -7,6 +7,11 @@ body {
     font-size: large;
 }
 
+.topic-title {
+    font-size: large;
+    font-weight: bold;
+}
+
 .wiag-id {
     font-size: normal;
 }

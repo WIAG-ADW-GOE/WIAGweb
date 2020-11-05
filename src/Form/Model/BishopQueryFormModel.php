@@ -2,6 +2,9 @@
 namespace App\Form\Model;
 
 use App\Entity\Person;
+use App\Entity\PlaceCount;
+use App\Entity\OfficeCount;
+use Symfony\Component\HttpFoundation\Request;
 
 class BishopQueryFormModel {
     public $name;
@@ -64,27 +67,69 @@ class BishopQueryFormModel {
         return null;
     }
 
-    public function getQueryArray() {
+    public function toArraySansFacets() {
         $qelts = array();
         if($this->name) $qelts['name'] = $this->name;
         if($this->place) $qelts['place'] = $this->place;
         if($this->office) $qelts['office'] = $this->office;
         if($this->year) $qelts['year'] = $this->year;
         if($this->someid) $qelts['someid'] = $this->someid;
-        
+
         return $qelts;
     }
 
-    // public function updateSomeid() {
-    //     $someid = $this->someid;
+    public function toArray() {
+        $qelts = $this->toArraySansFacets();
 
-    //     if($someid and Person::isWiagidLong($someid)) {
-    //         $this->someid = Person::wiagidLongToWiagid($someid);
-    //     }
-    //     dump($this->someid);
-    //     return null;
-    // }
+        if($this->facetPlaces) {
+            $fpsc = array_map(function($el) { return $el->getName(); },
+                              $this->facetPlaces);
+            $fpsstr = implode(',', $fpsc);
+            $qelts['facetPlaces'] = $fpsstr;
+        }
+
+        if($this->facetOffices) {
+            $fosc = array_map(function($el) { return $el->getName(); },
+                              $this->facetOffices);
+            $fosstr = implode(',', $fosc);
+            $qelts['facetOffices'] = $fosstr;
+        }
+
+        return $qelts;
+    }
+
+    public function setByRequest(Request $request) {
+        $query = $request->query;
+        $this->name = $query->get('name');
+        $this->place = $query->get('place');
+        $this->office = $query->get('office');
+        $this->year = $query->get('year');
+        $this->someid = $query->get('someid');
+
+        $fpsstr = $query->get('facetPlaces');
+
+        if($fpsstr) {
+            $fpsoc = array();
+            $fpsc = explode(',', $fpsstr);
+            foreach($fpsc as $el) {
+                $fpsoc[] = new PlaceCount($el, '1');
+            }
+            $this->facetPlaces = $fpsoc;
+        }
+
+        $fosstr = $query->get('facetOffices');
+
+        if($fosstr) {
+            $fosoc = array();
+            $fosc = explode(',', $fosstr);
+            foreach($fosc as $el) {
+                $fosoc[] = new PlaceCount($el, '1');
+            }
+            $this->facetOffices = $fosoc;
+        }
 
 
+        return $this;
+    }
 
 }

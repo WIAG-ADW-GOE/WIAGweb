@@ -32,20 +32,23 @@ class DioceseController extends AbstractController {
      */
     public function dioceses (Request $request) {
 
-        $page = $request->query->get('page') ?? 1;
+        $query = $request->query;
+        $page = $query->get('page') ?? 1;
+        $initialletter = $query->get('il') ?? 'A-Z';
 
         $repository = $this->getDoctrine()
                            ->getRepository(Diocese::class);
 
-        $count = $repository->count([]);
+        $count = $repository->countByInitalletter($initialletter);
 
-        $dioceses = $repository->findAllWithBishopricSeat($page, self::LIST_LIMIT);
+        $dioceses = $repository->findAllWithBishopricSeat($page, self::LIST_LIMIT, $initialletter);
 
 
         return $this->render('query_diocese/listresult.html.twig', [
             'dioceses' => $dioceses,
             'page' => $page,
             'count' => $count,
+            'il' => $initialletter,
             'limit' => self::LIST_LIMIT,
         ]);
     }
@@ -72,7 +75,7 @@ class DioceseController extends AbstractController {
                         ->findWithBishopricSeat($idorname);
 
         if (!$diocese) {
-            throw $this->createNotFoundException("Bistum wurde nicht gefunden: {$id}");
+            throw $this->createNotFoundException("Bistum wurde nicht gefunden: {$idorname}");
         }
 
 

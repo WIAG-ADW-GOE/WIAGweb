@@ -11,9 +11,10 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
-	<div class="mt-3"><h3>Suche nach Bischöfen</h3></div>
-	{{ form_start(query_form, {'attr': {'id':'q_form'}}) }}
+    {% set titletext = 'Die Patriarchen, Erzbischöfe, Bischöfe, Weihbischöfe und weitere diözesane Leitungspersonen des Alten Reiches (nach Erwin Gatz)' %}
+    <div class="container-fluid mt-3">
+	<div class="row-col-12 topic-title mb-2">{{ titletext }}</div>
+	{{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('launch_query')}}) }}
 	    {{ include('query_bishop/_form_elements.html.twig') }}
 	{{ form_end(query_form) }}
     </div>

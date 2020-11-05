@@ -1,20 +1,18 @@
 {# query-diocese/listresult.html.twig #}
 {% extends 'base.html.twig' %}
 
-
 {% block body %}
     {# add page forward and backward buttons #}
     {% set fb_elements %}
     {% if count > 0 %}
 	<span class="ml-4">
-	    <a href="{{ path('query_dioceses', {'page': page - 1 }) }}"><button class="btn btn-secondary" {% if page < 2 >= count%}disabled="disabled"{% endif %}>&#9204; zurück</button></a>
-	    <a href="{{ path('query_dioceses', {'page': page + 1 }) }}"><button class="btn btn-secondary" {% if page * limit >= count%}disabled="disabled"{% endif %}>vor &#9205;</button></a>
+	    <a href="{{ path('query_dioceses', {'page': page - 1, 'il': il}) }}"><button class="btn btn-secondary" {% if page < 2 >= count%}disabled="disabled"{% endif %}>&#9204; zurück</button></a>
+	    <a href="{{ path('query_dioceses', {'page': page + 1, 'il': il }) }}"><button class="btn btn-secondary" {% if page * limit >= count%}disabled="disabled"{% endif %}>vor &#9205;</button></a>
 	</span>
     {% endif %}
     {% endset %}
-
     <div class="container-fluid mt-3">
-	<h2>Bistümer</h2>
+	<div class="row-col-12 topic-title">Die Bistümer des Alten Reiches (nach Erwin Gatz)</div>
 	<div class="row">
 	    <div class="col-8 mt-3 mb-1">Treffer:
 		{% if count == 0 %}
@@ -25,6 +23,18 @@
 		    {{ (page - 1) * limit + 1 }} - {{ min(page * limit, count)}} von {{ count }}
 		{% endif %}
 		{{ fb_elements }}
+
+		<div class="btn-group"> <div class="dropdown">
+		    <button class="btn btn-outline-secondary dropdown-toggle ml-2" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ il }}</button>
+		    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			{% if il != 'A-Z' %}
+			    <a class="dropdown-item" href="{{ path('query_dioceses', {'il': 'A-Z'}) }}">A-Z</a>
+			{% endif %}
+			{% for choiceil in 'A'..'Z' %}
+			    <a class="dropdown-item" href="{{ path('query_dioceses', {'il': choiceil}) }}">{{ choiceil }}</a>
+			{% endfor %}
+		    </div>
+		</div></div>
 	    </div>
 	</div>
     </div>
@@ -45,8 +55,8 @@
 				    <td><a href="{{ path('diocese', {idorname: diocese.wiagidlong, flaglist: 'flaglist'}) }}">{{ diocese.diocesestatus }} {{ diocese.diocese }}</a></td>
 				    <td>
 					{% if not diocese.dateoffounding and not diocese.dateofdissolution %}
-					{% elseif diocese.dateoffounding and not diocese.dateofdissolution %}
-					    <small>Gründung {{ diocese.dateoffounding }}</small>
+					{% elseif diocese.dateoffounding and not diocese.dateofdissolution or diocese.dateofdissolution == "keine"%}
+					    <small>Gründung {{ diocese.dateoffounding }} <br/> besteht bis heute</small>
 					{% elseif not diocese.dateoffounding and diocese.dateofdissolution %}
 					    <small>Aufhebung {{ diocese.dateofdissolution }}</small>
 					{% else %}
@@ -62,4 +72,8 @@
 	    </div>
 	</div>
     </div>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('js/popper.min.js') }}"></script>
+    {{ parent() }}
 {% endblock %}

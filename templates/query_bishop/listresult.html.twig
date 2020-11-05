@@ -13,19 +13,21 @@
 {% endblock %}
 
 {% block body %}
+    {% set titletext = 'Die Patriarchen, Erzbischöfe, Bischöfe, Weihbischöfe und weitere diözesane Leitungspersonen des Alten Reiches (nach Erwin Gatz)' %}
+
     {# add page forward and backward buttons #}
     {% set fb_elements %}
     {% if count > 0 %}
 	<span class="ml-4">
-	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page < 2 %} disabled="disabled" {% endif %} name="page" value="{{ page - 1 }}">&#9204; zurück</button>
-	    <button type="submit" form="q_form" class="btn btn-secondary" {% if page * limit >= count%}disabled="disabled"{% endif %} name="page" value="{{ page + 1 }}">vor &#9205;</button>
+	    <button type="submit" form="q_form" class="btn btn-secondary" {% if offset < limit %} disabled="disabled" {% endif %} name="offset" value="{{ offset - limit }}">&#9204; zurück</button>
+	    <button type="submit" form="q_form" class="btn btn-secondary" {% if offset + limit >= count%}disabled="disabled"{% endif %} name="offset" value="{{ offset + limit }}">vor &#9205;</button>
 	</span>
     {% endif %}
     {% endset %}
 
-    {{ form_start(query_form, {'attr': {'id':'q_form'}}) }}
+    {{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('launch_query')} }) }}
 	<div class="container-fluid mt-3">
-	    <h3>Suche nach Bischöfen</h3>
+	    <div class="row-col-12 topic-title mb-2">{{ titletext }}</div>
 	    {{ include('query_bishop/_form_elements.html.twig') }}
 	    <div class="row">
 		<div class="col-8 mt-3 mb-1">Treffer:
@@ -34,7 +36,7 @@
 		    {% elseif count == 1 %}
 			1
 		    {% else %}
-			{{ (page - 1) * limit + 1 }} - {{ min(page * limit, count)}} von {{ count }}
+			{{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ count }}
 		    {% endif %}
 		    {{ fb_elements }}
 		</div>
@@ -56,7 +58,7 @@
 				<tbody>
 				    {% for person in persons %}
 					<tr>
-					    <td><a href="{{ path('bishop', {wiagidlong: person.wiagidlong, flaglist: 'flaglist'}) }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</a>
+					    <td><a href="{{ path('bishop_in_list') }}?{{ querystr }}&offset={{ offset + loop.index0 }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</a>
 						{% if not person.datebirth and not person.datedeath %}
 						{% elseif person.datebirth and not person.datedeath %}
 						    <br/>* {{ person.datebirth }}
@@ -107,7 +109,7 @@
 		    </div>
 		</div>
 	    {% endif %}
-    </div>
+	</div>
     {{ form_end(query_form) }}
 
 {% endblock %}

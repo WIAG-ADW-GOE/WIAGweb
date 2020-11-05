@@ -114,7 +114,7 @@ class PersonRepository extends ServiceEntityRepository {
         return $ncount;
     }
 
-    public function findWithOffices(BishopQueryFormModel $bishopquery, $limit = 0, $page = 0) {
+    public function findWithOffices(BishopQueryFormModel $bishopquery, $limit = 0, $offset = 0) {
 
         $qb = $this->createQueryBuilder('person')
                    ->join('person.offices', 'oc')
@@ -126,34 +126,13 @@ class PersonRepository extends ServiceEntityRepository {
 
 
         if($limit > 0) {
-            $offset = ($page - 1) * $limit;
             $qb->setMaxResults($limit);
             $qb->setFirstResult($offset);
         }
 
         // dump($qb->getDQL());
 
-        $sort = null;
-        if($bishopquery->year || $bishopquery->office) $sort = 'year';
-        if($bishopquery->place) $sort = 'yearatplace';
-        if($bishopquery->name) $sort = 'name';
-
-        switch($sort) {
-        case 'year':
-            if(!$bishopquery->year) {
-                $qb->join('person.era', 'era');
-            }
-            $qb->orderBy('era.era_start');
-            break;
-        case 'yearatplace':
-            $qb->join('ocplace.numdate', 'ocplacedate')
-               ->orderBy('ocplacedate.date_start', 'ASC');
-            break;
-        case 'name':
-            $qb->orderBy('person.familyname, person.givenname, oc.diocese');
-            break;
-        }
-
+        $this->addSortParameter($qb, $bishopquery);
 
         $query = $qb->getQuery();
 
@@ -163,6 +142,7 @@ class PersonRepository extends ServiceEntityRepository {
 
         return $persons;
     }
+    
 
     public function addQueryConditions($qb, BishopQueryFormModel $bishopquery) {
 
@@ -216,6 +196,37 @@ class PersonRepository extends ServiceEntityRepository {
 
         // for each individual person sort offices by start date in the template
         return $qb;
+    }
+
+    public function addSortParameter($qb, $bishopquery) {
+
+        $sort = null;
+        if($bishopquery->year || $bishopquery->office) $sort = 'year';
+        if($bishopquery->place) $sort = 'yearatplace';
+        if($bishopquery->name) $sort = 'name';
+
+        /** 
+         * a reliable order is required, therefore person.givenname shows up
+         * in each sort clause
+         */
+        switch($sort) {
+        case 'year':
+            if(!$bishopquery->year) {
+                $qb->join('person.era', 'era');
+            }
+            $qb->orderBy('era.era_start, person.givenname');
+            break;
+        case 'yearatplace':
+            $qb->join('ocplace.numdate', 'ocplacedate')
+               ->orderBy('ocplacedate.date_start, person.givenname', 'ASC');
+            break;
+        case 'name':
+            $qb->orderBy('person.familyname, person.givenname, oc.diocese');
+            break;
+        }
+
+        return $qb;
+
     }
 
     public function findOneWithOffices($wiagid) {

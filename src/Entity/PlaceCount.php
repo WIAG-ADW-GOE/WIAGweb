@@ -10,6 +10,11 @@ class PlaceCount {
         $this->count = $c;
     }
 
+    public function getName(): ?string {
+        return $this->name;
+    }
+
+
     public function getLabel(): string {
         $label = $this->name.' ('.$this->count.')';
         return $label;
