@@ -6,8 +6,8 @@
     {% set fb_elements %}
     {% if count > 0 %}
 	<span class="ml-4">
-	    <a href="{{ path('query_dioceses', {'page': page - 1, 'il': il}) }}"><button class="btn btn-secondary" {% if page < 2 >= count%}disabled="disabled"{% endif %}>&#9204; zurück</button></a>
-	    <a href="{{ path('query_dioceses', {'page': page + 1, 'il': il }) }}"><button class="btn btn-secondary" {% if page * limit >= count%}disabled="disabled"{% endif %}>vor &#9205;</button></a>
+	    <a href="{{ path('query_dioceses', {'offset': offset - limit, 'il': il}) }}"><button class="btn btn-secondary" {% if offset - limit < 0 %}disabled="disabled"{% endif %}>&#9204; zurück</button></a>
+	    <a href="{{ path('query_dioceses', {'offset': offset + limit, 'il': il }) }}"><button class="btn btn-secondary" {% if offset + limit >= count%}disabled="disabled"{% endif %}>vor &#9205;</button></a>
 	</span>
     {% endif %}
     {% endset %}
@@ -20,7 +20,7 @@
 		{% elseif count == 1 %}
 		    1
 		{% else %}
-		    {{ (page - 1) * limit + 1 }} - {{ min(page * limit, count)}} von {{ count }}
+		    {{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ count }}
 		{% endif %}
 		{{ fb_elements }}
 
@@ -30,8 +30,8 @@
 			{% if il != 'A-Z' %}
 			    <a class="dropdown-item" href="{{ path('query_dioceses', {'il': 'A-Z'}) }}">A-Z</a>
 			{% endif %}
-			{% for choiceil in 'A'..'Z' %}
-			    <a class="dropdown-item" href="{{ path('query_dioceses', {'il': choiceil}) }}">{{ choiceil }}</a>
+			{% for choice in 'A'..'Z' %}
+			    <a class="dropdown-item" href="{{ path('query_dioceses', {'il': choice}) }}">{{ choice }}</a>
 			{% endfor %}
 		    </div>
 		</div></div>
@@ -52,7 +52,7 @@
 			<tbody>
 			    {% for diocese in dioceses %}
 				<tr>
-				    <td><a href="{{ path('diocese', {idorname: diocese.wiagidlong, flaglist: 'flaglist'}) }}">{{ diocese.diocesestatus }} {{ diocese.diocese }}</a></td>
+				    <td><a href="{{ path('diocese_in_list', {'offset': offset + loop.index0, 'il': il}) }}">{{ diocese.diocesestatus }} {{ diocese.diocese }}</a></td>
 				    <td>
 					{% if not diocese.dateoffounding and not diocese.dateofdissolution %}
 					{% elseif diocese.dateoffounding and not diocese.dateofdissolution or diocese.dateofdissolution == "keine"%}

@@ -77,11 +77,11 @@
 		(Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
 
 	    <div class="row col-12 mt-4">
-		{% if flaglist %}<input type="button" class="btn btn-secondary" onclick="window.history.back()" value="Ergebnisliste"/>{% endif %}
-		{#
-		<a href="{{ path('launch_query') }}"<button class="btn btn-secondary ml-1">Neue Suche</button></a>
-		<a href="{{ path('api_bishop', {wiagidlong: diocese.wiagidlong, format: 'json'}) }}"<button class="btn btn-secondary btn-light ml-3">JSON</button></a>
-		#}
+		{% if il is defined %}
+		    <a href="{{ path('diocese_in_list', {'offset': offset - 1, 'il': il }) }}"><button class="btn btn-secondary btn-sm ml-1" {% if offset == 0 %}disabled="disabled"{% endif %}>vohergehender</button></a>
+		    <a href="{{ path('diocese_in_list', {'offset': offset + 1, 'il': il }) }}"><button class="btn btn-secondary btn-sm ml-1" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster</button></a>
+		    <a href="{{ path('query_dioceses', {'offset': offset, 'il': il }) }}"><button class="btn btn-secondary btn-sm ml-1">Ergebnisliste</button></a>
+		{% endif %}
 	    </div>
 	{% endif %}
     </div>

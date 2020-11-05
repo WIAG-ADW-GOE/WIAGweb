@@ -33,7 +33,8 @@ class DioceseController extends AbstractController {
     public function dioceses (Request $request) {
 
         $query = $request->query;
-        $page = $query->get('page') ?? 1;
+        $offset = $query->get('offset') ?? 0;
+        $offset = floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
         $initialletter = $query->get('il') ?? 'A-Z';
 
         $repository = $this->getDoctrine()
@@ -41,12 +42,12 @@ class DioceseController extends AbstractController {
 
         $count = $repository->countByInitalletter($initialletter);
 
-        $dioceses = $repository->findAllWithBishopricSeat($page, self::LIST_LIMIT, $initialletter);
+        $dioceses = $repository->findByInitialLetterWithBishopricSeat($initialletter, self::LIST_LIMIT, $offset);
 
 
         return $this->render('query_diocese/listresult.html.twig', [
             'dioceses' => $dioceses,
-            'page' => $page,
+            'offset' => $offset,
             'count' => $count,
             'il' => $initialletter,
             'limit' => self::LIST_LIMIT,
@@ -57,7 +58,7 @@ class DioceseController extends AbstractController {
     /**
      * @Route("/diocese/{idorname}", name="diocese")
      */
-    public function getdiocese($idorname, Request $request) {
+    public function getDiocese($idorname, Request $request) {
 
         $format = $request->query->get('format');
 
@@ -84,6 +85,52 @@ class DioceseController extends AbstractController {
             'flaglist' => $flaglist,
         ]);
     }
+
+        /**
+     * @Route("/diocese-in-list/", name="diocese_in_list")
+     */
+    public function getDioceseInList(Request $request) {
+
+        $format = $request->query->get('format');
+
+        if(!is_null($format)) {
+            return $this->redirectToRoute('diocese_api', [
+                'wiagid' => $idorname,
+                'format' => $format,
+            ]);
+        }
+
+        $offset = $request->query->get('offset');
+        $initialletter = $request->query->get('il');
+
+        $dioceserepository = $this->getDoctrine()
+                                  ->getRepository(Diocese::class);
+
+        $hassuccessor = false;
+        if($offset == 0) {
+            $dioceses = $dioceserepository->findByInitialLetterWithBishopricSeat($initialletter, 2, $offset);
+            if(count($dioceses) == 2) $hassuccessor = true;
+            $diocese = $dioceses ? $dioceses[0] : null;
+        } else {
+            $dioceses = $dioceserepository->findByInitialLetterWithBishopricSeat($initialletter, 3, $offset - 1);
+            if(count($dioceses) == 3) $hassuccessor = true;
+            $diocese = $dioceses ? $dioceses[1] : null;
+        }
+
+        if (!$diocese) {
+            throw $this->createNotFoundException("Bistum wurde nicht gefunden.");
+        }
+
+
+        return $this->render('query_diocese/details.html.twig', [
+            'diocese' => $diocese,
+            'offset' => $offset,
+            'hassuccessor' => $hassuccessor,
+            'il' => $initialletter,
+            'flaglist' => null,
+        ]);
+    }
+
 
 
 

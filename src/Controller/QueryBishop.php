@@ -242,7 +242,6 @@ class QueryBishop extends AbstractController {
                                  ->getRepository(Person::class);
         $hassuccessor = false;
         if($offset == 0) {
-            $queryback = null;
             $persons = $personRepository->findWithOffices($bishopquery, 2, $offset);
             $iterator = $persons->getIterator();
             if(count($iterator) == 2) $hassuccessor = true;

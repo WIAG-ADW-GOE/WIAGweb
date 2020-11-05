@@ -173,16 +173,16 @@
 
 	    <div class="row col-12 mt-4">
 		{% if flaglist %}
-		    <input type="button" class="btn btn-secondary" onclick="window.history.back()" value="Ergebnisliste"/>
+		    <input type="button" class="btn btn-secondary-outline btn-sm" onclick="window.history.back()" value="Ergebnisliste"/>
 		{% endif %}
 		{% if querystr is defined %}
-		    <a href="{{ path('bishop_in_list') }}?{{ querystr }}&offset={{ offset - 1 }}"><button class="btn btn-secondary ml-1" {% if offset == 0 %}disabled="disabled"{% endif %}>vohergehender</button></a>
-		    <a href="{{ path('bishop_in_list') }}?{{ querystr }}&offset={{ offset + 1 }}"><button class="btn btn-secondary ml-1" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster</button></a>
-		    <a href="{{ path('requery_bishops') }}?{{ querystr }}&offset={{ offset }}"><button class="btn btn-secondary ml-1">Ergebnisliste</button></a>
+		    <a href="{{ path('bishop_in_list', {'offset': offset - 1}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1" {% if offset == 0 %}disabled="disabled"{% endif %}>vohergehender</button></a>
+		    <a href="{{ path('bishop_in_list', {'offset': offset + 1}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster</button></a>
+		    <a href="{{ path('requery_bishops', {'offset': offset}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1">Ergebnisliste</button></a>
 		{% endif %}
-		<a href="{{ path('launch_query') }}"><button class="btn btn-secondary ml-1">Neue Suche</button></a>
-		<a href="{{ path('api_bishop', {wiagidlong: person.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light ml-3">JSON</button></a>
-		<a href="{{ path('api_bishop', {wiagidlong: person.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light ml-3">CSV</button></a>
+		<a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm ml-1">Neue Suche</button></a>
+		<a href="{{ path('api_bishop', {wiagidlong: person.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-3">JSON</button></a>
+		<a href="{{ path('api_bishop', {wiagidlong: person.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-3">CSV</button></a>
 	    </div>
 	{% endif %}
     </div>
