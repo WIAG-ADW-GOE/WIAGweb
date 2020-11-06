@@ -45,26 +45,41 @@ class BishopQueryFormModel {
         return $this;
     }
 
-    public function setTextFields(array $a) {
+    public function setFieldsByArray(array $a) {
         $this->name = $a['name'];
         $this->place = $a['place'];
         $this->office = $a['office'];
         $this->year = $a['year'];
         $this->someid = $a['someid'];
-        $this->facetPlaces = null;
-        $this->facetOffices = null;
-        return null;
+
+        if (array_key_exists('facetOffices', $a)) {
+            $facetOffices = array();
+            foreach($a['facetOffices'] as $foc) {
+                // we have no count data at this point
+                $facetOffices[] = new OfficeCount($foc, 0);
+            }
+            $this->facetOffices = $facetOffices;
+        }
+        if (array_key_exists('facetPlaces', $a)) {
+            $facetPlaces = array();
+            foreach($a['facetPlaces'] as $fpl) {
+                // we have no count data at this point
+                $facetPlaces[] = new PlaceCount($fpl, 0);
+            }
+            $this->facetPlaces = $facetPlaces;
+        }
+
+        return $this;
     }
 
-    public function copy(BishopQueryFormModel $a) {
-        $this->name = $a->name;
-        $this->place = $a->place;
-        $this->office = $a->office;
-        $this->year = $a->year;
-        $this->someid = $a->someid;
-        $this->facetPlaces = $a->facetPlaces;
-        $this->facetOffices = $a->facetOffices;
-        return null;
+    public function getFacetPlacesAsArray(): array {
+        return array_map(function($el) {return $el->getName();},
+                         $this->facetPlaces);
+    }
+
+    public function getFacetOfficesAsArray(): array {
+        return array_map(function($el) {return $el->getName();},
+                         $this->facetOffices);
     }
 
     public function toArraySansFacets() {

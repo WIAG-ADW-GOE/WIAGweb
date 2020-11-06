@@ -176,11 +176,13 @@
 		{% if flaglist %}
 		    <input type="button" class="btn btn-secondary-outline btn-sm" onclick="window.history.back()" value="Ergebnisliste"/>
 		{% endif %}
-		{% if querystr %}
+		{% if querystr and (offset > 0 or hassuccessor) %}
 		    <a href="{{ path('bishop_in_list', {'offset': offset - 1}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1" {% if offset == 0 %}disabled="disabled"{% endif %}>{{ _self.maybemore('back', previousname) }}</button></a>
 		{% endif %}
-		{% if querystr %}
+		{% if querystr and (offset > 0 or hassuccessor) %}
 		    <a href="{{ path('bishop_in_list', {'offset': offset + 1}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1" {% if not hassuccessor %}disabled="disabled"{% endif %}>{{ _self.maybemore('forward', nextname) }}</button></a>
+		{% endif %}
+		{% if querystr %}
 		    <a href="{{ path('requery_bishops', {'offset': offset}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1">Ergebnisliste</button></a>
 		{% endif %}
 		<a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm ml-1">Neue Suche</button></a>
