@@ -38,6 +38,12 @@ class AltLabelDiocese
      */
     private $ressource;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Diocese::class, inversedBy="altlabel")
+     * @ORM\JoinColumn(name="diocese_id", referencedColumnName="id_diocese")
+     */
+    private $diocese;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -99,6 +105,18 @@ class AltLabelDiocese
     public function setRessource(?string $ressource): self
     {
         $this->ressource = $ressource;
+
+        return $this;
+    }
+
+    public function getDiocese(): ?Diocese
+    {
+        return $this->diocese;
+    }
+
+    public function setDiocese(?Diocese $diocese): self
+    {
+        $this->diocese = $diocese;
 
         return $this;
     }

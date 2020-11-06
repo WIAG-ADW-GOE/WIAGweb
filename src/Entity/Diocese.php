@@ -94,9 +94,16 @@ class Diocese
      */
     private $external_urls;
 
+    /**
+     * @ORM\OneToMany(targetEntity=AltLabelDiocese::class, mappedBy="diocese")
+     * @ORM\JoinColumn(name="id_diocese", referencedColumnName="diocese_id")
+     */
+    private $altlabel;
+
     public function __construct()
     {
         $this->external_urls = new ArrayCollection();
+        $this->altlabel = new ArrayCollection();
     }
 
     public static function wiagidLongToId($wiagidlong) {
@@ -312,6 +319,37 @@ class Diocese
             // set the owning side to null (unless already changed)
             if ($externalUrl->getDiocese() === $this) {
                 $externalUrl->setDiocese(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|AltLabelDiocese[]
+     */
+    public function getAltlabel(): Collection
+    {
+        return $this->altlabel;
+    }
+
+    public function addAltlabel(AltLabelDiocese $altlabel): self
+    {
+        if (!$this->altlabel->contains($altlabel)) {
+            $this->altlabel[] = $altlabel;
+            $altlabel->setDiocese($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAltlabel(AltLabelDiocese $altlabel): self
+    {
+        if ($this->altlabel->contains($altlabel)) {
+            $this->altlabel->removeElement($altlabel);
+            // set the owning side to null (unless already changed)
+            if ($altlabel->getDiocese() === $this) {
+                $altlabel->setDiocese(null);
             }
         }
 

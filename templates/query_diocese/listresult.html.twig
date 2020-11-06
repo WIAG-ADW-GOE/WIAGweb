@@ -12,7 +12,8 @@
     {% endif %}
     {% endset %}
     <div class="container-fluid mt-3">
-	<div class="row-col-12 topic-title">Die Bistümer des Alten Reiches (nach Erwin Gatz)</div>
+	{# global: diocesestitle #}
+	<div class="row-col-12 topic-title">{{ diocesestitle }}</div>
 	<div class="row">
 	    <div class="col-8 mt-3 mb-1">Treffer:
 		{% if count == 0 %}

@@ -13,8 +13,6 @@
 {% endblock %}
 
 {% block body %}
-    {% set titletext = 'Die Patriarchen, Erzbischöfe, Bischöfe, Weihbischöfe und weitere diözesane Leitungspersonen des Alten Reiches (nach Erwin Gatz)' %}
-
     {# add page forward and backward buttons #}
     {% set fb_elements %}
     {% if count > 0 %}
@@ -27,7 +25,8 @@
 
     {{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('launch_query')} }) }}
 	<div class="container-fluid mt-3">
-	    <div class="row-col-12 topic-title mb-2">{{ titletext }}</div>
+	    {# global: bishopstitle #}
+	    <div class="row-col-12 topic-title mb-2">{{ bishopstitle }}</div>
 	    {{ include('query_bishop/_form_elements.html.twig') }}
 	    <div class="row">
 		<div class="col-8 mt-3 mb-1">Treffer:

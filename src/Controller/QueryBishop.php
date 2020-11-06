@@ -241,17 +241,24 @@ class QueryBishop extends AbstractController {
         $personRepository = $this->getDoctrine()
                                  ->getRepository(Person::class);
         $hassuccessor = false;
+        $nextname = null;
+        $previousname = null;
         if($offset == 0) {
             $persons = $personRepository->findWithOffices($bishopquery, 2, $offset);
             $iterator = $persons->getIterator();
             if(count($iterator) == 2) $hassuccessor = true;
-            $person = $iterator->current();
+
         } else {
             $persons = $personRepository->findWithOffices($bishopquery, 3, $offset - 1);
             $iterator = $persons->getIterator();
             if(count($iterator) == 3) $hassuccessor = true;
+            $previousname = $iterator->current()->getDisplayname();
             $iterator->next();
-            $person = $iterator->current();
+        }
+        $person = $iterator->current();
+        if($hassuccessor) {
+                $iterator->next();
+                $nextname = $iterator->current()->getDisplayname();
         }
 
         return $this->render('query_bishop/details.html.twig', [
@@ -259,6 +266,8 @@ class QueryBishop extends AbstractController {
             'wiagidlong' => $person->getWiagidlong(),
             'flaglist' => null,
             'querystr' => $querystr,
+            'previousname' => $previousname,
+            'nextname' => $nextname,
             'offset' => $offset,
             'hassuccessor' => $hassuccessor,
         ]);

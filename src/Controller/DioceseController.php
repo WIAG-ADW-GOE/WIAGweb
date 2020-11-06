@@ -107,15 +107,21 @@ class DioceseController extends AbstractController {
                                   ->getRepository(Diocese::class);
 
         $hassuccessor = false;
+        $nextname = null;
+        $previousname = null;
         if($offset == 0) {
             $dioceses = $dioceserepository->findByInitialLetterWithBishopricSeat($initialletter, 2, $offset);
             if(count($dioceses) == 2) $hassuccessor = true;
             $diocese = $dioceses ? $dioceses[0] : null;
+            if($hassuccessor) $nextname = $dioceses[1]->getDiocese();
         } else {
             $dioceses = $dioceserepository->findByInitialLetterWithBishopricSeat($initialletter, 3, $offset - 1);
+            $previousname = $dioceses ? $dioceses[0]->getDiocese() : null;
             if(count($dioceses) == 3) $hassuccessor = true;
             $diocese = $dioceses ? $dioceses[1] : null;
+            if($hassuccessor) $nextname = $dioceses[2]->getDiocese();
         }
+
 
         if (!$diocese) {
             throw $this->createNotFoundException("Bistum wurde nicht gefunden.");
@@ -126,6 +132,8 @@ class DioceseController extends AbstractController {
             'diocese' => $diocese,
             'offset' => $offset,
             'hassuccessor' => $hassuccessor,
+            'previousname' => $previousname,
+            'nextname' => $nextname,
             'il' => $initialletter,
             'flaglist' => null,
         ]);

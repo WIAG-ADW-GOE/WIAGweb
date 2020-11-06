@@ -6,16 +6,17 @@
 {% set urlwikidata = 'https://www.wikidata.org/wiki/' %}
 {% set urlviaf = 'https://viaf.org/viaf/' %}
 
+{% macro maybemore(direction, label, labellength = 12) %}{% if label %}{% if direction == 'back' %}&#9204; {{ label[:labellength] }}...{% else %}{{ label[:labellength] }}... &#9205;{% endif %}{% else %}<span class="mx-1">&#x25A0;</span>{% endif %}{% endmacro %}
+
 {% block body %}
-    {% set titletext = 'Die Patriarchen, Erzbischöfe, Bischöfe, Weihbischöfe und weitere diözesane Leitungspersonen des Alten Reiches (nach Erwin Gatz)' %}
     <div class="container-fluid mt-3">
 	{# person is passed as an object #}
 	{% if not person%}
 	    <p class="em">Person nicht gefunden.</p>
 	{% else %}
-	    <div class="row-col-12 topic-title">{{ titletext }}</div>
+	    <div class="row-col-12 topic-title">{{ bishopstitle }}</div>
 	    <div class="row mt-3 mb-0"><div class="col-8">
-		    <h2>{{ person.displayname }}</h2>
+		    <h2>{{ person.displayname[:200] }}</h2>
 	    </div>
 	    <div class="col-4 text-right wiag-id">{{ person.wiagidlong }}</div></div>
 
@@ -175,9 +176,11 @@
 		{% if flaglist %}
 		    <input type="button" class="btn btn-secondary-outline btn-sm" onclick="window.history.back()" value="Ergebnisliste"/>
 		{% endif %}
-		{% if querystr is defined %}
-		    <a href="{{ path('bishop_in_list', {'offset': offset - 1}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1" {% if offset == 0 %}disabled="disabled"{% endif %}>vohergehender</button></a>
-		    <a href="{{ path('bishop_in_list', {'offset': offset + 1}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster</button></a>
+		{% if querystr %}
+		    <a href="{{ path('bishop_in_list', {'offset': offset - 1}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1" {% if offset == 0 %}disabled="disabled"{% endif %}>{{ _self.maybemore('back', previousname) }}</button></a>
+		{% endif %}
+		{% if querystr %}
+		    <a href="{{ path('bishop_in_list', {'offset': offset + 1}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1" {% if not hassuccessor %}disabled="disabled"{% endif %}>{{ _self.maybemore('forward', nextname) }}</button></a>
 		    <a href="{{ path('requery_bishops', {'offset': offset}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1">Ergebnisliste</button></a>
 		{% endif %}
 		<a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm ml-1">Neue Suche</button></a>
