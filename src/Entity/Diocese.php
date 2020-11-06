@@ -356,4 +356,64 @@ class Diocese
         return $this;
     }
 
+    public function toArray(): array {
+        $cd = array();
+        $cd['wiagid'] = $this->getWiagidLong();
+
+        $fv = $this->getDiocese();
+        if($fv) $cd['name'] = $fv;
+
+        $fv = $this->getDioceseStatus();
+        if($fv) $cd['status'] = $fv;
+
+        $fv = $this->getDateOfFounding();
+        if($fv) $cd['dateOfFounding'] = $fv;
+
+        $fv = $this->getDateOfDissolution();
+        if($fv) {
+            $cd['dateOfDissolution']
+                = $fv == 'keine' ? 'none' : $fv;
+        }
+
+        $fv = $this->getAltlabel();
+        if($fv) {
+            $clabel = array();
+            foreach($fv as $label) {
+                $clabel[] = $label->toArray();
+            }
+            $cd['altLabels'] = $clabel;
+        }
+
+        $fv = $this->getNoteDiocese();
+        if($fv) $cd['note'] = $fv;
+
+        $fv = $this->getEcclesiasticalProvince();
+        if($fv) $cd['ecclesiasticalProvince'] = $fv;
+
+        $fv = $this->getBishopricseatobj();
+        if($fv) $cd['bishopricSeat'] = $fv->getPlaceName();
+
+        $fv = $this->getNoteBishopricSeat();
+        if($fv) $cd['noteBishopricSeat'] = $fv;
+
+
+        $fv = $this->getExternalUrls();
+        if($fv) {
+            $cei = array();
+            foreach($fv as $extid) {
+                $cei[$extid->getAuthority()->getUrlNameFormatter()]
+                    = $extid->getPrettyUrlValue();
+            }
+            $cd['externalIdentifiers'] = $cei;
+        }
+
+        $fv = $this->getCommentAuthorityFile();
+        if($fv) $cd['externalIdsComment'] = $fv;
+
+
+
+        return $cd;
+
+    }
+
 }

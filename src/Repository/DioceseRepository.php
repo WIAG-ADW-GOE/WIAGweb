@@ -87,7 +87,7 @@ class DioceseRepository extends ServiceEntityRepository
         return $count ? $count['count'] : null;
     }
 
-    public function findByInitialLetterWithBishopricSeat($initialletter, $limit, $offset) {
+    public function findByInitialLetterWithBishopricSeat($initialletter, $limit = null, $offset = 0) {
         $qb = $this->createQueryBuilder('diocese')
                    ->addSelect('placeobj')
                    ->leftJoin('diocese.bishopricseatobj', 'placeobj');
@@ -97,9 +97,11 @@ class DioceseRepository extends ServiceEntityRepository
                ->setParameter('initialletter', $initialletter.'%');
         }
 
-        $qb->orderBy('diocese.diocese')
-            ->setFirstResult($offset)
-           ->setMaxResults($limit);
+        if($limit) {
+            $qb->orderBy('diocese.diocese')
+               ->setFirstResult($offset)
+               ->setMaxResults($limit);
+        }
 
         $query = $qb->getQuery();
         $dioceses = $query->getResult();

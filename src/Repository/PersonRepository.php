@@ -142,7 +142,7 @@ class PersonRepository extends ServiceEntityRepository {
 
         return $persons;
     }
-    
+
 
     public function addQueryConditions($qb, BishopQueryFormModel $bishopquery) {
 
@@ -200,12 +200,12 @@ class PersonRepository extends ServiceEntityRepository {
 
     public function addSortParameter($qb, $bishopquery) {
 
-        $sort = null;
+        $sort = 'name';
         if($bishopquery->year || $bishopquery->office) $sort = 'year';
         if($bishopquery->place) $sort = 'yearatplace';
         if($bishopquery->name) $sort = 'name';
 
-        /** 
+        /**
          * a reliable order is required, therefore person.givenname shows up
          * in each sort clause
          */

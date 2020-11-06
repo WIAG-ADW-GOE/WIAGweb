@@ -561,7 +561,7 @@ class Person {
                 $pj['reference']['pages'] = $fiv;
         }
 
-        return array('person' => $pj);
+        return $pj;
     }
 
     public function hasMonastery(): bool {

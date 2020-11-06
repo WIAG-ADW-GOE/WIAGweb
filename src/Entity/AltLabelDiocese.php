@@ -120,4 +120,16 @@ class AltLabelDiocese
 
         return $this;
     }
+
+    public function toArray(): array {
+        $cl = array();
+
+        $fv = $this->getAltLabelDiocese();
+        if($fv) $cl['name'] = $fv;
+
+        $fv = $this->getLang();
+        if($fv) $cl['lang'] = $fv;
+
+        return array('altName' => $cl);
+    }
 }

@@ -29,7 +29,7 @@ class BishopApiController extends AbstractController {
     public function getperson($wiagidlong, Request $request) {
 
         $format = $request->query->get('format') ?? 'json';
-
+        
         if(array_search($format, ['json', 'csv']) === false) {
             throw $this->createNotFoundException('Unbekanntes Format: '.$format.'.');
         }
@@ -44,8 +44,8 @@ class BishopApiController extends AbstractController {
         if (!$person || $person === null) {
             throw $this->createNotFoundException('Person wurde nicht gefunden');
         }
-
-        $personExport = array('person' => $person->toArray());
+        
+        $personExport = $person->toArray();
         switch($format) {
         case 'json':
             return $this->json($personExport);
@@ -59,6 +59,9 @@ class BishopApiController extends AbstractController {
             $response->headers->set('Content-Disposition', "filename={$wiagidlong}.csv");
             return $response;
         }
+            
+
+
     }
 
 
@@ -68,7 +71,7 @@ class BishopApiController extends AbstractController {
     public function apigetpersons(Request $request) {
 
         $format = $request->query->get('format') ?? 'json';
-
+        
         if(array_search($format, ['json', 'csv']) === false) {
             throw $this->createNotFoundException('Unbekanntes Format: '.$format.'.');
         }
@@ -108,10 +111,9 @@ class BishopApiController extends AbstractController {
             return $this->json(array(
                 'persons' => [
                     'count' => count($persons),
-                    'list' => array_map(function($el) {return array('person' => $el);},
-                                        $personsExport),
+                    'list' => $personsExport,
                 ]
-            ));
+            ));            
         case 'csv':
             $csvencoder = new CsvEncoder();
             $csvdata = $csvencoder->encode($personsExport, 'csv', [
@@ -119,7 +121,7 @@ class BishopApiController extends AbstractController {
             ]);
             $response =  new Response($csvdata);
             $response->headers->set('Content-Type', "text/csv; charset=utf-8");
-            $response->headers->set('Content-Disposition', "filename=WIAGBishops.csv");
+            $response->headers->set('Content-Disposition', "filename=WIAGResult.csv");
             return $response;
         }
 

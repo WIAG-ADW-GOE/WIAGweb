@@ -35,7 +35,10 @@
 			    <a class="dropdown-item" href="{{ path('query_dioceses', {'il': choice}) }}">{{ choice }}</a>
 			{% endfor %}
 		    </div>
-		</div></div>
+		</div>
+		<a href="{{ path('api_query_dioceses', {format: 'json'}) }}"><button class="btn btn-secondary btn-light ml-3">JSON</button></a>
+		<a href="{{ path('api_query_dioceses', {format: 'csv'}) }}"><button class="btn btn-secondary btn-light ml-3">CSV</button></a>
+		</div>
 	    </div>
 	</div>
     </div>
@@ -70,6 +73,7 @@
 		    </table>
 		</div> {# table-responsive #}
 		{{ fb_elements }}
+
 	    </div>
 	</div>
     </div>
