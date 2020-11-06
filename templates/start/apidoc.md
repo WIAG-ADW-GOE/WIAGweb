@@ -3,15 +3,24 @@ WIAG API
 ========
 
 Das Application Programming Interface (API) für WIAG ermöglicht die automatisierte
-Abfrage von Daten aus dem WIAG Datenbestand. Die Daten werden als ein
-[JSON](https://www.json.org/json-de.html)- oder CSV-Dokument ausgeliefert.
+Abfrage von Daten aus dem WIAG Datenbestand:
+- [Bischöfe](#bischoefe)
+  - [Einzelabfrage](#bischofeeinzel)
+  - [Suchanfrage](#bischoefesuche)
+- [Bistümer](#bistuemer)
+  - [Einzelabfrage](#bistumeinzel)
+  - [Liste](#bistuemerliste)
 
-### Einzelabfrage
-Mit der Angabe einer WIAG-Kennung erhält man alle Elemente eines Datensatzes, zum Beispiel zu einer Person. Die URL hat folgenden Aufbau: `{{ wiagbaseurl }}/api/bishop/ID?format=json` oder `{{ wiagbaseurl }}/api/bishop/ID?format=csv`.
+Die Daten werden als ein [JSON](https://www.json.org/json-de.html)- oder CSV-Dokument ausgeliefert.
 
-Beispiel:
-{{ url('api_bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-10076-001', format: 'json'}) }}
-{{ url('api_bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-10076-001', format: 'csv'}) }}
+## <a id="bischoefe"></a>Bischöfe
+
+### <a id="bischofeinzel"></a>Einzelabfrage
+Mit der Angabe einer WIAG-Kennung erhält man alle Elemente eines Datensatzes. Die URL hat folgenden Aufbau: `{{ wiagbaseurl }}/api/bishop/[ID]?format=[json|csv]`. 
+
+Beispiel:<br/>
+{{ url('api\_bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-10076-001', format: 'json'}) }}<br/>
+{{ url('api\_bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-10076-001', format: 'csv'}) }}
 
 #### Struktur
 Das JSON-Dokument enthält ein Element `person`, das die einzelnen Angaben zu der
@@ -58,7 +67,7 @@ WIAG-Pers-EPISCGatz-10076-001   Braida              "Franz Julian"      "Graf vo
 
 ```
 
-### Suchanfrage
+### <a id="bischoefesuche"></a>Suchanfrage
 Mit der Angabe von Suchparametern erhält man alle Datensätze, die der Suchanfrage
 entsprechen. Gesucht werden kann nach folgenden Eigenschaften:
 
@@ -89,19 +98,19 @@ wird das gewünschte Format mit dem Schlüsselwort `format` angehängt. JSON ist
 Standard-Format, d.h. hier kann die Angabe des Formats entfallen:
 `{{ wiagbaseurl }}/api/query-bishops?key1=valuet&key2=value&format=[json|csv]`
 
-Beispiele (JSON):
-{{ url('api_query_bishops', {name: 'gondo', format: 'json'})|raw }}
-{{ url('api_query_bishops', {name: 'Hohenlohe', diocese: 'Bamberg'})|raw }}
-{{ url('api_query_bishops', {diocese: 'Trier', year: '1450', format: 'json'})|raw }}
-{{ url('api_query_bishops', {someid: 'WIAG-Pers-EPISCGatz-3302-001', format: 'json'})|raw }}
-{{ url('api_query_bishops', {someid: 'Q1506604'})|raw }}
+Beispiele (JSON):<br/>
+{{ url('api\_query\_bishops', {name: 'gondo', format: 'json'})|raw }}<br/>
+{{ url('api\_query\_bishops', {name: 'Hohenlohe', diocese: 'Bamberg'})|raw }}<br/>
+{{ url('api\_query\_bishops', {diocese: 'Trier', year: '1450', format: 'json'})|raw }}<br/>
+{{ url('api\_query\_bishops', {someid: 'WIAG-Pers-EPISCGatz-3302-001', format: 'json'})|raw }}<br/>
+{{ url('api\_query\_bishops', {someid: 'Q1506604'})|raw }}<br/>
 
-Beispiele (CSV):
-{{ url('api_query_bishops', {name: 'gondo', format: 'csv'})|raw }}
-{{ url('api_query_bishops', {name: 'Hohenlohe', diocese: 'Bamberg', format: 'csv'})|raw }}
-{{ url('api_query_bishops', {diocese: 'Trier', year: '1450', format: 'csv'})|raw }}
-{{ url('api_query_bishops', {someid: 'WIAG-Pers-EPISCGatz-3302-001', format: 'csv'})|raw }}
-{{ url('api_query_bishops', {someid: 'Q1506604', format: 'csv'})|raw }}
+Beispiele (CSV):<br/>
+{{ url('api\_query\_bishops', {name: 'gondo', format: 'csv'})|raw }}<br/>
+{{ url('api\_query\_bishops', {name: 'Hohenlohe', diocese: 'Bamberg', format: 'csv'})|raw }}<br/>
+{{ url('api\_query\_bishops', {diocese: 'Trier', year: '1450', format: 'csv'})|raw }}<br/>
+{{ url('api\_query\_bishops', {someid: 'WIAG-Pers-EPISCGatz-3302-001', format: 'csv'})|raw }}<br/>
+{{ url('api\_query\_bishops', {someid: 'Q1506604', format: 'csv'})|raw }}<br/>
 
 #### Struktur
 Das JSON-Dokument enthält ein Element `persons`, mit den Kindern `count` (Anzahl der Datensätze) und `list` (Liste der Datensätze).
@@ -141,4 +150,94 @@ WIAG-Pers-EPISCGatz-21477-001   Eydel                           Tilman          
 WIAG-Pers-EPISCGatz-3673-001    Blankenheim                     Friedrich                                                              von             ...
 WIAG-Pers-EPISCGatz-21281-001   "Franqueloy de Vico"            Joannes                                                                                "Ep. tit. Taurisiensis" ...
 ```
-{# do not cleanup whitespaces #}
+
+## <a id="bistuemer"></a>Bistümer
+
+### <a id="bistumeinzel"></a>Einzelabfrage
+Mit der Angabe einer WIAG-Kennung erhält man alle Elemente eines Datensatzes. Die URL hat folgenden Aufbau: `{{ wiagbaseurl }}/api/diocese/[ID]?format=[json|csv]`. 
+
+Beispiel:<br/>
+{{ url('api\_diocese', {wiagidlong: 'WIAG-Dioc-2-001', format: 'json'}) }}<br/>
+{{ url('api\_diocese', {wiagidlong: 'WIAG-Dioc-2-001', format: 'csv'}) }}
+
+#### Struktur
+Das JSON-Dokument enthält ein Element `diocese`, das die einzelnen Angaben zu dem
+Bistum umfasst. Dazu gehört bei fast allen Bistümern eine Gruppe von externen Kennungen im Element `identifiers` sowie eine Liste von alternativen Bezeichnungen in unterschiedlichen Sprachen im Element `altLabels`.
+
+Beispiel:
+``` json
+{
+  "diocese": {
+    "wiagid": "WIAG-Dioc-47-001",
+    "name": "Basel",
+    "status": "Bistum",
+    "dateOfFounding": "4. Jahrhundert",
+    "dateOfDissolution": "1803",
+    "altLabels": [
+      {
+        "altName": {
+          "name": "ecclesia Basileensis",
+          "lang": "la"
+        }
+      },
+      {
+        "altName": {
+          "name": "Bâle",
+          "lang": "fr"
+        }
+      },
+      {
+        "altName": {
+          "name": "Basilea"
+        }
+      }
+    ],
+    "note": "Erste Erwähnungen eines Bischofs in Kaiseraugst bei Basel gehen auf 343/346 zurück. Die Kontinuität zum späteren Bistum Basel bleibt jedoch offen. Zur eigentlichen Christianisierung kam es erst im 7. Jahrhundert",
+    "ecclesiasticalProvince": "Besançon",
+    "bishopricSeat": "Basel",
+    "noteBishopricSeat": "Im Zuge der Reformation wurden Bischof und Domkapitel aus Basel vertrieben. Die Bischöfe residierten seit 1527 in Pruntrut (Porrentruy), das Domkapitel in Freiburg im Breisgau, ab 1678 in Arlesheim.",
+    "identifiers": {
+      "Factgrid": "Q153251",
+      "Gemeinsame Normdatei (GND) ID": "2029618-6",
+      "Wikipedia-Artikel": "Bistum Basel",
+      "Wikidata": "Q182492",
+      "VIAF-ID": "131932928",
+      "Catholic Hierarchy, Diocese": "dbase.html"
+    },
+    "identifiersComment": "Alle Normdaten nehmen sowohl auf das Fürstbistum als auch auf das heutige Bistum Basel Bezug."
+  }
+}
+```
+
+### <a id="bistuemerliste"></a>Listenabfrage
+Die URL für die Abfrage einer Liste von Bistümern lautet: `{{ wiagbaseurl }}/api/query-dioceses?format=[json|csv]`. Optional kann ein Anfangsbuchstabe zu dem Schlüsselwort `il` angegeben werden: `{{ wiagbaseurl }}/api/query-dioceses?il=[A-Z]&format=[json|csv]`.
+
+Beispiel:<br/>
+{{ url('api\_query\_dioceses', {format: 'json'}) }}<br/>
+{{ url('api\_query\_dioceses', {format: 'csv'}) }}<br/>
+{{ url('api\_query\_dioceses', {il: 'T', format: 'json'})|raw }}
+
+#### Struktur
+Das JSON-Dokument enthält ein Element `dioeses`, mit den Kindern `count` (Anzahl der Datensätze) und `list` (Liste der Datensätze).
+
+Beispiel:
+```json
+{
+  "dioceses": {
+    "count": 5,
+    "list": [
+      {
+        "diocese": {
+          "wiagid": "WIAG-Dioc-30-001",
+          "name": "Trier",
+          "status": "Erzbistum",
+          "dateOfFounding": "3. Jahrhundert",
+          "dateOfDissolution": "1803",
+		  ...
+        }
+	  }	
+	...
+	]
+  }
+}
+```

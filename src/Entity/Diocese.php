@@ -404,11 +404,11 @@ class Diocese
                 $cei[$extid->getAuthority()->getUrlNameFormatter()]
                     = $extid->getPrettyUrlValue();
             }
-            $cd['externalIdentifiers'] = $cei;
+            $cd['identifiers'] = $cei;
         }
 
         $fv = $this->getCommentAuthorityFile();
-        if($fv) $cd['externalIdsComment'] = $fv;
+        if($fv) $cd['identifiersComment'] = $fv;
 
 
 
