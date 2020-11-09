@@ -101,6 +101,8 @@ class QueryBishop extends AbstractController {
 
                 $offset = $request->request->get('offset') ?? 0;
 
+                // extra check to avoid empty lists
+                if($count < self::LIST_LIMIT) $offset = 0;
                 $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset);
 
                 foreach($persons as $p) {
@@ -115,7 +117,6 @@ class QueryBishop extends AbstractController {
 
             // combination of POST_SET_DATA and POST_SUBMIT
             // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
-
 
             return $this->render('query_bishop/listresult.html.twig', [
                 'query_form' => $form->createView(),
