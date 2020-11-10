@@ -18,24 +18,11 @@
 		<h2>{{ displayname }}</h2></div>
 		<div class="col-3 wiag-id text-right">{{ diocese.wiagidlong }}</div>
 	    </div>
-	    {% if diocese.dateoffounding or diocese.dateofdissolution %}
-		<div class="row col-12 mb-3">
-		    {% if diocese.dateoffounding and not diocese.dateofdissolution or diocese.dateofdissolution == "keine" %}
-			<span class="wiag-large">Gründung {{ diocese.dateoffounding }}<span class ="pl-3">besteht bis heute</span></span>
-		    {% elseif not diocese.dateoffounding and diocese.dateofdissolution %}
-			<span class="wiag-large">Aufhebung {{ person.datedeath }}</span>
-		    {% else %}
-			<span class="wiag-large">Gründung {{ diocese.dateoffounding }} <span class="pl-3">Aufhebung {{ diocese.dateofdissolution }}</span></span>
-		    {% endif %}
-		</div>
-	    {% endif %}
 	    {% if diocese.altlabel|length > 0 %}
 		<div class="row col-12">
-		    <ul class="list-inlined list-unstyled">
-			{% for label in diocese.altlabel %}
-			    <li class="list-inline-item comment">{{ label.altlabeldiocese }}{% if label.lang %} ({{ label.lang }}){% endif %}</li>
-			{% endfor %}
-		    </ul>
+		    {% for label in diocese.altlabel|sort((a, b) => a.lang <=> b.lang) %}
+			{{ label.altlabeldiocese|split(' ')|join('&nbsp;')|raw }}{% if label.lang %} ({{ label.lang }}){% endif %}{% if not loop.last %}; {% endif %}
+		    {% endfor %}
 		</div>
 	    {% endif %}
 	    {% if diocese.notediocese %}
@@ -45,17 +32,25 @@
 	    {% endif %}
 
 	    <dl class="row mt-3">
-		{% if diocese.ecclesiasticalprovince %}
-		    <dt class="col-sm-3">Kirchenprovinz</dt>
-		    <dd class="col-sm-9">{{ diocese.ecclesiasticalprovince }}</dd>
-		{% endif %}
-
 		{% if diocese.bishopricseatobj %}
 		    <dt class="col-sm-3">Bischofssitz</dt>
 		    <dd class="col-sm-9">{{ diocese.bishopricseatobj.placename }}</dd>
 		    {% if diocese.notebishopricseat %}<dt class ="col-sm-3"></dt>
 			<dd class="col-sm-9"><span class="comment">{{- diocese.notebishopricseat -}}</span></dd>{% endif %}
 		{% endif %}
+		{% if diocese.dateoffounding %}
+		    <dt class="col-sm-3">Gründung</dt>
+		    <dd class="col-sm-9">{{ diocese.dateoffounding }}</dd>
+		{% endif %}		
+		{% if diocese.dateofdissolution %}
+		    <dt class="col-sm-3">Aufhebung</dt>
+		    <dd class="col-sm-9">{{ diocese.dateofdissolution }}</dd>
+		{% endif %}		
+		{% if diocese.ecclesiasticalprovince %}
+		    <dt class="col-sm-3">Kirchenprovinz</dt>
+		    <dd class="col-sm-9">{{ diocese.ecclesiasticalprovince }}</dd>
+		{% endif %}
+
 
 		{% if diocese.externalurls %}
 		    <dt class="col-sm-3">Externe Identifier</dt>
@@ -91,8 +86,8 @@
 
 	    <div class="row col-12 mt-4">
 		{% if il is defined %}
-		    <a href="{{ path('diocese_in_list', {'offset': offset - 1, 'il': il }) }}"><button class="btn btn-secondary btn-sm ml-1" {% if offset == 0 %}disabled="disabled"{% endif %}>{{ _self.maybemore('back', previousname) }}</button></a>
-		    <a href="{{ path('diocese_in_list', {'offset': offset + 1, 'il': il }) }}"><button class="btn btn-secondary btn-sm ml-1" {% if not hassuccessor %}disabled="disabled"{% endif %}>{{ _self.maybemore('forward', nextname) }}</button></a>
+		    <a href="{{ path('diocese_in_list', {'offset': offset - 1, 'il': il }) }}"><button class="btn btn-secondary btn-sm ml-1" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button></a>
+		    <a href="{{ path('diocese_in_list', {'offset': offset + 1, 'il': il }) }}"><button class="btn btn-secondary btn-sm ml-1" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
 		    <a href="{{ path('query_dioceses', {'offset': offset, 'il': il }) }}"><button class="btn btn-secondary btn-sm ml-1">Ergebnisliste</button></a>
 		{% endif %}
 		<a href="{{ path('api_diocese', {wiagidlong: diocese.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-3">JSON</button></a>

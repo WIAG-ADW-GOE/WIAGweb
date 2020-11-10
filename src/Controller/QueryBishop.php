@@ -9,10 +9,9 @@ use App\Entity\Office;
 use App\Entity\Officedate;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
-
+use App\Entity\Diocese;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,7 +61,9 @@ class QueryBishop extends AbstractController {
                           ->getRepository(Person::class)
                           ->countByQueryObject($bishopquery)[1];
 
-            $page = 0;
+            
+            $offset = 0;
+            $querystr = null;
             $persons = null;
 
             if($count > 0) {
@@ -221,10 +222,15 @@ class QueryBishop extends AbstractController {
             $this->createNotFoundException('Person wurde nicht gefunden');
         }
 
+        $dioceseRepository = $this->getDoctrine()
+                                  ->getRepository(Diocese::class);
+
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,
             'wiagidlong' => $wiagidlong,
             'flaglist' => $flaglist,
+            'querystr' => null,
+            'dioceserepository' => $dioceseRepository,
         ]);
     }
 
@@ -262,6 +268,8 @@ class QueryBishop extends AbstractController {
                 $nextname = $iterator->current()->getDisplayname();
         }
 
+        $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
+
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,
             'wiagidlong' => $person->getWiagidlong(),
@@ -271,6 +279,7 @@ class QueryBishop extends AbstractController {
             'nextname' => $nextname,
             'offset' => $offset,
             'hassuccessor' => $hassuccessor,
+            'dioceserepository' => $dioceseRepository,
         ]);
 
     }

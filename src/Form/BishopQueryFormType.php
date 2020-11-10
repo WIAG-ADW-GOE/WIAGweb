@@ -56,7 +56,7 @@ class BishopQueryFormType extends AbstractType
                 ],
             ])
             ->add('place', TextType::class, [
-                'label' => 'Bistum',
+                'label' => 'Erzbistum/Bistum',
                 'required' => false,
                 'attr' => [
                     'class' => 'js-place-autocomplete',

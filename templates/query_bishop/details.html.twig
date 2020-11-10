@@ -78,7 +78,7 @@
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item"> {{ office.officename }}</li>
 					{% if office.diocese %}
-					    <li class="list-inline-item"><a href="{{ path('diocese', {'idorname': office.diocese}) }}">{{ office.diocese }}</a></li>
+					    <li class="list-inline-item">{% if dioceserepository.countByDiocese(office.diocese) > 0 %}<a href="{{ path('diocese', {'idorname': office.diocese}) }}">{{ office.diocese }}</a>{% else %}{{ office.diocese }}{% endif %}</li>
 					{% endif %}
 					{% if office.idmonastery %}
 					    <li class="list-inline-item">
@@ -177,10 +177,10 @@
 		    <input type="button" class="btn btn-secondary-outline btn-sm" onclick="window.history.back()" value="Ergebnisliste"/>
 		{% endif %}
 		{% if querystr and (offset > 0 or hassuccessor) %}
-		    <a href="{{ path('bishop_in_list', {'offset': offset - 1}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1" {% if offset == 0 %}disabled="disabled"{% endif %}>{{ _self.maybemore('back', previousname) }}</button></a>
+		    <a href="{{ path('bishop_in_list', {'offset': offset - 1}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button></a>
 		{% endif %}
 		{% if querystr and (offset > 0 or hassuccessor) %}
-		    <a href="{{ path('bishop_in_list', {'offset': offset + 1}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1" {% if not hassuccessor %}disabled="disabled"{% endif %}>{{ _self.maybemore('forward', nextname) }}</button></a>
+		    <a href="{{ path('bishop_in_list', {'offset': offset + 1}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
 		{% endif %}
 		{% if querystr %}
 		    <a href="{{ path('requery_bishops', {'offset': offset}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1">Ergebnisliste</button></a>
