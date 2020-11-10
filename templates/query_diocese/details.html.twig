@@ -20,7 +20,7 @@
 	    </div>
 	    {% if diocese.altlabel|length > 0 %}
 		<div class="row col-12">
-		    {% for label in diocese.altlabel|sort((a, b) => a.lang <=> b.lang) %}
+		    {% for label in diocese.altlabel|sort((a, b) => a.sort <=> b.sort) %}
 			{{ label.altlabeldiocese|split(' ')|join('&nbsp;')|raw }}{% if label.lang %} ({{ label.lang }}){% endif %}{% if not loop.last %}; {% endif %}
 		    {% endfor %}
 		</div>
@@ -41,11 +41,11 @@
 		{% if diocese.dateoffounding %}
 		    <dt class="col-sm-3">Gründung</dt>
 		    <dd class="col-sm-9">{{ diocese.dateoffounding }}</dd>
-		{% endif %}		
+		{% endif %}
 		{% if diocese.dateofdissolution %}
 		    <dt class="col-sm-3">Aufhebung</dt>
 		    <dd class="col-sm-9">{{ diocese.dateofdissolution }}</dd>
-		{% endif %}		
+		{% endif %}
 		{% if diocese.ecclesiasticalprovince %}
 		    <dt class="col-sm-3">Kirchenprovinz</dt>
 		    <dd class="col-sm-9">{{ diocese.ecclesiasticalprovince }}</dd>

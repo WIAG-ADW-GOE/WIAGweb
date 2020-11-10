@@ -44,6 +44,11 @@ class AltLabelDiocese
      */
     private $diocese;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $sort;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -131,5 +136,17 @@ class AltLabelDiocese
         if($fv) $cl['lang'] = $fv;
 
         return array('altName' => $cl);
+    }
+
+    public function getSort(): ?int
+    {
+        return $this->sort;
+    }
+
+    public function setSort(?int $sort): self
+    {
+        $this->sort = $sort;
+
+        return $this;
     }
 }
