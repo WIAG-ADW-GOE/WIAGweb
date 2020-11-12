@@ -108,4 +108,36 @@ class DioceseRepository extends ServiceEntityRepository
         return $dioceses;
     }
 
+    public function countByName($name) {
+        $qb = $this->createQueryBuilder('diocese')
+                   ->select('COUNT(diocese.id_diocese) AS count');
+        
+        $qb->andWhere('diocese.diocese LIKE :name')
+           ->setParameter('name', '%'.$name.'%');
+        
+        $query = $qb->getQuery();
+        $count = $query->getOneOrNullResult();
+        return $count ? $count['count'] : null;
+    }
+
+    public function findByNameWithBishopricSeat($name, $limit = null, $offset = 0) {
+        $qb = $this->createQueryBuilder('diocese')
+                   ->addSelect('placeobj')
+                   ->leftJoin('diocese.bishopricseatobj', 'placeobj');
+        
+        $qb->andWhere('diocese.diocese LIKE :name')
+           ->setParameter('name', '%'.$name.'%');
+
+        if($limit) {
+            $qb->orderBy('diocese.diocese')
+               ->setFirstResult($offset)
+               ->setMaxResults($limit);
+        }
+
+        $query = $qb->getQuery();
+        $dioceses = $query->getResult();
+        return $dioceses;
+    }
+
+
 }

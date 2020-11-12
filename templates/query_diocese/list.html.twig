@@ -6,20 +6,14 @@
     {% set fb_elements %}
     {% if count > 0 %}
 	<span class="ml-4">
-	    <button type="submit" form="q_form" class="btn btn-secondary" {% if offset < limit %} disabled="disabled" {% endif %} name="offset" value="{{ offset - limit }}">&#9204; zurück</button>
-	    <button type="submit" form="q_form" class="btn btn-secondary" {% if offset + limit >= count%}disabled="disabled"{% endif %} name="offset" value="{{ offset + limit }}">vor &#9205;</button>
+	    <a href="{{ path('list_dioceses', {'offset': offset - limit, 'name': name}) }}"><button class="btn btn-secondary" {% if offset - limit < 0 %}disabled="disabled"{% endif %}>&#9204; zurück</button></a>
+	    <a href="{{ path('list_dioceses', {'offset': offset + limit, 'name': name }) }}"><button class="btn btn-secondary" {% if offset + limit >= count%}disabled="disabled"{% endif %}>vor &#9205;</button></a>
 	</span>
     {% endif %}
     {% endset %}
     <div class="container-fluid mt-3">
 	{# global: diocesestitle #}
 	<div class="row-col-12 topic-title">{{ diocesestitle }}</div>
-	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_dioceses')}}) }}
-	    <div class="row col-12">
-		{{  form_row(form.diocese) }}
-	    </div>
-	    {{ form_widget(form.searchHTML) }}
-	{{ form_end(form) }}
 	<div class="row">
 	    <div class="col-8 mt-3 mb-1">Treffer:
 		{% if count == 0 %}
@@ -31,6 +25,17 @@
 		{% endif %}
 		{{ fb_elements }}
 
+		<div class="btn-group"> <div class="dropdown">
+		    <button class="btn btn-outline-secondary dropdown-toggle ml-2" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ name }}</button>
+		    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			{% if name != 'A-Z' %}
+			    <a class="dropdown-item" href="{{ path('list_dioceses', {'name': 'A-Z'}) }}">A-Z</a>
+			{% endif %}
+			{% for choice in 'A'..'Z' %}
+			    <a class="dropdown-item" href="{{ path('list_dioceses', {'name': choice}) }}">{{ choice }}</a>
+			{% endfor %}
+		    </div>
+		</div>
 		<a href="{{ path('api_query_dioceses', {format: 'json'}) }}"><button class="btn btn-secondary btn-light ml-3">JSON</button></a>
 		<a href="{{ path('api_query_dioceses', {format: 'csv'}) }}"><button class="btn btn-secondary btn-light ml-3">CSV</button></a>
 		</div>

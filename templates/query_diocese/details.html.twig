@@ -85,10 +85,10 @@
 		(Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
 
 	    <div class="row col-12 mt-4">
-		{% if il is defined %}
-		    <a href="{{ path('diocese_in_list', {'offset': offset - 1, 'il': il }) }}"><button class="btn btn-secondary btn-sm ml-1" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button></a>
-		    <a href="{{ path('diocese_in_list', {'offset': offset + 1, 'il': il }) }}"><button class="btn btn-secondary btn-sm ml-1" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
-		    <a href="{{ path('query_dioceses', {'offset': offset, 'il': il }) }}"><button class="btn btn-secondary btn-sm ml-1">Ergebnisliste</button></a>
+		{% if name is defined %}
+		    <a href="{{ path('diocese_in_list', {'offset': offset - 1, 'name': name }) }}"><button class="btn btn-secondary btn-sm ml-1" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button></a>
+		    <a href="{{ path('diocese_in_list', {'offset': offset + 1, 'name': name }) }}"><button class="btn btn-secondary btn-sm ml-1" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
+		    <a href="{{ path('list_dioceses', {'offset': offset, 'name': name }) }}"><button class="btn btn-secondary btn-sm ml-1">Ergebnisliste</button></a>
 		{% endif %}
 		<a href="{{ path('api_diocese', {wiagidlong: diocese.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-3">JSON</button></a>
 		<a href="{{ path('api_diocese', {wiagidlong: diocese.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-3">CSV</button></a>

@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
+    <script src="{{ asset('js/query-bishop-autocomplete.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid mt-3">
+	{# global: diocesestitle #}
+	<div class="row-col-12 topic-title">{{ diocesestitle }}</div>
+	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_dioceses')}}) }}
+	    <div class="row col-12">
+		{{  form_row(form.diocese) }}
+	    </div>
+	    {{ form_widget(form.searchHTML) }}
+	{{ form_end(form) }}
+    </div>
+{% endblock %}
