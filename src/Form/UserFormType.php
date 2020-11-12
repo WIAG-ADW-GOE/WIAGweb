@@ -26,7 +26,6 @@ use Symfony\Component\Routing\RouterInterface;
 class UserFormType extends AbstractType
 {
 
-
     public function configureOptions(OptionsResolver $resolver) {
         $resolver->setDefaults([
             'data_class' => User::class,
@@ -46,11 +45,11 @@ class UserFormType extends AbstractType
                 'label' => 'Passwort',
                 'required' => true,
             ])
-            ->add('passwordtwin', PasswordType::class, [
+            ->add('passwordTwin', PasswordType::class, [
                 'label' => 'Passwort Wiederholung',
-                'mapped' => false,
+                'mapped' => true,
             ])
-            ->add('role', ChoiceType::class, [
+            ->add('roles', ChoiceType::class, [
                 'label' => 'Rolle',
                 'expanded' => true,
                 'multiple' => true,

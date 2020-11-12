@@ -101,6 +101,18 @@ class User implements UserInterface
         return $this;
     }
 
+    public function getPasswordTwin(): string
+    {
+        return (string) $this->passwordTwin;
+    }
+
+    public function setPasswordTwin(string $passwordTwin): self
+    {
+        $this->passwordTwin = $passwordTwin;
+
+        return $this;
+    }
+
     /**
      * @see UserInterface
      */

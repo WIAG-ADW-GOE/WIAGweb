@@ -34,13 +34,13 @@ class UserAdminController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user = $form->getData();
-            dd($user);
+            dump($user);
 
             # save user data
             # clear passwordTwin
 
-            return $this->render('admin/saved.html.twig', [
-                'user' => $user,
+            return $this->render('admin/add_user.html.twig', [
+                'form' => $form->createView()
             ]);
 
         } else {

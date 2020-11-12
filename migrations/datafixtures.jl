@@ -1,7 +1,11 @@
 using MySQL
 using Infiltrator
 
+"""
+    updatenamevariant()
 
+obsolete: see namelookup
+"""
 function updatenamevariant(fieldsrc::AbstractString, tablename::AbstractString)::Int
     dbwiag = DBInterface.connect(MySQL.Connection, "localhost", "wiag", "Wogen&Wellen", db="wiag");
 
@@ -12,7 +16,7 @@ function updatenamevariant(fieldsrc::AbstractString, tablename::AbstractString):
     dfsrc = DBInterface.execute(dbwiag,
                                 "SELECT wiagid, " * fieldsrc
                                 * " FROM person") |> DataFrame;
-    
+
     tblid = 1
     for row in eachrow(dfsrc)
         id, fns = row
@@ -50,39 +54,45 @@ function updateera(tablename::AbstractString)::Int
     dfoffice = DBInterface.execute(dbwiag, "SELECT wiagid_person, date_start, date_end FROM office") |> DataFrame;
     insertstmt = DBInterface.prepare(dbwiag, "INSERT INTO " * tablename * " VALUES (?, ?, ?)")
 
+    function parsemaybe(rgx, s)::Union{Missing, Int}
+        r = missing
+        if !ismissing(s)
+            rgm = match(rgx, s)
+            if !isnothing(rgm)
+                r = parse(Int, rgm.match)
+            end
+        end
+        return r
+    end
+
+
     for row in eachrow(dfperson)
         erastart = Inf
         eraend = -Inf
         wiagid, datebirth, datedeath = row
-        rgm = match(rgx, datebirth)
-        if rgm != nothing
-            erastart = parse(Int, rgm.match)
-        end
 
-        rgm = match(rgx, datedeath)
-        if rgm != nothing
-            eraend = parse(Int, rgm.match)
-        end
+        vcand = parsemaybe(rgx, datebirth)
+        if !ismissing(vcand) erastart = vcand end
+
+        vcand = parsemaybe(rgx, datedeath)
+        if !ismissing(vcand) eraend = vcand end
+
         ixperson = dfoffice[:wiagid_person] .== wiagid
         dfofficeperson = dfoffice[ixperson, :];
         for oc in eachrow(dfofficeperson)
             datestart = oc[:date_start]
             dateend = oc[:date_end]
-            rgm = match(rgx, datestart)
-            if rgm != nothing
-                datestartint = parse(Int, rgm.match)
-                if datestartint < erastart
-                    erastart = datestartint
-                end
+
+            vcand = parsemaybe(rgx, datestart)
+            if !ismissing(vcand) && vcand < erastart
+                erastart = vcand
             end
-            rgm = match(rgx, dateend)
-            if rgm != nothing
-                dateendint = parse(Int, rgm.match)
-                if dateendint > eraend
-                    eraend = dateendint
-                end
+
+            vcand = parsemaybe(rgx, dateend)
+            if !ismissing(vcand) && vcand > eraend
+                eraend = vcand
             end
-            @infiltrate wiagid == "10028"
+
         end
 
         if erastart == Inf && eraend != -Inf
@@ -93,7 +103,6 @@ function updateera(tablename::AbstractString)::Int
 
         erastartdb = erastart == Inf ? missing : erastart
         eraenddb = eraend == -Inf ? missing : eraend
-        @infiltrate wiagid == "10028"
 
         if !ismissing(erastartdb) && !(typeof(erastartdb) == Int)
             println("start: ", erastartdb)
@@ -126,21 +135,23 @@ function updateofficedate(tablename::AbstractString)::Int
 
     insertstmt = DBInterface.prepare(dbwiag, "INSERT INTO " * tablename * " VALUES (?, ?, ?)")
 
-    for row in eachrow(dfoffice)
-        dstdate_start = missing
-        dstdate_end = missing
-        wiagid, date_start, date_end = row
-        rgm = match(rgx, date_start)
-        # println("Start: ", date_start)
-        if rgm != nothing
-            dstdate_start = parse(Int, rgm.match)
+    function parsemaybe(rgx, s)::Union{Missing, Int}
+        r = missing
+        if !ismissing(s)
+            rgm = match(rgx, s)
+            if !isnothing(rgm)
+                r = parse(Int, rgm.match)
+            end
         end
-        # println("Int: ", dstdate_start)
+        return r
+    end
 
-        rgm = match(rgx, date_end)
-        if rgm != nothing
-            dstdate_end = parse(Int, rgm.match)
-        end
+
+    for row in eachrow(dfoffice)
+        wiagid, date_start, date_end = row
+
+        dstdate_start = parsemaybe(rgx, date_start)
+        dstdate_end = parsemaybe(rgx, date_end)
 
         DBInterface.execute(insertstmt, (wiagid, dstdate_start, dstdate_end));
 
@@ -185,12 +196,12 @@ function fillnamelookup(tablename::AbstractString)::Int
             cgnv = split(gnv, r", *")
             for gnve in cgnv
                 irowout = fillnamelookupgn(insertstmt, wiagid, gnve, prefix, fn, fnv)
-            end            
+            end
         end
 
         if irowout % msg == 0
             println("write row: ", irowout)
-        end        
+        end
 
     end
     return irowout
@@ -204,11 +215,11 @@ function striplabel(s::AbstractString)
     end
     return s
 end
-   
+
 
 let irowout = 1
     global fillnamelookupgn
-    
+
     function fillnamelookupgn(insertstmt, wiagid, gn, prefix, fn, fnv)
 
         function dbinsert(gni, fni)
@@ -241,5 +252,3 @@ let irowout = 1
     end
 
 end
-
-
