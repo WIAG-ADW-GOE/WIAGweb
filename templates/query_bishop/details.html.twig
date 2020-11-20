@@ -6,14 +6,17 @@
 {% set urlwikidata = 'https://www.wikidata.org/wiki/' %}
 {% set urlviaf = 'https://viaf.org/viaf/' %}
 
-{% macro maybemore(direction, label, labellength = 12) %}{% if label %}{% if direction == 'back' %}&#9204; {{ label[:labellength] }}...{% else %}{{ label[:labellength] }}... &#9205;{% endif %}{% else %}<span class="mx-1">&#x25A0;</span>{% endif %}{% endmacro %}
-
 {% block body %}
     <div class="container-fluid mt-3">
 	{# person is passed as an object #}
 	{% if not person%}
 	    <p class="em">Person nicht gefunden.</p>
 	{% else %}
+	    {% if query_form is defined %}
+		{{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('launch_query'), 'hidden': 'hidden'} }) }}
+		    {{ include('query_bishop/_form_elements.html.twig') }}
+		{{ form_end(query_form) }}
+	    {% endif %}
 	    <div class="row-col-12 topic-title">{{ bishopstitle }}</div>
 	    <div class="row mt-3 mb-0"><div class="col-8">
 		    <h2>{{ person.displayname[:200] }}</h2>
@@ -173,19 +176,12 @@
 		in: WIAG, {{ url('bishop', {wiagidlong: person.wiagidlong}) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
 
 	    <div class="row col-12 mt-4">
-		{% if flaglist %}
-		    <input type="button" class="btn btn-secondary-outline btn-sm" onclick="window.history.back()" value="Ergebnisliste"/>
+		{% if query_form is defined %}
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
+		    <a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm ml-1">Neue Suche</button></a>
 		{% endif %}
-		{% if querystr and (offset > 0 or hassuccessor) %}
-		    <a href="{{ path('bishop_in_list', {'offset': offset - 1}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button></a>
-		{% endif %}
-		{% if querystr and (offset > 0 or hassuccessor) %}
-		    <a href="{{ path('bishop_in_list', {'offset': offset + 1}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
-		{% endif %}
-		{% if querystr %}
-		    <a href="{{ path('requery_bishops', {'offset': offset}) }}&{{ querystr }}"><button class="btn btn-secondary btn-sm ml-1">Ergebnisliste</button></a>
-		{% endif %}
-		<a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm ml-1">Neue Suche</button></a>
 		<a href="{{ path('api_bishop', {wiagidlong: person.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-3">JSON</button></a>
 		<a href="{{ path('api_bishop', {wiagidlong: person.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-3">CSV</button></a>
 	    </div>

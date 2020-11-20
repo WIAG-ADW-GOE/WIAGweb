@@ -56,15 +56,22 @@ class QueryBishop extends AbstractController {
                 $bishopquery->someid = Person::wiagidLongToWiagid($someid);
             }
 
+            $singleoffset = $request->request->get('singleoffset');
+            if(!is_null($singleoffset)) {
+                return $this->getBishopInQuery($form, $singleoffset);
+            }
+
+
             // get the number of results (without page limit restriction)
             $count = $this->getDoctrine()
                           ->getRepository(Person::class)
                           ->countByQueryObject($bishopquery)[1];
 
-            
+
             $offset = 0;
             $querystr = null;
             $persons = null;
+
 
             if($count > 0) {
                 $personRepository = $this->getDoctrine()
@@ -141,6 +148,7 @@ class QueryBishop extends AbstractController {
     }
 
     /**
+     * obsolete: use POST requests instead
      * @Route("/requery-bishops", name="requery_bishops")
      */
     public function reloadForm(Request $request) {
@@ -283,6 +291,43 @@ class QueryBishop extends AbstractController {
         ]);
 
     }
+
+    public function getBishopInQuery($form, $offset) {
+
+        $bishopquery = $form->getData();
+
+        $personRepository = $this->getDoctrine()
+                                 ->getRepository(Person::class);
+        $hassuccessor = false;
+        if($offset == 0) {
+            $persons = $personRepository->findWithOffices($bishopquery, 2, $offset);
+            $iterator = $persons->getIterator();
+            if(count($iterator) == 2) $hassuccessor = true;
+
+        } else {
+            $persons = $personRepository->findWithOffices($bishopquery, 3, $offset - 1);
+            $iterator = $persons->getIterator();
+            if(count($iterator) == 3) $hassuccessor = true;
+            $iterator->next();
+        }
+        $person = $iterator->current();
+        if($hassuccessor) {
+                $iterator->next();
+        }
+
+        $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
+
+        return $this->render('query_bishop/details.html.twig', [
+            'query_form' => $form->createView(),
+            'person' => $person,
+            'wiagidlong' => $person->getWiagidlong(),
+            'offset' => $offset,
+            'hassuccessor' => $hassuccessor,
+            'dioceserepository' => $dioceseRepository,
+        ]);
+
+    }
+
 
 
     /**

@@ -57,7 +57,7 @@
 				<tbody>
 				    {% for person in persons %}
 					<tr>
-					    <td><a href="{{ path('bishop_in_list') }}?{{ querystr }}&offset={{ offset + loop.index0 }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</a>
+					    <td><button type="submit" form="q_form" class="btn btn-link" name="singleoffset" value="{{ offset + loop.index0 }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
 						{% if not person.datebirth and not person.datedeath %}
 						{% elseif person.datebirth and not person.datedeath %}
 						    <br/>* {{ person.datebirth }}
