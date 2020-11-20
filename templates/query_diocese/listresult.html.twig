@@ -33,9 +33,9 @@
 
 		<a href="{{ path('api_query_dioceses', {format: 'json'}) }}"><button class="btn btn-secondary btn-light ml-3">JSON</button></a>
 		<a href="{{ path('api_query_dioceses', {format: 'csv'}) }}"><button class="btn btn-secondary btn-light ml-3">CSV</button></a>
-		</div>
 	    </div>
 	</div>
+    </div>
     </div>
     <div class="container-fluid">
 	<div class="row">
@@ -51,7 +51,7 @@
 			<tbody>
 			    {% for diocese in dioceses %}
 				<tr>
-				    <td><a href="{{ path('diocese_in_list', {'offset': offset + loop.index0, 'name': name}) }}">{{ diocese.diocesestatus }} {{ diocese.diocese }}</a></td>
+				    <td><button type="submit" form="q_form" class="btn btn-link" name="singleoffset" value="{{ offset + loop.index0 }}">{{ diocese.diocesestatus }} {{ diocese.diocese }}</button></td>
 				    <td>
 					{% if not diocese.dateoffounding and not diocese.dateofdissolution %}
 					{% elseif diocese.dateoffounding and not diocese.dateofdissolution or diocese.dateofdissolution == "keine"%}

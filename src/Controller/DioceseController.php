@@ -64,9 +64,17 @@ class DioceseController extends AbstractController {
 
         $diocesequery = new Diocese();
 
+        $route_utility_places = $this->generateUrl('query_bishops_utility_places');
+
         $form = $this->createFormBuilder($diocesequery)
                      ->add('diocese', TextType::class, [
                          'label' => 'Name',
+                         'required' => false,
+                         'attr' => [
+                             'class' => 'js-place-autocomplete',
+                             'data-autocomplete-url' => $route_utility_places,
+                             'size' => 15,
+                         ],
                      ])
                      ->add('searchHTML', SubmitType::class, [
                          'label' => 'Suche',
@@ -77,20 +85,25 @@ class DioceseController extends AbstractController {
 
         if($form->isSubmitted() && $form->isValid()) {
             $diocesequery = $form->getData();
-            # dd($diocesequery);
-            
-            $offset = $request->request->get('offset');
+
+            $offset = $request->request->get('offset') ?? 0;
 
             $offset = floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
-            
+
+            $singleoffset = $request->request->get('singleoffset');
+
             $name = $diocesequery->getDiocese();
 
             $repository = $this->getDoctrine()
                                ->getRepository(Diocese::class);
 
-            $count = $repository->countByName($name);
 
-            $dioceses = $repository->findByNameWithBishopricSeat($name, self::LIST_LIMIT, $offset);
+            if(!is_null($singleoffset)) {
+                return $this->getDioceseInQuery($form, $singleoffset);
+            } else {
+                $count = $repository->countByName($name);
+                $dioceses = $repository->findByNameWithBishopricSeat($name, self::LIST_LIMIT, $offset);
+            }
 
             return $this->render('query_diocese/listresult.html.twig', [
                 'form' => $form->createView(),
@@ -98,15 +111,15 @@ class DioceseController extends AbstractController {
                 'offset' => $offset,
                 'count' => $count,
                 'name' => $name,
-                'limit' => self::LIST_LIMIT,            
+                'limit' => self::LIST_LIMIT,
             ]);
 
         }
 
         return $this->render('query_diocese/launch_query.html.twig', [
             'form' => $form->createView(),
-        ]);            
-        
+        ]);
+
     }
 
 
@@ -142,10 +155,42 @@ class DioceseController extends AbstractController {
         ]);
     }
 
+    public function getDioceseInQuery($form, $offset) {
+
+        # dd($name, $offset);
+
+        $dioceserepository = $this->getDoctrine()
+                                  ->getRepository(Diocese::class);
+
+        $name = $form->getData()->getDiocese();
+
+        $hassuccessor = false;
+        if($offset == 0) {
+            $dioceses = $dioceserepository->findByNameWithBishopricSeat($name, 2, $offset);
+            if(count($dioceses) == 2) $hassuccessor = true;
+            $diocese = $dioceses ? $dioceses[0] : null;
+        } else {
+            $dioceses = $dioceserepository->findByNameWithBishopricSeat($name, 3, $offset - 1);
+            if(count($dioceses) == 3) $hassuccessor = true;
+            $diocese = $dioceses ? $dioceses[1] : null;
+        }
+
+        if (!$diocese) {
+            throw $this->createNotFoundException("Bistum wurde nicht gefunden.");
+        }
+
+        return $this->render('query_diocese/details.html.twig', [
+            'form' => $form->createView(),
+            'diocese' => $diocese,
+            'offset' => $offset,
+            'hassuccessor' => $hassuccessor,
+        ]);
+    }
+
     /**
-     * @Route("/diocese-in-il-list/", name="diocese_in_list")
+     * @Route("/diocese-in-list/", name="diocese_in_list")
      */
-    public function getDioceseInIlList(Request $request) {
+    public function getDioceseInList(Request $request) {
 
         $format = $request->query->get('format');
 
@@ -252,7 +297,7 @@ class DioceseController extends AbstractController {
 
     }
 
-    
+
 
 
 }

@@ -4,14 +4,15 @@
 {% set urlgsmonasteries = 'http://klosterdatenbank.germania-sacra.de/' %}
 {% set displayname %}{{ diocese.diocesestatus ~ ' ' ~ diocese.diocese }}{% endset %}
 
-{% macro maybemore(direction, label, labellength = 12) %}{% if label %}{% if direction == 'back' %}&#9204; {{ label[:labellength] }}...{% else %}{{ label[:labellength] }}... &#9205;{% endif %}{% else %}<span class="mx-1">&#x25A0;</span>{% endif %}{% endmacro %}
-
-
 {% block body %}
     <div class="container-fluid mt-3">
 	{% if not diocese%}
 	    <p class="em">Bistum nicht gefunden.</p>
 	{% else %}
+	    {% if form is defined %}
+		{{ form_start(form, {'attr': {'id':'q_form', 'action': path('query_dioceses'), 'hidden': 'hidden'}}) }}
+		{{ form_end(form) }}
+	    {% endif %}
 	    {# global: diocesestitle #}
 	    <div class="row-col-12 topic-title">{{ diocesestitle }}</div>
 	    <div class="row mt-3 mb-0"><div class="col-9">
@@ -85,10 +86,10 @@
 		(Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
 
 	    <div class="row col-12 mt-4">
-		{% if name is defined %}
-		    <a href="{{ path('diocese_in_list', {'offset': offset - 1, 'name': name }) }}"><button class="btn btn-secondary btn-sm ml-1" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button></a>
-		    <a href="{{ path('diocese_in_list', {'offset': offset + 1, 'name': name }) }}"><button class="btn btn-secondary btn-sm ml-1" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
-		    <a href="{{ path('list_dioceses', {'offset': offset, 'name': name }) }}"><button class="btn btn-secondary btn-sm ml-1">Ergebnisliste</button></a>
+		{% if form is defined %}
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
 		{% endif %}
 		<a href="{{ path('api_diocese', {wiagidlong: diocese.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-3">JSON</button></a>
 		<a href="{{ path('api_diocese', {wiagidlong: diocese.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-3">CSV</button></a>
