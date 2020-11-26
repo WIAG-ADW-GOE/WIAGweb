@@ -16,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  */
 class QueryBishopUtility extends AbstractController {
     /**
-     * Paramters
+     * Parameters
      */
     const HINT_LIST_LIMIT = 12;
 
@@ -40,10 +40,16 @@ class QueryBishopUtility extends AbstractController {
      *@Route("/query-bishops/utility/places", methods="GET", name="query_bishops_utility_places")
      */
     public function getPlacesApi(Request $request) {
+        $query = trim($request->query->get('query'));
+        # strip 'bistum' or 'erzbistum'
+        foreach(['bistum', 'erzbistum', 'Bistum', 'Erzbistum'] as $bs) {
+            if(!is_null($query) && str_starts_with($query, $bs))
+                $query = trim(str_replace($bs, "", $query));
+        }
+
         $places = $this->getDoctrine()
                        ->getRepository(Office::class)
-                       ->suggestPlace($request->query->get('query'),
-                                      self::HINT_LIST_LIMIT);
+                       ->suggestPlace($query, self::HINT_LIST_LIMIT);
         return $this->json([
             'places' => $places,
         ]);

@@ -147,4 +147,18 @@ class BishopQueryFormModel {
         return $this;
     }
 
+    /**
+     * strip 'Bistum' or 'Erzbistum' from search field.
+     */
+    public function normPlace() {
+        $place = $this->place;
+        foreach(['bistum', 'erzbistum', 'Bistum', 'Erzbistum'] as $bs) {
+            if(!is_null($place) && str_starts_with($place, $bs)) {
+                $this->place = trim(str_replace($bs, "", $place));
+                return null;
+            }
+        }
+        return null;
+    }
+
 }

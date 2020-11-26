@@ -29,7 +29,6 @@ class QueryBishop extends AbstractController {
      */
     const LIST_LIMIT = 20;
 
-
     /**
      * @Route("/query-bishops", name="launch_query")
      */
@@ -51,6 +50,9 @@ class QueryBishop extends AbstractController {
 
             $bishopquery = $form->getData();
             $someid = $bishopquery->someid;
+
+            # strip 'Bistum' or 'Erzbistum'
+            $bishopquery->normPlace();
 
             if($someid && Person::isWiagidLong($someid)) {
                 $bishopquery->someid = Person::wiagidLongToWiagid($someid);
@@ -87,7 +89,8 @@ class QueryBishop extends AbstractController {
                     }
 
                     return $this->json(array('persons' => $personExports));
-                } elseif($form->get('searchCSV')->isClicked()) {
+                }
+                elseif($form->get('searchCSV')->isClicked()) {
                     # respect facets do not redirect to API
                     $persons = $personRepository->findWithOffices($bishopquery);
 
@@ -107,10 +110,13 @@ class QueryBishop extends AbstractController {
                     return $response;
                 }
 
+
                 $offset = $request->request->get('offset') ?? 0;
 
                 // extra check to avoid empty lists
                 if($count < self::LIST_LIMIT) $offset = 0;
+
+                $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
                 $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset);
 
                 foreach($persons as $p) {

@@ -89,7 +89,7 @@ class IdExternalUrlsDiocese
 
     public function getUrlValue(): ?string
     {
-        return $this->url_value;
+         return $this->url_value;
     }
 
     public function getPrettyUrlValue(): ? string {
@@ -98,6 +98,7 @@ class IdExternalUrlsDiocese
             $prettyurl = urldecode($prettyurl);
             $prettyurl = str_replace('_', ' ', $prettyurl);
         }
+        
         return $prettyurl;
     }
 

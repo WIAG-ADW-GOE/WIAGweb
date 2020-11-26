@@ -64,15 +64,15 @@ class DioceseController extends AbstractController {
 
         $diocesequery = new Diocese();
 
-        $route_utility_places = $this->generateUrl('query_bishops_utility_places');
+        $route_utility_names = $this->generateUrl('query_dioceses_utility_names');
 
         $form = $this->createFormBuilder($diocesequery)
                      ->add('diocese', TextType::class, [
                          'label' => 'Name',
                          'required' => false,
                          'attr' => [
-                             'class' => 'js-place-autocomplete',
-                             'data-autocomplete-url' => $route_utility_places,
+                             'class' => 'js-name-autocomplete',
+                             'data-autocomplete-url' => $route_utility_names,
                              'size' => 15,
                          ],
                      ])
@@ -85,6 +85,9 @@ class DioceseController extends AbstractController {
 
         if($form->isSubmitted() && $form->isValid()) {
             $diocesequery = $form->getData();
+
+            # strip 'bistum' or 'erzbistum' from search field diocese
+            $diocesequery->normDiocese();
 
             $offset = $request->request->get('offset') ?? 0;
 

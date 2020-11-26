@@ -142,5 +142,20 @@ class DioceseRepository extends ServiceEntityRepository
         return $dioceses;
     }
 
+    /* AJAX callback */
+    public function suggestDiocese($diocese, $limit) {
+        $qb = $this->createQueryBuilder('dc')
+                   ->select('DISTINCT dc.diocese AS suggestion')
+                   ->andWhere('dc.diocese LIKE :diocese')
+                   ->setParameter('diocese', '%'.$diocese.'%')
+                   ->setMaxResults($limit);
+        $query = $qb->getQuery();
+
+        # dd($query->getDQL());
+
+        return $query->getResult();
+
+    }
+
 
 }

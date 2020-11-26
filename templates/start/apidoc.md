@@ -58,7 +58,9 @@ Beispiel:
 }
 ```
 
-Das CSV Dokument ist ein UTF-8-Text. Die erste Zeile enthält die Feldbezeichner. Die folgende Zeile enthält die Feldwerte. Die Feldinhalte einer Zeile sind durch Tabulator voneinander getrennt.
+Das CSV Dokument ist ein UTF-8-Text. Die erste Zeile enthält die Feldbezeichner. Die
+folgende Zeile enthält die Feldwerte. Die Feldinhalte einer Zeile sind durch
+Tabulator voneinander getrennt.
 
 Beispiel:
 ``` text
@@ -66,6 +68,15 @@ person.wiagId                   person.familyName   person.givenName    person.p
 WIAG-Pers-EPISCGatz-10076-001   Braida              "Franz Julian"      "Graf von"      "Ep. tit. Hipponensis"  ...
 
 ```
+
+<a id="csvinbrowser"></a>Die meisten Browser zeigen einen Auswahldialog, bei dem entschieden werden kann, ob
+die Daten in einer Datei gespeichert oder direkt angezeigt werden sollen. Hinweis für
+Microsoft-Windows Benutzer: Die Anwendung *Editor* zeigt die Daten korrekt an. Die
+Anwendung *Excel* geht meistens von einer anderen Kodierung als UTF-8 aus und
+erwartet ein Komma statt des Tabulators als Trennzeichen. Daher ist die Anzeige
+direkt in *Excel* meistens nicht sinnvoll. Die Daten können aber aus einer Datei
+heraus über den Importdialog korrekt eingelesen werden, indem die Auswahl für
+*Dateiursprung* und *Trennzeichen* entsprechend eingestellt werden.
 
 ### <a id="bischoefesuche"></a>Suchanfrage
 Mit der Angabe von Suchparametern erhält man alle Datensätze, die der Suchanfrage
@@ -112,6 +123,8 @@ Beispiele (CSV):<br/>
 {{ url('api\_query\_bishops', {someid: 'WIAG-Pers-EPISCGatz-3302-001', format: 'csv'})|raw }}<br/>
 {{ url('api\_query\_bishops', {someid: 'Q1506604', format: 'csv'})|raw }}<br/>
 
+Siehe [Hinweise zur Anzeige im Browser](#csvinbrowser).
+
 #### Struktur
 Das JSON-Dokument enthält ein Element `persons`, mit den Kindern `count` (Anzahl der Datensätze) und `list` (Liste der Datensätze).
 
@@ -150,6 +163,8 @@ WIAG-Pers-EPISCGatz-21477-001   Eydel                           Tilman          
 WIAG-Pers-EPISCGatz-3673-001    Blankenheim                     Friedrich                                                              von             ...
 WIAG-Pers-EPISCGatz-21281-001   "Franqueloy de Vico"            Joannes                                                                                "Ep. tit. Taurisiensis" ...
 ```
+
+Siehe [Hinweise zur Anzeige im Browser](#csvinbrowser).
 
 ## <a id="bistuemer"></a>Bistümer
 
@@ -210,12 +225,12 @@ Beispiel:
 ```
 
 ### <a id="bistuemerliste"></a>Listenabfrage
-Die URL für die Abfrage einer Liste von Bistümern lautet: `{{ wiagbaseurl }}/api/query-dioceses?format=[json|csv]`. Optional kann ein Anfangsbuchstabe zu dem Schlüsselwort `il` angegeben werden: `{{ wiagbaseurl }}/api/query-dioceses?il=[A-Z]&format=[json|csv]`.
+Die URL für die Abfrage einer Liste von Bistümern lautet: `{{ wiagbaseurl }}/api/query-dioceses?format=[json|csv]`. Optional kann nach dem Namen des Bistums gesucht werden durch den Parameter `name`: `{{ wiagbaseurl }}/api/query-dioceses?name=[name]&format=[json|csv]`.
 
 Beispiel:<br/>
 {{ url('api\_query\_dioceses', {format: 'json'}) }}<br/>
 {{ url('api\_query\_dioceses', {format: 'csv'}) }}<br/>
-{{ url('api\_query\_dioceses', {il: 'T', format: 'json'})|raw }}
+{{ url('api\_query\_dioceses', {name: 'burg', format: 'json'})|raw }}
 
 #### Struktur
 Das JSON-Dokument enthält ein Element `dioeses`, mit den Kindern `count` (Anzahl der Datensätze) und `list` (Liste der Datensätze).

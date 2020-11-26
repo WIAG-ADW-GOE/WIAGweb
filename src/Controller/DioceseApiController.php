@@ -76,10 +76,22 @@ class DioceseApiController extends AbstractController {
         }
 
         $initialletter = $request->query->get('il');
-
-        $dioceses = $this->getDoctrine()
-                         ->getRepository(Diocese::class)
-                         ->findByInitialLetterWithBishopricSeat($initialletter);
+        $name = $request->query->get('name');
+        if($name) {
+            $dioceses = $this->getDoctrine()
+                             ->getRepository(Diocese::class)
+                             ->findByNameWithBishopricSeat($name);
+        }
+        elseif($initialletter) {
+            $dioceses = $this->getDoctrine()
+                             ->getRepository(Diocese::class)
+                             ->findByInitialLetterWithBishopricSeat($initialletter);
+        }
+        else {
+            $dioceses = $this->getDoctrine()
+                             ->getRepository(Diocese::class)
+                             ->findByNameWithBishopricSeat("");
+        }
 
         # dump($dioceses);
 

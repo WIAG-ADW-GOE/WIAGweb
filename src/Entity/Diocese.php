@@ -401,8 +401,14 @@ class Diocese
         if($fv) {
             $cei = array();
             foreach($fv as $extid) {
-                $cei[$extid->getAuthority()->getUrlNameFormatter()]
-                    = $extid->getPrettyUrlValue();
+                $jsonName = $extid->getAuthority()->getUrlNameFormatter();
+                $extidurl = $extid->getUrlValue();
+                if($jsonName == "Wikipedia-Artikel") {
+                    $jsonName = "wikipediaUrl";
+                    $baseurl = $extid->getAuthority()->getUrlFormatter();
+                    $extidurl = $baseurl.$extidurl;
+                }
+                $cei[$jsonName] = $extidurl;
             }
             $cd['identifiers'] = $cei;
         }
@@ -410,10 +416,23 @@ class Diocese
         $fv = $this->getCommentAuthorityFile();
         if($fv) $cd['identifiersComment'] = $fv;
 
-
-
         return $cd;
 
     }
+
+    /**
+     * strip 'Bistum' or 'Erzbistum' from search field.
+     */
+    public function normDiocese() {
+        $diocese = $this->diocese;
+        foreach(['bistum', 'erzbistum', 'Bistum', 'Erzbistum'] as $bs) {
+            if(!is_null($diocese) && str_starts_with($diocese, $bs)) {
+                $this->diocese = trim(str_replace($bs, "", $diocese));
+                return null;
+            }
+        }
+        return null;
+    }
+
 
 }
