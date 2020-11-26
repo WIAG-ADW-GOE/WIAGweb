@@ -81,9 +81,12 @@ class DioceseController extends AbstractController {
                      ])
                      ->getForm();
 
+        $showall = $request->query->get('list');
+
+
         $form->handlerequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+        if($form->isSubmitted() && $form->isValid() || $showall == 'all') {
             $diocesequery = $form->getData();
 
             # strip 'bistum' or 'erzbistum' from search field diocese
@@ -103,7 +106,8 @@ class DioceseController extends AbstractController {
 
             if(!is_null($singleoffset)) {
                 return $this->getDioceseInQuery($form, $singleoffset);
-            } else {
+            }
+            else {
                 $count = $repository->countByName($name);
                 $dioceses = $repository->findByNameWithBishopricSeat($name, self::LIST_LIMIT, $offset);
             }

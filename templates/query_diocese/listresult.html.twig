@@ -1,6 +1,16 @@
 {# query-diocese/listresult.html.twig #}
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
+    <script src="{{ asset('js/query-diocese-autocomplete.js') }}"></script>
+{% endblock %}
+
 {% block body %}
     {# add page forward and backward buttons #}
     {% set fb_elements %}
@@ -72,8 +82,4 @@
 	    </div>
 	</div>
     </div>
-{% endblock %}
-{% block javascripts %}
-    <script src="{{ asset('js/popper.min.js') }}"></script>
-    {{ parent() }}
 {% endblock %}
