@@ -4,6 +4,6 @@ twig:
       - bootstrap_4_layout.html.twig
     globals:
       bishopstitle: 'Die Patriarchen, Erzbischöfe, Bischöfe, Weihbischöfe und weitere diözesane Leitungspersonen des Alten Reiches (nach Erwin Gatz)'
-      diocesestitle: 'Die Bistümer des Alten Reiches (nach Erwin Gatz)'
+      diocesestitle: 'Die Erzbistümer und Bistümer des Alten Reiches'
       
 

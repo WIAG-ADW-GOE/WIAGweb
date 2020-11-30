@@ -19,7 +19,7 @@
 	    {% endif %}
 	    <div class="row-col-12 topic-title">{{ bishopstitle }}</div>
 	    <div class="row mt-3 mb-0"><div class="col-8">
-		    <h2>{{ person.displayname[:200] }}</h2>
+		<h2>{{ person.displayname[:200] }}</h2>
 	    </div>
 	    <div class="col-4 text-right wiag-id">{{ person.wiagidlong }}</div></div>
 
@@ -76,7 +76,7 @@
 		    <dt class="col-sm-3">Ämter</dt>
 		    <dd class="col-sm-9">
 			<ul class="list-unstyled">
-			    {% for office in person.offices %}
+			    {% for office in person.offices|sort((a, b) => a.numdate.datestart <=> b.numdate.datestart) %}
 				<li>
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item"> {{ office.officename }}</li>

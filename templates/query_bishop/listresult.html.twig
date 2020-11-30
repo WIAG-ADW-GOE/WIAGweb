@@ -17,8 +17,8 @@
     {% set fb_elements %}
     {% if count > 0 %}
 	<span class="ml-4">
-	    <button type="submit" form="q_form" class="btn btn-secondary" {% if offset < limit %} disabled="disabled" {% endif %} name="offset" value="{{ offset - limit }}">&#9204; zurück</button>
-	    <button type="submit" form="q_form" class="btn btn-secondary" {% if offset + limit >= count%}disabled="disabled"{% endif %} name="offset" value="{{ offset + limit }}">vor &#9205;</button>
+	    <button type="submit" form="q_form" class="btn btn-secondary" {% if offset < limit %} disabled="disabled" {% endif %} name="offset" value="{{ offset - limit }}"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-left-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/></svg> zurück</button>
+	    <button type="submit" form="q_form" class="btn btn-secondary" {% if offset + limit >= count%}disabled="disabled"{% endif %} name="offset" value="{{ offset + limit }}">vor <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-right-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/></svg></button>
 	</span>
     {% endif %}
     {% endset %}
@@ -57,14 +57,14 @@
 				<tbody>
 				    {% for person in persons %}
 					<tr>
-					    <td><button type="submit" form="q_form" class="btn btn-link" name="singleoffset" value="{{ offset + loop.index0 }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
+					    <td><button type="submit" form="q_form" class="btn btn-link text-sm-left" name="singleoffset" value="{{ offset + loop.index0 }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
 						{% if not person.datebirth and not person.datedeath %}
 						{% elseif person.datebirth and not person.datedeath %}
-						    <br/>* {{ person.datebirth }}
+						    <p class="ml-3">* {{ person.datebirth }}</p>
 						{% elseif not person.datebirth and person.datedeath %}
-						    <br/>&dagger; {{ person.datedeath }}
+						    <p class="ml-3" &dagger; {{ person.datedeath }}</p>
 						{% else %}
-						    <br/>* {{ person.datebirth }} <span class="ml-2">&dagger; {{ person.datedeath }}</span>
+						    <p class="ml-3">* {{ person.datebirth }} <span class="ml-2">&dagger; {{ person.datedeath }}</span></p>
 						{% endif %}
 					    </td>
 					    <td>{% for o in person.offices|sort((a, b) => a.numdate.datestart <=> b.numdate.datestart) %}
@@ -90,7 +90,7 @@
 				<strong class="card-title">Filter Bistum</strong>
 				{% for fpl in query_form.facetPlaces%}
 				    <div class="form-group mb-2">
-					{{ form_widget(fpl) }}
+					<small>{{ form_widget(fpl) }}</small>
 				    </div>
 				{% endfor %}
 			    </div>
@@ -100,7 +100,7 @@
 				<strong class="card-title">Filter Amt</strong>
 				{% for foc in query_form.facetOffices%}
 				    <div class="form-group mb-2">
-					{{ form_widget(foc) }}
+					<small>{{ form_widget(foc) }}</small>
 				    </div>
 				{% endfor %}
 			    </div>

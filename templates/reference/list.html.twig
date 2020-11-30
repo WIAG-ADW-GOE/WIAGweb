@@ -4,8 +4,8 @@
     <div class="container-fluid">
 	<h2 class="my-3">Referenzwerke</h2>
 	<dl class="row">
-	    {% for reference in references %}
-		<dt class="col-sm-4">{{ reference.short }}</dt>
+	    {% for reference in references|sort((a, b) => a.sort <=> b.sort) %}
+		<dt class="col-sm-4">{% if reference.onlineressource %}<a href="{{ reference.onlineressource }}">{{ reference.short }}</a>{% else %}{{ reference.short }}{% endif %}</dt>
 		<dd class="col-sm-8">{% if reference.author %}{{ reference.author }}: {% endif %}{{ reference.title }}</dd>
 	    {% endfor %}
 	</dl>

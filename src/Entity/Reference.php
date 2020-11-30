@@ -37,6 +37,11 @@ class Reference
      */
     private $short;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $sort;
+
     public function getReferenceId(): ?int
     {
         return $this->reference_id;
@@ -113,6 +118,18 @@ class Reference
 
         return $rfj;
 
+    }
+
+    public function getSort(): ?int
+    {
+        return $this->sort;
+    }
+
+    public function setSort(int $sort): self
+    {
+        $this->sort = $sort;
+
+        return $this;
     }
 
 }

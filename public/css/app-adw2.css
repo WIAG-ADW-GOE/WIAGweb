@@ -1,5 +1,5 @@
 body {
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-family: "Arial MT", Arial, sans-serif;
     color: #444;
 }
 
@@ -30,6 +30,9 @@ body {
     color: #a33;
 }
 
+
 footer {
     background-color: #efefee;
 }
+
+

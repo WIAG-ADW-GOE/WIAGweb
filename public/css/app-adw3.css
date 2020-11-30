@@ -1,0 +1,221 @@
+body {
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    color: #444;
+}
+
+.wiag-large {
+    font-size: large;
+}
+
+.topic-title {
+    font-size: large;
+    font-weight: bold;
+}
+
+.wiag-id {
+    font-size: normal;
+}
+
+.comment {
+    color: #484;
+}
+
+
+.dio {
+    text-transform: uppercase;
+    color: #068;
+}
+
+.gs {
+    color: #a33;
+}
+
+/*
+#7cc -> #a33
+#5bc2c2 -> #9b3333
+#9cdada -> #d77
+#2e7c7c ->
+#212529 -> #f9f5f5;
+*/
+
+footer {
+    background-color: #efefee;
+}
+
+
+.btn-primary {
+    color: #f9f5f5;
+    background-color: #a33;
+    border-color: #9b3333
+}
+
+.btn-primary:hover {
+    color: #f9f5f5;
+    background-color: #911;
+    border-color: #800;
+}
+
+.btn-primary:focus,
+.btn-primary.focus {
+    box-shadow: 0 0 0 .2rem rgba(194, 84, 84, 0.5)
+}
+
+.btn-primary.disabled,
+.btn-primary:disabled {
+    color: #f9f5f5;
+    background-color: #a33;
+    border-color: #9b3333
+}
+
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show>.btn-primary.dropdown-toggle {
+    color: #f9f5f5;
+    background-color: #d77;
+    border-color: #e88;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active:focus,
+.btn-primary:not(:disabled):not(.disabled).active:focus,
+.show>.btn-primary.dropdown-toggle:focus {
+    box-shadow: 0 0 0 .2rem rgba(194, 84, 84, 0.5)
+}
+
+.btn-outline-primary {
+    color: #a33;
+    background-color: transparent;
+    background-image: none;
+    border-color: #a33
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #b44;
+    border-color: #a33
+}
+
+.btn-outline-primary:focus,
+.btn-outline-primary.focus {
+    box-shadow: 0 0 0 .2rem rgba(204, 90, 90, 0.5)
+}
+
+.btn-outline-primary.disabled,
+.btn-outline-primary:disabled {
+    color: #a33;
+    background-color: transparent
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled):active,
+.btn-outline-primary:not(:disabled):not(.disabled).active,
+.show>.btn-outline-primary.dropdown-toggle {
+    color: #f9f5f5;
+    background-color: #b44;
+    border-color: #a33
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled):active:focus,
+.btn-outline-primary:not(:disabled):not(.disabled).active:focus,
+.show>.btn-outline-primary.dropdown-toggle:focus {
+    box-shadow: 0 0 0 .2rem rgba(204, 90, 90, 0.5)
+}
+
+
+.btn-dark {
+    color: #f9f5f5;
+    background-color: #a33;
+    border-color: #9b3333
+}
+
+.btn-dark:hover {
+    color: #f9f5f5;
+    background-color: #911;
+    border-color: #800;
+}
+
+.btn-dark:focus,
+.btn-dark.focus {
+    box-shadow: 0 0 0 .2rem rgba(194, 84, 84, 0.5)
+}
+
+.btn-dark.disabled,
+.btn-dark:disabled {
+    color: #f9f5f5;
+    background-color: #a33;
+    border-color: #9b3333
+}
+
+.btn-dark:not(:disabled):not(.disabled):active,
+.btn-dark:not(:disabled):not(.disabled).active,
+.show>.btn-dark.dropdown-toggle {
+    color: #f9f5f5;
+    background-color: #d77;
+    border-color: #e88;
+}
+
+.btn-dark:not(:disabled):not(.disabled):active:focus,
+.btn-dark:not(:disabled):not(.disabled).active:focus,
+.show>.btn-dark.dropdown-toggle:focus {
+    box-shadow: 0 0 0 .2rem rgba(194, 84, 84, 0.5)
+}
+
+.btn-outline-dark {
+    color: #a33;
+    background-color: transparent;
+    background-image: none;
+    border-color: #a33
+}
+
+.btn-outline-dark:hover {
+    color: #fff;
+    background-color: #b44;
+    border-color: #a33
+}
+
+.btn-outline-dark:focus,
+.btn-outline-dark.focus {
+    box-shadow: 0 0 0 .2rem rgba(204, 90, 90, 0.5)
+}
+
+.btn-outline-dark.disabled,
+.btn-outline-dark:disabled {
+    color: #a33;
+    background-color: transparent
+}
+
+.btn-outline-dark:not(:disabled):not(.disabled):active,
+.btn-outline-dark:not(:disabled):not(.disabled).active,
+.show>.btn-outline-dark.dropdown-toggle {
+    color: #f9f5f5;
+    background-color: #b44;
+    border-color: #a33
+}
+
+.btn-outline-dark:not(:disabled):not(.disabled):active:focus,
+.btn-outline-dark:not(:disabled):not(.disabled).active:focus,
+.show>.btn-outline-dark.dropdown-toggle:focus {
+    box-shadow: 0 0 0 .2rem rgba(204, 90, 90, 0.5)
+}
+
+
+/* link */
+
+.btn-link {
+    color: #a33
+    background-color: transparent;
+    border-color: transparent
+}
+
+.btn-link:hover {
+    color: #911;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.btn-link:not(:disabled):not(.disabled):active,
+.btn-link:not(:disabled):not(.disabled).active,
+.show>.btn-link.dropdown-toggle {
+    color: #a33;
+    background-color: transparent;
+    border-color: transparent;
+}
+

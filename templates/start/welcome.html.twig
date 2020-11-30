@@ -3,13 +3,12 @@
 
 {% block body %}
     <div class="container-fluid">
-	<figure role="group">
-	    <img src="{{ asset('images/Euklid-und-Hermann-1024.jpg') }}"
-		 class="img-fluid px-5 py-3"
-		 alt="Euklid und Hermann von Carinthia">
-	    <small><figcaption class="px-5">Euklid und Herman Dalmatin (auch Hermann von Carinthia), siehe auch
-		<a href="https://digital.bodleian.ox.ac.uk/inquire/p/7aaf3399-d43e-445f-8705-14f496b2ee80">Bodleian Libraries</a>
-	    </figcaption></small>
-	</figure>
+	<div class="row justify-content-center">
+	    <figure role="group" class="col col-lg-8 pt-3">
+		<img src="{{ asset('images/WIAG-netz-md.png') }}"
+		     class="img-fluid"
+		     alt="Vernetzte Daten in WIAG">
+	    </figure>
+	</div>
     </div>
 {% endblock %}
