@@ -78,6 +78,9 @@ class DioceseController extends AbstractController {
                      ])
                      ->add('searchHTML', SubmitType::class, [
                          'label' => 'Suche',
+                         'attr' => [
+                             'class' => 'btn btn-light, btn-sm',
+                         ],
                      ])
                      ->getForm();
 

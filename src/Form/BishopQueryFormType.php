@@ -87,15 +87,18 @@ class BishopQueryFormType extends AbstractType
                 ],
             ])->add('searchHTML', SubmitType::class, [
                 'label' => 'Suche',
+                'attr' => [
+                    'class' => 'btn btn-light bg-white btn-sm'
+                ]
             ])->add('searchJSON', SubmitType::class, [
                 'label' => 'JSON',
                 'attr' => [
-                    'class' => 'btn btn-secondary btn-light',
+                    'class' => 'btn btn-secondary btn-light btn-sm',
                 ]
             ])->add('searchCSV', SubmitType::class, [
                 'label' => 'CSV',
                 'attr' => [
-                    'class' => 'btn btn-secondary btn-light',
+                    'class' => 'btn btn-secondary btn-light btn-sm',
                 ]
             ]);
 

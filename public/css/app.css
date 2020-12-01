@@ -1,5 +1,5 @@
 body {
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-family: ArialMT, Arial, sans-serif;
     color: #444;
 }
 
@@ -7,9 +7,25 @@ body {
     font-size: large;
 }
 
+.wiag-title {
+    font-size: 1.2em;
+    color: black;
+    font-weight: bold;
+}
+
+.wiag-version {
+    color: darkgrey;
+}
+
+
 .topic-title {
     font-size: large;
-    font-weight: bold;
+    font-weight: bold;    
+}
+
+.wiag-impress {
+    font-size: small;
+    color: #222;
 }
 
 .wiag-id {

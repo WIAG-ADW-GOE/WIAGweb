@@ -7,9 +7,25 @@ body {
     font-size: large;
 }
 
+.wiag-title {
+    font-size: 1.2em;
+    color: black;
+    font-weight: bold;
+}
+
+.wiag-version {
+    color: darkgrey;
+}
+
+
 .topic-title {
     font-size: large;
     font-weight: bold;
+}
+
+.wiag-impress {
+    font-size: small;
+    color: #222;
 }
 
 .wiag-id {
