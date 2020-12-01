@@ -25,8 +25,7 @@
 
     {{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('launch_query')} }) }}
 	<div class="container-fluid mt-3">
-	    {# global: bishopstitle #}
-	    <div class="row-col-12 topic-title mb-2">{{ bishopstitle }}</div>
+	    {{ include('query_bishop/_title.html.twig') }}
 	    {{ include('query_bishop/_form_elements.html.twig') }}
 	    <div class="row">
 		<div class="col-8 mt-3 mb-1">Treffer:

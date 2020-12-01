@@ -12,8 +12,7 @@
 
 {% block body %}
     <div class="container-fluid mt-3">
-	{# global: bishopstitle #}
-	<div class="row-col-12 topic-title mb-2">{{ bishopstitle }}</div>
+	{{ include('query_bishop/_title.html.twig') }}
 	{{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('launch_query')}}) }}
 	    {{ include('query_bishop/_form_elements.html.twig') }}
 	{{ form_end(query_form) }}

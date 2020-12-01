@@ -17,7 +17,7 @@
 		    {{ include('query_bishop/_form_elements.html.twig') }}
 		{{ form_end(query_form) }}
 	    {% endif %}
-	    <div class="row-col-12 topic-title">{{ bishopstitle }}</div>
+	    {{ include('query_bishop/_title.html.twig') }}
 	    <div class="row mt-3 mb-0"><div class="col-8">
 		<h2>{{ person.displayname[:200] }}</h2>
 	    </div>
