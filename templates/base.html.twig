@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="h-100">
     <head>
 	<meta charset="UTF-8">
 	<title>{% block title %}WIAG{% endblock %}</title>
@@ -13,7 +13,7 @@
 		  integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
 	{% endblock %}
     </head>
-    <body>
+    <body class="d-flex flex-column h-100">
 	<div class="container-fluid">
 	    <div class="row">
 		<div class="fixed ml-3 mt-3">
@@ -56,18 +56,20 @@
 	</nav></div></div>
 
 	{% block body %}{% endblock %}
-	<footer class="mt-2 pt-3 pb-2 container-fluid">
-	    <div class="row justify-content-sm-center">
-		<div class="col-sm-10 text-left">
-		    <a href="https://adw-goe.de" class="mr-3"><img src="{{ asset('images/ADWGoe-logo-fit.png') }}" height="60"></a>
-		    <a href="http://www.inschriften.net" class="mx-3"><img src="{{ asset('images/DI-logo-fit.png') }}" height="60"></a>
-		    <a href="https://adw-goe.de/forschung/forschungsprojekte-akademienprogramm/germania-sacra/" class="mx-3"><img src="{{ asset('images/GS-logo.png') }}" height="52"></a>
+	<footer class="mt-auto pt-3 pb-2">
+	    <div class="container-fluid">
+		<div class="row justify-content-sm-center">
+		    <div class="col-sm-10 text-left">
+			<a href="https://adw-goe.de" class="mr-3" target="_blank" rel="noopener"><img src="{{ asset('images/ADWGoe-logo-fit.png') }}" height="60"></a>
+			<a href="http://www.inschriften.net" class="mx-3" target="_blank" rel="noopener"><img src="{{ asset('images/DI-logo-fit.png') }}" height="60"></a>
+			<a href="https://adw-goe.de/forschung/forschungsprojekte-akademienprogramm/germania-sacra/" class="mx-3" target="_blank" rel="noopener"><img src="{{ asset('images/GS-logo.png') }}" height="52"></a>
+		    </div>
 		</div>
-	    </div>
-	    <div class="row justify-content-sm-center mt-2">
-		<div class="col-sm-10 text-left">
-	    <a href="https://adw-goe.de/impressum" class="wiag-impress">Impressum</a>
-		 </div>
+		<div class="row justify-content-sm-center mt-2">
+		    <div class="col-sm-10 text-left">
+			<a href="https://adw-goe.de/impressum" class="wiag-impress" target="_blank" rel="noopener">Impressum</a>
+		    </div>
+		</div>
 	    </div>
 	</footer>
 	{% block javascripts %}

@@ -5,7 +5,7 @@
 {% set displayname %}{{ diocese.diocesestatus ~ ' ' ~ diocese.diocese }}{% endset %}
 
 {% block body %}
-    <div class="container-fluid mt-3">
+    <div class="container-fluid my-3">
 	{% if not diocese%}
 	    <p class="em">Bistum nicht gefunden.</p>
 	{% else %}
@@ -61,7 +61,7 @@
 				<li>
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item">{{ url.authority.urlnameformatter }}</li>
-					<li class="list-inline-item"><a href="{{ url.authority.urlformatter ~ url.urlvalue }}" >{{ url.prettyurlvalue }}</a></li>
+					<li class="list-inline-item"><a href="{{ url.authority.urlformatter ~ url.urlvalue }}" target="_blank" rel="noopener">{{ url.prettyurlvalue }}</a></li>
 				    </ul>
 				</li>
 			    {% endfor %}

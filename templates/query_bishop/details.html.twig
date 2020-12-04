@@ -7,7 +7,7 @@
 {% set urlviaf = 'https://viaf.org/viaf/' %}
 
 {% block body %}
-    <div class="container-fluid mt-3">
+    <div class="container-fluid my-3">
 	{# person is passed as an object #}
 	{% if not person%}
 	    <p class="em">Person nicht gefunden.</p>
@@ -116,7 +116,7 @@
 				<li>
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item">GND</li>
-					<li class="list-inline-item"><a href="{{ urlgnd }}{{ person.gndid }}">{{ person.gndid }}</a></li>
+					<li class="list-inline-item"><a href="{{ urlgnd }}{{ person.gndid }}" target="_blank" rel="noopener">{{ person.gndid }}</a></li>
 				    </ul>
 				</li>
 			    {% endif %}
@@ -124,7 +124,7 @@
 				<li>
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item">VIAF</li>
-					<li class="list-inline-item"><a href="{{ urlviaf }}{{ person.viafid }}">{{ person.viafid }}</a></li>
+					<li class="list-inline-item"><a href="{{ urlviaf }}{{ person.viafid }}" target="_blank" rel="noopener">{{ person.viafid }}</a></li>
 				    </ul>
 				</li>
 			    {% endif %}
@@ -132,7 +132,7 @@
 				<li>
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item">Wikidata</li>
-					<li class="list-inline-item"><a href="{{ urlwikidata }}{{ person.wikidataid }}">{{ person.wikidataid }}</a></li>
+					<li class="list-inline-item"><a href="{{ urlwikidata }}{{ person.wikidataid }}" target="_blank" rel="noopener">{{ person.wikidataid }}</a></li>
 				    </ul>
 				</li>
 			    {% endif %}
@@ -148,7 +148,7 @@
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item">Germania Sacra</li>
 					<li class="list-inline-item">
-					    <a href="{{ urlgspersons }}index/gsn/{{ person.gsid }}">{{ person.gsid }}</a></li>
+					    <a href="{{ urlgspersons }}index/gsn/{{ person.gsid }}" target="_blank" rel="noopener">{{ person.gsid }}</a></li>
 				    </ul>
 				</li>
 			    {% endif %}
@@ -156,7 +156,7 @@
 				<li>
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item">Wikipedia</li>
-					<li class="list-inline-item"><a href="{{ person.wikipediaurl }}">{{ person.wikipediatitle }}</a></li>
+					<li class="list-inline-item"><a href="{{ person.wikipediaurl }}" target="_blank" rel="noopener">{{ person.wikipediatitle }}</a></li>
 				    </ul>
 				</li>
 			    {% endif %}
@@ -165,7 +165,7 @@
 		{% endif %}
 		{% if person.reference %}
 		    <dt class="col-sm-3">Referenzwerk</dt>
-		    <dd class="col-sm-9"><a href="{{ path('reference', {'id': person.referenceid}) }}">{{ person.reference.short }}</a>, S. {{ person.pagesgatz }}</dd>
+		    <dd class="col-sm-9"><a href="{{ path('reference', {'id': person.referenceid}) }}">{{ person.reference.shorttitle }}</a>, S. {{ person.pagesgatz }}</dd>
 		{% endif %}
 
 	    </dl>

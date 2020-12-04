@@ -13,19 +13,19 @@ class Reference
 
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="id_ref", type="integer")
      */
-    private $reference_id;
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $full_citation;
 
     /**
      * @ORM\Column(type="string", length=127, nullable=true)
      */
-    private $title;
-
-    /**
-     * @ORM\Column(type="string", length=63, nullable=true)
-     */
-    private $author;
+    private $author_editor;
 
     /**
      * @ORM\Column(type="string", length=127, nullable=true)
@@ -35,47 +35,36 @@ class Reference
     /**
      * @ORM\Column(type="string", length=63)
      */
-    private $short;
+    private $short_title;
+
+    /**
+     * @ORM\Column(type="string", length=127)
+     */
+    private $ri_opac_id;
+
+    /**
+     * @ORM\Column(type="string", length=31)
+     */
+    private $isbn;
 
     /**
      * @ORM\Column(type="integer")
      */
     private $sort;
 
-    public function getReferenceId(): ?int
+    public function getId(): ?int
     {
-        return $this->reference_id;
+        return $this->id;
     }
 
-    public function setReferenceId(int $reference_id): self
+    public function getFullCitation(): ?string
     {
-        $this->reference_id = $reference_id;
-
-        return $this;
+        return $this->full_citation;
     }
 
-    public function getTitle(): ?string
+    public function getAuthorEditor(): ?string
     {
-        return $this->title;
-    }
-
-    public function setTitle(?string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(?string $author): self
-    {
-        $this->author = $author;
-
-        return $this;
+        return $this->author_editor;
     }
 
     public function getOnlineressource(): ?string
@@ -83,53 +72,43 @@ class Reference
         return $this->onlineressource;
     }
 
-    public function setOnlineressource(?string $onlineressource): self
+    public function getShortTitle(): ?string
     {
-        $this->onlineressource = $onlineressource;
-
-        return $this;
+        return $this->short_title;
     }
 
-    public function getShort(): ?string
+    public function getRiOpacId(): ?string
     {
-        return $this->short;
+        return $this->ri_opac_id;
     }
 
-    public function setShort(string $short): self
-    {
-        $this->short = $short;
 
-        return $this;
+    public function getIsbn(): ?string
+    {
+        return $this->isbn;
+    }
+
+    public function getSort(): ?string
+    {
+        return $this->sort;
     }
 
     public function toArray(): array {
         $rfj = array();
 
-        $rfj['title'] = $this->getTitle();
+        $rfj['title'] = $this->getFullCitation();
 
-        $fv = $this->getAuthor();
-        if($fv) $rfj['author'] = $fv;
+        $fv = $this->getAuthorEditor();
+        if($fv) $rfj['authorOrEditor'] = $fv;
 
         $fv = $this->getOnlineressource();
         if($fv) $rfj['online'] = $fv;
 
-        $fv = $this->getShort();
-        if($fv) $rfj['short'] = $fv;
+        $fv = $this->getShortTitle();
+        if($fv) $rfj['shortTitle'] = $fv;
 
         return $rfj;
 
-    }
-
-    public function getSort(): ?int
-    {
-        return $this->sort;
-    }
-
-    public function setSort(int $sort): self
-    {
-        $this->sort = $sort;
-
-        return $this;
     }
 
 }

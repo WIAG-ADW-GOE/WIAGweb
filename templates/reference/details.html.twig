@@ -1,10 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container-fluid">
-	<div class="mt-3 mb-2">
-	    <h2>{{ reference.short }}</h2>
-	    <p>{% if reference.author %}{{ reference.author }}: {% endif %}{{ reference.title }}</p>
-	</div>
-    </div>
+    {% set details=true %}
+    {% include('reference/_details.html.twig') %}
 {% endblock %}

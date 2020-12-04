@@ -129,7 +129,7 @@ class Person {
 
     /**
      * @ORM\ManyToOne(targetEntity="Reference")
-     * @ORM\JoinColumn(name="reference_id", referencedColumnName="reference_id")
+     * @ORM\JoinColumn(name="reference_id", referencedColumnName="id_ref")
      */
     private $reference;
 
@@ -139,6 +139,7 @@ class Person {
      * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
      */
     private $offices;
+
 
     public static function isWiagidLong($wiagidlong) {
         $match = stristr($wiagidlong, self::WIAGID_PREFIX);
@@ -569,6 +570,13 @@ class Person {
             if($oc->getIdMonastery()) return true;
         }
         return false;
+    }
+
+    public function setReference(?Reference $reference): self
+    {
+        $this->reference = $reference;
+
+        return $this;
     }
 
 
