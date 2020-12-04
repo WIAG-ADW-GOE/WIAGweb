@@ -13,8 +13,7 @@
 		{{ form_start(form, {'attr': {'id':'q_form', 'action': path('query_dioceses'), 'hidden': 'hidden'}}) }}
 		{{ form_end(form) }}
 	    {% endif %}
-	    {# global: diocesestitle #}
-	    <div class="row-col-12 topic-title">{{ diocesestitle }}</div>
+	    {% include('query_diocese/_title.html.twig') %}
 	    <div class="row mt-3 mb-0"><div class="col-9">
 		<h2>{{ displayname }}</h2></div>
 		<div class="col-3 wiag-id text-right">{{ diocese.wiagidlong }}</div>

@@ -48,6 +48,12 @@ class Reference
     private $isbn;
 
     /**
+     * @ORM\Column(type="string", length=31)
+     */
+    private $gbv;
+
+
+    /**
      * @ORM\Column(type="integer")
      */
     private $sort;
@@ -82,11 +88,16 @@ class Reference
         return $this->ri_opac_id;
     }
 
-
     public function getIsbn(): ?string
     {
         return $this->isbn;
     }
+
+    public function getGbv(): ?string
+    {
+        return $this->gbv;
+    }
+
 
     public function getSort(): ?string
     {

@@ -22,8 +22,7 @@
     {% endif %}
     {% endset %}
     <div class="container-fluid mt-3">
-	{# global: diocesestitle #}
-	<div class="row-col-12 topic-title">{{ diocesestitle }}</div>
+	{% include('query_diocese/_title.html.twig') %}
 	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_dioceses')}}) }}
 	    <div class="row col-12">
 		{{  form_row(form.diocese) }}

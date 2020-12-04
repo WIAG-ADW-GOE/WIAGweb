@@ -1,19 +1,7 @@
-<div class="container-fluid">
-    <div class="row"><div class="col">
-	{% if details is defined %}<h2>{{ reference.shorttitle }}</h2>{% endif %}
-	<p>{{ reference.fullcitation }}</p>
-    </div></div>
-    {% if reference.isbn %}<dl class="row my-n1">
-	<dt class="ml-3" style="width: 5rem">ISBN</dt>
-	<dd class="col">{{ reference.isbn }}</dd>
-    </dl>{% endif %}
-    {% if reference.riopacid %}<dl class="row my-n1">
-	<dt class="ml-3" style="width: 5rem">RI OPAC</dt>
-	<dd class="col"><a href="{{ reference.riopacid }}" target="_blank" rel="noopener">{{ reference.riopacid|split('/')|last }}</a></dd>
-    </dl>{% endif %}
-    {% if reference.onlineressource %}<dl class="row my-n1">
-	<dt class="ml-3" style="width: 5rem">Online</dt>
-	<dd class="col"><a href="{{ reference.onlineressource }}" target="_blank" rel="noopener">{{ reference.onlineressource }}</a></dd>
-    </dl>{% endif %}
+{% if details is defined %}<h2>{{ reference.shorttitle }}</h2>{% endif %}
 
-</div>
+<p>{{ reference.fullcitation }}</p>
+
+{% if reference.gbv or reference.riopacid %}<p>{% if reference.gbv %}GBV <a class="ml-1" href="{{ reference.gbv }}" target="_blank" rel="noopener">{{ reference.gbv|split('=')|last }}</a>{% endif %}{% if reference.riopacid %}<span class="ml-3">RI OPAC</span><a class="ml-1" href="{{ reference.riopacid }}" target="_blank" rel="noopener">{{ reference.riopacid|split('/')|last }}</a>{% endif %}</p>{% endif %}
+
+{% if reference.onlineressource %}<p>Online <a class="ml-1" href="{{ reference.onlineressource }}" target="_blank" rel="noopener">{{ reference.onlineressource }}</a></p>{% endif %}
