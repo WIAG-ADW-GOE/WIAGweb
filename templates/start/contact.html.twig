@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% import 'basemacros.html.twig' as bmc%}
+
+{% block body %}
+    <div class="container-md">
+	<div class="row m-2">
+	    <div class="col">
+	<h3>Kontakt</h3>
+
+	<ul class="list-unstyled">
+	    <li>Bärbel Kröger</li>
+	    <li>Akademie der Wissenschaften zu Göttingen</li>
+	    <li>Germania Sacra</li>
+	    <li>Geiststraße 10</li>
+	    <li>37037 Göttingen</li>
+	    <li>Deutschland</li>
+	</ul>
+	<ul class="list-unstyled">
+	    <li>Tel. +49 (0) 551/39-21558</li>
+	    <li><a href="mailto:bkroege@gwdg.de">bkroege@gwdg.de</a></li>
+	</ul>
+	<ul class="list-unstyled">
+	    <li><a href="{{ url('wiag_welcome') }}">{{ url('wiag_welcome') }}</a></li>
+	</ul>
+	    </div>
+	</div>
+    </div>
+{% endblock %}

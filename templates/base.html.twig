@@ -15,8 +15,8 @@
     </head>
     <body class="d-flex flex-column h-100">
 	<div class="container-fluid">
-	    <div class="row">
-		<div class="fixed ml-3 mt-3">
+	    <div class="row ml-2">
+		<div class="fixed mt-3">
 		    <a href="{{ path('wiag_welcome') }}"><img src="{{ asset('images/WIAG-logo.png') }}" width="80"></a>
 		</div>
 		<div class="col mt-3">
@@ -26,34 +26,34 @@
 	    </div>
 	</div>
 	<div class="container-fluid">
-	    <div class="row-col-12">
-	<nav class="navbar navbar-expand-sm navbar-light bg-white">
-	    <ul class="navbar-nav ml-auto">
-		{% if is_granted('ROLE_USER') %}
-		    <li class="nav-item active btn-group m-1"><div class="dropdown">
-			<button class="btn btn-light font-weight-bold bg-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Über&nbsp;WIAG</button>
-			<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-			    <a class="dropdown-item" href="{{ path('wiag_about') }}">Ziele</a>
-			    <a class="dropdown-item" href="{{ path('reference_list') }}">Referenzwerke</a>
-			    <a class="dropdown-item" href="{{ path('api_documentation') }}">API</a>
-			</div>
-		    </div></li>
-		    {% if is_granted('ROLE_QUERY') %}
-			<li class="nav-item active btn-group m-1"><div class="dropdown">
-			    <button class="btn btn-light font-weight-bold bg-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Datensammlungen</button>
-			    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-				<a class="dropdown-item" href="{{ path('launch_query') }}">Bischöfe des Alten Reiches</a>
-				<a class="dropdown-item" href="{{ path('query_dioceses', {'list': 'all'}) }}">Bistümer des Alten Reiches</a>
-			    </div>
-			</div></li>
-		    {% endif %}
-		    <li class="nav-item m-1"><a href="{{ path('wiag_logout') }}"><button class="btn btn-light font-weight-bold bg-white">Logout</button></a></li>
-		{% endif %}
-		{% if not is_granted('ROLE_USER') %}
-		    <li class="nav-item m-1"><a href="{{ path('wiag_login') }}"><button class="btn btn-light font-weight-bold bg-white">Login</button></a></li>
-		{% endif %}
-	    </ul>
-	</nav></div></div>
+		<nav class="navbar navbar-expand-sm navbar-light bg-white">
+		    <ul class="navbar-nav ml-auto">
+			{% if is_granted('ROLE_USER') %}
+			    <li class="nav-item active btn-group m-1"><div class="dropdown">
+				<button class="btn btn-light font-weight-bold bg-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Über&nbsp;WIAG</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+				    <a class="dropdown-item" href="{{ path('wiag_about') }}">Ziele</a>
+				    <a class="dropdown-item" href="{{ path('reference_list') }}">Referenzwerke</a>
+				    <a class="dropdown-item" href="{{ path('api_documentation') }}">API</a>
+				    <a class="dropdown-item" href="{{ path('wiag_contact') }}">Kontakt</a>
+				</div>
+			    </div></li>
+			    {% if is_granted('ROLE_QUERY') %}
+				<li class="nav-item active btn-group m-1"><div class="dropdown">
+				    <button class="btn btn-light font-weight-bold bg-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Datensammlungen</button>
+				    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					<a class="dropdown-item" href="{{ path('launch_query') }}">Bischöfe des Alten Reiches</a>
+					<a class="dropdown-item" href="{{ path('query_dioceses', {'list': 'all'}) }}">Bistümer des Alten Reiches</a>
+				    </div>
+				</div></li>
+			    {% endif %}
+			    <li class="nav-item m-1"><a href="{{ path('wiag_logout') }}"><button class="btn btn-light font-weight-bold bg-white">Logout</button></a></li>
+			{% endif %}
+			{% if not is_granted('ROLE_USER') %}
+			    <li class="nav-item m-1"><a href="{{ path('wiag_login') }}"><button class="btn btn-light font-weight-bold bg-white">Login</button></a></li>
+			{% endif %}
+		    </ul>
+		</nav></div>
 
 	{% block body %}{% endblock %}
 	<footer class="mt-auto pt-3 pb-2">
@@ -68,6 +68,7 @@
 		<div class="row justify-content-sm-center mt-2">
 		    <div class="col-sm-10 text-left">
 			<a href="https://adw-goe.de/impressum" class="wiag-impress" target="_blank" rel="noopener">Impressum</a>
+			<a href="{{ path('wiag_contact') }}" class="wiag-impress ml-2">Kontakt</a>
 		    </div>
 		</div>
 	    </div>
