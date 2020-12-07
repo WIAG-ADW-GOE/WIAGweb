@@ -27,7 +27,7 @@ class ReferenceController extends AbstractController {
     }
 
     /**
-     * @Route("/reference-list", name="reference_list");
+     * @Route("/references", name="reference_list");
      */
     public function list() {
 

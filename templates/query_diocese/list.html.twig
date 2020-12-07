@@ -59,11 +59,11 @@
 				    <td>
 					{% if not diocese.dateoffounding and not diocese.dateofdissolution %}
 					{% elseif diocese.dateoffounding and not diocese.dateofdissolution or diocese.dateofdissolution == "keine"%}
-					    <small>Gründung {{ diocese.dateoffounding }} <br/> besteht bis heute</small>
+					    <small>Gründung: {{ diocese.dateoffounding }} <br/> besteht bis heute</small>
 					{% elseif not diocese.dateoffounding and diocese.dateofdissolution %}
-					    <small>Aufhebung {{ diocese.dateofdissolution }}</small>
+					    <small>Aufhebung: {{ diocese.dateofdissolution }}</small>
 					{% else %}
-					    <small>Gründung {{ diocese.dateoffounding }} <br/>Aufhebung {{ diocese.dateofdissolution }}</small>
+					    <small>Gründung: {{ diocese.dateoffounding }} <br/>Aufhebung: {{ diocese.dateofdissolution }}</small>
 					{% endif %}
 				    </td>
 				</tr>

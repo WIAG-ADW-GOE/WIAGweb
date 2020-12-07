@@ -68,18 +68,19 @@ class DioceseController extends AbstractController {
 
         $form = $this->createFormBuilder($diocesequery)
                      ->add('diocese', TextType::class, [
-                         'label' => 'Name',
+                         'label' => false,
                          'required' => false,
                          'attr' => [
+                             'placeholder' => 'Erzbistum/Bistum',
                              'class' => 'js-name-autocomplete',
                              'data-autocomplete-url' => $route_utility_names,
-                             'size' => 15,
+                             'size' => 25,
                          ],
                      ])
                      ->add('searchHTML', SubmitType::class, [
                          'label' => 'Suche',
                          'attr' => [
-                             'class' => 'btn btn-light, btn-sm',
+                             'class' => 'btn btn-secondary btn-light',
                          ],
                      ])
                      ->getForm();

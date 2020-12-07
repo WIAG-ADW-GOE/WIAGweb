@@ -50,6 +50,7 @@ class BishopQueryFormType extends AbstractType
                 'label' => 'Name',
                 'required' => false,
                 'attr' => [
+                    'placeholder' => 'Vor- oder Nachname',
                     'class' => 'js-name-autocomplete',
                     'data-autocomplete-url' => $this->router->generate('query_bishops_utility_names'),
                     'size' => '30',
@@ -59,6 +60,7 @@ class BishopQueryFormType extends AbstractType
                 'label' => 'Erzbistum/Bistum',
                 'required' => false,
                 'attr' => [
+                    'placeholder' => 'Erzbistum/Bistum',
                     'class' => 'js-place-autocomplete',
                     'data-autocomplete-url' => $this->router->generate('query_bishops_utility_places'),
                     'size' => '15',
@@ -68,6 +70,7 @@ class BishopQueryFormType extends AbstractType
                 'label' => 'Amt',
                 'required' => false,
                 'attr' => [
+                    'placeholder' => 'Amtsbezeichnung',
                     'class' => 'js-office-autocomplete',
                     'data-autocomplete-url' => $this->router->generate('query_bishops_utility_offices'),
                     'size' => '18',
@@ -77,18 +80,20 @@ class BishopQueryFormType extends AbstractType
                 'label' => 'Jahr',
                 'required' => false,
                 'attr' => [
+                    'placeholder' => 'Jahreszahl',
                     'size' => '8',
                 ],
             ])->add('someid', TextType::class, [
                 'label' => 'Nummer',
                 'required' => false,
                 'attr' => [
-                    'size' => '14',
+                    'placeholder' => 'GSN, GND, Wikidata, VIAF',
+                    'size' => '25',
                 ],
             ])->add('searchHTML', SubmitType::class, [
                 'label' => 'Suche',
                 'attr' => [
-                    'class' => 'btn btn-light bg-white btn-sm'
+                    'class' => 'btn btn-secondary btn-light'
                 ]
             ])->add('searchJSON', SubmitType::class, [
                 'label' => 'JSON',

@@ -12,7 +12,9 @@
 
 {% block body %}
     <div class="container-fluid mt-3">
-	{{ include('query_bishop/_title.html.twig') }}
+	<div class="row ml-2">
+	    {{ include('query_bishop/_title.html.twig') }}
+	</div>
 	{{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('launch_query')}}) }}
 	    {{ include('query_bishop/_form_elements.html.twig') }}
 	{{ form_end(query_form) }}

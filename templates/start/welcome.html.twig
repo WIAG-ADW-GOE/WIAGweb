@@ -2,28 +2,27 @@
 
 
 {% block body %}
-    <div class="container-fluid my-2">
-	{% if is_granted('ROLE_USER') %}
-	    <div class="row mx-2">
-		<div class="col-3">
-		    <p><a href="{{ path('launch_query') }}"><img src="{{ asset('images/Bischoefe-sc1.jpg') }}" class="img-fluid"></a></p>
-		    <p><a href="{{ path('launch_query') }}"><strong>Bischöfe des Alten Reiches</strong></a></p>
-		    <p class="mt-n2">Datensammlung mit Basisdaten zu allen Patriarchen, Erzbischöfen, Bischöfen, Weihbischöfen und weiteren diözesanen Leitungspersonen des Alten Reiches, die in dem mehrbändigen Bischofslexikon "Die Bischöfe des Heiligen Römischen Reiches" sowie "Die Bistümer des Heiligen Römischen Reiches" von Erwin Gatz (Hg.) verzeichnet sind. Neben den biographischen Angaben sind die wichtigsten Leitungsämter mit Amtszeiten erfasst. Alle Datensätze sind mit Normdaten ausgezeichnet.</p>
-		</div>
-		<div class="col-3">
-		    <p><a href="{{ path('query_dioceses', {'list': 'all'}) }}"><img src="{{ asset('images/Bistuemer-sc1.jpg') }}" class="img-fluid"></a></p>
-		    <p><a href="{{ path('query_dioceses', {'list': 'all'}) }}"><strong>Bistümer des Alten Reiches</strong></a></p>
-		    <p class="mt-n2">Übersicht über die Erzbistümer und Bistümer des Alten Reiches, nach: Die Bistümer des Alten Reiches nach Erwin Gatz (Hg.), Die Bistümer des Alten Reiches von ihren Anfängen bis zur Säkularisation, Freiburg im Breisgau 2003. Die Datensammlung enthält Basisdaten zu den Bistümern und ist mit Links zu Normdatensammlungen angereichert.</p>
-		</div>
+    {# It is ok to drop the wrapping container. This leads here to the desired left margin.#}
+    {% if is_granted('ROLE_USER') %}
+	<div class="row mx-2">
+	    <div class="col-md-3">
+		<p><a href="{{ path('launch_query') }}"><img src="{{ asset('images/Bischoefe-sc1.jpg') }}" class="img-fluid"></a></p>
+		<p><a href="{{ path('launch_query') }}"><strong>Bischöfe des Alten Reiches</strong></a></p>
+		<p class="mt-n2">Datensammlung mit Basisdaten zu allen Patriarchen, Erzbischöfen, Bischöfen, Weihbischöfen und weiteren diözesanen Leitungspersonen des Alten Reiches, die in dem mehrbändigen Bischofslexikon „Die Bischöfe des Heiligen Römischen Reiches“ sowie „Die Bistümer des Heiligen Römischen Reiches“ von Erwin Gatz (Hg.) verzeichnet sind. Neben den biographischen Angaben sind die wichtigsten Leitungsämter mit Amtszeiten erfasst. Alle Datensätze sind mit Normdaten ausgezeichnet.</p>
 	    </div>
-	{% else %}
-	<div class="row justify-content-center">
-	    <figure role="group" class="col col-lg-8 pt-3">
-		<img src="{{ asset('images/WIAG-netz-md.png') }}"
-		     class="img-fluid"
-		     alt="Vernetzte Daten in WIAG">
-	    </figure>
+	    <div class="col-md-3">
+		<p><a href="{{ path('query_dioceses', {'list': 'all'}) }}"><img src="{{ asset('images/Bistuemer-sc1.jpg') }}" class="img-fluid"></a></p>
+		<p><a href="{{ path('query_dioceses', {'list': 'all'}) }}"><strong>Bistümer des Alten Reiches</strong></a></p>
+		<p class="mt-n2">Übersicht über die Erzbistümer und Bistümer des Alten Reiches, nach: „Die Bistümer des Alten Reiches“ nach Erwin Gatz (Hg.), „Die Bistümer des Alten Reiches von ihren Anfängen bis zur Säkularisation“, Freiburg im Breisgau 2003. Die Datensammlung enthält Basisdaten zu den Bistümern und ist mit Links zu Normdatensammlungen angereichert.</p>
+	    </div>
 	</div>
-	{% endif %}
-    </div>
+    {% else %}
+	    <div class="row justify-content-center">
+		<figure role="group" class="col col-md-8 pt-3">
+		    <img src="{{ asset('images/WIAG-netz-md.png') }}"
+			 class="img-fluid"
+			 alt="Vernetzte Daten in WIAG">
+		</figure>
+	    </div>
+    {% endif %}
 {% endblock %}

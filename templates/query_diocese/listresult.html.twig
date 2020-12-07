@@ -21,16 +21,18 @@
 	</span>
     {% endif %}
     {% endset %}
-    <div class="container-fluid mt-3">
-	{% include('query_diocese/_title.html.twig') %}
-	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_dioceses')}}) }}
-	    <div class="row col-12">
-		{{  form_row(form.diocese) }}
-	    </div>
-	    {{ form_widget(form.searchHTML) }}
-	{{ form_end(form) }}
-	<div class="row">
-	    <div class="col-8 mt-3 mb-1">Treffer:
+    <div class="row ml-2 col">
+	    {% include('query_diocese/_title.html.twig') %}
+    </div>
+    {{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_dioceses')}}) }}
+	<div class="row ml-2 col-12">
+	    {{ form_row(form.diocese) }} <span class="ml-2">{{ form_row(form.searchHTML) }}</span>
+	    {#  <div class="col-md-3 ml-n1">{{ form_row(form.searchHTML) }}</div>  #}
+	</div>
+    {{ form_end(form) }}
+
+    <div class="row ml-2">
+	    <div class="col-12 mt-3 mb-1">Treffer:
 		{% if count == 0 %}
 		    keine
 		{% elseif count == 1 %}
@@ -43,12 +45,10 @@
 		<a href="{{ path('api_query_dioceses', {format: 'json'}) }}"><button class="btn btn-secondary btn-light ml-3">JSON</button></a>
 		<a href="{{ path('api_query_dioceses', {format: 'csv'}) }}"><button class="btn btn-secondary btn-light ml-3">CSV</button></a>
 	    </div>
-	</div>
     </div>
-    </div>
-    <div class="container-fluid mb-3">
-	<div class="row">
-	    <div class="col-9">
+
+	<div class="row mx-2 mb-3">
+	    <div class="col">
 		<div class="table-responsive">
 		    <table class="table">
 			<thead class="thead-light">
@@ -64,11 +64,11 @@
 				    <td>
 					{% if not diocese.dateoffounding and not diocese.dateofdissolution %}
 					{% elseif diocese.dateoffounding and not diocese.dateofdissolution or diocese.dateofdissolution == "keine"%}
-					    <small>Gründung {{ diocese.dateoffounding }} <br/> besteht bis heute</small>
+					    <small>Gründung: {{ diocese.dateoffounding }} <br/> besteht bis heute</small>
 					{% elseif not diocese.dateoffounding and diocese.dateofdissolution %}
-					    <small>Aufhebung {{ diocese.dateofdissolution }}</small>
+					    <small>Aufhebung: {{ diocese.dateofdissolution }}</small>
 					{% else %}
-					    <small>Gründung {{ diocese.dateoffounding }} <br/>Aufhebung {{ diocese.dateofdissolution }}</small>
+					    <small>Gründung: {{ diocese.dateoffounding }} <br/>Aufhebung: {{ diocese.dateofdissolution }}</small>
 					{% endif %}
 				    </td>
 				</tr>
@@ -80,5 +80,4 @@
 
 	    </div>
 	</div>
-    </div>
 {% endblock %}
