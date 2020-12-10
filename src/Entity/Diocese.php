@@ -81,7 +81,6 @@ class Diocese
      */
     private $note_bishopric_seat;
 
-
     /**
      * @ORM\OneToOne(targetEntity=Place::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="bishopric_seat", referencedColumnName="id_places")
@@ -395,7 +394,6 @@ class Diocese
 
         $fv = $this->getNoteBishopricSeat();
         if($fv) $cd['noteBishopricSeat'] = $fv;
-
 
         $fv = $this->getExternalUrls();
         if($fv) {

@@ -13,28 +13,30 @@
 		{{ form_start(form, {'attr': {'id':'q_form', 'action': path('query_dioceses'), 'hidden': 'hidden'}}) }}
 		{{ form_end(form) }}
 	    {% endif %}
-	    {% include('query_diocese/_title.html.twig') %}
-	    <div class="row mt-3 mb-0"><div class="col-9">
+	    <div class="row mx-2">
+		{% include('query_diocese/_title.html.twig') %}
+	    </div>
+	    <div class="row mx-2 mt-3 mb-0"><div class="col-9">
 		<h2>{{ displayname }}</h2></div>
 		<div class="col-3 wiag-id text-right">{{ diocese.wiagidlong }}</div>
 	    </div>
 	    {% if diocese.altlabel|length > 0 %}
-		<div class="row col-12">
+		<div class="row mx-2 col-12">
 		    {% for label in diocese.altlabel|sort((a, b) => a.sort <=> b.sort) %}
 			{{ label.altlabeldiocese|split(' ')|join('&nbsp;')|raw }}{% if label.lang %} ({{ label.lang }}){% endif %}{% if not loop.last %}; {% endif %}
 		    {% endfor %}
 		</div>
 	    {% endif %}
 	    {% if diocese.notediocese %}
-		<div class="row col-12 mt-1">
+		<div class="row mx-2 col-12 mt-1">
 		    <span class="comment">{{ diocese.notediocese }}</span>
 		</div>
 	    {% endif %}
 
-	    <dl class="row mt-3">
+	    <dl class="row mx-2 mt-3">
 		{% if diocese.bishopricseatobj %}
 		    <dt class="col-sm-3">Bischofssitz</dt>
-		    <dd class="col-sm-9">{{ diocese.bishopricseatobj.placename }}</dd>
+		    <dd class="col-sm-9"><a href={{ url_geonames ~ diocese.bishopricseatobj.geonamesid }} target="_blank" rel="noopener">{{ diocese.bishopricseatobj.placename }}</a></dd>
 		    {% if diocese.notebishopricseat %}<dt class ="col-sm-3"></dt>
 			<dd class="col-sm-9"><span class="comment">{{- diocese.notebishopricseat -}}</span></dd>{% endif %}
 		{% endif %}
@@ -60,7 +62,7 @@
 				<li>
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item">{{ url.authority.urlnameformatter }}</li>
-					<li class="list-inline-item"><a href="{{ url.authority.urlformatter ~ url.urlvalue }}" target="_blank" rel="noopener">{{ url.prettyurlvalue }}</a></li>
+					<li class="list-inline-item"><a href={{ url.authority.urlformatter ~ url.urlvalue }} target="_blank" rel="noopener">{{ url.prettyurlvalue }}</a></li>
 				    </ul>
 				</li>
 			    {% endfor %}
@@ -74,24 +76,24 @@
 
 		{% if diocese.gatzpages %}
 		    <dt class="col-sm-3">Referenzwerk</dt>
-		    <dd class="col-sm-9"><a href="{{ path('reference', {'id': 2}) }}">Gatz, Bistümer</a>, S. {{ diocese.gatzpages }}</dd>
+		    <dd class="col-sm-9"><a href={{ path('reference', {'id': 2}) }}>Gatz, Bistümer</a>, S. {{ diocese.gatzpages }}</dd>
 		{% endif %}
 	    </dl>
 
 
-	    <div class="row col-12">Empfohlene Zitierweise:<br/>
+	    <div class="row mx-2 col-12">Empfohlene Zitierweise:<br/>
 		"{{ displayname }}" {# (WIAGID: {{ wiagidlong }}), #}
 		in: WIAG, {{ url('diocese', {idorname: diocese.wiagidlong}) }}
 		(Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
 
-	    <div class="row col-12 mt-4">
+	    <div class="row mx-2 mt-4 col-12">
 		{% if form is defined %}
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm mr-1" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm mr-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm mr-3" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
 		{% endif %}
-		<a href="{{ path('api_diocese', {wiagidlong: diocese.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-3">JSON</button></a>
-		<a href="{{ path('api_diocese', {wiagidlong: diocese.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-3">CSV</button></a>
+		<a href="{{ path('api_diocese', {wiagidlong: diocese.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm mr-3">JSON</button></a>
+		<a href="{{ path('api_diocese', {wiagidlong: diocese.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm">CSV</button></a>
 
 	    </div>
 	{% endif %}

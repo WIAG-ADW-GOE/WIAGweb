@@ -107,7 +107,7 @@ Die Suchparameter sind logisch UND-verknüpft: Es werden nur solche Datensätze 
 Die Suchparameter werden an die URL jeweils mit dem Schlüsselwort angehängt. Ebenso
 wird das gewünschte Format mit dem Schlüsselwort `format` angehängt. JSON ist das
 Standard-Format, d.h. hier kann die Angabe des Formats entfallen:
-`{{ wiagbaseurl }}/api/query-bishops?key1=valuet&key2=value&format=[json|csv]`
+`{{ wiagbaseurl }}/api/query-bishops?key1=value1&key2=value2&format=[json|csv]`
 
 Beispiele (JSON):<br/>
 {{ url('api\_query\_bishops', {name: 'gondo', format: 'json'})|raw }}<br/>

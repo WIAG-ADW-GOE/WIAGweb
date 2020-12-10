@@ -38,6 +38,11 @@ class Place
      */
     private $locations;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $geonames_id;
+
 
     public function getIdPlaces(): ?int
     {
@@ -89,5 +94,17 @@ class Place
 
     public function getLocationsWithPxlace() {
         return $this->locations;
+    }
+
+    public function getGeonamesId(): ?int
+    {
+        return $this->geonames_id;
+    }
+
+    public function setGeonamesId(?int $geonames_id): self
+    {
+        $this->geonames_id = $geonames_id;
+
+        return $this;
     }
 }

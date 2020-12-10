@@ -20,7 +20,7 @@
 		    <a href="{{ path('wiag_welcome') }}"><img src="{{ asset('images/WIAG-logo.png') }}" width="80"></a>
 		</div>
 		<div class="col mt-3">
-		    <a class="wiag-title text-reset text-decoration-none" href="{{ path('wiag_welcome') }}">Wissensaggregator Mittelalter und Frühe Neuzeit</a> <a class="wiag-version text-decoration-none ml-1" href="{{ path('wiag_version') }}">Version: Open-Beta</a>
+		    <a class="wiag-title text-reset text-decoration-none" href="{{ path('wiag_welcome') }}">Wissensaggregator Mittelalter und Frühe Neuzeit</a> <span class="wiag-version ml-1">Version: Beta</span>
 		    <p>Strukturierung, Standardisierung und Bereitstellung von Forschungsdaten aus Sach- und Schriftquellen des Mittelalters und der Frühen Neuzeit</p>
 		</div>
 	    </div>
@@ -30,7 +30,7 @@
 		    <ul class="navbar-nav ml-auto">
 			{% if is_granted('ROLE_USER') %}
 			    <li class="nav-item active btn-group m-1"><div class="dropdown">
-				<button class="btn btn-light font-weight-bold bg-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Über&nbsp;WIAG</button>
+				<button class="btn btn-light bg-white border-white font-weight-bold" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Über&nbsp;WIAG</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 				    <a class="dropdown-item" href="{{ path('wiag_about') }}">Ziele</a>
 				    <a class="dropdown-item" href="{{ path('reference_list') }}">Referenzwerke</a>
@@ -40,17 +40,17 @@
 			    </div></li>
 			    {% if is_granted('ROLE_QUERY') %}
 				<li class="nav-item active btn-group m-1"><div class="dropdown">
-				    <button class="btn btn-light font-weight-bold bg-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Datensammlungen</button>
+				    <button class="btn btn-light font-weight-bold bg-white border-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Datensammlungen</button>
 				    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 					<a class="dropdown-item" href="{{ path('launch_query') }}">Bischöfe des Alten Reiches</a>
 					<a class="dropdown-item" href="{{ path('query_dioceses', {'list': 'all'}) }}">Bistümer des Alten Reiches</a>
 				    </div>
 				</div></li>
 			    {% endif %}
-			    <li class="nav-item m-1"><a href="{{ path('wiag_logout') }}"><button class="btn btn-light font-weight-bold bg-white">Logout</button></a></li>
+			    <li class="nav-item m-1"><a href="{{ path('wiag_logout') }}"><button class="btn btn-light font-weight-bold bg-white border-white">Logout</button></a></li>
 			{% endif %}
 			{% if not is_granted('ROLE_USER') %}
-			    <li class="nav-item m-1"><a href="{{ path('wiag_login') }}"><button class="btn btn-light font-weight-bold bg-white">Login</button></a></li>
+			    <li class="nav-item m-1"><a href="{{ path('wiag_login') }}"><button class="btn btn-light font-weight-bold bg-white border-white">Login</button></a></li>
 			{% endif %}
 		    </ul>
 		</nav></div>

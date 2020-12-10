@@ -7,24 +7,26 @@
 {% set urlviaf = 'https://viaf.org/viaf/' %}
 
 {% block body %}
-    <div class="container-fluid my-3">
-	{# person is passed as an object #}
-	{% if not person%}
-	    <p class="em">Person nicht gefunden.</p>
-	{% else %}
-	    {% if query_form is defined %}
-		{{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('launch_query'), 'hidden': 'hidden'} }) }}
-		    {{ include('query_bishop/_form_elements.html.twig') }}
-		{{ form_end(query_form) }}
-	    {% endif %}
-	    {{ include('query_bishop/_title.html.twig') }}
-	    <div class="row mt-3 mb-0"><div class="col-8">
-		<h2>{{ person.displayname[:200] }}</h2>
+    {# person is passed as an object #}
+    {% if not person%}
+	<p class="em">Person nicht gefunden.</p>
+    {% else %}
+	{% if query_form is defined %}
+	    {{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('launch_query'), 'hidden': 'hidden'} }) }}
+		{{ include('query_bishop/_form_elements.html.twig') }}
+	    {{ form_end(query_form) }}
+	{% endif %}
+	<div class="container-fluid mt-3">
+	    <div class="row mx-2">
+		{{ include('query_bishop/_title.html.twig') }}
 	    </div>
-	    <div class="col-4 text-right wiag-id">{{ person.wiagidlong }}</div></div>
+	    <div class="row mx-2 my-2">
+		<div class="col-8"><h2>{{ person.displayname[:200] }}</h2></div>
+		<div class="col-4 text-right wiag-id">{{ person.wiagidlong }}</div>
+	    </div>
 
 	    {% if person.flagcomment %}
-		<div class="row col-12">
+		<div class="row mx-2">
 		    {% if person.givennamevariant is defined and person.givennamevariant != '' %}
 			<span class="comment">{{ person.givennamevariant }}</span>
 			{% if person.familynamevariant is defined and person.familynamevariant != '' %}
@@ -57,7 +59,7 @@
 
 	    {% if not person.datebirth and not person.datedeath %}
 	    {% else %}
-		<div class="row col-12 mt-2">
+		<div class="row mx-2 col-12 mt-2">
 		    {% if person.datebirth and not person.datedeath %}
 			<span class="wiag-large">* {{ person.datebirth }}</span>
 		    {% elseif not person.datebirth and person.datedeath %}
@@ -67,7 +69,7 @@
 		    {% endif %}
 		</div>
 	    {% endif %}
-	    <dl class="row mt-3">
+	    <dl class="row mx-2 mt-3">
 		{% if person.religiousorder %}
 		    <dt class="col-sm-3">Orden</dt>
 		    <dd class="col-sm-9">{{ person.religiousorder }}</dd>
@@ -170,21 +172,22 @@
 
 	    </dl>
 
-	    <div class="row col-12">Empfohlene Zitierweise:<br/>
+	    <div class="row mx-2 col-12">Empfohlene Zitierweise:<br/>
 		"{{ person.displayname }}" {# (WIAGID: {{ person.wiagidlong }}), #}
 		{# app.request.schemeAndHttpHost ~ app.request.baseUrl  #}
 		in: WIAG, {{ url('bishop', {wiagidlong: person.wiagidlong}) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
 
-	    <div class="row col-12 mt-4">
+	    <div class="row mx-2 col-12 mt-4">
 		{% if query_form is defined %}
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
-		    <a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm ml-1">Neue Suche</button></a>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm mr-1" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm mr-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm mr-1" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
+		    <a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm mr-3">Neue Suche</button></a>
 		{% endif %}
-		<a href="{{ path('api_bishop', {wiagidlong: person.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-3">JSON</button></a>
-		<a href="{{ path('api_bishop', {wiagidlong: person.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-3">CSV</button></a>
+		<a href="{{ path('api_bishop', {wiagidlong: person.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm mr-3">JSON</button></a>
+		<a href="{{ path('api_bishop', {wiagidlong: person.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm">CSV</button></a>
 	    </div>
-	{% endif %}
-    </div>
+	</div>
+
+    {% endif %}
 {% endblock %}

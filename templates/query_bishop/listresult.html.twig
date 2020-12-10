@@ -29,87 +29,85 @@
 		{{ include('query_bishop/_title.html.twig') }}
 	    </div>
 	    {{ include('query_bishop/_form_elements.html.twig') }}
-	    <div class="row">
-		<div class="col-8 mt-3 mb-1">Treffer:
-		    {% if count == 0 %}
-			keine
-		    {% elseif count == 1 %}
-			1
-		    {% else %}
-			{{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ count }}
-		    {% endif %}
-		    {{ fb_elements }}
-		</div>
+	    <div class="row ml-2 mt-3 mb-1">
+		Treffer:
+		{% if count == 0 %}
+		    keine
+		{% elseif count == 1 %}
+		    1
+		{% else %}
+		    {{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ count }}
+		{% endif %}
+		{{ fb_elements }}
 	    </div>
 	</div>
 
-	<div class="container-fluid mb-3">
-	    {% if count > 0 or query_form.facetPlaces is defined or query_form.facetOffices is defined%}
-		<div class="row">
-		    <div class="col-9">
-			<div class="table-responsive">
-			    <table class="table">
-				<thead class="thead-light">
+
+	{% if count > 0 or query_form.facetPlaces is defined or query_form.facetOffices is defined%}
+	    <div class="row mx-2 mb-2">
+		<div class="col-9">
+		    <div class="table-responsive">
+			<table class="table">
+			    <thead class="thead-light">
+				<tr>
+				    <th scope="col">Name</th>
+				    <th scope="col">Ämter</th>
+				</tr>
+			    </thead>
+			    <tbody>
+				{% for person in persons %}
 				    <tr>
-					<th scope="col">Name</th>
-					<th scope="col">Ämter</th>
+					<td><button type="submit" form="q_form" class="btn btn-link text-sm-left" name="singleoffset" value="{{ offset + loop.index0 }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
+					    {% if not person.datebirth and not person.datedeath %}
+					    {% elseif person.datebirth and not person.datedeath %}
+						<p class="ml-3">* {{ person.datebirth }}</p>
+					    {% elseif not person.datebirth and person.datedeath %}
+						<p class="ml-3" &dagger; {{ person.datedeath }}</p>
+					    {% else %}
+						<p class="ml-3">* {{ person.datebirth }} <span class="ml-2">&dagger; {{ person.datedeath }}</span></p>
+					    {% endif %}
+					</td>
+					<td>{% for o in person.offices|sort((a, b) => a.numdate.datestart <=> b.numdate.datestart) %}
+					    <small>{{ o.officename }}
+						{% if o.diocese %}({{ o.diocese }}){% endif %}
+						{% if o.idmonastery %}({{ o.monasterylocationstr }}){% endif %}
+						{% if o.datestart and not o.dateend %}{{ o.datestart }}
+						{% elseif not o.datestart and o.dateend %}{{ o.dateend }}
+						{% elseif o.datestart and o.dateend %}{{ o.datestart }}-{{ o.dateend }}{% endif %}
+					    </small><br/>{% endfor %}
+					</td>
 				    </tr>
-				</thead>
-				<tbody>
-				    {% for person in persons %}
-					<tr>
-					    <td><button type="submit" form="q_form" class="btn btn-link text-sm-left" name="singleoffset" value="{{ offset + loop.index0 }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
-						{% if not person.datebirth and not person.datedeath %}
-						{% elseif person.datebirth and not person.datedeath %}
-						    <p class="ml-3">* {{ person.datebirth }}</p>
-						{% elseif not person.datebirth and person.datedeath %}
-						    <p class="ml-3" &dagger; {{ person.datedeath }}</p>
-						{% else %}
-						    <p class="ml-3">* {{ person.datebirth }} <span class="ml-2">&dagger; {{ person.datedeath }}</span></p>
-						{% endif %}
-					    </td>
-					    <td>{% for o in person.offices|sort((a, b) => a.numdate.datestart <=> b.numdate.datestart) %}
-						<small>{{ o.officename }}
-						    {% if o.diocese %}({{ o.diocese }}){% endif %}
-						    {% if o.idmonastery %}({{ o.monasterylocationstr }}){% endif %}
-						    {% if o.datestart and not o.dateend %}{{ o.datestart }}
-						    {% elseif not o.datestart and o.dateend %}{{ o.dateend }}
-						    {% elseif o.datestart and o.dateend %}{{ o.datestart }}-{{ o.dateend }}{% endif %}
-						</small><br/>{% endfor %}
-					    </td>
-					</tr>
-				    {% endfor %}
-				</tbody>
-			    </table>
-			</div> {# table-responsive #}
-			{{ fb_elements }}
-		    </div>
-		    {# facets #}
-		    <div class="col-3">
-			{% if query_form.facetPlaces is defined %}
-			    <div class="card card-body container-fluid">
-				<strong class="card-title">Filter Bistum</strong>
-				{% for fpl in query_form.facetPlaces%}
-				    <div class="form-group mb-2">
-					<small>{{ form_widget(fpl) }}</small>
-				    </div>
 				{% endfor %}
-			    </div>
-			{% endif %}
-			{% if query_form.facetOffices is defined %}
-			    <div class="card card-body container-fluid">
-				<strong class="card-title">Filter Amt</strong>
-				{% for foc in query_form.facetOffices%}
-				    <div class="form-group mb-2">
-					<small>{{ form_widget(foc) }}</small>
-				    </div>
-				{% endfor %}
-			    </div>
-			{% endif %}
-		    </div>
+			    </tbody>
+			</table>
+		    </div> {# table-responsive #}
+		    {{ fb_elements }}
 		</div>
-	    {% endif %}
-	</div>
+		{# facets #}
+		<div class="col-3">
+		    {% if query_form.facetPlaces is defined %}
+			<div class="card card-body container-fluid">
+			    <strong class="card-title">Filter Bistum</strong>
+			    {% for fpl in query_form.facetPlaces%}
+				<div class="form-group mb-2">
+				    <small>{{ form_widget(fpl) }}</small>
+				</div>
+			    {% endfor %}
+			</div>
+		    {% endif %}
+		    {% if query_form.facetOffices is defined %}
+			<div class="card card-body container-fluid">
+			    <strong class="card-title">Filter Amt</strong>
+			    {% for foc in query_form.facetOffices%}
+				<div class="form-group mb-2">
+				    <small>{{ form_widget(foc) }}</small>
+				</div>
+			    {% endfor %}
+			</div>
+		    {% endif %}
+		</div>
+	    </div>
+	{% endif %}
     {{ form_end(query_form) }}
 
 {% endblock %}
