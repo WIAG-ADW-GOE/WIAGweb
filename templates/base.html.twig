@@ -7,7 +7,7 @@
 	    {# <link rel="stylesheet"
 	    href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
 	    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> #}
-	    <link rel="stylesheet" href="{{ asset('css/wiagweb.css') }}">
+	    <link rel="stylesheet" href="{{ asset('css/wiagweb-v0.0.9.css') }}">
 	    <link rel="stylesheet"
 		  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
 		  integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
@@ -30,7 +30,8 @@
 		    <ul class="navbar-nav ml-auto">
 			{% if is_granted('ROLE_USER') %}
 			    <li class="nav-item active btn-group m-1"><div class="dropdown">
-				<button class="btn btn-light bg-white border-white font-weight-bold" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Über&nbsp;WIAG</button>
+				{# border-white?! #}
+				<button class="btn btn-light bg-white font-weight-bold" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Über&nbsp;WIAG</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 				    <a class="dropdown-item" href="{{ path('wiag_about') }}">Ziele</a>
 				    <a class="dropdown-item" href="{{ path('reference_list') }}">Referenzwerke</a>
@@ -40,17 +41,17 @@
 			    </div></li>
 			    {% if is_granted('ROLE_QUERY') %}
 				<li class="nav-item active btn-group m-1"><div class="dropdown">
-				    <button class="btn btn-light font-weight-bold bg-white border-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Datensammlungen</button>
+				    <button class="btn btn-light font-weight-bold bg-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Datensammlungen</button>
 				    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 					<a class="dropdown-item" href="{{ path('launch_query') }}">Bischöfe des Alten Reiches</a>
 					<a class="dropdown-item" href="{{ path('query_dioceses', {'list': 'all'}) }}">Bistümer des Alten Reiches</a>
 				    </div>
 				</div></li>
 			    {% endif %}
-			    <li class="nav-item m-1"><a href="{{ path('wiag_logout') }}"><button class="btn btn-light font-weight-bold bg-white border-white">Logout</button></a></li>
+			    <li class="nav-item m-1"><a href="{{ path('wiag_logout') }}"><button class="btn btn-light font-weight-bold bg-white">Logout</button></a></li>
 			{% endif %}
 			{% if not is_granted('ROLE_USER') %}
-			    <li class="nav-item m-1"><a href="{{ path('wiag_login') }}"><button class="btn btn-light font-weight-bold bg-white border-white">Login</button></a></li>
+			    <li class="nav-item m-1"><a href="{{ path('wiag_login') }}"><button class="btn btn-light font-weight-bold bg-white">Login</button></a></li>
 			{% endif %}
 		    </ul>
 		</nav></div>

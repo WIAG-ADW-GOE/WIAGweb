@@ -5,7 +5,7 @@
 {% set displayname %}{{ diocese.diocesestatus ~ ' ' ~ diocese.diocese }}{% endset %}
 
 {% block body %}
-    <div class="container-fluid my-3">
+    <div class="container-fluid mt-3 my-3">
 	{% if not diocese%}
 	    <p class="em">Bistum nicht gefunden.</p>
 	{% else %}
@@ -13,7 +13,7 @@
 		{{ form_start(form, {'attr': {'id':'q_form', 'action': path('query_dioceses'), 'hidden': 'hidden'}}) }}
 		{{ form_end(form) }}
 	    {% endif %}
-	    <div class="row mx-2">
+	    <div class="row mx-2 col-12">
 		{% include('query_diocese/_title.html.twig') %}
 	    </div>
 	    <div class="row mx-2 mt-3 mb-0"><div class="col-9">
@@ -82,8 +82,8 @@
 
 
 	    <div class="row mx-2 col-12">Empfohlene Zitierweise:<br/>
-		"{{ displayname }}" {# (WIAGID: {{ wiagidlong }}), #}
-		in: WIAG, {{ url('diocese', {idorname: diocese.wiagidlong}) }}
+		"{{ displayname }}" 
+		in: WIAG, {{ url('id', {id: diocese.wiagidlong}) }}
 		(Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
 
 	    <div class="row mx-2 mt-4 col-12">

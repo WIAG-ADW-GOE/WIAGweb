@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Diocese
 {
-    const WIAGID_PREFIX = 'WIAG-Dioc-';
+    const WIAGID_PREFIX = 'WIAG-Inst-DIOCGatz-';
     const WIAGID_POSTFIX = '-001';
 
     /**
