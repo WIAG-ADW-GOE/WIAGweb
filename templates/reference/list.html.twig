@@ -2,9 +2,9 @@
 
 {% block body %}
     <div class="container-fluid">
-	<h2 class="my-3">Referenzwerke</h2>
+	<h2 class="row my-3 mx-2 col-12">Referenzwerke</h2>
 	{% for reference in references|sort((a, b) => a.sort <=> b.sort) %}
-	    <dl class="row">
+	    <dl class="row mx-2">
 		<dt class="col-sm-3">{{ reference.shorttitle }}</dt>
 		<dd class="col">
 		    {% include('reference/_details.html.twig') %}

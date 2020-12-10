@@ -16,8 +16,8 @@
 		{{ include('query_bishop/_form_elements.html.twig') }}
 	    {{ form_end(query_form) }}
 	{% endif %}
-	<div class="container-fluid mt-3">
-	    <div class="row mx-2">
+	<div class="container-fluid mt-3 mb-2">
+	    <div class="row mx-2 col-12">
 		{{ include('query_bishop/_title.html.twig') }}
 	    </div>
 	    <div class="row mx-2 my-2">
@@ -26,7 +26,7 @@
 	    </div>
 
 	    {% if person.flagcomment %}
-		<div class="row mx-2">
+		<div class="row mx-2 col-12">
 		    {% if person.givennamevariant is defined and person.givennamevariant != '' %}
 			<span class="comment">{{ person.givennamevariant }}</span>
 			{% if person.familynamevariant is defined and person.familynamevariant != '' %}
@@ -175,7 +175,7 @@
 	    <div class="row mx-2 col-12">Empfohlene Zitierweise:<br/>
 		"{{ person.displayname }}" {# (WIAGID: {{ person.wiagidlong }}), #}
 		{# app.request.schemeAndHttpHost ~ app.request.baseUrl  #}
-		in: WIAG, {{ url('bishop', {wiagidlong: person.wiagidlong}) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
+		in: WIAG, {{ url('id', {id: person.wiagidlong}) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
 
 	    <div class="row mx-2 col-12 mt-4">
 		{% if query_form is defined %}
