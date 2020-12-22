@@ -10,6 +10,7 @@ use App\Entity\Officedate;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
 use App\Entity\Diocese;
+use App\Service\DataArray;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,7 +33,7 @@ class QueryBishop extends AbstractController {
     /**
      * @Route("/query-bishops", name="launch_query")
      */
-    public function launch_query(Request $request) {
+    public function launch_query(Request $request, DataArray $dataarray) {
 
         // we need to pass an instance of BishopQueryFormModel, because facets depend on it's data
         $bishopquery = new BishopQueryFormModel;
@@ -109,7 +110,18 @@ class QueryBishop extends AbstractController {
                     $response->headers->set('Content-Disposition', "filename=WIAGResult.csv");
                     return $response;
                 }
+                elseif($form->get('searchRDF')->isClicked()) {
+                    $persons = $personRepository->findWithOffices($bishopquery);
 
+                    $baseurl = $request->getSchemeAndHttpHost();
+                    $data = $dataarray->personsToRdf($persons, $baseurl);
+                    # dd($response);
+                    $response = new Response();
+                    $response->headers->set('Content-Type', 'application/rdf+xml;charset=UTF-8');
+                    $response->setContent($data);
+                    
+                    return $response;                    
+                }
 
                 $offset = $request->request->get('offset') ?? 0;
 

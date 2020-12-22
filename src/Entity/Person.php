@@ -154,23 +154,6 @@ class Person {
         return substr($wiagidlong, $head, -$tail);
     }
 
-    public function setFields_obsolete($p) {
-        $this->wiagid = $p['wiagid'];
-        $this->authors_gatz = $p['authors_gatz'];
-        $this->pages_gatz = $p['pages_gatz'];
-        $this->familyname = $p['familyname'];
-        $this->givenname = $p['givenname'];
-        $this->prefix_name = $p['prefix_name'];
-        $this->date_birth = $p['date_birth'];
-        $this->date_death = $p['date_death'];
-        $this->religious_order = $p['religious_order'];
-        $this->gsid = $p['gsid'];
-        $this->gndid = $p['gndid'];
-        $this->wikidataid = $p['wikidataid'];
-        $this->wikipediaurl = $p['wikipediaurl'];
-
-        return $this;
-    }
 
     public function getWiagid(): ?string
     {
@@ -523,8 +506,8 @@ class Person {
         $fv = $this->getDateDeath();
         if($fv) $pj['dateOfDeath'] = $fv;
 
-        $fv = $this->getReligiousOrder();
-        if($fv) $pj['religiousOrder'] = $fv;
+        // $fv = $this->getReligiousOrder();
+        // if($fv) $pj['religiousOrder'] = $fv;
 
         if($this->hasExternalIdentifier() || $this->hasOtherIdentifier()) {
             $pj['identifier'] = array();

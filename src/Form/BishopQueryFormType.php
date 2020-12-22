@@ -83,30 +83,39 @@ class BishopQueryFormType extends AbstractType
                     'placeholder' => 'Jahreszahl',
                     'size' => '8',
                 ],
-            ])->add('someid', TextType::class, [
+            ])
+            ->add('someid', TextType::class, [
                 'label' => 'Nummer',
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'GSN, GND, Wikidata, VIAF',
                     'size' => '25',
                 ],
-            ])->add('searchHTML', SubmitType::class, [
+            ])
+            ->add('searchHTML', SubmitType::class, [
                 'label' => 'Suche',
                 'attr' => [
                     'class' => 'btn btn-light btn-sm'
                 ]
-            ])->add('searchJSON', SubmitType::class, [
+            ])
+            ->add('searchJSON', SubmitType::class, [
                 'label' => 'JSON',
                 'attr' => [
                     'class' => 'btn btn-light btn-sm',
                 ]
-            ])->add('searchCSV', SubmitType::class, [
+            ])
+            ->add('searchCSV', SubmitType::class, [
                 'label' => 'CSV',
                 'attr' => [
                     'class' => 'btn btn-light btn-sm',
                 ]
+            ])
+            ->add('searchRDF', SubmitType::class, [
+                'label' => 'XML/RDF',
+                'attr' => [
+                    'class' => 'btn btn-light btn-sm',
+                ]
             ]);
-
 
         if($bishopquery && !$bishopquery->isEmpty()) {
             $this->createFacetPlaces($builder, $bishopquery);

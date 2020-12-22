@@ -185,7 +185,8 @@
 		    <a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm mr-3">Neue Suche</button></a>
 		{% endif %}
 		<a href="{{ path('api_bishop', {wiagidlong: person.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm mr-3">JSON</button></a>
-		<a href="{{ path('api_bishop', {wiagidlong: person.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm">CSV</button></a>
+		<a href="{{ path('api_bishop', {wiagidlong: person.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm mr-3">CSV</button></a>
+		<a href="{{ path('data_bishop', {id: person.wiagidlong}) }}"><button class="btn btn-secondary btn-light btn-sm">RDF-XML</button></a>		
 	    </div>
 	</div>
 
