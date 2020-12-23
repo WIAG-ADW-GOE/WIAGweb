@@ -93,6 +93,11 @@ class Office
      */
     private $numdate;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $sortkey;
+
 
     public function getWiagid(): ?string
     {
@@ -306,6 +311,18 @@ class Office
         if($fv) $ocj['comment'] = $fv;
 
         return $ocj;
+    }
+
+    public function getSortkey(): ?int
+    {
+        return $this->sortkey;
+    }
+
+    public function setSortkey(?int $sortkey): self
+    {
+        $this->sortkey = $sortkey;
+
+        return $this;
     }
 
 
