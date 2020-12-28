@@ -117,9 +117,9 @@ class PersonRepository extends ServiceEntityRepository {
     public function findWithOffices(BishopQueryFormModel $bishopquery, $limit = 0, $offset = 0) {
 
         $qb = $this->createQueryBuilder('person')
-                   ->join('person.offices', 'oc')
+                   ->leftJoin('person.offices', 'oc')
                    ->addSelect('oc')
-                   ->join('oc.numdate', 'ocdatecmp')
+                   ->leftJoin('oc.numdate', 'ocdatecmp')
                    ->addSelect('ocdatecmp');
 
         $this->addQueryConditions($qb, $bishopquery);
@@ -135,6 +135,7 @@ class PersonRepository extends ServiceEntityRepository {
         $this->addSortParameter($qb, $bishopquery);
 
         $query = $qb->getQuery();
+        // dd($query->getResult());
 
         $persons = new Paginator($query, true);
 
@@ -177,8 +178,8 @@ class PersonRepository extends ServiceEntityRepository {
         if($bishopquery->place) {
             // we have to join office a second time to filter at the level of persons
             $sort = 'yearatplace';
-            $qb->join('person.offices', 'ocplace')
-                ->andWhere('ocplace.diocese LIKE :place')
+            $qb->join('person.officeSortkeys', 'ocselectandsort')
+                ->andWhere('ocselectandsort.diocese LIKE :place')
                 ->setParameter('place', '%'.$bishopquery->place.'%');
         }
         # names
@@ -209,19 +210,31 @@ class PersonRepository extends ServiceEntityRepository {
          * a reliable order is required, therefore person.givenname shows up
          * in each sort clause
          */
+
         switch($sort) {
         case 'year':
-            if(!$bishopquery->year) {
-                $qb->join('person.era', 'era');
-            }
-            $qb->orderBy('era.era_start, person.givenname');
+            // if(!$bishopquery->year) {
+            //     $qb->join('person.era', 'era');
+            // }
+            // $qb->orderBy('era.era_start, person.givenname');
+            $qb->leftJoin('person.officeSortkeys', 'ocsortkey')
+               ->addSelect('ocsortkey')
+               ->andWhere('ocsortkey.diocese = :diocese')
+               ->setParameter('diocese', 'all')
+               ->orderBy('ocsortkey.sortkey, person.givenname');
             break;
         case 'yearatplace':
-            $qb->join('ocplace.numdate', 'ocplacedate')
-               ->orderBy('ocplacedate.date_start, person.givenname', 'ASC');
+            // $qb->join('ocplace.numdate', 'ocplacedate')
+            //    ->orderBy('ocplacedate.date_start, person.givenname', 'ASC');
+            $qb->orderBy('ocselectandsort.sortkey, person.givenname');
             break;
         case 'name':
-            $qb->orderBy('person.familyname, person.givenname, oc.diocese');
+            // $qb->orderBy('person.familyname, person.givenname, oc.diocese');
+            $qb->leftJoin('person.officeSortkeys', 'ocsortkey')
+               ->addSelect('ocsortkey')
+               ->andWhere('ocsortkey.diocese = :diocese')
+               ->setParameter('diocese', 'all')
+               ->orderBy('ocsortkey.sortkey, person.givenname');
             break;
         }
 

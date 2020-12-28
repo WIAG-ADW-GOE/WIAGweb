@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\Office;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -139,6 +141,17 @@ class Person {
      * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
      */
     private $offices;
+
+    /**
+     * @ORM\OneToMany(targetEntity=OfficeSortkey::class, mappedBy="person")
+     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
+     */
+    private $officeSortkeys;
+
+    public function __construct()
+    {
+        $this->officeSortkeys = new ArrayCollection();
+    }
 
 
     public static function isWiagidLong($wiagidlong) {
@@ -558,6 +571,37 @@ class Person {
     public function setReference(?Reference $reference): self
     {
         $this->reference = $reference;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|OfficeSortkey[]
+     */
+    public function getOfficeSortkeys(): Collection
+    {
+        return $this->officeSortkeys;
+    }
+
+    public function addOfficeSortkey(OfficeSortkey $officeSortkey): self
+    {
+        if (!$this->officeSortkeys->contains($officeSortkey)) {
+            $this->officeSortkeys[] = $officeSortkey;
+            $officeSortkey->setPerson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOfficeSortkey(OfficeSortkey $officeSortkey): self
+    {
+        if ($this->officeSortkeys->contains($officeSortkey)) {
+            $this->officeSortkeys->removeElement($officeSortkey);
+            // set the owning side to null (unless already changed)
+            if ($officeSortkey->getPerson() === $this) {
+                $officeSortkey->setPerson(null);
+            }
+        }
 
         return $this;
     }
