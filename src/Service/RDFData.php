@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\Serializer;
 class RDFData {
 
     const ID_PATH = 'id/';
-    
+
     const GS_URL="http://personendatenbank.germania-sacra.de/index/gsn/";
     const GND_URL="http://d-nb.info/gnd/";
     const WIKIDATA_URL="https://www.wikidata.org/wiki/";
@@ -22,11 +22,6 @@ class RDFData {
     const NAMESP_GND="https://d-nb.info/standards/elementset/gnd#";
     const NAMESP_SCHEMA="https://schema.org/";
 
-    const WIAG_PREFIX="wiag";
-    const GND_PREFIX="gndo";
-    const OWL_PREFIX="owl";
-    const FOAF_PREFIX="foaf";
-    const SCHEMA_PREFIX="schema";
 
     const XML_CONTEXT= [
             'xml_format_output' => true,
@@ -45,7 +40,7 @@ class RDFData {
         $encoders = array(new XmlEncoder());
         $serializer = new Serializer([], $encoders);
         $personNode = $this->personToLinkedData($person, $baseurl);
-                 
+
         $xmlroot = $this->xmlroot($personNode);
         $rdf = $serializer->serialize($xmlroot, 'xml', self::XML_CONTEXT);
 
@@ -55,7 +50,7 @@ class RDFData {
     public function personsToRdf($persons, $baseurl) {
         $encoders = array(new XmlEncoder());
         $serializer = new Serializer([], $encoders);
-        
+
         $personNodes = array();
         foreach($persons as $person) {
             array_push($personNodes, ...$this->personToLinkedData($person, $baseurl));
@@ -66,16 +61,15 @@ class RDFData {
         return $rdf;
     }
 
-     
+
     public function xmlroot($data) {
 
         $node = [
             '@xmlns:rdf' => "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-            '@xmlns:'.self::OWL_PREFIX => "http://www.w3.org/2002/07/owl#",
+            '@xmlns:owl' => "http://www.w3.org/2002/07/owl#",
             '@xmlns:schema' => "http://schema.org/",
-            '@xmlns:'.self::GND_PREFIX => self::NAMESP_GND,
-            '@xmlns:'.self::FOAF_PREFIX => "http://xmlns.com/foaf/0.1/",
-            '@xmlns:'.self::SCHEMA_PREFIX => "http://http://schema.org/",
+            '@xmlns:gndo' => self::NAMESP_GND,
+            '@xmlns:foaf' => "http://xmlns.com/foaf/0.1/",
             '#' => [
                 'rdf:Description' => $data
                 ]
@@ -83,91 +77,17 @@ class RDFData {
         return $node;
     }
 
-    public function personToArray(Person $person) {
-        $pj = array();
-        $pj['wiagId'] = $person->getWiagidLong();
-
-        $fv = $person->getFamilyname();
-        if($fv) $pj['familyName'] = $fv;
-
-        $pj['givenName'] = $person->getGivenname();
-
-        $fv = $person->getPrefixName();
-        if($fv) $pj['prefix'] = $fv;
-
-        $fv = $person->getFamilynameVariant();
-        if($fv) $pj['variantFamilyName'] = $fv;
-
-        $fv = $person->getGivennameVariant();
-        if($fv) $pj['variantGivenName'] = $fv;
-
-        $fv = $person->getCommentName();
-        if($fv) $pj['comment_name'] = $fv;
-
-        $fv = $person->getCommentPerson();
-        if($fv) $pj['comment_person'] = $fv;
-
-        $fv = $person->getGivennameVariant();
-        if($fv) $pj['variantGivenName'] = $fv;
-
-
-        $fv = $person->getDateBirth();
-        if($fv) $pj['dateOfBirth'] = $fv;
-
-        $fv = $person->getDateDeath();
-        if($fv) $pj['dateOfDeath'] = $fv;
-
-        // $fv = $person->getReligiousOrder();
-        // if($fv) $pj['religiousOrder'] = $fv;
-
-        if($person->hasExternalIdentifier() || $person->hasOtherIdentifier()) {
-            $pj['identifier'] = array();
-            $nd = &$pj['identifier'];
-            $fv = $person->getGsid();
-            if($fv) $nd['gsId'] = $fv;
-
-            $fv = $person->getGndid();
-            if($fv) $nd['gndId'] = $fv;
-
-            $fv = $person->getViafid();
-            if($fv) $nd['viafId'] = $fv;
-
-            $fv = $person->getWikidataid();
-            if($fv) $nd['wikidataId'] = $fv;
-
-            $fv = $person->getWikipediaurl();
-            if($fv) $nd['wikipediaUrl'] = $fv;
-        }
-
-        $offices = $person->getOffices();
-        if($offices) {
-            $pj['offices'] = array();
-            $ocJSON = &$pj['offices'];
-            foreach($offices as $oc) {
-                $ocJSON[] = $oc->toArray();
-            }
-        }
-
-        $fv = $person->getReference();
-        if($fv) {
-            $pj['reference'] = $fv->toArray();
-            $fiv = $person->getPagesGatz();
-            if($fiv)
-                $pj['reference']['pages'] = $fiv;
-        }
-
-        return $pj;
-    }
 
     public function personToLinkedData($person, $baseurl) {
         $pld = array();
-        $gfx = self::GND_PREFIX.':';
-        $owlfx = self::OWL_PREFIX.':';
-        $foaffx = self::FOAF_PREFIX.':';
-        $scafx = self::SCHEMA_PREFIX.':';
+
+        $gfx = "gndo:";
+        $owlfx = "owl:";
+        $foaffx = "foaf:";
+        $scafx = "schema:";
 
         $idpath = $baseurl.'/'.self::ID_PATH;
-        
+
         $pld = [
             'rdf:type' => [
                 '@rdf:resource' => self::NAMESP_GND.'DifferentiatedPerson'
@@ -292,7 +212,7 @@ class RDFData {
                        count($exids) > 1 ? $exids : $exids[0];
 
         $fv = $person->getWikipediaurl();
-        
+
         if($fv) $pld[$foaffx.'page'] = $fv;
 
         $descName = [
@@ -314,20 +234,7 @@ class RDFData {
                         ]
                     ]
                 ];
-                $descOffices[] = $this->roleNode($oc, $roleNodeID);
-                
-                $diocese = $oc->getDiocese();
-                $dioceseID = $this->getDioceseID($diocese);
-                if($dioceseID) {
-                    $descOffices[] = [
-                        '@rdf:about' => $idpath.$dioceseID,
-                        '#' => [
-                            $scafx.'hasOccupation' => [
-                                '@rdf:nodeID' => $roleNodeID
-                            ]
-                        ]
-                    ];                    
-                }
+                $descOffices[] = $this->roleNode($oc, $roleNodeID, $idpath);
             }
         }
 
@@ -351,17 +258,19 @@ class RDFData {
         $diocID = null;
         if($diocObj) {
             $diocID = $diocObj[0]->getWiagIdLong();
-            
+
         }
         return $diocID;
     }
 
-    public function roleNode($office, $roleNodeID) {
-        $scafx = self::SCHEMA_PREFIX.':';
+    public function roleNode($office, $roleNodeID, $idpath) {
+        $scafx = "schema:";
+        $gfx = "gndo:";
+
         $ocld['rdf:type'] = [
             '@rdf:resource' => self::NAMESP_SCHEMA.'Role'
         ];
-        
+
         $ocld[$scafx.'roleName'] = $this->xmlStringData($office->getOfficeName());
 
         $fv = $office->getDateStart();
@@ -371,15 +280,22 @@ class RDFData {
         if($fv) $ocld[$scafx.'endDate'] = $this->xmlStringData($fv);
 
         $fv = $office->getDiocese();
-        if($fv) $ocld[$scafx.'description'] = $this->xmlStringData($fv);
+        if($fv) {
+            $dioceseID = $this->getDioceseID($fv);
+            if($dioceseID)
+                $ocld[$gfx.'affiliation'] = [
+                    '@rdf:resource' => $idpath.$dioceseID
+                ];
+            $ocld[$scafx.'description'] = $this->xmlStringData($fv);
+        }
 
         $fv = $office->getMonastery();
         if($fv) $ocld[$scafx.'description'] = $this->xmlStringData($fv->getMonasteryName());
-        
+
         $roleNode = [
             '@rdf:nodeID' => $roleNodeID,
             '#' => $ocld,
-        ];                           
+        ];
 
         return $roleNode;
     }
@@ -391,6 +307,15 @@ class RDFData {
             '#' => $data,
         ];
     }
+
+    public function rdfLangStringData($data, $lang) {
+        return [
+            '@rdf:datatype' => "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
+            '@xml:lang' => $lang,
+            '#' => $data,
+        ];
+    }
+
 
     public function blankNode($data) {
         if(count($data) == 1)
@@ -407,6 +332,124 @@ class RDFData {
             ]
         ];
         return $description;
+    }
+
+    public function dioceseToRdf($person, $baseurl) {
+        $encoders = array(new XmlEncoder());
+        $serializer = new Serializer([], $encoders);
+        $dioceseNode = $this->dioceseToLinkedData($person, $baseurl);
+
+        $xmlroot = $this->xmlroot($dioceseNode);
+        $rdf = $serializer->serialize($xmlroot, 'xml', self::XML_CONTEXT);
+
+        return $rdf;
+    }
+
+    public function diocesesToRdf($dioceses, $baseurl) {
+        $encoders = array(new XmlEncoder());
+        $serializer = new Serializer([], $encoders);
+
+        $dioceseNodes = array();
+        foreach($dioceses as $diocese) {
+            array_push($dioceseNodes, $this->dioceseToLinkedData($diocese, $baseurl));
+        }
+        $xmlroot = $this->xmlroot($dioceseNodes);
+        $rdf = $serializer->serialize($xmlroot, 'xml', self::XML_CONTEXT);
+
+        return $rdf;
+    }
+
+
+    public function dioceseToLinkedData($diocese, $baseurl): array {
+        $dld = array();
+
+        $gfx = "gndo:";
+        $owlfx = "owl:";
+        $foaffx = "foaf:";
+        $scafx = "schema:";
+
+        $idpath = $baseurl.'/'.self::ID_PATH;
+
+        $dld = [
+            'rdf:type' => [
+                '@rdf:resource' => self::NAMESP_GND.'ReligiousAdministrativeUnit'
+                ]
+        ];
+
+        $dioceseID = $diocese->getWiagidLong();
+
+
+        $dioceseName = $diocese->getDiocese();
+        $dioceseStatus = $diocese->getDioceseStatus();
+
+        $dld[$gfx.'preferredName'] = $dioceseStatus.' '.$dioceseName;
+
+        $fv = $diocese->getDateOfFounding();
+        if($fv) $dld[$gfx.'dateOfEstablishment'] = $fv;
+
+        $fv = $diocese->getDateOfDissolution();
+        if($fv) $dld[$gfx.'dateOfTermination'] = $fv;
+
+        $fv = $diocese->getAltlabel();
+        if($fv) {
+            $clabel = array();
+            foreach($fv as $label) {
+                $altlabel = $label->toArray();
+                $name = $altlabel['name'];
+                $lang = $altlabel['lang'];
+                $clabel[] = $this->rdfLangStringData($name, $lang);
+            }
+            $dld[$gfx.'variantName'] = $clabel;
+        }
+
+        $note = $diocese->getNoteDiocese();
+        $noteSeat = $diocese->getNoteBishopricSeat();
+        if($note) {
+            $noteout = $note;
+            if($noteSeat) $noteout = $noteout.' '.$noteSeat;
+            $dld[$scafx.'description'] = $note;
+        }
+        elseif($noteSeat) {
+            $dld[$scafx.'description'] = $noteSeat;
+        }
+
+        // $fv = $diocese->getEcclesiasticalProvince();
+        // if($fv) $dld['ecclesiasticalProvince'] = $fv;
+
+        // $fv = $diocese->getBishopricseatobj();
+        // if($fv) $dld['bishopricSeat'] = $fv->getPlaceName();
+
+
+        $fv = $diocese->getExternalUrls();
+        if($fv) {
+            $cei = array();
+            foreach($fv as $extid) {
+                $authority = $extid->getAuthority()->getUrlNameFormatter();
+                $extidurl = $extid->getUrlValue();
+                $baseurl = $extid->getAuthority()->getUrlFormatter();
+                $extidurl = $baseurl.$extidurl;
+
+                if($authority == "Wikipedia-Artikel") {
+                    $dld[$foaffx.'page'] = $extidurl;
+                }
+                else {
+                    $cei[] = $extidurl;
+                }
+
+            }
+            $dld[$owlfx.'sameAs'] = $cei;
+        }
+
+        // $fv = $diocese->getCommentAuthorityFile();
+        // if($fv) $dld['identifiersComment'] = $fv;
+
+        $descName = [
+            '@rdf:about' => $idpath.$dioceseID,
+            '#' => $dld,
+        ];
+
+        return $descName;
+
     }
 
 

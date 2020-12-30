@@ -88,12 +88,14 @@
 
 	    <div class="row mx-2 mt-4 col-12">
 		{% if form is defined %}
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm mr-1" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm mr-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm mr-3" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1 mr-3" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
 		{% endif %}
-		<a href="{{ path('api_diocese', {wiagidlong: diocese.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm mr-3">JSON</button></a>
-		<a href="{{ path('api_diocese', {wiagidlong: diocese.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm">CSV</button></a>
+		<a href="{{ path('data_diocese', {id: diocese.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
+		<a href="{{ path('data_diocese', {id: diocese.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">CSV</button></a>
+		<a href="{{ path('data_diocese', {id: diocese.wiagidlong}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">RDF-XML</button></a>
+		<a href="{{ path('data_diocese', {id: diocese.wiagidlong, format: 'json-ld'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">JSON-LD</button></a>
 
 	    </div>
 	{% endif %}

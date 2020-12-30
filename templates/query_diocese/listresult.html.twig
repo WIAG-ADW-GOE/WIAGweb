@@ -22,18 +22,18 @@
     {% endif %}
     {% endset %}
     <div class="container-fluid mt-3">
-    <div class="row ml-2 col-12">
-	    {% include('query_diocese/_title.html.twig') %}
-    </div>
-    {{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_dioceses')}}) }}
 	<div class="row ml-2 col-12">
-	    {{ form_row(form.diocese) }} <span class="ml-2">{{ form_row(form.searchHTML) }}</span>
-	    {#  <div class="col-md-3 ml-n1">{{ form_row(form.searchHTML) }}</div>  #}
+	    {% include('query_diocese/_title.html.twig') %}
 	</div>
-    {{ form_end(form) }}
+	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_dioceses')}}) }}
+	    <div class="row ml-2 col-12">
+		{{ form_row(form.diocese) }} <span class="ml-2">{{ form_row(form.searchHTML) }}</span>
+		{#  <div class="col-md-3 ml-n1">{{ form_row(form.searchHTML) }}</div>  #}
+	    </div>
+	{{ form_end(form) }}
 
-    <div class="row ml-2">
-	    <div class="col-12 mt-3 mb-1">Treffer:
+	<div class="row ml-2 mt-3 mb-1">
+	    <div class="col-12">Treffer:
 		{% if count == 0 %}
 		    keine
 		{% elseif count == 1 %}
@@ -43,10 +43,12 @@
 		{% endif %}
 		{{ fb_elements }}
 
-		<a href="{{ path('api_query_dioceses', {format: 'json'}) }}"><button class="btn btn-secondary btn-light ml-3">JSON</button></a>
-		<a href="{{ path('api_query_dioceses', {format: 'csv'}) }}"><button class="btn btn-secondary btn-light ml-3">CSV</button></a>
+		<button type="submit" form="q_form" name="format" value="JSON" class="btn btn-secondary btn-light btn-sm ml-2">JSON</button>
+		<button type="submit" form="q_form" name="format" value="CSV" class="btn btn-secondary btn-light btn-sm ml-1">CSV</button>
+		<button type="submit" form="q_form" name="format" value="RDF" class="btn btn-secondary btn-light btn-sm ml-1">RDF-XML</button>
+		<button type="submit" form="q_form" name="format" value="JSONLD" class="btn btn-secondary btn-light btn-sm ml-1">JSON-LD</button>
 	    </div>
-    </div>
+	</div>
 
 	<div class="row mx-2 mb-3">
 	    <div class="col">

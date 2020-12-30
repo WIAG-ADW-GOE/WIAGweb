@@ -89,8 +89,9 @@
 			<div class="card card-body">
 			    <strong class="card-title">Filter Bistum</strong>
 			    {% for fpl in query_form.facetPlaces%}
+				{# <div class="form-group small"> #}
 				<div class="form-group">
-				    <small>{{ form_widget(fpl) }}</small>
+				    {{ form_widget(fpl) }}
 				</div>
 			    {% endfor %}
 			</div>
@@ -100,7 +101,7 @@
 			    <strong class="card-title">Filter Amt</strong>
 			    {% for foc in query_form.facetOffices%}
 				<div class="form-group">
-				    <small>{{ form_widget(foc) }}</small>
+				    {{ form_widget(foc) }}
 				</div>
 			    {% endfor %}
 			</div>

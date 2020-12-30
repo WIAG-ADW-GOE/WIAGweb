@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Diocese;
-# use App\Form\DioceseQueryFormType;
-# use App\Form\Model\DioceseQueryFormModel;
+use App\Service\CSVData;
+use App\Service\JSONData;
+use App\Service\RDFData;
+use App\Service\JSONLDData;
 
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +29,6 @@ class DioceseController extends AbstractController {
      * Parameters
      */
     const LIST_LIMIT = 25;
-
 
     /**
      * list dioceses by initial letter
@@ -60,7 +61,11 @@ class DioceseController extends AbstractController {
     /**
      * @Route("/query-dioceses", name="query_dioceses")
      */
-    public function dioceses (Request $request) {
+    public function dioceses (Request $request,
+                              CSVData $csvdata,
+                              JSONData $jsondata,
+                              RDFData $rdfdata,
+                              JSONLDData $jsonlddata) {
 
         $diocesequery = new Diocese();
 
@@ -89,7 +94,7 @@ class DioceseController extends AbstractController {
 
 
         $form->handlerequest($request);
-
+        
         if($form->isSubmitted() && $form->isValid() || $showall == 'all') {
             $diocesequery = $form->getData();
 
@@ -97,7 +102,8 @@ class DioceseController extends AbstractController {
             $diocesequery->normDiocese();
 
             $offset = $request->request->get('offset') ?? 0;
-
+            $format = $request->request->get('format') ?? null;
+            
             $offset = floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
 
             $singleoffset = $request->request->get('singleoffset');
@@ -114,17 +120,53 @@ class DioceseController extends AbstractController {
             else {
                 $count = $repository->countByName($name);
                 $dioceses = $repository->findByNameWithBishopricSeat($name, self::LIST_LIMIT, $offset);
+                if($count > 0) {
+                    $baseurl = $request->getSchemeAndHttpHost();
+                    switch($format) {
+                    case 'CSV':
+                        $data = $csvdata->diocesesToCSV($dioceses, $baseurl);
+                        $response =  new Response($data);
+                        $response->headers->set('Content-Type', "text/csv; charset=utf-8");
+                        $response->headers->set('Content-Disposition', "filename=WIAGDioceses.csv");
+                        return $response;
+
+                        break;
+
+                    case 'JSON':
+                        $data = $jsondata->diocesesToJSON($dioceses, $baseurl);
+                        $response = new Response();
+                        $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
+                        $response->setContent($data);
+
+                        return $response;
+                        break;
+                    case 'RDF':
+                        $data = $rdfdata->diocesesToRdf($dioceses, $baseurl);
+                        $response = new Response();
+                        $response->headers->set('Content-Type', 'application/rdf+xml;charset=UTF-8');
+                        $response->setContent($data);
+
+                        return $response;
+                        break;
+                    case 'JSONLD':
+                        $data = $jsonlddata->diocesesToJSONLD($dioceses, $baseurl);
+                        $response = new Response();
+                        $response->headers->set('Content-Type', 'application/ld+json;charset=UTF-8');
+                        $response->setContent($data);
+
+                        return $response;
+                        break;
+                    }
+                }
+                return $this->render('query_diocese/listresult.html.twig', [
+                    'form' => $form->createView(),
+                    'dioceses' => $dioceses,
+                    'offset' => $offset,
+                    'count' => $count,
+                    'name' => $name,
+                    'limit' => self::LIST_LIMIT,
+                ]);
             }
-
-            return $this->render('query_diocese/listresult.html.twig', [
-                'form' => $form->createView(),
-                'dioceses' => $dioceses,
-                'offset' => $offset,
-                'count' => $count,
-                'name' => $name,
-                'limit' => self::LIST_LIMIT,
-            ]);
-
         }
 
         return $this->render('query_diocese/launch_query.html.twig', [

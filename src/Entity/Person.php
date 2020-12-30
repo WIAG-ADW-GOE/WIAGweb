@@ -485,6 +485,9 @@ class Person {
                 $this->comment_person != '');
     }
 
+    /**
+     * obsolete see Service/CSVData.php Service/JSONData.php
+     */
     public function toArray() {
         $pj = array();
         $pj['wiagId'] = $this->getWiagidLong();

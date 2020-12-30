@@ -111,7 +111,13 @@ class BishopQueryFormType extends AbstractType
                 ]
             ])
             ->add('searchRDF', SubmitType::class, [
-                'label' => 'XML/RDF',
+                'label' => 'RDF-XML',
+                'attr' => [
+                    'class' => 'btn btn-light btn-sm',
+                ]
+            ])
+            ->add('searchJSONLD', SubmitType::class, [
+                'label' => 'JSON-LD',
                 'attr' => [
                     'class' => 'btn btn-light btn-sm',
                 ]

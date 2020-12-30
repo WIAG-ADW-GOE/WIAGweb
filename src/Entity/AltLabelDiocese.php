@@ -135,7 +135,7 @@ class AltLabelDiocese
         $fv = $this->getLang();
         if($fv) $cl['lang'] = $fv;
 
-        return array('altName' => $cl);
+        return $cl;
     }
 
     public function getSort(): ?int

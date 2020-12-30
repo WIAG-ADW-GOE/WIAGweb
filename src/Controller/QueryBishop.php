@@ -10,7 +10,10 @@ use App\Entity\Officedate;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
 use App\Entity\Diocese;
-use App\Service\DataArray;
+use App\Service\CSVData;
+use App\Service\JSONData;
+use App\Service\RDFData;
+use App\Service\JSONLDData;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,7 +36,7 @@ class QueryBishop extends AbstractController {
     /**
      * @Route("/query-bishops", name="launch_query")
      */
-    public function launch_query(Request $request, DataArray $dataarray) {
+    public function launch_query(Request $request, CSVData $csvdata, JSONData $jsondata, RDFData $rdfdata, JSONLDData $jsonlddata) {
 
         // we need to pass an instance of BishopQueryFormModel, because facets depend on it's data
         $bishopquery = new BishopQueryFormModel;
@@ -74,72 +77,61 @@ class QueryBishop extends AbstractController {
             $offset = 0;
             $querystr = null;
             $persons = null;
+            $personRepository = $this->getDoctrine()
+                                     ->getRepository(Person::class);
 
 
-            if($count > 0) {
-                $personRepository = $this->getDoctrine()
-                                         ->getRepository(Person::class);
 
-                if($form->get('searchJSON')->isClicked()) {
-                    # respect facets do not redirect to API
+            if($count > 0 && $form->getClickedButton()) {
+
+                $buttonname = $form->getClickedButton()->getName();
+                if($buttonname != 'searchHTML') {
                     $persons = $personRepository->findWithOffices($bishopquery);
+                    $baseurl = $request->getSchemeAndHttpHost();
+                    $response = new Response();
 
-                    $personExports = array();
-                    foreach($persons as $p) {
-                        $personExports[] = $p->toArray();
+                    switch($buttonname) {
+                    case 'searchJSON':
+                        $data = $jsondata->personsToJSON($persons, $baseurl);
+                        $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
+                        break;
+                    case 'searchCSV':
+                        $data = $csvdata->personsToCSV($persons, $baseurl);
+                        $response->headers->set('Content-Type', "text/csv; charset=utf-8");
+                        $response->headers->set('Content-Disposition', "filename=WIAG-Pers-EPISCGatz.csv");
+                        break;
+                    case 'searchRDF':
+                        $data = $rdfdata->personsToRdf($persons, $baseurl);
+                        $response->headers->set('Content-Type', 'application/rdf+xml;charset=UTF-8');
+                        break;
+                    case 'searchJSONLD':
+                        $data = $jsonlddata->personsToJSONLD($persons, $baseurl);
+                        $response->headers->set('Content-Type', 'application/ld+json;charset=UTF-8');
                     }
-
-                    return $this->json(array('persons' => $personExports));
-                }
-                elseif($form->get('searchCSV')->isClicked()) {
-                    # respect facets do not redirect to API
-                    $persons = $personRepository->findWithOffices($bishopquery);
-
-                    $personExports = array();
-                    foreach($persons as $p) {
-                        $personExports[] = $p->toArray();
-                    }
-
-                    $csvencoder = new CsvEncoder();
-                    $csvdata = $csvencoder->encode($personExports, 'csv', [
-                        'csv_delimiter' => "\t",
-                    ]);
-
-                    $response =  new Response($csvdata);
-                    $response->headers->set('Content-Type', "text/csv; charset=utf-8");
-                    $response->headers->set('Content-Disposition', "filename=WIAGResult.csv");
+                    $response->setContent($data);
                     return $response;
                 }
-                elseif($form->get('searchRDF')->isClicked()) {
-                    $persons = $personRepository->findWithOffices($bishopquery);
-
-                    $baseurl = $request->getSchemeAndHttpHost();
-                    $data = $dataarray->personsToRdf($persons, $baseurl);
-                    # dd($response);
-                    $response = new Response();
-                    $response->headers->set('Content-Type', 'application/rdf+xml;charset=UTF-8');
-                    $response->setContent($data);
-                    
-                    return $response;                    
-                }
-
-                $offset = $request->request->get('offset') ?? 0;
-
-                // extra check to avoid empty lists
-                if($count < self::LIST_LIMIT) $offset = 0;
-
-                $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
-                $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset);
-
-                foreach($persons as $p) {
-                    if($p->hasMonastery()) {
-                        $personRepository->addMonasteryLocation($p);
-                    }
-                }
-
-                // query elements for links to detail pages
-                $querystr = http_build_query($bishopquery->toArray());
             }
+
+            // return HTML
+            
+            $offset = $request->request->get('offset') ?? 0;
+            
+            // extra check to avoid empty lists
+            if($count < self::LIST_LIMIT) $offset = 0;
+            
+            $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
+            $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset);
+            
+            foreach($persons as $p) {
+                if($p->hasMonastery()) {
+                    $personRepository->addMonasteryLocation($p);
+                }
+            }
+            
+            // query elements for links to detail pages
+            $querystr = http_build_query($bishopquery->toArray());
+
 
             // combination of POST_SET_DATA and POST_SUBMIT
             // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
@@ -223,6 +215,7 @@ class QueryBishop extends AbstractController {
 
 
     /**
+     * obsolete see IDController.php
      * @Route("/bishop/{wiagidlong}", name="bishop")
      */
     public function getperson($wiagidlong, Request $request) {
