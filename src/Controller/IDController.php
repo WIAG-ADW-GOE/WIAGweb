@@ -20,9 +20,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 
-/**
- * @IsGranted("ROLE_QUERY")
- */
 class IDController extends AbstractController {
 
     private $csvdata;
@@ -30,29 +27,64 @@ class IDController extends AbstractController {
     private $rdfdata;
     private $jlddata;
 
+    const FORMAT_MAP = [
+        'application/rdf+xml' => 'rdf',
+        'application/ld+json' => 'jsonld',
+        'text/csv' => 'csv',
+        'application/json' => 'json',
+        'text/html' => 'rdf', # standard within the route for data
+    ];
+
     public function __construct(CSVData $csvdata, JSONData $jdata, RDFData $rdfdata, JSONLDData $jlddata) {
         $this->csvdata = $csvdata;
         $this->jdata = $jdata;
         $this->rdfdata = $rdfdata ;
-        $this->jlddata = $jlddata;        
+        $this->jlddata = $jlddata;
     }
 
     /**
      * @Route("/id/{id}", name="id")
      */
     public function redirectID(string $id, Request $request) {
+        $format = $request->query->get('format');
+        if(!is_null($format))
+            return $this->redirectToRoute('wiag_id_data', ['id' => $id, 'format' => $format], 303);
+        else {
+            // $format = $request->getPreferredFormat();
+            $contentType = $request->getAcceptableContentTypes();
+            if(!is_null($contentType) && $contentType[0] != 'text/html') {
+                return $this->redirectToRoute('wiag_id_data', ['id' => $id], 303);
+            }
+            else
+                return $this->redirectToRoute('wiag_id_html', ['id' => $id], 303);
+        }
+    }
+
+    /**
+     * @Route("/doc/{id}", name="wiag_id_html")
+     */
+    public function routeDoc(string $id, Request $request) {
         /* TODO check MIME type; default: HTML */
         if(preg_match("/WIAG-Pers-EPISCGatz-.+/", $id))
-            return $this->redirectToRoute('doc_bishop', ['id' => $id], 303);
+            return $this->bishophtml($id, $request);
         elseif(preg_match("/WIAG-Inst-DIOCGatz-.+/", $id))
-           return $this->redirectToRoute('doc_diocese', ['id' => $id], 303);
+            return $this->diocesehtml($id, $request);
         else
             throw $this->createNotFoundException('Keine Objekte für dieses ID-Muster');
     }
 
     /**
-     * @Route("/doc/{id}", name="doc_bishop", requirements={"id"="WIAG-Pers-EPISCGatz-.+"})
+     * @Route("/data/{id}", name="wiag_id_data")
      */
+    public function routeData(string $id, Request $request) {
+        if(preg_match("/WIAG-Pers-EPISCGatz-.+/", $id))
+            return $this->bishopdata($id, $request);
+        elseif(preg_match("/WIAG-Inst-DIOCGatz-.+/", $id))
+            return $this->diocesedata($id, $request);
+        else
+            throw $this->createNotFoundException('Keine Objekte für dieses ID-Muster');
+    }
+
     public function bishophtml(string $id, Request $request) {
 
         $idindb = Person::wiagidLongToWiagid($id);
@@ -65,20 +97,16 @@ class IDController extends AbstractController {
             throw $this->createNotFoundException('Person wurde nicht gefunden');
         }
 
-        $personRepository = $this->getDoctrine()
-                                  ->getRepository(Person::class);
+        $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,
             'wiagidlong' => $id,
             'querystr' => null,
-            'personrepository' => $personRepository,
+            'dioceserepository' => $dioceseRepository,
         ]);
     }
 
-    /**
-     * @Route("/data/{id}", name="data_bishop", requirements={"id"="WIAG-Pers-EPISCGatz-.+"})
-     */
     public function bishopdata(string $id, Request $request) {
         $idbase = pathinfo($id, PATHINFO_FILENAME);
         $idindb = Person::wiagidLongToWiagid($idbase);
@@ -95,27 +123,40 @@ class IDController extends AbstractController {
         $baseurl = $request->getSchemeAndHttpHost();
         $extension = pathinfo($id, PATHINFO_EXTENSION);
         $format = $request->query->get('format');
-        if($format) {
-            switch($format) {
-            case 'csv':
-                $personID = $person->getWiagidLong();
-                $data = $this->csvdata->personToCSV($person, $baseurl);
-                $response->headers->set('Content-Type', "text/csv; charset=utf-8");
-                $response->headers->set('Content-Disposition', "filename={$personID}.csv");
-                break;
-            case 'json':
-                $data = $this->jdata->personToJSON($person, $baseurl);
-                $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
-                break;
-            case 'json-ld':
-                $data = $this->jlddata->personToJSONLD($person, $baseurl);
-                $response->headers->set('Content-Type', 'application/ld+json;charset=UTF-8');
-                break;
+        if(is_null($format)) {
+            $contentType = $request->getAcceptableContentTypes();
+            if(!is_null($contentType)) {
+                $key = $contentType[0];
+                if(!array_key_exists($key, self::FORMAT_MAP))
+                    throw $this->createNotFoundException('Unbekanntes Format '.$key);
+                $format = self::FORMAT_MAP[$key];
             }
         }
-        else {
+
+        switch($format) {
+        case 'csv':
+            $personID = $person->getWiagidLong();
+            $data = $this->csvdata->personToCSV($person, $baseurl);
+            $response->headers->set('Content-Type', "text/csv; charset=utf-8");
+            $response->headers->set('Content-Disposition', "filename={$personID}.csv");
+            break;
+        case 'json':
+            $data = $this->jdata->personToJSON($person, $baseurl);
+            $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
+            break;
+        case 'jsonld':
+        case 'json-ld':
+            $data = $this->jlddata->personToJSONLD($person, $baseurl);
+            $response->headers->set('Content-Type', 'application/ld+json;charset=UTF-8');
+            break;
+        case null:
+        case 'rdf':
+        case '':
             $data = $this->rdfdata->personToRdf($person, $baseurl);
             $response->headers->set('Content-Type', 'application/rdf+xml;charset=UTF-8');
+            break;
+        default:
+            throw $this->createNotFoundException('Unbekanntes Format '.$format);
         }
 
         $response->setContent($data);
@@ -123,9 +164,6 @@ class IDController extends AbstractController {
         return $response;
     }
 
-    /**
-     * @Route("/doc/{id}", name="doc_diocese", requirements={"id"="WIAG-Inst-DIOCGatz-.+"})
-     */
     public function diocesehtml(string $id, Request $request) {
 
         $diocese = $this->getDoctrine()
@@ -142,9 +180,6 @@ class IDController extends AbstractController {
         ]);
     }
 
-    /**
-     * @Route("/data/{id}", name="data_diocese", requirements={"id"="WIAG-Inst-DIOCGatz-.+"})
-     */
     public function diocesedata(string $id, Request $request) {
 
         $idbase = pathinfo($id, PATHINFO_FILENAME);
@@ -160,27 +195,40 @@ class IDController extends AbstractController {
         $response = new Response();
         $baseurl = $request->getSchemeAndHttpHost();
         $format = $request->query->get('format');
-        if($format) {
-            switch($format) {
-            case 'csv':
-                $dioceseID = $diocese->getWiagidLong();
-                $data = $this->csvdata->dioceseToCSV($diocese, $baseurl);
-                $response->headers->set('Content-Type', "text/csv; charset=utf-8");
-                $response->headers->set('Content-Disposition', "filename={$dioceseID}.csv");
-                break;
-            case 'json':
-                $data = $this->jdata->dioceseToJSON($diocese, $baseurl);
-                $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
-                break;
-            case 'json-ld':
-                $data = $this->jlddata->dioceseToJSONLD($diocese, $baseurl);
-                $response->headers->set('Content-Type', 'application/ld+json;charset=UTF-8');
-                break;
+        if(is_null($format)) {
+            $contentType = $request->getAcceptableContentTypes();
+            if(!is_null($contentType)) {
+                $key = $contentType[0];
+                if(!array_key_exists($key, self::FORMAT_MAP))
+                    throw $this->createNotFoundException('Unbekanntes Format '.$key);
+                $format = self::FORMAT_MAP[$key];
             }
         }
-        else {
+
+        switch($format) {
+        case 'csv':
+            $dioceseID = $diocese->getWiagidLong();
+            $data = $this->csvdata->dioceseToCSV($diocese, $baseurl);
+            $response->headers->set('Content-Type', "text/csv; charset=utf-8");
+            $response->headers->set('Content-Disposition', "filename={$dioceseID}.csv");
+            break;
+        case 'json':
+            $data = $this->jdata->dioceseToJSON($diocese, $baseurl);
+            $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
+            break;
+        case 'json-ld':
+        case 'jsonld':
+            $data = $this->jlddata->dioceseToJSONLD($diocese, $baseurl);
+            $response->headers->set('Content-Type', 'application/ld+json;charset=UTF-8');
+            break;
+        case null:
+        case '':
+        case 'rdf':
             $data = $this->rdfdata->dioceseToRdf($diocese, $baseurl);
             $response->headers->set('Content-Type', 'application/rdf+xml;charset=UTF-8');
+            break;
+        default:
+            throw $this->createNotFoundException('Unbekanntes Format');
         }
 
         $response->setContent($data);

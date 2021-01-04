@@ -184,10 +184,10 @@
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
 		    <a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm ml-1 mr-3">Neue Suche</button></a>
 		{% endif %}
-		<a href="{{ path('data_bishop', {id: person.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
-		<a href="{{ path('data_bishop', {id: person.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">CSV</button></a>
-		<a href="{{ path('data_bishop', {id: person.wiagidlong}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">RDF-XML</button></a>		
-		<a href="{{ path('data_bishop', {id: person.wiagidlong, format: 'json-ld'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">JSON-LD</button></a>		
+		<a href="{{ path('wiag_id_data', {id: person.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
+		<a href="{{ path('wiag_id_data', {id: person.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">CSV</button></a>
+		<a href="{{ path('wiag_id_data', {id: person.wiagidlong}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">RDF-XML</button></a>
+		<a href="{{ path('wiag_id_data', {id: person.wiagidlong, format: 'json-ld'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">JSON-LD</button></a>
 	    </div>
 	</div>
 

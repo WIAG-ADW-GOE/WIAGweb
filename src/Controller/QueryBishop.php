@@ -114,21 +114,21 @@ class QueryBishop extends AbstractController {
             }
 
             // return HTML
-            
+
             $offset = $request->request->get('offset') ?? 0;
-            
+
             // extra check to avoid empty lists
             if($count < self::LIST_LIMIT) $offset = 0;
-            
+
             $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
             $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset);
-            
+
             foreach($persons as $p) {
                 if($p->hasMonastery()) {
                     $personRepository->addMonasteryLocation($p);
                 }
             }
-            
+
             // query elements for links to detail pages
             $querystr = http_build_query($bishopquery->toArray());
 
@@ -254,6 +254,7 @@ class QueryBishop extends AbstractController {
     }
 
     /**
+     * obsolete, see getBishopInQuery
      * @Route("/bishop-in-list", name="bishop_in_list")
      */
     public function bishopInList(Request $request) {

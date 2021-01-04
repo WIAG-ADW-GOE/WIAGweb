@@ -92,10 +92,10 @@
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1 mr-3" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
 		{% endif %}
-		<a href="{{ path('data_diocese', {id: diocese.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
-		<a href="{{ path('data_diocese', {id: diocese.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">CSV</button></a>
-		<a href="{{ path('data_diocese', {id: diocese.wiagidlong}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">RDF-XML</button></a>
-		<a href="{{ path('data_diocese', {id: diocese.wiagidlong, format: 'json-ld'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">JSON-LD</button></a>
+		<a href="{{ path('wiag_id_data', {id: diocese.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
+		<a href="{{ path('wiag_id_data', {id: diocese.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">CSV</button></a>
+		<a href="{{ path('wiag_id_data', {id: diocese.wiagidlong}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">RDF-XML</button></a>
+		<a href="{{ path('wiag_id_data', {id: diocese.wiagidlong, format: 'json-ld'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">JSON-LD</button></a>
 
 	    </div>
 	{% endif %}
