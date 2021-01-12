@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
+    <script src="{{ asset('js/query-canon-autocomplete.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid mt-3">
+	<div class="row ml-2 col-12">
+	    {{ include('query_canon/_title.html.twig') }}
+	</div>
+	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_canons')}}) }}
+	    <div class="row ml-2 col-12">
+		{{ form_row(form.domstift) }}
+		<span class = "ml-2">{{ form_row(form.searchHTML) }}</span>
+	    </div>
+	{{ form_end(form) }}
+	</div>
+    </div>
+{% endblock %}

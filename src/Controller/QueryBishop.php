@@ -129,9 +129,6 @@ class QueryBishop extends AbstractController {
                 }
             }
 
-            // query elements for links to detail pages
-            $querystr = http_build_query($bishopquery->toArray());
-
 
             // combination of POST_SET_DATA and POST_SUBMIT
             // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
@@ -142,7 +139,6 @@ class QueryBishop extends AbstractController {
                 'limit' => self::LIST_LIMIT,
                 'offset' => $offset,
                 'persons' => $persons,
-                'querystr' => $querystr,
                 'facetPlacesState' => $facetPlacesState,
                 'facetOfficesState' => $facetOfficesState,
             ]);
@@ -323,9 +319,6 @@ class QueryBishop extends AbstractController {
             $iterator->next();
         }
         $person = $iterator->current();
-        if($hassuccessor) {
-                $iterator->next();
-        }
 
         $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 

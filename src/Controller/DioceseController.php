@@ -90,6 +90,7 @@ class DioceseController extends AbstractController {
                      ])
                      ->getForm();
 
+        /* Show the complete list without processing */
         $showall = $request->query->get('list');
 
 

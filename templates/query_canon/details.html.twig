@@ -1,0 +1,166 @@
+{% extends 'base.html.twig' %}
+
+{% set urlgspersons = 'http://personendatenbank.germania-sacra.de/' %}
+{% set urlgsmonasteries = 'http://klosterdatenbank.germania-sacra.de/' %}
+{% set urlgnd = 'http://d-nb.info/gnd/' %}
+{% set urlwikidata = 'https://www.wikidata.org/wiki/' %}
+{% set urlviaf = 'https://viaf.org/viaf/' %}
+
+{% block body %}
+    {# person is passed as an object #}
+    {% if not person%}
+	<p class="em">Person nicht gefunden.</p>
+    {% else %}
+	{% if query_form is defined %}
+	    {{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('query_canons'), 'hidden': 'hidden'} }) }}
+	    {{ form_end(query_form) }}
+	{% endif %}
+	<div class="container-fluid mt-3 mb-2">
+	    <div class="row mx-2 col-12">
+		{{ include('query_canon/_title.html.twig') }}
+	    </div>
+	    <div class="row mx-2 my-2">
+		<div class="col-8"><h2>{{ person.person.vorname }} {{ person.person.namenspraefix }} {{ person.person.familienname }}</h2></div>
+		{% if wiagid is defined %} {# link? #}
+		    <div class="col-4 text-right wiag-id">{{ wiagid }}</div>
+		{% endif %}
+	    </div>
+
+	    {% if person.flagcomment %}
+		<div class="row mx-2 col-12">
+		    {% if person.person.vornamenvarianten is defined and person.person.vornamenvarianten != '' %}
+			<span class="comment">{{ person.person.vornamenvarianten }}</span>
+			{% if person.person.familiennamenvarianten is defined and person.person.familiennamenvarianten != '' %}
+			    <span class="comment">; {{ person.person.familiennamenvarianten }}</span>
+			{% endif %}
+			{% if person.person.anmerkungen is defined and person.person.anmerkungen != '' %}
+			    <span class="comment">; {{ person.person.anmerkungen }}</span>
+			{% endif %}
+		    {% elseif person.person.familiennamenvarianten is defined and person.person.familiennamenvarianten != '' %}
+			<span class="comment">{{ person.person.familiennamenvarianten }}</span>
+			{% if person.person.anmerkungen is defined and person.person.anmerkungen != '' %}
+			    <span class="comment">; {{ person.person.anmerkungen }}</span>
+			{% endif %}
+		    {% elseif person.person.anmerkungen is defined and person.person.anmerkungen != '' %}
+			<span class="comment">{{ person.person.anmerkungen }}</span>
+		    {% endif %}
+		</div>
+	    {% endif %}
+
+	    {% if not person.person.geburtsdatum and not person.person.sterbedatum %}
+	    {% else %}
+		<div class="row mx-2 col-12 mt-2">
+		    {% if person.person.geburtsdatum and not person.person.sterbedatum %}
+			<span class="wiag-large">* {{ person.person.geburtsdatum }}</span>
+		    {% elseif not person.person.geburtsdatum and person.person.sterbedatum %}
+			<span class="wiag-large">&dagger; {{ person.person.sterbedatum }}</span>
+		    {% else %}
+			<span class="wiag-large">* {{ person.person.geburtsdatum }} <span class="pl-3">&dagger; {{ person.person.sterbedatum }}</span></span>
+		    {% endif %}
+		</div>
+	    {% endif %}
+	    <dl class="row mx-2 mt-3">
+		{% if person.person.orden %}
+		    <dt class="col-sm-3">Orden</dt>
+		    <dd class="col-sm-9">{{ person.person.orden }}</dd>
+		{% endif %}
+
+		{% if person.aemter %}
+		    <dt class="col-sm-3">Ämter</dt>
+		    <dd class="col-sm-9">
+			<ul class="list-unstyled">
+			    {% for office in person.aemter|sort((a, b) => a.von <=> b.von) %}
+				<li>
+				    <ul class="list-inlined list-unstyled">
+					<li class="list-inline-item">{{ office.bezeichnung }}</li>
+					{% if office.institution %}
+					    <li class="list-inline-item">
+						<a href="{{ urlgsmonasteries }}gsn/{{ office.klosterid }}" target="_blank" rel="noopener">{{ office.institution }}</a>
+					    </li>
+					{% elseif office.dioezese %}
+					    <li class="list-inline-item">{% if dioceserepository.countByDiocese(office.dioezese) > 0 %}<a href="{{ path('diocese', {'idorname': office.dioezese}) }}">{{ office.dioezese }}</a>{% else %}{{ office.dioezese }}{% endif %}</li>
+					{% endif %}
+					<li class="list-inline-item">
+					    {% if not office.von and not office.bis %}
+					    {% elseif office.von and not office.bis %}
+						{{ office.von }}
+					    {% elseif not office.von and office.bis %}
+						bis {{ office.bis }}
+					    {% else %}
+						{{ office.von }}–{{ office.bis }}
+					    {% endif %}
+					</li>
+					{% if office.anmerkung %}
+					    <li class="list-inline-item comment"> ({{ office.anmerkung }}) </li>
+					{% endif %}
+
+				    </ul>
+				</li>
+			    {% endfor %}
+			</ul>
+		    </dd>
+		{% endif %}
+		{% if person.hasExternalIdentifier %}
+		    <dt class="col-sm-3">Externe Identifier</dt>
+		    <dd class="col-sm-9">
+			<ul class ="list-unstyled">
+			    {% if person.person.gndnummer %}
+				<li>
+				    <ul class="list-inlined list-unstyled">
+					<li class="list-inline-item">GND</li>
+					<li class="list-inline-item"><a href="{{ urlgnd }}{{ person.person.gndnummer }}" target="_blank" rel="noopener">{{ person.person.gndnummer }}</a></li>
+				    </ul>
+				</li>
+			    {% endif %}
+			    {% if person.person.viaf %}
+				<li>
+				    <ul class="list-inlined list-unstyled">
+					<li class="list-inline-item">VIAF</li>
+					<li class="list-inline-item"><a href="{{ urlviaf }}{{ person.person.viaf }}" target="_blank" rel="noopener">{{ person.person.viaf }}</a></li>
+				    </ul>
+				</li>
+			    {% endif %}
+			</ul>
+		    </dd>
+		{% endif %}
+
+		<dt class="col-sm-3">Siehe auch</dt>
+		<dd class="col-sm-9">
+		    <ul class ="list-unstyled">
+			<li>
+			    <ul class="list-inlined list-unstyled">
+				<li class="list-inline-item">Germania Sacra</li>
+				<li class="list-inline-item">
+				    <a href="{{ urlgspersons }}index/gsn/{{ person.gsn_id }}" target="_blank" rel="noopener">{{ person.gsn_id }}</a></li>
+			    </ul>
+			    {% if wiag_person %}
+			    <ul class="list-inlined list-unstyled">
+				<li class="list-inline-item">WIAG Bischöfe</li>
+				<li class="list-inline-item">
+				    <a href="{{ path('wiag_id_html', {id:wiag_person.wiagidlong}) }}">{{ wiag_person.wiagidlong }}</a></li>
+			    </ul>
+			    {% endif %}
+			</li>
+		    </ul>
+		</dd>
+
+		{% if false and person.reference %}
+		    <dt class="col-sm-3">Referenzwerk</dt>
+		    <dd class="col-sm-9"><a href="{{ path('reference', {'id': person.referenceid}) }}">{{ person.reference.shorttitle }}</a>, S. {{ person.pagesgatz }}</dd>
+		{% endif %}
+
+	    </dl>
+	    {# { dump(person) } #}
+
+	    <div class="row mx-2 col-12 mt-4">
+		{% if query_form is defined %}
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
+		    <a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm ml-1 mr-3">Neue Suche</button></a>
+		{% endif %}
+	    </div>
+	</div>
+
+    {% endif %}
+{% endblock %}
