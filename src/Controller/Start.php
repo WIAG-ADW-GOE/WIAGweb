@@ -3,6 +3,8 @@
 namespace App\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+
 
 class Start extends AbstractController {
     /**
@@ -35,10 +37,18 @@ class Start extends AbstractController {
 
     /**
      * @Route("/phpinfo", name="wiag_phpinfo")
+     * @IsGranted("ROLE_ADMIN")
      */
     public function show_phpinfo() {
         phpinfo();
     }
 
+    /**
+     * @Route("/images", name="wiag_images")
+     * @IsGranted("ROLE_USER")
+     */
+    public function images() {
+        return $this->render('start/images.html.twig');
+    }
 
 }
