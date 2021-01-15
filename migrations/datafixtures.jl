@@ -37,6 +37,11 @@ function updatenamevariant(fieldsrc::AbstractString, tablename::AbstractString):
     return tblid;
 end
 
+"""
+    updateera(tablename::AbstractSting)::Int
+
+Compute earliest and latest date for each person.
+"""
 function updateera(tablename::AbstractString)::Int
     dbwiag = DBInterface.connect(MySQL.Connection, "localhost", "wiag", "Wogen&Wellen", db="wiag");
 
@@ -77,7 +82,9 @@ function updateera(tablename::AbstractString)::Int
         vcand = parsemaybe(rgx, datedeath)
         if !ismissing(vcand) eraend = vcand end
 
+        # println(wiagid, " ", typeof(dfoffice[:wiagid_person]))
         ixperson = dfoffice[:wiagid_person] .== wiagid
+
         dfofficeperson = dfoffice[ixperson, :];
         for oc in eachrow(dfofficeperson)
             datestart = oc[:date_start]
