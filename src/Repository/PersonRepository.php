@@ -9,6 +9,7 @@ use App\Form\Model\BishopQueryFormModel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @method Person|null find($id, $lockMode = null, $lockVersion = null)
@@ -145,7 +146,7 @@ class PersonRepository extends ServiceEntityRepository {
     }
 
 
-    public function addQueryConditions($qb, BishopQueryFormModel $bishopquery) {
+    private function addQueryConditions(Querybuilder $qb, BishopQueryFormModel $bishopquery): QueryBuilder {
 
         # identifier
         if($bishopquery->someid) {
@@ -248,11 +249,9 @@ class PersonRepository extends ServiceEntityRepository {
                       ->andWhere('person.wiagid = :wiagid')
                       ->setParameter('wiagid', $wiagid)
                       ->leftJoin('person.offices', 'oc')
-                      ->addSelect('oc')
                       ->leftJoin('oc.numdate', 'ocdate')
                       ->orderBy('ocdate.date_start', 'ASC')
                       ->leftJoin('oc.monastery', 'monastery')
-                      ->addSelect('monastery')
                       ->getQuery();
 
         $person = $query->getOneOrNullResult();

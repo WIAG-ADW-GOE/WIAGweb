@@ -10,6 +10,7 @@ use App\Entity\Officedate;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
 use App\Entity\Diocese;
+use App\Repository\PersonRepository;
 use App\Service\CSVData;
 use App\Service\JSONData;
 use App\Service\RDFData;
@@ -36,7 +37,12 @@ class QueryBishop extends AbstractController {
     /**
      * @Route("/query-bishops", name="launch_query")
      */
-    public function launch_query(Request $request, CSVData $csvdata, JSONData $jsondata, RDFData $rdfdata, JSONLDData $jsonlddata) {
+    public function launch_query(Request $request,
+                                 PersonRepository $personRepository,
+                                 CSVData $csvdata,
+                                 JSONData $jsondata,
+                                 RDFData $rdfdata,
+                                 JSONLDData $jsonlddata) {
 
         // we need to pass an instance of BishopQueryFormModel, because facets depend on it's data
         $bishopquery = new BishopQueryFormModel;
@@ -77,10 +83,6 @@ class QueryBishop extends AbstractController {
             $offset = 0;
             $querystr = null;
             $persons = null;
-            $personRepository = $this->getDoctrine()
-                                     ->getRepository(Person::class);
-
-
 
             if($count > 0 && $form->getClickedButton()) {
 
