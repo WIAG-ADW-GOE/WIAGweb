@@ -11,3 +11,5 @@
 ###< symfony/framework-bundle ###
 
 /public/uploads/
+
+/.phpdoc/cache
