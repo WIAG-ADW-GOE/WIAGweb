@@ -35,7 +35,7 @@ class QueryBishop extends AbstractController {
     const LIST_LIMIT = 20;
 
     /**
-     * @Route("/query-bishops", name="launch_query")
+     * @Route("/bischoefe", name="launch_query")
      */
     public function launch_query(Request $request,
                                  PersonRepository $personRepository,

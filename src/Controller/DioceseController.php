@@ -58,8 +58,9 @@ class DioceseController extends AbstractController {
         ]);
     }
 
+
     /**
-     * @Route("/query-dioceses", name="query_dioceses")
+     * @Route("/bistuemer", name="query_dioceses")
      */
     public function dioceses (Request $request,
                               CSVData $csvdata,
@@ -90,13 +91,9 @@ class DioceseController extends AbstractController {
                      ])
                      ->getForm();
 
-        /* Show the complete list without processing */
-        $showall = $request->query->get('list');
-
-
         $form->handlerequest($request);
         
-        if($form->isSubmitted() && $form->isValid() || $showall == 'all') {
+        if($form->isSubmitted() && $form->isValid()) {
             $diocesequery = $form->getData();
 
             # strip 'bistum' or 'erzbistum' from search field diocese
@@ -120,6 +117,9 @@ class DioceseController extends AbstractController {
             }
             else {
                 $count = $repository->countByName($name);
+                /* In case of a GET-request (list=all) name is empty.
+                 * If name is empty return all dioceses.
+                 */
                 $dioceses = $repository->findByNameWithBishopricSeat($name, self::LIST_LIMIT, $offset);
                 if($count > 0) {
                     $baseurl = $request->getSchemeAndHttpHost();
@@ -129,10 +129,9 @@ class DioceseController extends AbstractController {
                         $response =  new Response($data);
                         $response->headers->set('Content-Type', "text/csv; charset=utf-8");
                         $response->headers->set('Content-Disposition', "filename=WIAGDioceses.csv");
+                        
                         return $response;
-
                         break;
-
                     case 'JSON':
                         $data = $jsondata->diocesesToJSON($dioceses, $baseurl);
                         $response = new Response();
@@ -169,6 +168,24 @@ class DioceseController extends AbstractController {
                 ]);
             }
         }
+        // if the form is empty show the complete list
+        elseif (!$form->isSubmitted()) {
+            $offset = 0;
+            $repository = $this->getDoctrine()
+                               ->getRepository(Diocese::class);
+            $name='';
+            $count = $repository->countByName($name);
+            $dioceses = $repository->findByNameWithBishopricSeat($name, self::LIST_LIMIT, $offset);
+            return $this->render('query_diocese/listresult.html.twig', [
+                'form' => $form->createView(),
+                'dioceses' => $dioceses,
+                'offset' => $offset,
+                'count' => $count,
+                'name' => $name,
+                'limit' => self::LIST_LIMIT,
+            ]);
+        }            
+
 
         return $this->render('query_diocese/launch_query.html.twig', [
             'form' => $form->createView(),

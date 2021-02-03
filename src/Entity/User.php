@@ -36,7 +36,7 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @Assert\EqualTo(propertyPath="password")
+     * @Assert\EqualTo(propertyPath="password", message="Passwörter stimmen nicht überein")
      */
     private $passwordTwin;
 

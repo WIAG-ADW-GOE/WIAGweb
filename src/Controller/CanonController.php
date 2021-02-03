@@ -30,7 +30,7 @@ class CanonController extends AbstractController {
 
 
     /**
-     * @Route("/query-canons", name="query_canons")
+     * @Route("/domherren", name="query_canons")
      */
     public function canons (Request $request, HTTPClient $client) {
 

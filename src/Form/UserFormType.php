@@ -38,7 +38,7 @@ class UserFormType extends AbstractType
 
         $builder
             ->add('email', TextType::class, [
-                'label' => 'E-Mail',
+                'label' => 'Name/Kennung',
                 'required' => true,
             ])
             ->add('password', PasswordType::class, [
