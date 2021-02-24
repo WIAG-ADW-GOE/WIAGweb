@@ -79,7 +79,7 @@ class CanonGSController extends AbstractController {
             $persons = $client->findCanonByDiocese($domstift_gs_id, $limit, $offset);
 
 
-            return $this->render('query_canon/listresult.html.twig', [
+            return $this->render('query_canon_gs/listresult.html.twig', [
                 'query_form' => $form->createView(),
                 'count' => $count,
                 'abovelimit' => $count == 500 ? 'mehr als ' : '',

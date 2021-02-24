@@ -6,7 +6,6 @@ use App\Form\BishopQueryFormType;
 use App\Form\Model\BishopQueryFormModel;
 use App\Entity\Person;
 use App\Entity\Office;
-use App\Entity\Officedate;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
 use App\Entity\Diocese;
@@ -376,17 +375,6 @@ class QueryBishop extends AbstractController {
                       ->findOneByWiagid($id);
         dd($monastery);
     }
-
-    /**
-     * @Route("/query-test/officedate/{id}")
-     */
-    public function querytestofficedate($id) {
-        $obj = $this->getDoctrine()
-                      ->getRepository(Officedate::class)
-                      ->findOneByWiagid_office($id);
-        dd($obj);
-    }
-
 
 
 }

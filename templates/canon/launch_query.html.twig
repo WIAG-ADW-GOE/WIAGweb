@@ -7,20 +7,16 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
-    <script src="{{ asset('js/query-canon-autocomplete.js') }}"></script>
+    <script src="{{ asset('js/query-bishop-autocomplete.js') }}"></script>
 {% endblock %}
 
 {% block body %}
     <div class="container-fluid mt-3">
 	<div class="row ml-2 col-12">
-	    {{ include('query_canon_gs/_title.html.twig') }}
+	    {{ include('canon/_title.html.twig') }}
 	</div>
-	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_canons')}}) }}
-	    <div class="row ml-2 col-12">
-		{{ form_row(form.domstift) }}
-		<span class = "ml-2">{{ form_row(form.searchHTML) }}</span>
-	    </div>
-	{{ form_end(form) }}
-	</div>
+	{{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('canons_schwerin')}}) }}
+	    {{ include('canon/_form_elements.html.twig') }}
+	{{ form_end(query_form) }}
     </div>
 {% endblock %}

@@ -15,9 +15,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
  * @IsGranted("ROLE_QUERY")
  */
 class QueryBishopUtility extends AbstractController {
-    /**
-     * Parameters
-     */
+    
+    // size of autocompletion list
     const HINT_LIST_LIMIT = 12;
 
     /**

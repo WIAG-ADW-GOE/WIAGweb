@@ -1,23 +1,26 @@
 <?php
-
 namespace App\Controller;
 
-use App\Entity\Domstift;
-use App\Entity\Person;
+use App\Form\CanonFormType;
+use App\Form\Model\CanonFormModel;
+use App\Entity\Canon;
+use App\Repository\CanonRepository;
+use App\Entity\Monastery;
+use App\Entity\MonasteryLocation;
 use App\Entity\Diocese;
-use App\Service\HTTPClient;
+
+use App\Service\CSVData;
+use App\Service\JSONData;
+use App\Service\RDFData;
+use App\Service\JSONLDData;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-
-
 
 /**
  * @IsGranted("ROLE_QUERY")
@@ -26,116 +29,230 @@ class CanonController extends AbstractController {
     /**
      * Parameters
      */
-    const LIST_LIMIT = 25;
-
+    const LIST_LIMIT = 20;
 
     /**
-     * @Route("/domherren", name="query_canons")
+     * @Route("/domherren-schwerin", name="canons_schwerin")
      */
-    public function canons (Request $request, HTTPClient $client) {
+    public function launch_query(Request $request,
+                                 CanonRepository $repository) {
 
-        $route_utility_stiftnames = $this->generateUrl('query_canons_utility_stiftnames');
+        // we need to pass an instance of BishopQueryFormModel, because facets depend on it's data
+        $bishopquery = new CanonFormModel;
 
-        $domstiftchoices = $this->getDoctrine()
-                                ->getRepository(Domstift::class)
-                                ->findChoiceList();
-
-        $form = $this->createFormBuilder()
-                     ->add('domstift', ChoiceType::class, [
-                         'label' => false,
-                         'choices' => $domstiftchoices,
-                         'attr' => [
-                             'type' => 'submit',
-                             ]
-                     ])
-                     ->add('searchHTML', SubmitType::class, [
-                         'label' => 'Suche',
-                         'attr' => [
-                             'class' => 'btn btn-secondary btn-light',
-                         ],
-                     ])
-                     ->getForm();
+        $form = $this->createForm(CanonFormType::class, $bishopquery);
 
         $form->handlerequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
-            $choice = $form->getData();
-            $domstift_gs_id = $choice['domstift'];
+        // $facetPlacesState = 'hide';
+        // $facetOfficesState = 'hide';
+        $facetPlacesState = 'show';
+        $facetOfficesState = 'show';
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $bishopquery = $form->getData();
+            $someid = $bishopquery->someid;
+
+            # strip 'Bistum' or 'Erzbistum'
+            $bishopquery->normPlace();
+
+            if($someid && Canon::isWiagidLong($someid)) {
+                $bishopquery->someid = Canon::wiagidLongToWiagid($someid);
+            }
 
             $singleoffset = $request->request->get('singleoffset');
             if(!is_null($singleoffset)) {
-                return $this->getCanonInQuery($form, $singleoffset, $client);
+                return $this->getBishopInQuery($form, $singleoffset);
             }
 
 
+            // get the number of results (without page limit restriction)
+            // TODO 
+            $count = $this->getDoctrine()
+                          ->getRepository(Canon::class)
+                          ->countByQueryObject($bishopquery)[1];
+
+            $offset = 0;
+            $querystr = null;
+            $persons = null;
+
+            if($count > 0 && $form->getClickedButton()) {
+
+                $buttonname = $form->getClickedButton()->getName();
+                if($buttonname != 'searchHTML') {
+                    $persons = $repository->findWithOffices($bishopquery);
+                    $baseurl = $request->getSchemeAndHttpHost();
+                    $response = new Response();
+
+                    switch($buttonname) {
+                    case 'searchJSON':
+                        $data = $jsondata->canonsToJSON($persons, $baseurl);
+                        $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
+                        break;
+                    case 'searchCSV':
+                        $data = $csvdata->canonsToCSV($persons, $baseurl);
+                        $response->headers->set('Content-Type', "text/csv; charset=utf-8");
+                        $response->headers->set('Content-Disposition', "filename=WIAG-Pers-EPISCGatz.csv");
+                        break;
+                    case 'searchRDF':
+                        $data = $rdfdata->canonsToRdf($persons, $baseurl);
+                        $response->headers->set('Content-Type', 'application/rdf+xml;charset=UTF-8');
+                        break;
+                    case 'searchJSONLD':
+                        $data = $jsonlddata->canonsToJSONLD($persons, $baseurl);
+                        $response->headers->set('Content-Type', 'application/ld+json;charset=UTF-8');
+                    }
+                    $response->setContent($data);
+                    return $response;
+                }
+            }
+
+            // return HTML
+
             $offset = $request->request->get('offset') ?? 0;
-            $limit = self::LIST_LIMIT;
 
-            $offset = (int) floor($offset / $limit) * $limit;
+            // extra check to avoid empty lists
+            if($count < self::LIST_LIMIT) $offset = 0;
 
-            $persons = $client->findCanonByDiocese($domstift_gs_id, 500, 0);
-            $count = count($persons);
+            $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
+            
+            # TODO
+            $persons = $repository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset);
+            # $persons = $repository->findByGivenname('Albert');
 
-            $persons = $client->findCanonByDiocese($domstift_gs_id, $limit, $offset);
+            # TODO
+            foreach($persons as $p) {
+                if(false && $p->hasMonastery()) {
+                    $repository->addMonasteryLocation($p);
+                }
+                $p->offices = [];
+            }
 
 
-            return $this->render('query_canon/listresult.html.twig', [
+            // combination of POST_SET_DATA and POST_SUBMIT
+            // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
+
+            return $this->render('canon/listresult.html.twig', [
                 'query_form' => $form->createView(),
                 'count' => $count,
-                'abovelimit' => $count == 500 ? 'mehr als ' : '',
                 'limit' => self::LIST_LIMIT,
                 'offset' => $offset,
                 'persons' => $persons,
+                'facetPlacesState' => $facetPlacesState,
+                'facetOfficesState' => $facetOfficesState,
             ]);
 
+        } else {
+            # dd($form, $facetPlacesState, $facetOfficesState);
+            return $this->render('canon/launch_query.html.twig', [
+                'query_form' => $form->createView(),
+                'facetPlacesState' => $facetPlacesState,
+                'facetOfficesState' => $facetOfficesState,
+            ]);
         }
-
-
-        return $this->render('query_canon/launch_query.html.twig', [
-            'form' => $form->createView(),
-        ]);
     }
 
 
-    public function getCanonInQuery($form, $offset, HTTPClient $client) {
+    public function getBishopInQuery($form, $offset) {
 
-        $choice = $form->getData();
-        $domstift_gs_id = $choice['domstift'];
+        $bishopquery = $form->getData();
 
+        $personRepository = $this->getDoctrine()
+                                 ->getRepository(Person::class);
         $hassuccessor = false;
-        $i = 0;
         if($offset == 0) {
-            $persons = $client->findCanonByDiocese($domstift_gs_id, 2, $offset);
-            if(count($persons) == 2) $hassuccessor = true;
+            $persons = $personRepository->findWithOffices($bishopquery, 2, $offset);
+            $iterator = $persons->getIterator();
+            if(count($iterator) == 2) $hassuccessor = true;
+
         } else {
-            $persons = $client->findCanonByDiocese($domstift_gs_id, 3, $offset - 1);
-            if(count($persons) == 3) $hassuccessor = true;
-            $i = 1;
+            $persons = $personRepository->findWithOffices($bishopquery, 3, $offset - 1);
+            $iterator = $persons->getIterator();
+            if(count($iterator) == 3) $hassuccessor = true;
+            $iterator->next();
         }
-        $person = $persons[$i];
+        $person = $iterator->current();
 
-        $person->flagcomment = !is_null($person->person->anmerkungen) && $person->person->anmerkungen != "";
-        $person->hasExternalIdentifier = (
-            !is_null($person->person->gndnummer) && $person->person->gndnummer != ""
-            || !is_null($person->person->viaf) && $person->person->viaf != "");
+        $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 
-        $gsns = $person->{'item.gsn'};
-        $person->gsn_id = $gsns[0]->nummer;
-
-        $dioceserepository = $this->getDoctrine()->getRepository(Diocese::class);
-
-        $personrepository = $this->getDoctrine()->getRepository(Person::class);
-        $wiag_person = $personrepository->findOneByGsid($person->gsn_id);
-
-        return $this->render('query_canon/details.html.twig', [
+        return $this->render('canon/details.html.twig', [
             'query_form' => $form->createView(),
             'person' => $person,
-            'wiag_person' => $wiag_person,
+            'wiagidlong' => $person->getWiagidlong(),
             'offset' => $offset,
             'hassuccessor' => $hassuccessor,
-            'dioceserepository' => $dioceserepository,
+            'dioceserepository' => $dioceseRepository,
         ]);
 
     }
+
+
+
+    /**
+     * @Route("/query-test/{id}")
+     */
+    public function queryid($id) {
+        $person = $this->getDoctrine()
+                       ->getRepository(Person::class)
+                       ->findOneByWiagid($id);
+        dd($person, self::LIST_LIMIT);
+    }
+
+    /**
+     * @Route("/query-test/apiname/{name}")
+     */
+    public function apiname($name) {
+        $person = $this->getDoctrine()
+                       ->getRepository(Person::class)
+                       ->suggestName($name);
+        dd($person);
+    }
+
+    /**
+     * @Route("/canon-test/{id}")
+     */
+    public function canontest($id) {
+        $canon = $this->getDoctrine()
+                      ->getRepository(Canon::class)
+                      ->find($id);
+        dd($canon);
+    }
+
+    /**
+     * AJAX callback
+     * @Route("canon-autocomplete-names", name="canon_autocomplete_names")
+     */
+    public function autocompletenames(Renquest $request) {
+        # TODO 2021-02-24
+        return $this->json([
+            'names' => ['Eule'],
+        ]);
+    }
+
+    /**
+     * AJAX callback
+     * @Route("canon-autocomplete-places", name="canon_autocomplete_places")
+     */
+    public function autocompleteplaces(Renquest $request) {
+        # TODO 2021-02-24
+        return $this->json([
+            'places' => ['Eulenburg'],
+        ]);
+    }
+
+    /**
+     * AJAX callback
+     * @Route("canon-autocomplete-offices", name="canon_autocomplete_offices")
+     */
+    public function autocompleteoffices(Renquest $request) {
+        # TODO 2021-02-24
+        return $this->json([
+            'offices' => ['Eulenamt'],
+        ]);
+    }
+
+
+
 
 }

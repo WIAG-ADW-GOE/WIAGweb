@@ -146,7 +146,7 @@ class PersonRepository extends ServiceEntityRepository {
     }
 
 
-    private function addQueryConditions(Querybuilder $qb, BishopQueryFormModel $bishopquery): QueryBuilder {
+    private function addQueryConditions(QueryBuilder $qb, BishopQueryFormModel $bishopquery): QueryBuilder {
 
         # identifier
         if($bishopquery->someid) {

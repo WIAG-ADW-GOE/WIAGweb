@@ -52,15 +52,18 @@ function updatenamevariant(fieldsrc::AbstractString, tablename::AbstractString):
 end
 
 """
-    fillera(tblera::AbstractString, tblperson::AbstractString, tbloffice::AbstractString, colnameid::AbstractString)::Int
+    fillera(tblera::AbstractString, tblperson::AbstractString, tbloffice::AbstractString, colnameid::AbstractString, datereference=false)::Int
 
-Compute earliest and latest date for each person.
+Compute earliest and latest date for each person. 
+
+Take fields `date_hist_first` and `date_hist_last` into account if `datereference` is set to `true`.
 """
 function fillera(tblera::AbstractString,
                  tblperson::AbstractString,
                  tbloffice::AbstractString,
                  colnameid = "id",
-                 colnameidinoffice = "id_person")::Int
+                 colnameidinoffice = "id_person";
+                 datereference = false)::Int
     global dbwiag
     if isnothing(dbwiag)
         error("There is no valid database connection. Use `setDBWIAG'.")
@@ -68,10 +71,17 @@ function fillera(tblera::AbstractString,
     
     DBInterface.execute(dbwiag, "DELETE FROM " * tblera);
 
-    sqlselect = "SELECT " * colnameid * " as idperson, date_birth, date_death " * " FROM " * tblperson;
+    if datereference
+        sqlselect = "SELECT " * colnameid * " as idperson, " *
+            " date_birth, date_death, date_hist_first, date_hist_last " *
+            " FROM " * tblperson;
+    else
+        sqlselect = "SELECT " * colnameid * " as idperson, date_birth, date_death " * " FROM " * tblperson;
+    end
+    
     dfperson = DBInterface.execute(dbwiag, sqlselect) |> DataFrame;
 
-    rgxyear = r"[1-9][0-9]+";
+    rgxyear = r"[1-9][0-9][0-9]+";
     rgxcentury = r"([1-9][0-9])?\. [Jahrh|Jhd]"
     tblid = 0;
 
@@ -90,7 +100,7 @@ function fillera(tblera::AbstractString,
             else
                 rgm = match(rgxcentury, s)
                 if !isnothing(rgm) && !isnothing(rgm[1])
-                    r = parse(Int, rgm[1])
+                    r = parse(Int, rgm[1]) * 100 - 50
                 end                
             end            
         end
@@ -101,13 +111,26 @@ function fillera(tblera::AbstractString,
     for row in eachrow(dfperson)
         erastart = Inf
         eraend = -Inf
-        idperson, datebirth, datedeath = row
+        
+        idperson, datebirth, datedeath = row[[:idperson, :date_birth, :date_death]]
 
         vcand = parsemaybe(datebirth)
         if !ismissing(vcand) erastart = vcand end
 
         vcand = parsemaybe(datedeath)
         if !ismissing(vcand) eraend = vcand end
+
+        if datereference
+            datehistfirst, datehistlast = row[[:date_hist_first, :date_hist_last]]
+            vcand = parsemaybe(datehistfirst)
+            if !ismissing(vcand) && vcand < erastart
+                erastart = vcand
+            end
+            vcand = parsemaybe(datehistlast)
+            if !ismissing(vcand) && vcand > eraend
+                eraend = vcand
+            end
+        end        
 
         # println(wiagid, " ", typeof(dfoffice[:wiagid_person]))
         ixperson = dfoffice[:, colnameidinoffice] .== string(idperson)

@@ -1,0 +1,20 @@
+{# {{ form_start(query_form, {'attr': {'id':'q_form'}}) }} #}
+<div class="row ml-2 col-12">
+    {{  form_row(query_form.name) }}
+    <span class="ml-2">{{ form_row(query_form.place) }}</span>
+    <span class="ml-2">{{ form_row(query_form.office) }}</span>
+    <span class="ml-2">{{ form_row(query_form.year) }}</span>
+    {% if query_form.someid is defined %}
+	<span class="ml-2">{{ form_row(query_form.someid) }}</span>
+    {% endif %}
+</div>
+<div class="row ml-2 col-12">
+    {{ form_row(query_form.searchHTML) }}
+    <a href="{{ path('launch_query') }}" class="ml-1"><button class="btn btn-secondary btn-light btn-sm" type="button">Neue Suche</button></a>
+    <span class="ml-3">{{ form_widget(query_form.searchJSON) }}</span>
+    <span class="ml-1">{{ form_widget(query_form.searchCSV) }}</span>
+    <span class="ml-1">{{ form_widget(query_form.searchRDF) }}</span>
+    <span class="ml-1">{{ form_widget(query_form.searchJSONLD) }}</span>
+</div>
+
+{# {{ form_end(query_form) }} #}

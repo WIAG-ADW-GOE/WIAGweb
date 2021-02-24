@@ -16,6 +16,18 @@ class Person {
     const WIAGID_POSTFIX = '-001';
 
     /**
+     * @ORM\OneToMany(targetEntity=OfficeSortkey::class, mappedBy="person")
+     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
+     */
+    private $officeSortkeys;
+
+    public function __construct()
+    {
+        $this->officeSortkeys = new ArrayCollection();
+    }
+
+
+    /**
      * @ORM\Id
      * @ORM\Column(type="string", length=63, nullable = false)
      */
@@ -141,17 +153,6 @@ class Person {
      * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
      */
     private $offices;
-
-    /**
-     * @ORM\OneToMany(targetEntity=OfficeSortkey::class, mappedBy="person")
-     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
-     */
-    private $officeSortkeys;
-
-    public function __construct()
-    {
-        $this->officeSortkeys = new ArrayCollection();
-    }
 
 
     public static function isWiagidLong($wiagidlong) {
