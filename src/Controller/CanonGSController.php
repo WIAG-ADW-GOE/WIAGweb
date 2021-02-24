@@ -22,7 +22,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 /**
  * @IsGranted("ROLE_QUERY")
  */
-class CanonController extends AbstractController {
+class CanonGSController extends AbstractController {
     /**
      * Parameters
      */
@@ -91,7 +91,7 @@ class CanonController extends AbstractController {
         }
 
 
-        return $this->render('query_canon/launch_query.html.twig', [
+        return $this->render('query_canon_gs/launch_query.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -127,7 +127,7 @@ class CanonController extends AbstractController {
         $personrepository = $this->getDoctrine()->getRepository(Person::class);
         $wiag_person = $personrepository->findOneByGsid($person->gsn_id);
 
-        return $this->render('query_canon/details.html.twig', [
+        return $this->render('query_canon_gs/details.html.twig', [
             'query_form' => $form->createView(),
             'person' => $person,
             'wiag_person' => $wiag_person,

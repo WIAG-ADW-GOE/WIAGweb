@@ -1,5 +1,19 @@
+module WIAGwebData
+
 using MySQL
 using Infiltrator
+using DataFrames
+
+dbwiag = nothing
+
+function setDBWIAG(pwd = missing, host = "127.0.0.1", user = "wiag", db = "wiag") 
+    global dbwiag
+    if ismissing(pwd)
+        println("Passwort für User ", user)
+        pwd = readline()
+    end    
+    dbwiag = DBInterface.connect(MySQL.Connection, host, user, pwd, db = db)
+end
 
 """
     updatenamevariant()
@@ -38,64 +52,77 @@ function updatenamevariant(fieldsrc::AbstractString, tablename::AbstractString):
 end
 
 """
-    updateera(tablename::AbstractSting)::Int
+    fillera(tblera::AbstractString, tblperson::AbstractString, tbloffice::AbstractString, colnameid::AbstractString)::Int
 
 Compute earliest and latest date for each person.
 """
-function updateera(tablename::AbstractString)::Int
-    dbwiag = DBInterface.connect(MySQL.Connection, "localhost", "wiag", "Wogen&Wellen", db="wiag");
+function fillera(tblera::AbstractString,
+                 tblperson::AbstractString,
+                 tbloffice::AbstractString,
+                 colnameid = "id",
+                 colnameidinoffice = "id_person")::Int
+    global dbwiag
+    if isnothing(dbwiag)
+        error("There is no valid database connection. Use `setDBWIAG'.")
+    end
+    
+    DBInterface.execute(dbwiag, "DELETE FROM " * tblera);
 
-    DBInterface.execute(dbwiag, "DELETE FROM " * tablename);
+    sqlselect = "SELECT " * colnameid * " as idperson, date_birth, date_death " * " FROM " * tblperson;
+    dfperson = DBInterface.execute(dbwiag, sqlselect) |> DataFrame;
 
-    dfperson = DBInterface.execute(dbwiag,
-                                   "SELECT wiagid, date_birth, date_death FROM person") |> DataFrame;
-
-    rgx = r"[1-9][0-9]+";
+    rgxyear = r"[1-9][0-9]+";
+    rgxcentury = r"([1-9][0-9])?\. [Jahrh|Jhd]"
     tblid = 0;
 
     # officestmt = DBInterface.prepare(dbwiag, "SELECT date_start, date_end FROM office"
     #                                  * " WHERE wiagid_person = ?")
 
-    dfoffice = DBInterface.execute(dbwiag, "SELECT wiagid_person, date_start, date_end FROM office") |> DataFrame;
-    insertstmt = DBInterface.prepare(dbwiag, "INSERT INTO " * tablename * " VALUES (?, ?, ?)")
+    sqlselect = "SELECT " * colnameidinoffice * ", date_start, date_end " * " FROM " * tbloffice
+    dfoffice = DBInterface.execute(dbwiag, sqlselect) |> DataFrame
 
-    function parsemaybe(rgx, s)::Union{Missing, Int}
+    function parsemaybe(s)::Union{Missing, Int}
         r = missing
         if !ismissing(s)
-            rgm = match(rgx, s)
+            rgm = match(rgxyear, s)
             if !isnothing(rgm)
                 r = parse(Int, rgm.match)
-            end
+            else
+                rgm = match(rgxcentury, s)
+                if !isnothing(rgm) && !isnothing(rgm[1])
+                    r = parse(Int, rgm[1])
+                end                
+            end            
         end
         return r
     end
 
-
+    csqlvalues = String[]
     for row in eachrow(dfperson)
         erastart = Inf
         eraend = -Inf
-        wiagid, datebirth, datedeath = row
+        idperson, datebirth, datedeath = row
 
-        vcand = parsemaybe(rgx, datebirth)
+        vcand = parsemaybe(datebirth)
         if !ismissing(vcand) erastart = vcand end
 
-        vcand = parsemaybe(rgx, datedeath)
+        vcand = parsemaybe(datedeath)
         if !ismissing(vcand) eraend = vcand end
 
         # println(wiagid, " ", typeof(dfoffice[:wiagid_person]))
-        ixperson = dfoffice[:wiagid_person] .== wiagid
+        ixperson = dfoffice[:, colnameidinoffice] .== string(idperson)
 
         dfofficeperson = dfoffice[ixperson, :];
         for oc in eachrow(dfofficeperson)
             datestart = oc[:date_start]
             dateend = oc[:date_end]
 
-            vcand = parsemaybe(rgx, datestart)
+            vcand = parsemaybe(datestart)
             if !ismissing(vcand) && vcand < erastart
                 erastart = vcand
             end
 
-            vcand = parsemaybe(rgx, dateend)
+            vcand = parsemaybe(dateend)
             if !ismissing(vcand) && vcand > eraend
                 eraend = vcand
             end
@@ -108,21 +135,25 @@ function updateera(tablename::AbstractString)::Int
             eraend = erastart
         end
 
-        erastartdb = erastart == Inf ? missing : erastart
-        eraenddb = eraend == -Inf ? missing : eraend
+        sqlerastart = erastart == Inf ? "NULL" : "'" * string(erastart) * "'"
+        sqleraend = eraend == -Inf ? "NULL" : "'" * string(eraend) * "'"
 
-        if !ismissing(erastartdb) && !(typeof(erastartdb) == Int)
-            println("start: ", erastartdb)
-        end
-        if !ismissing(eraenddb) && !(typeof(eraenddb) == Int)
-            println("end: ", eraenddb)
-        end
+        # if !ismissing(erastartdb) && !(typeof(erastartdb) == Int)
+        #     println("start: ", erastartdb)
+        # end
+        # if !ismissing(eraenddb) && !(typeof(eraenddb) == Int)
+        #     println("end: ", eraenddb)
+        # end
 
-        DBInterface.execute(insertstmt, (wiagid, erastartdb, eraenddb));
-
+        push!(csqlvalues, "('" * string(idperson) * "', " * sqlerastart * ", " * sqleraend * ")")
         tblid += 1
-        # if tblid > 25 break end
     end
+
+    sqlvalues = join(csqlvalues, ", ")
+    DBInterface.execute(dbwiag, "INSERT INTO " * tblera * " VALUES " * sqlvalues)    
+
+    # println(sqlvalues);
+    
     return tblid
 end
 
@@ -153,7 +184,6 @@ function updateofficedate(tablename::AbstractString)::Int
         return r
     end
 
-
     for row in eachrow(dfoffice)
         wiagid, date_start, date_end = row
 
@@ -165,57 +195,86 @@ function updateofficedate(tablename::AbstractString)::Int
         tblid += 1
         # if tblid > 25 break end
     end
+
+    
     return tblid
 end
 
-function fillnamelookup(tablename::AbstractString)::Int
+"""
+    fillnamelookup(tablename::AbstractString)::Int
+    
+Fill `tablename` with combinations of givenname and familyname and their variants.
+""" 
+function fillnamelookup(tbllookup::AbstractString,
+                        tblperson::AbstractString,
+                        colnameid::AbstractString = "id")::Int
     msg = 200
-    dbwiag = DBInterface.connect(MySQL.Connection, "localhost", "wiag", "Wogen&Wellen", db="wiag");
+    if isnothing(dbwiag)
+        error("There is no valid database connection. Use `setDBWIAG'.")
+    end
 
-    DBInterface.execute(dbwiag, "DELETE FROM " * tablename);
+    DBInterface.execute(dbwiag, "DELETE FROM " * tbllookup);
 
     dfperson = DBInterface.execute(dbwiag,
-                                   "SELECT wiagid, givenname, prefix_name, familyname, givenname_variant, familyname_variant FROM person") |> DataFrame;
+                                   "SELECT " * colnameid * " as id_person, " *
+                                   "givenname, prefix_name, familyname, givenname_variant, familyname_variant " *
+                                   "FROM " * tblperson * " person") |> DataFrame;
 
-    insertstmt = DBInterface.prepare(dbwiag, "INSERT INTO " * tablename * " VALUES (?, ?, ?, ?, ?)")
-
+    # SQL
+    # INSERT INTO dsttable VALUES (NULL, 'id_person1', 'givenname1', 'prefix_name1', 'familyname1'),
+    # ('NULL', 'id_person2', 'givenname2', 'prefix_name2', 'familyname2');
+    # 
     # structure
     # gn[:] prefix fn|fnv
     # gn[1] prefix fn|fnv
     # gnv[:] prefix fn|fnv
     # gnv[1] prefix fn|fnv
 
-    # app: test with or without prefix
+    # In the web application choose a version with or without prefix.
 
-    irowout = 0
+    imsg = 0
+    csqlvalues = String[]
+    appendtosqlrow(row) = append!(csqlvalues, row)
     for row in eachrow(dfperson)
-        wiagid = row[:wiagid]
+        idperson = row[:id_person]
         gn = row[:givenname]
         prefix = row[:prefix_name]
         fn = row[:familyname]
         gnv = row[:givenname_variant]
         fnv = row[:familyname_variant]
 
-        irowout = fillnamelookupgn(insertstmt, wiagid, gn, prefix, fn, fnv)
-
+        fillnamelookupgn(idperson, gn, prefix, fn, fnv) |> appendtosqlrow
+        
         if !ismissing(gnv) && gnv != ""
             # sets of givennames
             cgnv = split(gnv, r", *")
             for gnve in cgnv
-                irowout = fillnamelookupgn(insertstmt, wiagid, gnve, prefix, fn, fnv)
+                fillnamelookupgn(idperson, gnve, prefix, fn, fnv) |> appendtosqlrow
             end
         end
+        imsg += 1
 
-        if irowout % msg == 0
-            println("write row: ", irowout)
+        if imsg % msg == 0
+            println("write row: ", imsg)
         end
-
     end
+    sqlvalues = join(csqlvalues, ", ")
+    
+    irowout = length(csqlvalues)
+
+    DBInterface.execute(dbwiag, "INSERT INTO " * tbllookup * " VALUES " * sqlvalues)
+    
     return irowout
 
 end
 
-function striplabel(s::AbstractString)
+
+"""
+    striplabel(s::AbstractString)::AbstractString
+
+remove labels in data fields ("Taufname: Karl")
+"""
+function striplabel(s::AbstractString)::AbstractString
     poslabel = findfirst(':', s)
     if !isnothing(poslabel)
         s = strip(s[poslabel + 1:end])
@@ -224,38 +283,42 @@ function striplabel(s::AbstractString)
 end
 
 
-let irowout = 1
-    global fillnamelookupgn
+function fillnamelookupgn(id_person, gn, prefix, fn, fnv)
+    csql = String[]
 
-    function fillnamelookupgn(insertstmt, wiagid, gn, prefix, fn, fnv)
+    function pushcsql(gni, fni)
+        sgni = ismissing(gni) ? "NULL" : String(striplabel(gni))
+        sfni = ismissing(fni) ? "NULL" : String(striplabel(fni))
+        prefix = ismissing(prefix) ? "NULL" : prefix
+        if !ismissing(id_person)
+            push!(csql, "(" * "NULL, " * "'" * string(id_person)
+                  * "', '" * sgni * "', '" * prefix * "', '" * sfni * "')")
+        else
+            @warn "Missing ID for ", gni
+        end        
+    end
 
-        function dbinsert(gni, fni)
-            sgni = ismissing(gni) ? missing : String(striplabel(gni))
-            sfni = ismissing(fni) ? missing : String(striplabel(fni))
-            DBInterface.execute(insertstmt, (irowout, wiagid, sgni, prefix, sfni))
-            irowout += 1
-        end
+    pushcsql(gn, fn)
+    cgn = split(gn);
+    # more than one givenname
+    if length(cgn) > 1
+        pushcsql(cgn[1], fn)
+    end
 
-        dbinsert(gn, fn)
-        cgn = split(gn);
-        # more than one givenname
-        if length(cgn) > 1
-            dbinsert(cgn[1], fn)
-        end
-
-        # familyname variants
-        if !ismissing(fnv) && fnv != ""
-            cfnv = split(fnv, r", *")
-            for fnve in cfnv
-                dbinsert(gn, fnve)
-                # more than one givenname
-                if length(cgn) > 1
-                    dbinsert(cgn[1], fnve)
-                end
+    # familyname variants
+    if !ismissing(fnv) && fnv != ""
+        cfnv = split(fnv, r", *")
+        for fnve in cfnv
+            pushcsql(gn, fnve)
+            # more than one givenname
+            if length(cgn) > 1
+                pushcsql(cgn[1], fnve)
             end
         end
-
-        return(irowout)
     end
+
+    return csql
+end
+    
 
 end

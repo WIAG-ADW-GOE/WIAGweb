@@ -37,7 +37,7 @@
 		{% elseif count == 1 %}
 		    1
 		{% else %}
-		    {{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ count }}
+		    {{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ abovelimit }}{{ count }}
 		{% endif %}
 		<span class="ml-3">{{ fb_elements }}</span>
 	    </div>

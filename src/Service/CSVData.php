@@ -52,7 +52,8 @@ class CSVData {
         return $csv;
     }
 
-    public function personData($person, $baseurl) {
+    
+    public function personData($person, $baseurl): array {
         $wiagid = $person->getWiagidLong();
         
         $pj = array();
@@ -120,6 +121,7 @@ class CSVData {
             $pj['offices'] = array();
             $ocJSON = &$pj['offices'];
             foreach($offices as $oc) {
+                dump($ocJSON);
                 $ocJSON[] = $oc->toArray();
             }
         }
@@ -137,7 +139,10 @@ class CSVData {
     }
 
 
-    public function getDioceseID($diocese) {
+    /**
+     * Get ID of `diocese` from the database.
+     */
+    public function getDioceseID(string $diocese): string {
         if(is_null($diocese)) return null;
         $diocRepository = $this->entitymanager->getRepository(Diocese::class);
         $diocObj = $diocRepository->findByNameWithBishopricSeat($diocese);

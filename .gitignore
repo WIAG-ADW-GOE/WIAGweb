@@ -12,4 +12,11 @@
 
 /public/uploads/
 
+###> PHP Documentor
 /.phpdoc/cache
+###< PHP Documentor
+
+###> emacs temporary files
+*~
+###< emacs temporary files
+
