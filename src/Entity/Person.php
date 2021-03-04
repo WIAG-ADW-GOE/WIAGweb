@@ -164,7 +164,9 @@ class Person {
             return $wiagidlong;
         $head = strlen(self::WIAGID_PREFIX);
         $tail = strlen(self::WIAGID_POSTFIX);
-        return substr($wiagidlong, $head, -$tail);
+        $id_five = substr($wiagidlong, $head, -$tail);
+        $id_pure = ltrim($id_five, "0");
+        return $id_pure;
     }
 
 
@@ -404,7 +406,8 @@ class Person {
 
     public function getWiagidLong(): ?string
     {
-        return self::WIAGID_PREFIX.$this->wiagid.self::WIAGID_POSTFIX;
+        $id_five = str_pad($this->wiagid, 5, '0', STR_PAD_LEFT);
+        return self::WIAGID_PREFIX.$id_five.self::WIAGID_POSTFIX;
     }
 
     public function getWikipediaTitle(): ?string {

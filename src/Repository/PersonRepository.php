@@ -150,12 +150,14 @@ class PersonRepository extends ServiceEntityRepository {
 
         # identifier
         if($bishopquery->someid) {
+            // remove this, as soon as all IDs include padding '0's in the database
+            $id_pure = ltrim($bishopquery->someid, "0");
             $qb->andWhere(":someid = person.wiagid".
                           " OR :someid = person.gsid".
                           " OR :someid = person.viafid".
                           " OR :someid = person.wikidataid".
                           " OR :someid = person.gndid")
-               ->setParameter(':someid', $bishopquery->someid);
+               ->setParameter(':someid', $id_pure);
         }
 
         # year
