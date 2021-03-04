@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Canon;
+use App\Entity\CnOffice;
 use App\Form\Model\CanonFormModel;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -19,6 +20,9 @@ use Doctrine\ORM\QueryBuilder;
  */
 class CanonRepository extends ServiceEntityRepository
 {
+    // Allow deviations in the query parameter `year`.
+    const MARGINYEAR = 50;
+    
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Canon::class);
@@ -59,8 +63,7 @@ class CanonRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('canon')
                    ->select('COUNT(DISTINCT canon.id)');
 
-        # TODO
-        # $this->addQueryConditions($qb, $formmodel);
+        $this->addQueryConditions($qb, $formmodel);
 
         $query = $qb->getQuery();
 
@@ -85,15 +88,14 @@ class CanonRepository extends ServiceEntityRepository
         }
 
         // dump($qb->getDQL());
-
-        $this->addSortParameter($qb, $formmodel);
+        # TODO 
+        // $this->addSortParameter($qb, $formmodel);
 
         $query = $qb->getQuery();
         // dd($query->getResult());
-
         $persons = new Paginator($query, true);
 
-        // $persons = $query->getResult();
+
 
         return $persons;
     }
@@ -103,11 +105,11 @@ class CanonRepository extends ServiceEntityRepository
 
         # identifier
         if($formmodel->someid) {
-            $qb->andWhere(":someid = person.wiagid".
-                          " OR :someid = person.gsid".
-                          " OR :someid = person.viafid".
-                          " OR :someid = person.wikidataid".
-                          " OR :someid = person.gndid")
+            $qb->andWhere(":someid = canon.id".
+                          " OR :someid = canon.gsnId".
+                          " OR :someid = canon.viafId".
+                          " OR :someid = canon.wikidataId".
+                          " OR :someid = canon.gndId")
                ->setParameter(':someid', $formmodel->someid);
         }
 
@@ -115,7 +117,7 @@ class CanonRepository extends ServiceEntityRepository
         if($formmodel->year) {
             $erajoined = true;
             $qb->join('canon.era', 'era')
-                ->andWhere('era.era_start - :mgnyear < :qyear AND :qyear < era.era_end + :mgnyear')
+                ->andWhere('era.eraStart - :mgnyear < :qyear AND :qyear < era.eraEnd + :mgnyear')
                 ->setParameter(':mgnyear', self::MARGINYEAR)
                 ->setParameter(':qyear', $formmodel->year);
         }
@@ -124,7 +126,7 @@ class CanonRepository extends ServiceEntityRepository
         if($formmodel->office) {
             // we have to join office a second time to filter at the level of persons
             $qb->join('canon.offices', 'octitle')
-                ->andWhere('octitle.office_name LIKE :office')
+                ->andWhere('octitle.officeName LIKE :office')
                 ->setParameter('office', '%'.$formmodel->office.'%');
         }
 
@@ -139,7 +141,7 @@ class CanonRepository extends ServiceEntityRepository
         # names
         if($formmodel->name) {
             $qb->join('canon.namelookup', 'nlt')
-                ->andWhere("CONCAT(nlt.givenname, ' ', nlt.prefix_name, ' ', nlt.familyname) LIKE :qname".
+                ->andWhere("CONCAT(nlt.givenname, ' ', nlt.prefixName, ' ', nlt.familyname) LIKE :qname".
                            " OR CONCAT(nlt.givenname, ' ', nlt.familyname)LIKE :qname".
                            " OR nlt.givenname LIKE :qname".
                            " OR nlt.familyname LIKE :qname")
@@ -162,34 +164,28 @@ class CanonRepository extends ServiceEntityRepository
         if($formmodel->name) $sort = 'name';
 
         /**
-         * a reliable order is required, therefore person.givenname shows up
+         * a reliable order is required, therefore canon.givenname shows up
          * in each sort clause
          */
 
         switch($sort) {
         case 'year':
-            // if(!$formmodel->year) {
-            //     $qb->join('canon.era', 'era');
-            // }
-            // $qb->orderBy('era.era_start, person.givenname');
             $qb->leftJoin('canon.officeSortkeys', 'ocsortkey')
                ->addSelect('ocsortkey')
                ->andWhere('ocsortkey.diocese = :diocese')
                ->setParameter('diocese', 'all')
-               ->orderBy('ocsortkey.sortkey, person.givenname');
+               ->orderBy('ocsortkey.sortkey, canon.givenname');
             break;
         case 'yearatplace':
-            // $qb->join('ocplace.numdate', 'ocplacedate')
-            //    ->orderBy('ocplacedate.date_start, person.givenname', 'ASC');
-            $qb->orderBy('ocselectandsort.sortkey, person.givenname');
+            $qb->orderBy('ocselectandsort.sortkey, canon.givenname');
             break;
         case 'name':
-            // $qb->orderBy('canon.familyname, person.givenname, oc.diocese');
+            // $qb->orderBy('canon.familyname, canon.givenname, oc.diocese');
             $qb->leftJoin('canon.officeSortkeys', 'ocsortkey')
                ->addSelect('ocsortkey')
                ->andWhere('ocsortkey.diocese = :diocese')
                ->setParameter('diocese', 'all')
-               ->orderBy('ocsortkey.sortkey, person.givenname');
+               ->orderBy('ocsortkey.sortkey, canon.givenname');
             break;
         }
 
@@ -197,5 +193,12 @@ class CanonRepository extends ServiceEntityRepository
 
     }
 
+    public function addMonasteryLocation(Canon $person) {
+        $em = $this->getEntityManager();
+        $officeRepository = $em->getRepository(CnOffice::class);
+        foreach($person->getOffices() as $oc) {
+            $officeRepository->setMonasteryLocation($oc);
+        }
+    }
     
 }

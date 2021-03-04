@@ -47,4 +47,25 @@ class CnNamelookupRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function suggestName($name, $limit = 40): array {
+        $qb = $this->createQueryBuilder('cl')
+                   ->select("DISTINCT CASE WHEN cl.prefixName <> '' AND cl.familyname <> ''".
+                            " THEN CONCAT(cl.givenname, ' ', cl.prefixName, ' ', cl.familyname)".
+                            " WHEN cl.familyname <> ''".
+                            " THEN CONCAT(cl.givenname, ' ', cl.familyname)".
+                            " ELSE cl.givenname END".
+                            " AS suggestion")
+                   ->andWhere("CONCAT(cl.givenname, ' ', cl.prefixName, ' ', cl.familyname) LIKE :qname".
+                              " OR CONCAT(cl.givenname, ' ', cl.familyname)LIKE :qname".
+                              " OR cl.givenname LIKE :qname".
+                              " OR cl.familyname LIKE :qname")
+                   ->setParameter('qname', '%'.$name.'%')
+                   ->setMaxResults($limit);
+
+        $suggestions = $qb->getQuery()->getResult();
+
+        return $suggestions;
+    }
+
 }

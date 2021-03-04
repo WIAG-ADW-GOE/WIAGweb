@@ -136,7 +136,7 @@ class PersonRepository extends ServiceEntityRepository {
         $this->addSortParameter($qb, $bishopquery);
 
         $query = $qb->getQuery();
-        // dd($query->getResult());
+        dump($query->getResult());
 
         $persons = new Paginator($query, true);
 
@@ -148,8 +148,10 @@ class PersonRepository extends ServiceEntityRepository {
 
     private function addQueryConditions(QueryBuilder $qb, BishopQueryFormModel $bishopquery): QueryBuilder {
 
+        dump($qb);
+        
         # identifier
-        if($bishopquery->someid) {
+        if($bishopquery->someid && $bishopquery->someid != "") {
             $qb->andWhere(":someid = person.wiagid".
                           " OR :someid = person.gsid".
                           " OR :someid = person.viafid".
@@ -159,7 +161,7 @@ class PersonRepository extends ServiceEntityRepository {
         }
 
         # year
-        if($bishopquery->year) {
+        if($bishopquery->year && $bishopquery->year != "") {
             $erajoined = true;
             $qb->join('person.era', 'era')
                 ->andWhere('era.era_start - :mgnyear < :qyear AND :qyear < era.era_end + :mgnyear')
@@ -168,7 +170,7 @@ class PersonRepository extends ServiceEntityRepository {
         }
 
         # office title
-        if($bishopquery->office) {
+        if($bishopquery->office && $bishopquery->office != "") {
             // we have to join office a second time to filter at the level of persons
             $qb->join('person.offices', 'octitle')
                 ->andWhere('octitle.office_name LIKE :office')
@@ -176,15 +178,16 @@ class PersonRepository extends ServiceEntityRepository {
         }
 
         # office diocese
-        if($bishopquery->place) {
+        if($bishopquery->place && $bishopquery->place != "") {
             // we have to join office a second time to filter at the level of persons
             $sort = 'yearatplace';
             $qb->join('person.officeSortkeys', 'ocselectandsort')
                 ->andWhere('ocselectandsort.diocese LIKE :place')
                 ->setParameter('place', '%'.$bishopquery->place.'%');
         }
+        
         # names
-        if($bishopquery->name) {
+        if($bishopquery->name && $bishopquery->name != "") {
             $qb->join('person.namelookup', 'nlt')
                 ->andWhere("CONCAT(nlt.givenname, ' ', nlt.prefix_name, ' ', nlt.familyname) LIKE :qname".
                            " OR CONCAT(nlt.givenname, ' ', nlt.familyname)LIKE :qname".
@@ -192,6 +195,7 @@ class PersonRepository extends ServiceEntityRepository {
                            " OR nlt.familyname LIKE :qname")
                ->setParameter('qname', '%'.$bishopquery->name.'%');
         }
+        dump($qb);
 
         $this->addFacets($bishopquery, $qb);
 
@@ -287,8 +291,6 @@ class PersonRepository extends ServiceEntityRepository {
         $result = $query->getResult();
         return $result;
     }
-
-
 
     public function findtest($id) {
         $query = $this->getEntityManager()

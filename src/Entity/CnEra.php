@@ -12,6 +12,12 @@ class CnEra
 {
 
     /**
+     * @ORM\OneToOne(targetEntity="Canon", inversedBy="era")
+     * @ORM\JoinColumn(name="id_canon", referencedColumnName="id")
+     */
+    private $canon;
+
+    /**
      * @ORM\Id
      * @ORM\Column(type="string", length=63)
      */
@@ -26,6 +32,10 @@ class CnEra
      * @ORM\Column(type="integer", nullable=true)
      */
     private $eraEnd;
+
+    public function getCanon() {
+        return $this->canon;
+    }
 
     public function getIdCanon(): ?string
     {

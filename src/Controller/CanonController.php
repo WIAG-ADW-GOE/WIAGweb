@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Form\CanonFormType;
 use App\Form\Model\CanonFormModel;
 use App\Entity\Canon;
+use App\Entity\CnNamelookup;
 use App\Repository\CanonRepository;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
@@ -30,6 +31,7 @@ class CanonController extends AbstractController {
      * Parameters
      */
     const LIST_LIMIT = 20;
+    const HINT_LIST_LIMIT = 12;
 
     /**
      * @Route("/domherren-schwerin", name="canons_schwerin")
@@ -38,9 +40,9 @@ class CanonController extends AbstractController {
                                  CanonRepository $repository) {
 
         // we need to pass an instance of BishopQueryFormModel, because facets depend on it's data
-        $bishopquery = new CanonFormModel;
+        $queryformdata = new CanonFormModel;
 
-        $form = $this->createForm(CanonFormType::class, $bishopquery);
+        $form = $this->createForm(CanonFormType::class, $queryformdata);
 
         $form->handlerequest($request);
 
@@ -51,14 +53,14 @@ class CanonController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $bishopquery = $form->getData();
-            $someid = $bishopquery->someid;
+            $queryformdata = $form->getData();
+            $someid = $queryformdata->someid;
 
             # strip 'Bistum' or 'Erzbistum'
-            $bishopquery->normPlace();
+            $queryformdata->normPlace();
 
             if($someid && Canon::isWiagidLong($someid)) {
-                $bishopquery->someid = Canon::wiagidLongToWiagid($someid);
+                $queryformdata->someid = Canon::wiagidLongToWiagid($someid);
             }
 
             $singleoffset = $request->request->get('singleoffset');
@@ -68,10 +70,10 @@ class CanonController extends AbstractController {
 
 
             // get the number of results (without page limit restriction)
-            // TODO 
+            // TODO
             $count = $this->getDoctrine()
                           ->getRepository(Canon::class)
-                          ->countByQueryObject($bishopquery)[1];
+                          ->countByQueryObject($queryformdata)[1];
 
             $offset = 0;
             $querystr = null;
@@ -81,7 +83,7 @@ class CanonController extends AbstractController {
 
                 $buttonname = $form->getClickedButton()->getName();
                 if($buttonname != 'searchHTML') {
-                    $persons = $repository->findWithOffices($bishopquery);
+                    $persons = $repository->findWithOffices($queryformdata);
                     $baseurl = $request->getSchemeAndHttpHost();
                     $response = new Response();
 
@@ -116,19 +118,14 @@ class CanonController extends AbstractController {
             if($count < self::LIST_LIMIT) $offset = 0;
 
             $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
-            
-            # TODO
-            $persons = $repository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset);
-            # $persons = $repository->findByGivenname('Albert');
 
-            # TODO
+            $persons = $repository->findWithOffices($queryformdata, self::LIST_LIMIT, $offset);
+
             foreach($persons as $p) {
-                if(false && $p->hasMonastery()) {
+                if($p->hasMonastery()) {
                     $repository->addMonasteryLocation($p);
                 }
-                $p->offices = [];
             }
-
 
             // combination of POST_SET_DATA and POST_SUBMIT
             // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
@@ -156,18 +153,18 @@ class CanonController extends AbstractController {
 
     public function getBishopInQuery($form, $offset) {
 
-        $bishopquery = $form->getData();
+        $queryformdata = $form->getData();
 
         $personRepository = $this->getDoctrine()
-                                 ->getRepository(Person::class);
+                                 ->getRepository(Canon::class);
         $hassuccessor = false;
         if($offset == 0) {
-            $persons = $personRepository->findWithOffices($bishopquery, 2, $offset);
+            $persons = $personRepository->findWithOffices($queryformdata, 2, $offset);
             $iterator = $persons->getIterator();
             if(count($iterator) == 2) $hassuccessor = true;
 
         } else {
-            $persons = $personRepository->findWithOffices($bishopquery, 3, $offset - 1);
+            $persons = $personRepository->findWithOffices($queryformdata, 3, $offset - 1);
             $iterator = $persons->getIterator();
             if(count($iterator) == 3) $hassuccessor = true;
             $iterator->next();
@@ -179,7 +176,7 @@ class CanonController extends AbstractController {
         return $this->render('canon/details.html.twig', [
             'query_form' => $form->createView(),
             'person' => $person,
-            'wiagidlong' => $person->getWiagidlong(),
+            'wiagidlong' => $person->getId(),
             'offset' => $offset,
             'hassuccessor' => $hassuccessor,
             'dioceserepository' => $dioceseRepository,
@@ -223,10 +220,15 @@ class CanonController extends AbstractController {
      * AJAX callback
      * @Route("canon-autocomplete-names", name="canon_autocomplete_names")
      */
-    public function autocompletenames(Renquest $request) {
+    public function autocompletenames(Request $request) {
         # TODO 2021-02-24
+        $suggestions = $this->getDoctrine()
+                            ->getRepository(CnNamelookup::class)
+                            ->suggestName($request->query->get('query'),
+                                          self::HINT_LIST_LIMIT);
+        
         return $this->json([
-            'names' => ['Eule'],
+            'names' => $suggestions,
         ]);
     }
 
@@ -234,7 +236,7 @@ class CanonController extends AbstractController {
      * AJAX callback
      * @Route("canon-autocomplete-places", name="canon_autocomplete_places")
      */
-    public function autocompleteplaces(Renquest $request) {
+    public function autocompleteplaces(Request $request) {
         # TODO 2021-02-24
         return $this->json([
             'places' => ['Eulenburg'],
@@ -245,7 +247,7 @@ class CanonController extends AbstractController {
      * AJAX callback
      * @Route("canon-autocomplete-offices", name="canon_autocomplete_offices")
      */
-    public function autocompleteoffices(Renquest $request) {
+    public function autocompleteoffices(Request $request) {
         # TODO 2021-02-24
         return $this->json([
             'offices' => ['Eulenamt'],

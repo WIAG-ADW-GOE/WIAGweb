@@ -18,7 +18,6 @@ class Namelookup
     private $id;
 
     /**
-
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="namelookup")
      * @ORM\JoinColumn(name="wiagid_person", referencedColumnName="wiagid")
      */

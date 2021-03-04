@@ -11,6 +11,29 @@ use Doctrine\ORM\Mapping as ORM;
 class CnOffice
 {
     /**
+     * @ORM\ManyToOne(targetEntity="Canon", inversedBy="offices")
+     * @ORM\JoinColumn(name="id_canon", referencedColumnName="id")
+     */
+    private $canon;
+
+    /**
+     * @ORM\OneToOne(targetEntity="CnOfficedate", mappedBy="office")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id_office")
+     */
+    private $numdate;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CnMonastery", inversedBy="office")
+     * @ORM\JoinColumn(nullable=true, name="id_monastery", referencedColumnName="wiagid")
+     */
+    private $monastery;
+
+    /**
+     * if an office is at a monastery we lookup it's place(s) (see OfficeRepository)
+     */
+    private $monasterylocationstr;
+
+    /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="string", length=31)
@@ -86,6 +109,32 @@ class CnOffice
      * @ORM\Column(type="string", length=31, nullable=true)
      */
     private $idInReference;
+
+    public function getNumdate() {
+        return $this->numdate;
+    }
+
+    public function getMonastery()
+    {
+        return $this->monastery;
+    }
+
+
+    public function getMonasterylocation()
+    {
+        return $this->monasterylocation;
+    }
+
+    public function getMonasterylocationstr()
+    {
+        return $this->monasterylocationstr;
+    }
+
+    public function setMonasterylocationstr($monasterylocationstr): self
+    {
+        $this->monasterylocationstr = $monasterylocationstr;
+        return $this;
+    }
 
     public function getId(): ?int
     {

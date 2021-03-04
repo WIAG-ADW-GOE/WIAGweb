@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\CanonRepository;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,19 +14,36 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Canon
 {
-    /**
-     * @ORM\OneToOne(targetEntity="CnEra", mappedBy="id_canon")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
-     */
-    # private $era;
-    
 
     /**
-     * @ORM\OneToMany(targetEntity="CnOffice", mappedBy="id_canon")
+     * @ORM\OneToMany(targetEntity="CnNamelookup", mappedBy="canon")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
      */
-    # private $offices;
+    private $namelookup;
 
+    /**
+     * @ORM\OneToOne(targetEntity="CnEra", mappedBy="canon")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
+     */
+    private $era;
+
+    /**
+     * @ORM\OneToMany(targetEntity="CnOffice", mappedBy="canon")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
+     */
+    private $offices;
+
+    /**
+     * @ORM\OneToMany(targetEntity=CnOfficeSortkey::class, mappedBy="canon")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
+     */
+    private $officeSortkeys;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CnReference")
+     * @ORM\JoinColumn(name="id_reference")
+     */
+    private $reference;
 
     /**
      * @ORM\Id
@@ -80,7 +100,7 @@ class Canon
     /**
      * @ORM\Column(type="string", length=127, nullable=true)
      */
-    private $urlWikipedia;
+    private $wikipediaUrl;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -106,26 +126,6 @@ class Canon
      * @ORM\Column(type="string", length=63, nullable=true)
      */
     private $academicTitle;
-
-    /**
-     * @ORM\Column(type="string", length=63, nullable=true)
-     */
-    private $idGnd;
-
-    /**
-     * @ORM\Column(type="string", length=63, nullable=true)
-     */
-    private $idGsn;
-
-    /**
-     * @ORM\Column(type="string", length=63, nullable=true)
-     */
-    private $idViaf;
-
-    /**
-     * @ORM\Column(type="string", length=63, nullable=true)
-     */
-    private $idWikidata;
 
     /**
      * @ORM\Column(type="string", length=127, nullable=true)
@@ -176,6 +176,54 @@ class Canon
      * @ORM\Column(type="integer", nullable=true)
      */
     private $mergedInto;
+
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $gsnId;
+
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $gndId;
+
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $viafId;
+
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $wikidataId;
+
+    public function __construct() {
+        $this->officeSortkeys = new ArrayCollection();
+    }
+
+
+    public function getNamelookup() {
+        return $this->namelookup;
+    }
+
+    public function getEra() {
+        return $this->era;
+    }
+
+    public function getOffices() {
+        return $this->offices;
+    }
+
+    public function getReference() {
+        return $this->reference;
+    }
+
+    /**
+     * @return Collection|OfficeSortkey[]
+     */
+    public function getOfficeSortkeys(): Collection {
+        return $this->officeSortkeys;
+    }
 
     public function getId(): ?int
     {
@@ -290,15 +338,14 @@ class Canon
         return $this;
     }
 
-    public function getUrlWikipedia(): ?string
+    public function getWikipediaUrl(): ?string
     {
-        return $this->urlWikipedia;
+        return $this->wikipediaUrl;
     }
 
-    public function setUrlWikipedia(?string $urlWikipedia): self
+    public function setWikipedia(?string $wikipediaUrl): self
     {
-        $this->urlWikipedia = $urlWikipedia;
-
+        $this->wikipediaUrl = $wikipediaUrl;
         return $this;
     }
 
@@ -358,54 +405,6 @@ class Canon
     public function setAcademicTitle(?string $academicTitle): self
     {
         $this->academicTitle = $academicTitle;
-
-        return $this;
-    }
-
-    public function getIdGnd(): ?string
-    {
-        return $this->idGnd;
-    }
-
-    public function setIdGnd(?string $idGnd): self
-    {
-        $this->idGnd = $idGnd;
-
-        return $this;
-    }
-
-    public function getIdGsn(): ?string
-    {
-        return $this->idGsn;
-    }
-
-    public function setIdGsn(string $idGsn): self
-    {
-        $this->idGsn = $idGsn;
-
-        return $this;
-    }
-
-    public function getIdViaf(): ?string
-    {
-        return $this->idViaf;
-    }
-
-    public function setIdViaf(?string $idViaf): self
-    {
-        $this->idViaf = $idViaf;
-
-        return $this;
-    }
-
-    public function getIdWikidata(): ?string
-    {
-        return $this->idWikidata;
-    }
-
-    public function setIdWikidata(?string $idWikidata): self
-    {
-        $this->idWikidata = $idWikidata;
 
         return $this;
     }
@@ -529,4 +528,114 @@ class Canon
 
         return $this;
     }
+
+    public function hasMonastery(): bool {
+        foreach($this->offices as $oc) {
+            if($oc->getIdMonastery()) return true;
+        }
+        return false;
+    }
+
+    public function getWiagidLong(): string {
+        return $this->id;
+    }    
+
+    public function getDisplayname() {
+        $prefixpart = strlen($this->prefixName) > 0 ? ' '.$this->prefixName : '';
+        $familypart = strlen($this->familyname) > 0 ? ' '.$this->familyname : '';
+        return $this->givenname.$prefixpart.$familypart;
+    }
+
+    public function getWikipediaTitle(): ?string {
+        $url = $this->getWikipediaurl();
+        if(!$url || $url == '') return null;
+
+        $wikipediaurlbase = 'https://de.wikipedia.org/wiki/';
+
+
+        $head = strlen($wikipediaurlbase);
+        $wikipediatitle = substr($url, $head);
+        $wikipediatitle = urldecode($wikipediatitle);
+        $wikipediatitle = str_replace('_', ' ', $wikipediatitle);
+
+        return $wikipediatitle;
+    }
+
+    public function hasExternalIdentifier() {
+        return ($this->viafId
+                || $this->wikidataId
+                || $this->gndId);
+    }
+
+    public function hasOtherIdentifier() {
+        return ($this->gsnId
+                || $this->wikipediaUrl);
+    }
+
+    public function getFlagComment() {
+        return ($this->givennameVariant and
+                $this->givennameVariant != ''
+                or $this->familynameVariant and
+                $this->familynameVariant != ''
+                or $this->commentName and
+                $this->commentName != ''
+                or $this->commentPerson and
+                $this->commentPerson != '');
+    }
+
+    public function getGsnId(): ?string
+    {
+        return $this->gsnId;
+    }
+
+    public function setGsnId(?string $gsnId): self
+    {
+        $this->gsnId = $gsnId;
+
+        return $this;
+    }
+
+    public function getGndId(): ?string
+    {
+        return $this->gndId;
+    }
+
+    public function setGndId(?string $gndId): self
+    {
+        $this->gndId = $gndId;
+
+        return $this;
+    }
+
+    public function getViafId(): ?string
+    {
+        return $this->viafId;
+    }
+
+    public function setViafId(?string $viafId): self
+    {
+        $this->viafId = $viafId;
+
+        return $this;
+    }
+
+    public function getWikidataId(): ?string
+    {
+        return $this->wikidataId;
+    }
+
+    public function setWikidataId(?string $wikidataId): self
+    {
+        $this->wikidataId = $wikidataId;
+
+        return $this;
+    }
+
+    public static function isWiagidLong($wiagidlong) {
+        // do something reasonable as soon as the WIAG ID format is defined
+        return false;
+    }
+
+
+
 }

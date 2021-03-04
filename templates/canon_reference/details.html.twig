@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% set details=true %}
+    <div class="container-fluid">
+	<div class="row mx-2 my-3 col-12">
+	    {% include('canon_reference/_details.html.twig') %}
+	</div>
+    </div>
+{% endblock %}

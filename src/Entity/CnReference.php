@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CnReference
 {
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -35,7 +36,7 @@ class CnReference
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
      */
-    private $titleShort;
+    private $shorttitle;
 
     public function getId(): ?int
     {
@@ -78,14 +79,14 @@ class CnReference
         return $this;
     }
 
-    public function getTitleShort(): ?string
+    public function getShorttitle(): ?string
     {
-        return $this->titleShort;
+        return $this->shorttitle;
     }
 
-    public function setTitleShort(?string $titleShort): self
+    public function setShorttitle(?string $shorttitle): self
     {
-        $this->titleShort = $titleShort;
+        $this->shorttitle = $shorttitle;
 
         return $this;
     }

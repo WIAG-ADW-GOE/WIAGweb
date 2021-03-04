@@ -54,7 +54,7 @@ end
 """
     fillera(tblera::AbstractString, tblperson::AbstractString, tbloffice::AbstractString, colnameid::AbstractString, datereference=false)::Int
 
-Compute earliest and latest date for each person. 
+Compute earliest and latest date for each person, identified by `colnameid` and `colnameidinoffice`.
 
 Take fields `date_hist_first` and `date_hist_last` into account if `datereference` is set to `true`.
 """
@@ -180,46 +180,61 @@ function fillera(tblera::AbstractString,
     return tblid
 end
 
-function updateofficedate(tablename::AbstractString)::Int
-    dbwiag = DBInterface.connect(MySQL.Connection, "localhost", "wiag", "Wogen&Wellen", db="wiag");
+"""
+    fillofficedate(tblofficedate::AbstractString, tbloffice::AbstractString, colnameid::AbstractString)::Int
 
-    DBInterface.execute(dbwiag, "DELETE FROM " * tablename);
+Extract dates as an integer values.
+"""
+function fillofficedate(tblofficedate::AbstractString,
+                        tbloffice::AbstractString,
+                        colnameid::AbstractString = "id")::Int
 
-    dfoffice = DBInterface.execute(dbwiag,
-                                   "SELECT wiagid, date_start, date_end FROM office") |> DataFrame;
+    global dbwiag
+    if isnothing(dbwiag)
+        setDBWIAG()
+    end
 
-    rgx = r"[1-9][0-9]+";
-    tblid = 0;
+    rgxyear = r"[1-9][0-9][0-9]+";
+    rgxcentury = r"([1-9][0-9])?\. [Jahrh|Jhd]"
 
-    # officestmt = DBInterface.prepare(dbwiag, "SELECT date_start, date_end FROM office"
-    #                                  * " WHERE wiagid_person = ?")
-
-    insertstmt = DBInterface.prepare(dbwiag, "INSERT INTO " * tablename * " VALUES (?, ?, ?)")
-
-    function parsemaybe(rgx, s)::Union{Missing, Int}
-        r = missing
+    function parsemaybe(s)::String
+        r = "NULL"
         if !ismissing(s)
-            rgm = match(rgx, s)
+            rgm = match(rgxyear, s)
             if !isnothing(rgm)
-                r = parse(Int, rgm.match)
-            end
+                r = parse(Int, rgm.match) |> string
+            else
+                rgm = match(rgxcentury, s)
+                if !isnothing(rgm) && !isnothing(rgm[1])
+                    r = parse(Int, rgm[1]) * 100 - 50 |> string
+                end                
+            end            
         end
         return r
     end
 
+    sql = "SELECT " * colnameid * ", date_start, date_end FROM " * tbloffice
+    dfoffice = DBInterface.execute(dbwiag, sql) |> DataFrame;
+
+    csqlvalues = String[]
+    tblid = 0;
     for row in eachrow(dfoffice)
-        wiagid, date_start, date_end = row
+        id, date_start, date_end = row
 
-        dstdate_start = parsemaybe(rgx, date_start)
-        dstdate_end = parsemaybe(rgx, date_end)
+        numdate_start = parsemaybe(date_start)
+        numdate_end = parsemaybe(date_end)
 
-        DBInterface.execute(insertstmt, (wiagid, dstdate_start, dstdate_end));
+        push!(csqlvalues, "(" * id * ", " * numdate_start * ", " * numdate_end * ")")
 
         tblid += 1
         # if tblid > 25 break end
     end
 
+    DBInterface.execute(dbwiag, "DELETE FROM " * tblofficedate);
     
+    sqlvalues = join(csqlvalues, ", ")
+    DBInterface.execute(dbwiag, "INSERT INTO " * tblofficedate * " VALUES " * sqlvalues)    
+
     return tblid
 end
 
@@ -293,15 +308,17 @@ end
 
 
 """
-    striplabel(s::AbstractString)::AbstractString
+    sqlstring(s::AbstractString)::AbstractString
 
-remove labels in data fields ("Taufname: Karl")
+remove labels in data fields ("Taufname: Karl") and escape apostrophes
 """
-function striplabel(s::AbstractString)::AbstractString
+function sqlstring(s::AbstractString)::AbstractString
     poslabel = findfirst(':', s)
     if !isnothing(poslabel)
         s = strip(s[poslabel + 1:end])
     end
+    s = replace(s, "'" => "''")
+    s = "'" * s * "'"
     return s
 end
 
@@ -309,13 +326,15 @@ end
 function fillnamelookupgn(id_person, gn, prefix, fn, fnv)
     csql = String[]
 
+    isnull(s) = ismissing(s) || s == "NULL"
     function pushcsql(gni, fni)
-        sgni = ismissing(gni) ? "NULL" : String(striplabel(gni))
-        sfni = ismissing(fni) ? "NULL" : String(striplabel(fni))
-        prefix = ismissing(prefix) ? "NULL" : prefix
+        sgni = isnull(gni) ? "NULL" : sqlstring(gni)
+        sfni = isnull(fni) ? "NULL" : sqlstring(fni)
+        prefixi = isnull(prefix) ? "NULL" : sqlstring(prefix)
         if !ismissing(id_person)
-            push!(csql, "(" * "NULL, " * "'" * string(id_person)
-                  * "', '" * sgni * "', '" * prefix * "', '" * sfni * "')")
+            id_person_sql = sqlstring(id_person)
+            values = "(" * "NULL, " * id_person_sql * ", " * sgni * ", " * prefixi * ", " * sfni * ")"
+            push!(csql, values)
         else
             @warn "Missing ID for ", gni
         end        
@@ -323,13 +342,13 @@ function fillnamelookupgn(id_person, gn, prefix, fn, fnv)
 
     pushcsql(gn, fn)
     cgn = split(gn);
-    # more than one givenname
+    # more than one givenname -> write a version with the first givenname only
     if length(cgn) > 1
         pushcsql(cgn[1], fn)
     end
 
     # familyname variants
-    if !ismissing(fnv) && fnv != ""
+    if !ismissing(fnv) && strip(fnv) != ""
         cfnv = split(fnv, r", *")
         for fnve in cfnv
             pushcsql(gn, fnve)

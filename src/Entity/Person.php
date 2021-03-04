@@ -26,7 +26,6 @@ class Person {
         $this->officeSortkeys = new ArrayCollection();
     }
 
-
     /**
      * @ORM\Id
      * @ORM\Column(type="string", length=63, nullable = false)
@@ -147,13 +146,11 @@ class Person {
      */
     private $reference;
 
-
     /**
      * @ORM\OneToMany(targetEntity="Office", mappedBy="wiagid_person")
      * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
      */
     private $offices;
-
 
     public static function isWiagidLong($wiagidlong) {
         $match = stristr($wiagidlong, self::WIAGID_PREFIX);

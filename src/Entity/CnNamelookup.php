@@ -10,6 +10,13 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CnNamelookup
 {
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Canon", inversedBy="namelookup")
+     * @ORM\JoinColumn(name="id_canon", referencedColumnName="id")
+     */
+    private $canon;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
