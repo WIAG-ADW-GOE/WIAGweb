@@ -105,12 +105,15 @@ class Diocese
         $this->altlabel = new ArrayCollection();
     }
 
-    public static function wiagidLongToId($wiagidlong) {
+    public static function wiagidLongToId($wiagidlong) {        
         if(strpos($wiagidlong, self::WIAGID_PREFIX) === false)
             return $wiagidlong;
         $head = strlen(self::WIAGID_PREFIX);
         $tail = strlen(self::WIAGID_POSTFIX);
-        return substr($wiagidlong, $head, -$tail);
+        $id_padded = substr($wiagidlong, $head, -$tail);
+        $id_pure = ltrim($id_padded, "0");
+        return $id_pure;
+
     }
 
 
@@ -277,10 +280,10 @@ class Diocese
 
     public function getWiagidLong(): ?string
     {
-        return self::WIAGID_PREFIX.$this->id_diocese.self::WIAGID_POSTFIX;
+        $id_padded = str_pad($this->id_diocese, 3, '0', STR_PAD_LEFT);
+        return self::WIAGID_PREFIX.$id_padded.self::WIAGID_POSTFIX;
     }
-
-
+    
     public function getBishopricseatobj(): ?Place
     {
         return $this->bishopricseatobj;

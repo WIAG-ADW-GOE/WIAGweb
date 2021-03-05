@@ -3,7 +3,7 @@ $(document).ready(function() {
     $('.js-name-autocomplete').each(function() {
 	var autocompleteUrl = $(this).data('autocomplete-url');
 	$(this).autocomplete({hint: false}, [
-            {
+	    {
 		source: function(query, cb) {
 		    $.ajax({
 			url: autocompleteUrl+'?query='+query
@@ -13,7 +13,7 @@ $(document).ready(function() {
 		},
 		displayKey: 'suggestion',
 		debounce: 400 // only request every 400 ms
-            }
+	    }
 	]);
 	// window.alert('suggest name');
     });
@@ -21,7 +21,7 @@ $(document).ready(function() {
     $('.js-place-autocomplete').each(function() {
 	var autocompleteUrl = $(this).data('autocomplete-url');
 	$(this).autocomplete({hint: false}, [
-            {
+	    {
 		source: function(query, cb) {
 		    $.ajax({
 			url: autocompleteUrl+'?query='+query
@@ -31,15 +31,15 @@ $(document).ready(function() {
 		},
 		displayKey: 'suggestion',
 		debounce: 400 // only request every 400 ms
-            }
+	    }
 	]);
 	// window.alert('suggest place');
     });
 
-        $('.js-office-autocomplete').each(function() {
+    $('.js-office-autocomplete').each(function() {
 	var autocompleteUrl = $(this).data('autocomplete-url');
 	$(this).autocomplete({hint: false}, [
-            {
+	    {
 		source: function(query, cb) {
 		    $.ajax({
 			url: autocompleteUrl+'?query='+query
@@ -49,11 +49,25 @@ $(document).ready(function() {
 		},
 		displayKey: 'suggestion',
 		debounce: 400 // only request every 400 ms
-            }
+	    }
 	]);
 	// window.alert('suggest office');
     });
 
+    // copy link for the current person to clipboard
+    $('.to-clipboard').each(function() {
+	$(this).click(function(event) {
+	    var clipboardText = event.target.getAttribute('title');
+	    navigator.clipboard.writeText(clipboardText);
+	});
+    });
+
+    // copy citation to clipboard
+    $('#copy-citation').click(function() {
+	var citationElem = $('#citation');
+	var clipboardText = citationElem.text();
+	navigator.clipboard.writeText(clipboardText);
+    });
+
 
 });
-
