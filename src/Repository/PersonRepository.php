@@ -20,7 +20,7 @@ use Doctrine\ORM\QueryBuilder;
 class PersonRepository extends ServiceEntityRepository {
 
     // Allow deviations in the query parameter `year`.
-    const MARGINYEAR = 50;
+    const MARGINYEAR = 1;
 
     public function __construct(ManagerRegistry $registry)
     {
