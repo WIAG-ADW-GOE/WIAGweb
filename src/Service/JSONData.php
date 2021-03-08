@@ -71,10 +71,10 @@ class JSONData {
         if($fv) $pj['variantGivenName'] = $fv;
 
         $fv = $person->getCommentName();
-        if($fv) $pj['comment_name'] = $fv;
+        if($fv) $pj['commentName'] = $fv;
 
         $fv = $person->getCommentPerson();
-        if($fv) $pj['comment_person'] = $fv;
+        if($fv) $pj['commentPerson'] = $fv;
 
         $fv = $person->getGivennameVariant();
         if($fv) $pj['variantGivenName'] = $fv;
@@ -167,7 +167,7 @@ class JSONData {
     public function dioceseToData($diocese, $baseurl) {
         $cd = array();
         $wiagid = $diocese->getWiagidLong();
-        $cd['wiagid'] = $wiagid;
+        $cd['wiagId'] = $wiagid;
 
         $idpath = $baseurl.'/'.self::ID_PATH;
 
