@@ -6,10 +6,10 @@ use App\Form\BishopQueryFormType;
 use App\Form\Model\BishopQueryFormModel;
 use App\Entity\Person;
 use App\Entity\Diocese;
-use App\Service\CSVData;
-use App\Service\JSONData;
-use App\Service\RDFData;
-use App\Service\JSONLDData;
+use App\Service\PersonData;
+use App\Service\PersonLinkedData;
+use App\Service\DioceseData;
+use App\Service\DioceseLinkedData;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,10 +22,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class IDController extends AbstractController {
 
-    private $csvdata;
-    private $jdata;
-    private $rdfdata;
-    private $jlddata;
+    private $personData;
+    private $personLinkedData;
+    private $dioceseData;
+    private $dioceseLinkedData;
 
     const FORMAT_MAP = [
         'application/rdf+xml' => 'rdf',
@@ -35,11 +35,11 @@ class IDController extends AbstractController {
         'text/html' => 'rdf', # standard within the route for data
     ];
 
-    public function __construct(CSVData $csvdata, JSONData $jdata, RDFData $rdfdata, JSONLDData $jlddata) {
-        $this->csvdata = $csvdata;
-        $this->jdata = $jdata;
-        $this->rdfdata = $rdfdata ;
-        $this->jlddata = $jlddata;
+    public function __construct(PersonData $personData, PersonLinkedData $personLinkedData, DioceseData $dioceseData, DioceseLinkedData $dioceseLinkedData) {
+        $this->personData = $personData;
+        $this->personLinkedData = $personLinkedData;
+        $this->dioceseData = $dioceseData;
+        $this->dioceseLinkedData = $dioceseLinkedData;
     }
 
     /**
@@ -136,23 +136,23 @@ class IDController extends AbstractController {
         switch($format) {
         case 'csv':
             $personID = $person->getWiagidLong();
-            $data = $this->csvdata->personToCSV($person, $baseurl);
+            $data = $this->personData->personToCSV($person, $baseurl);
             $response->headers->set('Content-Type', "text/csv; charset=utf-8");
             $response->headers->set('Content-Disposition', "filename={$personID}.csv");
             break;
         case 'json':
-            $data = $this->jdata->personToJSON($person, $baseurl);
+            $data = $this->personData->personToJSON($person, $baseurl);
             $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
             break;
         case 'jsonld':
         case 'json-ld':
-            $data = $this->jlddata->personToJSONLD($person, $baseurl);
+            $data = $this->personLinkedData->personToJSONLD($person, $baseurl);
             $response->headers->set('Content-Type', 'application/ld+json;charset=UTF-8');
             break;
         case null:
         case 'rdf':
         case '':
-            $data = $this->rdfdata->personToRdf($person, $baseurl);
+            $data = $this->personLinkedData->personToRdf($person, $baseurl);
             $response->headers->set('Content-Type', 'application/rdf+xml;charset=UTF-8');
             break;
         default:
@@ -208,23 +208,23 @@ class IDController extends AbstractController {
         switch($format) {
         case 'csv':
             $dioceseID = $diocese->getWiagidLong();
-            $data = $this->csvdata->dioceseToCSV($diocese, $baseurl);
+            $data = $this->dioceseData->dioceseToCSV($diocese, $baseurl);
             $response->headers->set('Content-Type', "text/csv; charset=utf-8");
             $response->headers->set('Content-Disposition', "filename={$dioceseID}.csv");
             break;
         case 'json':
-            $data = $this->jdata->dioceseToJSON($diocese, $baseurl);
+            $data = $this->dioceseData->dioceseToJSON($diocese, $baseurl);
             $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
             break;
         case 'json-ld':
         case 'jsonld':
-            $data = $this->jlddata->dioceseToJSONLD($diocese, $baseurl);
+            $data = $this->dioceseLinkedData->dioceseToJSONLD($diocese, $baseurl);
             $response->headers->set('Content-Type', 'application/ld+json;charset=UTF-8');
             break;
         case null:
         case '':
         case 'rdf':
-            $data = $this->rdfdata->dioceseToRdf($diocese, $baseurl);
+            $data = $this->dioceseLinkedData->dioceseToRdf($diocese, $baseurl);
             $response->headers->set('Content-Type', 'application/rdf+xml;charset=UTF-8');
             break;
         default:

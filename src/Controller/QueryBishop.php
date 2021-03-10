@@ -11,10 +11,8 @@ use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
 use App\Entity\Diocese;
 use App\Repository\PersonRepository;
-use App\Service\CSVData;
-use App\Service\JSONData;
-use App\Service\RDFData;
-use App\Service\JSONLDData;
+use App\Service\PersonData;
+use App\Service\PersonLinkedData;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -39,10 +37,8 @@ class QueryBishop extends AbstractController {
      */
     public function launch_query(Request $request,
                                  PersonRepository $personRepository,
-                                 CSVData $csvdata,
-                                 JSONData $jsondata,
-                                 RDFData $rdfdata,
-                                 JSONLDData $jsonlddata) {
+                                 PersonData $personData,
+                                 PersonLinkedData $personLinkedData) {
 
         // we need to pass an instance of BishopQueryFormModel, because facets depend on it's data
         $bishopquery = new BishopQueryFormModel;
@@ -94,20 +90,20 @@ class QueryBishop extends AbstractController {
 
                     switch($buttonname) {
                     case 'searchJSON':
-                        $data = $jsondata->personsToJSON($persons, $baseurl);
+                        $data = $personData->personsToJSON($persons, $baseurl);
                         $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
                         break;
                     case 'searchCSV':
-                        $data = $csvdata->personsToCSV($persons, $baseurl);
+                        $data = $personData->personsToCSV($persons, $baseurl);
                         $response->headers->set('Content-Type', "text/csv; charset=utf-8");
                         $response->headers->set('Content-Disposition', "filename=WIAG-Pers-EPISCGatz.csv");
                         break;
                     case 'searchRDF':
-                        $data = $rdfdata->personsToRdf($persons, $baseurl);
+                        $data = $personLinkedData->personsToRdf($persons, $baseurl);
                         $response->headers->set('Content-Type', 'application/rdf+xml;charset=UTF-8');
                         break;
                     case 'searchJSONLD':
-                        $data = $jsonlddata->personsToJSONLD($persons, $baseurl);
+                        $data = $personLinkedData->personsToJSONLD($persons, $baseurl);
                         $response->headers->set('Content-Type', 'application/ld+json;charset=UTF-8');
                     }
                     $response->setContent($data);

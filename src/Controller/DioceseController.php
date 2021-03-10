@@ -3,10 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Diocese;
-use App\Service\CSVData;
-use App\Service\JSONData;
-use App\Service\RDFData;
-use App\Service\JSONLDData;
+use App\Service\DioceseData;
+use App\Service\DioceseLinkedData;
 
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -63,10 +61,8 @@ class DioceseController extends AbstractController {
      * @Route("/bistuemer", name="query_dioceses")
      */
     public function dioceses (Request $request,
-                              CSVData $csvdata,
-                              JSONData $jsondata,
-                              RDFData $rdfdata,
-                              JSONLDData $jsonlddata) {
+                              DioceseData $dioceseData,
+                              DioceseLinkedData $dioceseLinkedData) {
 
         $diocesequery = new Diocese();
 
@@ -125,7 +121,7 @@ class DioceseController extends AbstractController {
                     $baseurl = $request->getSchemeAndHttpHost();
                     switch($format) {
                     case 'CSV':
-                        $data = $csvdata->diocesesToCSV($dioceses, $baseurl);
+                        $data = $dioceseData->diocesesToCSV($dioceses, $baseurl);
                         $response =  new Response($data);
                         $response->headers->set('Content-Type', "text/csv; charset=utf-8");
                         $response->headers->set('Content-Disposition', "filename=WIAGDioceses.csv");
@@ -133,7 +129,7 @@ class DioceseController extends AbstractController {
                         return $response;
                         break;
                     case 'JSON':
-                        $data = $jsondata->diocesesToJSON($dioceses, $baseurl);
+                        $data = $dioceseData->diocesesToJSON($dioceses, $baseurl);
                         $response = new Response();
                         $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
                         $response->setContent($data);
@@ -141,7 +137,7 @@ class DioceseController extends AbstractController {
                         return $response;
                         break;
                     case 'RDF':
-                        $data = $rdfdata->diocesesToRdf($dioceses, $baseurl);
+                        $data = $dioceseLinkedData->diocesesToRdf($dioceses, $baseurl);
                         $response = new Response();
                         $response->headers->set('Content-Type', 'application/rdf+xml;charset=UTF-8');
                         $response->setContent($data);
@@ -149,7 +145,7 @@ class DioceseController extends AbstractController {
                         return $response;
                         break;
                     case 'JSONLD':
-                        $data = $jsonlddata->diocesesToJSONLD($dioceses, $baseurl);
+                        $data = $dioceseLinkedData->diocesesToJSONLD($dioceses, $baseurl);
                         $response = new Response();
                         $response->headers->set('Content-Type', 'application/ld+json;charset=UTF-8');
                         $response->setContent($data);

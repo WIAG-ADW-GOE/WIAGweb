@@ -6,10 +6,11 @@ use App\Entity\Diocese;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Serializer\Serializer;
 
 
-class JSONData {
+class PersonData {
 
     const ID_PATH = 'id/';
 
@@ -52,6 +53,31 @@ class JSONData {
         return $json;
     }
 
+        public function personToCSV($person, $baseurl) {
+        $personNode = $this->personData($person, $baseurl);
+
+        $csvencoder = new CsvEncoder();
+        $csv = $csvencoder->encode($personNode, 'csv', [
+            'csv_delimiter' => "\t",
+        ]);
+
+        return $csv;
+    }
+
+    public function personsToCSV($persons, $baseurl) {
+        $personNodes = array();
+        foreach($persons as $person) {
+            array_push($personNodes, $this->personData($person, $baseurl));
+        }
+
+        $csvencoder = new CsvEncoder();
+        $csv = $csvencoder->encode($personNodes, 'csv', [
+            'csv_delimiter' => "\t",
+        ]);
+
+        return $csv;
+    }
+
     public function personData($person, $baseurl) {
         $pj = array();
         $pj['wiagId'] = $person->getWiagidLong();
@@ -65,20 +91,16 @@ class JSONData {
         if($fv) $pj['prefix'] = $fv;
 
         $fv = $person->getFamilynameVariant();
-        if($fv) $pj['variantFamilyName'] = $fv;
+        if($fv) $pj['familyNameVariant'] = $fv;
 
         $fv = $person->getGivennameVariant();
-        if($fv) $pj['variantGivenName'] = $fv;
+        if($fv) $pj['givenNameVariant'] = $fv;
 
         $fv = $person->getCommentName();
         if($fv) $pj['commentName'] = $fv;
 
         $fv = $person->getCommentPerson();
         if($fv) $pj['commentPerson'] = $fv;
-
-        $fv = $person->getGivennameVariant();
-        if($fv) $pj['variantGivenName'] = $fv;
-
 
         $fv = $person->getDateBirth();
         if($fv) $pj['dateOfBirth'] = $fv;

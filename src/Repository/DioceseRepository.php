@@ -142,6 +142,17 @@ class DioceseRepository extends ServiceEntityRepository
         return $dioceses;
     }
 
+    public function getDioceseID($diocese) {
+        if(is_null($diocese)) return null;
+        $diocObj = $this->findByNameWithBishopricSeat($diocese);
+        $diocID = null;
+        if($diocObj) {
+            $diocID = $diocObj[0]->getWiagIdLong();
+
+        }
+        return $diocID;
+    }
+
     /* AJAX callback */
     public function suggestDiocese($diocese, $limit) {
         $qb = $this->createQueryBuilder('dc')
