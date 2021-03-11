@@ -22,25 +22,6 @@ class DioceseData {
     const NAMESP_GND="https://d-nb.info/standards/elementset/gnd#";
     const NAMESP_SCHEMA="https://schema.org/";
 
-
-    private $entitymanager;
-
-    public function __construct(EntityManagerInterface $em) {
-        $this->entitymanager = $em;
-    }
-
-    public function getDioceseID($diocese) {
-        if(is_null($diocese)) return null;
-        $diocRepository = $this->entitymanager->getRepository(Diocese::class);
-        $diocObj = $diocRepository->findByNameWithBishopricSeat($diocese);
-        $diocID = null;
-        if($diocObj) {
-            $diocID = $diocObj[0]->getWiagIdLong();
-
-        }
-        return $diocID;
-    }
-
     public function dioceseToJSON($diocese, $baseurl) {
         $encoders = array(new JsonEncoder());
         $serializer = new Serializer([], $encoders);
@@ -148,6 +129,14 @@ class DioceseData {
                 $cei[$jsonName] = $extidurl;
             }
             $cd['identifiers'] = $cei;
+        }
+
+        $fv = $diocese->getReference();
+        if($fv) {
+            $cd['reference'] = $fv->toArray();
+            $fiv = $diocese->getGatzPages();
+            if($fiv)
+                $cd['reference']['pages'] = $fiv;
         }
 
         $fv = $diocese->getCommentAuthorityFile();

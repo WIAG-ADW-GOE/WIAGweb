@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Diocese;
 use App\Entity\Place;
+use App\Entity\Reference;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -68,9 +69,12 @@ class DioceseRepository extends ServiceEntityRepository
         $query = $qb->getQuery();
         $diocese = $query->getOneOrNullResult();
 
-        if($diocese === null)
-            return null;
-
+        if ($diocese !== null) {
+            $em = $this->getEntityManager();
+            $reference = $em->getRepository(Reference::class)
+                            ->find(Diocese::REFERENCE_ID);
+            $diocese->setReference($reference);
+        }
 
         return $diocese;
     }
@@ -138,7 +142,8 @@ class DioceseRepository extends ServiceEntityRepository
         }
 
         $query = $qb->getQuery();
-        $dioceses = $query->getResult();
+        $dioceses = $query->getResult();        
+        
         return $dioceses;
     }
 

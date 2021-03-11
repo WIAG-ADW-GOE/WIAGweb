@@ -17,10 +17,11 @@ $(document).ready(function() {
 	]);
     });
 
-    // copy link for the current person to clipboard
+    // copy link for the current diocese to clipboard
     $('.to-clipboard').each(function() {
 	$(this).click(function(event) {
-	    var clipboardText = event.target.getAttribute('title');
+	    var buttonElem = $(this);
+	    var clipboardText = buttonElem[0].getAttribute('title');
 	    navigator.clipboard.writeText(clipboardText);
 	});
     });

@@ -14,6 +14,11 @@ class Diocese
 {
     const WIAGID_PREFIX = 'WIAG-Inst-DIOCGatz-';
     const WIAGID_POSTFIX = '-001';
+    const REFERENCE_ID = 2;
+
+    /* set this to the one and only reference for dioceses in DioceseRepository
+     */
+    private $reference;
 
     /**
      * @ORM\Id
@@ -116,6 +121,14 @@ class Diocese
 
     }
 
+    public function getReference(): ?object {
+        return $this->reference;
+    }
+
+    public function setReference($reference): self {
+        $this->reference = $reference;
+        return $this;
+    }
 
     public function getId(): ?int
     {
@@ -240,6 +253,10 @@ class Diocese
         $this->gatz_pages = $gatz_pages;
 
         return $this;
+    }
+
+    public function getReferenceId() {
+        return self::REFERENCE_ID;
     }
 
     public function getAltesReich(): ?bool

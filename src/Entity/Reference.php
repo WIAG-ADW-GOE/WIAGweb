@@ -107,10 +107,14 @@ class Reference
     public function toArray(): array {
         $rfj = array();
 
-        $rfj['title'] = $this->getFullCitation();
+        $rfj['citation'] = $this->getFullCitation();
 
         $fv = $this->getAuthorEditor();
         if($fv) $rfj['authorOrEditor'] = $fv;
+
+        $fv = $this->getRiOpacId();
+        if($fv) $rfj['RI-OPAC'] = $fv;
+
 
         $fv = $this->getOnlineressource();
         if($fv) $rfj['online'] = $fv;

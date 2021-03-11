@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Diocese;
+use App\Entity\Reference;
 use App\Service\DioceseData;
 use App\Service\DioceseLinkedData;
 
@@ -245,6 +246,11 @@ class DioceseController extends AbstractController {
         if (!$diocese) {
             throw $this->createNotFoundException("Bistum wurde nicht gefunden.");
         }
+
+        $reference = $this->getDoctrine()
+                          ->getRepository(Reference::class)
+                          ->find(Diocese::REFERENCE_ID);
+        $diocese->setReference($reference);
 
         return $this->render('query_diocese/details.html.twig', [
             'form' => $form->createView(),
