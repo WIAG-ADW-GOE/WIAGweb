@@ -113,8 +113,7 @@ class Reference
         if($fv) $rfj['authorOrEditor'] = $fv;
 
         $fv = $this->getRiOpacId();
-        if($fv) $rfj['RI-OPAC'] = $fv;
-
+        if($fv) $rfj['RiOpac'] = $fv;
 
         $fv = $this->getOnlineressource();
         if($fv) $rfj['online'] = $fv;

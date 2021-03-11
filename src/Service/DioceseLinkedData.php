@@ -94,7 +94,7 @@ class DioceseLinkedData {
             $clabel = array();
             foreach($fv as $label) {
                 $altlabel = $label->toArray();
-                $name = $altlabel['name'];
+                $name = $altlabel['altLabel'];
                 $lang = $altlabel['lang'];
                 $clabel[$lang][] = $name;
             }
@@ -135,7 +135,7 @@ class DioceseLinkedData {
 
         return array_merge($dioceseID, $dld);
     }
-    
+
     public function dioceseToRdf($person, $baseurl) {
         $encoders = array(new XmlEncoder());
         $serializer = new Serializer([], $encoders);

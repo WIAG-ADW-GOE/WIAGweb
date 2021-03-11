@@ -22,6 +22,16 @@ class DioceseData {
     const NAMESP_GND="https://d-nb.info/standards/elementset/gnd#";
     const NAMESP_SCHEMA="https://schema.org/";
 
+    const EXTERNAL_ID_FIELDS = [
+        'Wikidata' => 'wikidataId',
+        'Factgrid' => 'factgridId',
+        'Gemeinsame Normdatei (GND) ID' => 'gndId',
+        'VIAF-ID' => 'viafId',
+        'CERL-ID' => 'cerlId',
+        'Catholic Hierarchy, Diocese' => 'catholicHierarchyDiocese',
+        'Wikipedia-Artikel' => 'wikipediaUrl',
+    ];
+
     public function dioceseToJSON($diocese, $baseurl) {
         $encoders = array(new JsonEncoder());
         $serializer = new Serializer([], $encoders);
@@ -122,11 +132,11 @@ class DioceseData {
                 $jsonName = $extid->getAuthority()->getUrlNameFormatter();
                 $extidurl = $extid->getUrlValue();
                 if($jsonName == "Wikipedia-Artikel") {
-                    $jsonName = "wikipediaUrl";
                     $baseurl = $extid->getAuthority()->getUrlFormatter();
                     $extidurl = $baseurl.urlencode($extidurl);
                 }
-                $cei[$jsonName] = $extidurl;
+                $extidfieldname = self::EXTERNAL_ID_FIELDS[$jsonName];
+                $cei[$extidfieldname] = $extidurl;
             }
             $cd['identifiers'] = $cei;
         }
@@ -143,6 +153,6 @@ class DioceseData {
         if($fv) $cd['identifiersComment'] = $fv;
 
         return $cd;
-    }    
+    }
 
 };
