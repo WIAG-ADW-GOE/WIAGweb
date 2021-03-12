@@ -126,14 +126,15 @@ class DioceseRepository extends ServiceEntityRepository
         return $count ? $count['count'] : null;
     }
 
-    public function findByNameWithBishopricSeat($name, $limit = null, $offset = 0) {
+    public function findByNameWithBishopricSeat($name = null, $limit = null, $offset = 0) {
         $qb = $this->createQueryBuilder('diocese')
                    ->addSelect('placeobj')
                    ->leftJoin('diocese.bishopricseatobj', 'placeobj');
 
-        if($name != "")
+        if(!is_null($name) && $name != "") {
             $qb->andWhere('diocese.diocese LIKE :name')
                ->setParameter('name', '%'.$name.'%');
+        }
 
         if($limit) {
             $qb->orderBy('diocese.diocese')
@@ -142,8 +143,8 @@ class DioceseRepository extends ServiceEntityRepository
         }
 
         $query = $qb->getQuery();
-        $dioceses = $query->getResult();        
-        
+        $dioceses = $query->getResult();
+
         return $dioceses;
     }
 

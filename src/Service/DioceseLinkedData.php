@@ -197,7 +197,7 @@ class DioceseLinkedData {
             $clabel = array();
             foreach($fv as $label) {
                 $altlabel = $label->toArray();
-                $name = $altlabel['name'];
+                $name = $altlabel['altLabel'];
                 $lang = $altlabel['lang'];
                 $clabel[] = RDFData::rdfLangStringData($name, $lang);
             }
