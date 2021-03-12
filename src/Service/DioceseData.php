@@ -7,6 +7,7 @@ use App\Entity\Diocese;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Serializer;
 
 
@@ -35,7 +36,7 @@ class DioceseData {
     public function dioceseToJSON($diocese, $baseurl) {
         $encoders = array(new JsonEncoder());
         $serializer = new Serializer([], $encoders);
-        $dioceseNode = $this->dioceseToData($diocese, $baseurl);
+        $dioceseNode = $this->dioceseData($diocese, $baseurl);
         $json = $serializer->serialize($dioceseNode, 'json');
 
         return $json;
@@ -47,7 +48,7 @@ class DioceseData {
 
         $dioceseNodes = array();
         foreach($dioceses as $diocese) {
-            array_push($dioceseNodes, $this->dioceseToData($diocese, $baseurl));
+            array_push($dioceseNodes, $this->dioceseData($diocese, $baseurl));
         }
 
         $json = $serializer->serialize(['dioceses' => $dioceseNodes], 'json');
@@ -56,7 +57,7 @@ class DioceseData {
     }
 
     public function dioceseToCSV($diocese, $baseurl) {
-        $dioceseNode = $this->dioceseToData($diocese, $baseurl);
+        $dioceseNode = $this->dioceseData($diocese, $baseurl);
 
         $csvencoder = new CsvEncoder();
         $csv = $csvencoder->encode($dioceseNode, 'csv', [
@@ -69,7 +70,7 @@ class DioceseData {
     public function diocesesToCSV($dioceses, $baseurl) {
         $dioceseNodes = array();
         foreach($dioceses as $diocese) {
-            array_push($dioceseNodes, $this->dioceseToData($diocese, $baseurl));
+            array_push($dioceseNodes, $this->dioceseData($diocese, $baseurl));
         }
 
         $csvencoder = new CsvEncoder();
@@ -80,7 +81,26 @@ class DioceseData {
         return $csv;
     }
 
-    public function dioceseToData($diocese, $baseurl) {
+    public function diocesesToXML($dioceses, $baseurl) {
+        // see https://symfony.com/doc/current/components/serializer.html#the-xmlencoder-context-options
+        $XML_CONTEXT = [
+            'xml_format_output' => true,
+            'xml_root_node_name' => 'WIAGDioceses',
+            'xml_encoding' => 'utf-8',
+        ];
+        $encoders = array(new XmlEncoder());
+        $serializer = new Serializer([], $encoders);
+
+        $dioceseNodes = array();
+        foreach($dioceses as $diocese) {
+            array_push($dioceseNodes, $this->dioceseData($diocese, $baseurl));
+        }
+        $rdf = $serializer->serialize($dioceseNodes, 'xml', $XML_CONTEXT);
+
+        return $rdf;
+    }
+
+    public function dioceseData($diocese, $baseurl) {
         $cd = array();
         $wiagid = $diocese->getWiagidLong();
         $cd['wiagId'] = $wiagid;

@@ -46,6 +46,9 @@
 					<a class="dropdown-item" href="{{ path('launch_query') }}">Bischöfe des Alten Reiches</a>
 					<a class="dropdown-item" href="{{ path('query_dioceses') }}">Bistümer des Alten Reiches</a>
 					<a class="dropdown-item" href="{{ path('query_canons') }}">Domherren des Alten Reiches</a>
+					{% if is_granted('ROLE_DATA_ADMIN') %}
+					    <a class="dropdown-item" href="{{ path('bulk_export_dispatch') }}">Datenexport</a>
+					{% endif %}
 				    </div>
 				</div></li>
 			    {% endif %}

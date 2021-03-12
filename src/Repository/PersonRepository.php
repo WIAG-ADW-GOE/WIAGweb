@@ -115,7 +115,7 @@ class PersonRepository extends ServiceEntityRepository {
         return $ncount;
     }
 
-    public function findWithOffices(BishopQueryFormModel $bishopquery, $limit = 0, $offset = 0) {
+    public function findWithOffices(?BishopQueryFormModel $bishopquery, $limit = 0, $offset = 0) {
 
         $qb = $this->createQueryBuilder('person')
                    ->leftJoin('person.offices', 'oc')
@@ -123,8 +123,10 @@ class PersonRepository extends ServiceEntityRepository {
                    ->leftJoin('oc.numdate', 'ocdatecmp')
                    ->addSelect('ocdatecmp');
 
-        $this->addQueryConditions($qb, $bishopquery);
-
+        if (!is_null($bishopquery)) {
+            $this->addQueryConditions($qb, $bishopquery);
+            $this->addSortParameter($qb, $bishopquery);
+        }
 
         if($limit > 0) {
             $qb->setMaxResults($limit);
@@ -132,8 +134,6 @@ class PersonRepository extends ServiceEntityRepository {
         }
 
         // dump($qb->getDQL());
-
-        $this->addSortParameter($qb, $bishopquery);
 
         $query = $qb->getQuery();
         // dd($query->getResult());

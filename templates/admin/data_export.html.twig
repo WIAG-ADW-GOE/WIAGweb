@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {# It is ok to drop the wrapping container. This leads here to the desired left margin.#}
+    <div class="row mx-2 mb-3">
+	<div class="col">
+	    <span class="topic-title">Datenexport</span>
+	</div>
+    </div>
+    {% if is_granted('ROLE_DATA_ADMIN') %}
+	<div class="row mx-2">
+	    <div class="col-md-3">
+		<figure class="figure">
+		    <img src="{{ asset('images/Bischoefe-sc10.jpg') }}" class="figure-img img-fluid">
+		</figure>
+		<div class="dropdown">
+		    <button class="btn btn-light font-weight-bold bg-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Bischöfe des Alten Reiches</button>
+		    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			<a class="dropdown-item" href="{{ path('bulk_bishop_export', {format: 'json'}) }}">JSON</a>
+			<a class="dropdown-item" href="{{ path('bulk_bishop_export', {format: 'csv'}) }}">CSV</a>
+			<a class="dropdown-item" href="{{ path('bulk_bishop_export', {format: 'xml'}) }}">XML</a>
+			<a class="dropdown-item" href="{{ path('bulk_bishop_export', {format: 'rdf'}) }}">RDF-XML</a>
+			<a class="dropdown-item" href="{{ path('bulk_bishop_export', {format: 'jsonld'}) }}">JSON-LD</a>
+		    </div>
+		</div>
+	    </div>
+	    <div class="col-md-3">
+		<figure class="figure">
+		    <a href="{{ path('query_dioceses') }}"><img src="{{ asset('images/Bistuemer-sc10.jpg') }}" class="figure-img img-fluid"></a>
+		</figure>
+		<div class="dropdown">
+		    <button class="btn btn-light font-weight-bold bg-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Bistümer des Alten Reiches</button>
+		    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			<a class="dropdown-item" href="{{ path('bulk_diocese_export', {format: 'json'}) }}">JSON</a>
+			<a class="dropdown-item" href="{{ path('bulk_diocese_export', {format: 'csv'}) }}">CSV</a>
+			<a class="dropdown-item" href="{{ path('bulk_diocese_export', {format: 'xml'}) }}">XML</a>
+			<a class="dropdown-item" href="{{ path('bulk_diocese_export', {format: 'rdf'}) }}">RDF-XML</a>
+			<a class="dropdown-item" href="{{ path('bulk_diocese_export', {format: 'jsonld'}) }}">JSON-LD</a>
+		    </div>
+		</div>
+	    </div>
+	</div>
+    {% endif %}
+{% endblock %}

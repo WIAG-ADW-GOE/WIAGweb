@@ -7,6 +7,7 @@ use App\Entity\Diocese;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Serializer;
 
 
@@ -53,7 +54,7 @@ class PersonData {
         return $json;
     }
 
-        public function personToCSV($person, $baseurl) {
+    public function personToCSV($person, $baseurl) {
         $personNode = $this->personData($person, $baseurl);
 
         $csvencoder = new CsvEncoder();
@@ -77,6 +78,26 @@ class PersonData {
 
         return $csv;
     }
+
+    public function personsToXML($persons, $baseurl) {
+        // see https://symfony.com/doc/current/components/serializer.html#the-xmlencoder-context-options
+        $XML_CONTEXT = [
+            'xml_format_output' => true,
+            'xml_root_node_name' => 'WIAGBishops',
+            'xml_encoding' => 'utf-8',
+        ];
+        $encoders = array(new XmlEncoder());
+        $serializer = new Serializer([], $encoders);
+
+        $personNodes = array();
+        foreach($persons as $person) {
+            array_push($personNodes, $this->personData($person, $baseurl));
+        }
+        $rdf = $serializer->serialize($personNodes, 'xml', $XML_CONTEXT);
+
+        return $rdf;
+    }
+
 
     public function personData($person, $baseurl) {
         $pj = array();
@@ -149,108 +170,6 @@ class PersonData {
 
         return $pj;
 
-    }
-
-    public function getDioceseID($diocese) {
-        if(is_null($diocese)) return null;
-        $diocRepository = $this->entitymanager->getRepository(Diocese::class);
-        $diocObj = $diocRepository->findByNameWithBishopricSeat($diocese);
-        $diocID = null;
-        if($diocObj) {
-            $diocID = $diocObj[0]->getWiagIdLong();
-
-        }
-        return $diocID;
-    }
-
-    public function dioceseToJSON($diocese, $baseurl) {
-        $encoders = array(new JsonEncoder());
-        $serializer = new Serializer([], $encoders);
-        $dioceseNode = $this->dioceseToData($diocese, $baseurl);
-        $json = $serializer->serialize($dioceseNode, 'json');
-
-        return $json;
-    }
-
-    public function diocesesToJSON($dioceses, $baseurl) {
-        $encoders = array(new JsonEncoder());
-        $serializer = new Serializer([], $encoders);
-
-        $dioceseNodes = array();
-        foreach($dioceses as $diocese) {
-            array_push($dioceseNodes, $this->dioceseToData($diocese, $baseurl));
-        }
-
-        $json = $serializer->serialize(['dioceses' => $dioceseNodes], 'json');
-
-        return $json;
-    }
-
-    public function dioceseToData($diocese, $baseurl) {
-        $cd = array();
-        $wiagid = $diocese->getWiagidLong();
-        $cd['wiagId'] = $wiagid;
-
-        $idpath = $baseurl.'/'.self::ID_PATH;
-
-        $cd['URI'] = $idpath.$wiagid;
-
-        $fv = $diocese->getDiocese();
-        if($fv) $cd['name'] = $fv;
-
-        $fv = $diocese->getDioceseStatus();
-        if($fv) $cd['status'] = $fv;
-
-        $fv = $diocese->getDateOfFounding();
-        if($fv) $cd['dateOfFounding'] = $fv;
-
-        $fv = $diocese->getDateOfDissolution();
-        if($fv) {
-            $cd['dateOfDissolution']
-                = $fv == 'keine' ? 'none' : $fv;
-        }
-
-        $fv = $diocese->getAltlabel();
-        if($fv) {
-            $clabel = array();
-            foreach($fv as $label) {
-                $clabel[] = $label->toArray();
-            }
-            $cd['altLabels'] = $clabel;
-        }
-
-        $fv = $diocese->getNoteDiocese();
-        if($fv) $cd['note'] = $fv;
-
-        $fv = $diocese->getEcclesiasticalProvince();
-        if($fv) $cd['ecclesiasticalProvince'] = $fv;
-
-        $fv = $diocese->getBishopricseatobj();
-        if($fv) $cd['bishopricSeat'] = $fv->getPlaceName();
-
-        $fv = $diocese->getNoteBishopricSeat();
-        if($fv) $cd['noteBishopricSeat'] = $fv;
-
-        $fv = $diocese->getExternalUrls();
-        if($fv) {
-            $cei = array();
-            foreach($fv as $extid) {
-                $jsonName = $extid->getAuthority()->getUrlNameFormatter();
-                $extidurl = $extid->getUrlValue();
-                if($jsonName == "Wikipedia-Artikel") {
-                    $jsonName = "wikipediaUrl";
-                    $baseurl = $extid->getAuthority()->getUrlFormatter();
-                    $extidurl = $baseurl.urlencode($extidurl);
-                }
-                $cei[$jsonName] = $extidurl;
-            }
-            $cd['identifiers'] = $cei;
-        }
-
-        $fv = $diocese->getCommentAuthorityFile();
-        if($fv) $cd['identifiersComment'] = $fv;
-
-        return $cd;
     }
 
 };
