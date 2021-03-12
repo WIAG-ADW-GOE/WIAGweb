@@ -71,6 +71,7 @@ class ExportController extends AbstractController {
         $baseurl = $request->getSchemeAndHttpHost();
         $mimetype = "text/plain";
         $filename = "";
+        ini_set("memory_limit", "265M");
 
         switch($format) {
         case 'csv':
@@ -117,6 +118,7 @@ class ExportController extends AbstractController {
         $response->headers->set('Content-Disposition', $disposition);
 
         $response->setContent($data);
+        ini_restore("memory_limit");
 
         return $response;
     }
