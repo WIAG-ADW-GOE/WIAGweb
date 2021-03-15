@@ -10,6 +10,19 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CnCanonReference
 {
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Canon")
+     * @ORM\JoinColumn(name="id_canon", referencedColumnName="id")
+     */
+    private $canon;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CnReference")
+     * @ORM\JoinColumn(name="id_reference", referencedColumnName="id")
+     */
+    private $reference;
+    
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -89,4 +102,10 @@ class CnCanonReference
 
         return $this;
     }
+
+    public function getReference(): ?object
+    {
+        return $this->reference;
+    }
+
 }

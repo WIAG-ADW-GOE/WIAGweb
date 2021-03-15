@@ -47,7 +47,7 @@ class CnOfficeRepository extends ServiceEntityRepository
         ;
     }
     */
-    
+
     public function setMonasteryLocation(CnOffice $oc) {
 
         if($oc->getIdMonastery()) {
@@ -105,6 +105,7 @@ class CnOfficeRepository extends ServiceEntityRepository
         foreach($a as $el) {
             $as[] = $el[$field];
         }
+        $as = array_unique($as);
         return implode(", ", $as);
     }
 
@@ -126,5 +127,37 @@ class CnOfficeRepository extends ServiceEntityRepository
 
         return $qrplaces;
     }
+
+        /* AJAX callback */
+    public function suggestPlace($place, $limit = 200): array {
+        $qb = $this->createQueryBuilder('oc')
+                   ->join('oc.canon', 'c')
+                   ->andWhere("c.isready = 1")
+                   ->select('DISTINCT oc.diocese AS suggestion')
+                   ->andWhere('oc.diocese LIKE :place')
+                   ->setParameter('place', '%'.$place.'%')
+                   ->setMaxResults($limit);
+        $query = $qb->getQuery();
+
+        # dd($query->getDQL());
+
+        return $query->getResult();
+
+    }
+
+    /* AJAX callback */
+    public function suggestOffice($office, $limit = 200): array {
+        $qb = $this->createQueryBuilder('oc')
+                   ->select('DISTINCT oc.officeName AS suggestion')
+                   ->andWhere('oc.officeName LIKE :title')
+                   ->setParameter('title', '%'.$office.'%')
+                   ->setMaxResults($limit);
+
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+
+    }
+
 
 }

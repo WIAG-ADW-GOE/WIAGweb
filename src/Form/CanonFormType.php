@@ -123,22 +123,20 @@ class CanonFormType extends AbstractType
                 ]
             ]);
 
-        # TODO 2021-01-24
-
-        // if($canon && !$canon->isEmpty()) {
-        //     $this->createFacetPlaces($builder, $canon);
-        //     $this->createFacetOffices($builder, $canon);
-        // }
+        if($canon && !$canon->isEmpty()) {
+            $this->createFacetPlaces($builder, $canon);
+            $this->createFacetOffices($builder, $canon);
+        }
 
         
-        // $builder->addEventListener(
-        //     FormEvents::PRE_SUBMIT,
-        //     array($this, 'createFacetPlacesByEvent'));
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            array($this, 'createFacetPlacesByEvent'));
 
 
-        // $builder->addEventListener(
-        //     FormEvents::PRE_SUBMIT,
-        //     array($this, 'createFacetOfficesByEvent'));
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            array($this, 'createFacetOfficesByEvent'));
 
     }
 
@@ -222,7 +220,7 @@ class CanonFormType extends AbstractType
 
         $choices = array();
         foreach($offices as $office) {
-            $choices[] = new OfficeCount($office['office_name'], $office['n']);
+            $choices[] = new OfficeCount($office['officeName'], $office['n']);
         }
 
         // add selected fields with frequency 0

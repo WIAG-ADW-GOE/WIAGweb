@@ -61,7 +61,8 @@ class CanonRepository extends ServiceEntityRepository
         if($formmodel->isEmpty()) return 0;
 
         $qb = $this->createQueryBuilder('canon')
-                   ->select('COUNT(DISTINCT canon.id)');
+                   ->select('COUNT(DISTINCT canon.id)')
+                   ->andWhere('canon.isready = 1');
 
         $this->addQueryConditions($qb, $formmodel);
 
@@ -74,6 +75,7 @@ class CanonRepository extends ServiceEntityRepository
     public function findWithOffices(CanonFormModel $formmodel, $limit = 0, $offset = 0) {
 
         $qb = $this->createQueryBuilder('canon')
+                   ->andWhere('canon.isready = 1')
                    ->leftJoin('canon.offices', 'oc')
                    ->addSelect('oc')
                    ->leftJoin('oc.numdate', 'ocdatecmp')
@@ -199,6 +201,37 @@ class CanonRepository extends ServiceEntityRepository
         foreach($person->getOffices() as $oc) {
             $officeRepository->setMonasteryLocation($oc);
         }
+    }
+
+     public function findOfficeNames(CanonFormModel $canonquery) {
+        $qb = $this->createQueryBuilder('canon')
+                   ->andWhere('canon.isready = 1')
+                   ->select('DISTINCT oc.officeName, COUNT(DISTINCT(canon.id)) as n')
+                   ->join('canon.offices', 'oc');
+
+        $this->addQueryConditions($qb, $canonquery);
+
+        $qb->groupBy('oc.officeName');
+
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        return $result;
+    }
+
+    public function findOfficePlaces(CanonFormModel $canonquery) {
+        $qb = $this->createQueryBuilder('canon')
+                   ->andWhere('canon.isready = 1')
+                   ->select('DISTINCT oc.diocese, COUNT(DISTINCT(canon.id)) as n')
+                   ->join('canon.offices', 'oc')
+                   ->andWhere("oc.diocese <> ''");
+
+        $this->addQueryConditions($qb, $canonquery);
+
+        $qb->groupBy('oc.diocese');
+
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        return $result;
     }
     
 }

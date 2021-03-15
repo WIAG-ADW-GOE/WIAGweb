@@ -130,7 +130,7 @@ class OfficeRepository extends ServiceEntityRepository
 
             $query = $em->createQuery("SELECT loc.location_name, loc.location_begin_tpq, loc.location_end_tpq ".
                                       "FROM App\Entity\Office oc ".
-                                      "INNER JOIN App\Entity\MonasteryLocation loc ".
+                                      "LEFT JOIN App\Entity\MonasteryLocation loc ".
                                       "WITH loc.wiagid_monastery = oc.id_monastery ".
                                       "WHERE oc.wiagid = :ocid ".
                                       "AND loc.location_name IS NOT NULL")
@@ -142,7 +142,7 @@ class OfficeRepository extends ServiceEntityRepository
             //          ->andWhere('oc.wiagid = :ocid')
             //          ->andWhere('loc.location_name IS NOT NULL')
             //          ->setParameter('ocid', $oc->getWiagid());
-            
+
             // $query = $qb->getQuery();
 
             $qrplaces = $query->getResult();
@@ -188,6 +188,7 @@ class OfficeRepository extends ServiceEntityRepository
         foreach($a as $el) {
             $as[] = $el[$field];
         }
+        $as = array_unique($as);
         return implode(", ", $as);
     }
 

@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Form\CanonFormType;
 use App\Form\Model\CanonFormModel;
 use App\Entity\Canon;
+use App\Entity\CnOffice;
 use App\Entity\CnNamelookup;
 use App\Repository\CanonRepository;
 use App\Entity\Monastery;
@@ -70,7 +71,6 @@ class CanonController extends AbstractController {
 
 
             // get the number of results (without page limit restriction)
-            // TODO
             $count = $this->getDoctrine()
                           ->getRepository(Canon::class)
                           ->countByQueryObject($queryformdata)[1];
@@ -221,7 +221,6 @@ class CanonController extends AbstractController {
      * @Route("canon-autocomplete-names", name="canon_autocomplete_names")
      */
     public function autocompletenames(Request $request) {
-        # TODO 2021-02-24
         $suggestions = $this->getDoctrine()
                             ->getRepository(CnNamelookup::class)
                             ->suggestName($request->query->get('query'),
@@ -237,9 +236,20 @@ class CanonController extends AbstractController {
      * @Route("canon-autocomplete-places", name="canon_autocomplete_places")
      */
     public function autocompleteplaces(Request $request) {
-        # TODO 2021-02-24
+        $query = trim($request->query->get('query'));
+        # strip 'bistum' or 'erzbistum'
+        foreach(['Erzbistum', 'erzbistum', 'Bistum', 'bistum'] as $bs) {
+            if(!is_null($query) && str_starts_with($query, $bs)) {
+                $query = trim(str_replace($bs, "", $query));
+                break;
+            }
+        }
+
+        $places = $this->getDoctrine()
+                       ->getRepository(CnOffice::class)
+                       ->suggestPlace($query, self::HINT_LIST_LIMIT);
         return $this->json([
-            'places' => ['Eulenburg'],
+            'places' => $places,
         ]);
     }
 
@@ -248,13 +258,15 @@ class CanonController extends AbstractController {
      * @Route("canon-autocomplete-offices", name="canon_autocomplete_offices")
      */
     public function autocompleteoffices(Request $request) {
-        # TODO 2021-02-24
+        $offices = $this->getDoctrine()
+                        ->getRepository(CnOffice::class)
+                        ->suggestOffice($request->query->get('query'),
+                                        self::HINT_LIST_LIMIT);
+
         return $this->json([
-            'offices' => ['Eulenamt'],
+            'offices' => $offices,
         ]);
     }
-
-
 
 
 }

@@ -40,10 +40,10 @@ class Canon
     private $officeSortkeys;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CnReference")
-     * @ORM\JoinColumn(name="id_reference")
+     * @ORM\OneToMany(targetEntity="CnCanonReference", mappedBy="canon")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
      */
-    private $reference;
+    private $references;
 
     /**
      * @ORM\Id
@@ -214,8 +214,8 @@ class Canon
         return $this->offices;
     }
 
-    public function getReference() {
-        return $this->reference;
+    public function getReferences() {
+        return $this->references;
     }
 
     /**
