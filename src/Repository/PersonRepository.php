@@ -20,7 +20,7 @@ use Doctrine\ORM\QueryBuilder;
 class PersonRepository extends ServiceEntityRepository {
 
     // Allow deviations in the query parameter `year`.
-    const MARGINYEAR = 50;
+    const MARGINYEAR = 1;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -115,7 +115,7 @@ class PersonRepository extends ServiceEntityRepository {
         return $ncount;
     }
 
-    public function findWithOffices(BishopQueryFormModel $bishopquery, $limit = 0, $offset = 0) {
+    public function findWithOffices(?BishopQueryFormModel $bishopquery, $limit = 0, $offset = 0) {
 
         $qb = $this->createQueryBuilder('person')
                    ->leftJoin('person.offices', 'oc')
@@ -123,8 +123,10 @@ class PersonRepository extends ServiceEntityRepository {
                    ->leftJoin('oc.numdate', 'ocdatecmp')
                    ->addSelect('ocdatecmp');
 
-        $this->addQueryConditions($qb, $bishopquery);
-
+        if (!is_null($bishopquery)) {
+            $this->addQueryConditions($qb, $bishopquery);
+            $this->addSortParameter($qb, $bishopquery);
+        }
 
         if($limit > 0) {
             $qb->setMaxResults($limit);
@@ -132,8 +134,6 @@ class PersonRepository extends ServiceEntityRepository {
         }
 
         // dump($qb->getDQL());
-
-        $this->addSortParameter($qb, $bishopquery);
 
         $query = $qb->getQuery();
         dump($query->getResult());
@@ -152,12 +152,13 @@ class PersonRepository extends ServiceEntityRepository {
         
         # identifier
         if($bishopquery->someid && $bishopquery->someid != "") {
+            $id_pure = ltrim($bishopquery->someid, "0");
             $qb->andWhere(":someid = person.wiagid".
                           " OR :someid = person.gsid".
                           " OR :someid = person.viafid".
                           " OR :someid = person.wikidataid".
                           " OR :someid = person.gndid")
-               ->setParameter(':someid', $bishopquery->someid);
+               ->setParameter(':someid', $id_pure);
         }
 
         # year

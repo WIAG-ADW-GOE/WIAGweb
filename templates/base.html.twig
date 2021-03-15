@@ -45,11 +45,17 @@
 				    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 					<a class="dropdown-item" href="{{ path('launch_query') }}">Bischöfe des Alten Reiches</a>
 					<a class="dropdown-item" href="{{ path('query_dioceses') }}">Bistümer des Alten Reiches</a>
+
 					<a class="dropdown-item" href="{{ path('query_canons') }}">Domherren des Alten Reiches (GS)</a>
 					<a class="dropdown-item" href="{{ path('canons_schwerin') }}">Domherren Schwerin</a>
+					{% if is_granted('ROLE_DATA_ADMIN') %}
+					    <a class="dropdown-item" href="{{ path('bulk_export_dispatch') }}">Datenexport</a>
+					{% endif %}
+
 				    </div>
 				</div></li>
 			    {% endif %}
+			    <li class="nav-item m-1"><a href="{{ path('data_service') }}"><button class="btn btn-light font-weight-bold bg-white">Datenservice</button></a></li>
 			    <li class="nav-item m-1"><a href="{{ path('wiag_logout') }}"><button class="btn btn-light font-weight-bold bg-white">Logout</button></a></li>
 			{% endif %}
 			{% if not is_granted('ROLE_USER') %}

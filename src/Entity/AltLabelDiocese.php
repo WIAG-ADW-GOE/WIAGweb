@@ -130,7 +130,7 @@ class AltLabelDiocese
         $cl = array();
 
         $fv = $this->getAltLabelDiocese();
-        if($fv) $cl['name'] = $fv;
+        if($fv) $cl['altLabel'] = $fv;
 
         $fv = $this->getLang();
         if($fv) $cl['lang'] = $fv;

@@ -14,6 +14,11 @@ class Diocese
 {
     const WIAGID_PREFIX = 'WIAG-Inst-DIOCGatz-';
     const WIAGID_POSTFIX = '-001';
+    const REFERENCE_ID = 2;
+
+    /* set this to the one and only reference for dioceses in DioceseRepository
+     */
+    private $reference;
 
     /**
      * @ORM\Id
@@ -105,14 +110,25 @@ class Diocese
         $this->altlabel = new ArrayCollection();
     }
 
-    public static function wiagidLongToId($wiagidlong) {
+    public static function wiagidLongToId($wiagidlong) {        
         if(strpos($wiagidlong, self::WIAGID_PREFIX) === false)
             return $wiagidlong;
         $head = strlen(self::WIAGID_PREFIX);
         $tail = strlen(self::WIAGID_POSTFIX);
-        return substr($wiagidlong, $head, -$tail);
+        $id_padded = substr($wiagidlong, $head, -$tail);
+        $id_pure = ltrim($id_padded, "0");
+        return $id_pure;
+
     }
 
+    public function getReference(): ?object {
+        return $this->reference;
+    }
+
+    public function setReference($reference): self {
+        $this->reference = $reference;
+        return $this;
+    }
 
     public function getId(): ?int
     {
@@ -239,6 +255,10 @@ class Diocese
         return $this;
     }
 
+    public function getReferenceId() {
+        return self::REFERENCE_ID;
+    }
+
     public function getAltesReich(): ?bool
     {
         return $this->altes_reich;
@@ -277,10 +297,10 @@ class Diocese
 
     public function getWiagidLong(): ?string
     {
-        return self::WIAGID_PREFIX.$this->id_diocese.self::WIAGID_POSTFIX;
+        $id_padded = str_pad($this->id_diocese, 3, '0', STR_PAD_LEFT);
+        return self::WIAGID_PREFIX.$id_padded.self::WIAGID_POSTFIX;
     }
-
-
+    
     public function getBishopricseatobj(): ?Place
     {
         return $this->bishopricseatobj;

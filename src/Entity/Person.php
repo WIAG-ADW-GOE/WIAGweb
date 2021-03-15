@@ -162,7 +162,9 @@ class Person {
             return $wiagidlong;
         $head = strlen(self::WIAGID_PREFIX);
         $tail = strlen(self::WIAGID_POSTFIX);
-        return substr($wiagidlong, $head, -$tail);
+        $id_padded = substr($wiagidlong, $head, -$tail);
+        $id_pure = ltrim($id_padded, "0");
+        return $id_pure;
     }
 
 
@@ -402,7 +404,8 @@ class Person {
 
     public function getWiagidLong(): ?string
     {
-        return self::WIAGID_PREFIX.$this->wiagid.self::WIAGID_POSTFIX;
+        $id_padded = str_pad($this->wiagid, 5, '0', STR_PAD_LEFT);
+        return self::WIAGID_PREFIX.$id_padded.self::WIAGID_POSTFIX;
     }
 
     public function getWikipediaTitle(): ?string {
@@ -482,86 +485,7 @@ class Person {
                 or $this->comment_person and
                 $this->comment_person != '');
     }
-
-    /**
-     * obsolete see Service/CSVData.php Service/JSONData.php
-     */
-    public function toArray() {
-        $pj = array();
-        $pj['wiagId'] = $this->getWiagidLong();
-
-        $fv = $this->getFamilyname();
-        if($fv) $pj['familyName'] = $fv;
-
-        $pj['givenName'] = $this->getGivenname();
-
-        $fv = $this->getPrefixName();
-        if($fv) $pj['prefix'] = $fv;
-
-        $fv = $this->getFamilynameVariant();
-        if($fv) $pj['variantFamilyName'] = $fv;
-
-        $fv = $this->getGivennameVariant();
-        if($fv) $pj['variantGivenName'] = $fv;
-
-        $fv = $this->comment_name;
-        if($fv) $pj['comment_name'] = $fv;
-
-        $fv = $this->comment_person;
-        if($fv) $pj['comment_person'] = $fv;
-
-        $fv = $this->getGivennameVariant();
-        if($fv) $pj['variantGivenName'] = $fv;
-
-
-        $fv = $this->getDateBirth();
-        if($fv) $pj['dateOfBirth'] = $fv;
-
-        $fv = $this->getDateDeath();
-        if($fv) $pj['dateOfDeath'] = $fv;
-
-        // $fv = $this->getReligiousOrder();
-        // if($fv) $pj['religiousOrder'] = $fv;
-
-        if($this->hasExternalIdentifier() || $this->hasOtherIdentifier()) {
-            $pj['identifier'] = array();
-            $nd = &$pj['identifier'];
-            $fv = $this->getGsid();
-            if($fv) $nd['gsId'] = $fv;
-
-            $fv = $this->getGndid();
-            if($fv) $nd['gndId'] = $fv;
-
-            $fv = $this->getViafid();
-            if($fv) $nd['viafId'] = $fv;
-
-            $fv = $this->getWikidataid();
-            if($fv) $nd['wikidataId'] = $fv;
-
-            $fv = $this->getWikipediaurl();
-            if($fv) $nd['wikipediaUrl'] = $fv;
-        }
-
-        $offices = $this->getOffices();
-        if($offices) {
-            $pj['offices'] = array();
-            $ocJSON = &$pj['offices'];
-            foreach($offices as $oc) {
-                $ocJSON[] = $oc->toArray();
-            }
-        }
-
-        $fv = $this->getReference();
-        if($fv) {
-            $pj['reference'] = $fv->toArray();
-            $fiv = $this->getPagesGatz();
-            if($fiv)
-                $pj['reference']['pages'] = $fiv;
-        }
-
-        return $pj;
-    }
-
+    
     public function hasMonastery(): bool {
         foreach($this->offices as $oc) {
             if($oc->getIdMonastery()) return true;

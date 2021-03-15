@@ -1,12 +1,27 @@
 {% extends 'base.html.twig' %}
 
-{% set urlgspersons = 'http://personendatenbank.germania-sacra.de/' %}
-{% set urlgsmonasteries = 'http://klosterdatenbank.germania-sacra.de/' %}
-{% set urlgnd = 'http://d-nb.info/gnd/' %}
-{% set urlwikidata = 'https://www.wikidata.org/wiki/' %}
-{% set urlviaf = 'https://viaf.org/viaf/' %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
+    <script src="{{ asset('js/bishop.js') }}"></script>
+{% endblock %}
+
 
 {% block body %}
+    {% set linksymbol %}<svg xmlns="http://www.w3.org/2000/svg" width="16" height="20" fill="currentColor" class="bi bi-share-fill" viewBox="0 0 20 20" transform="translate(6, -1)">
+    <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z"/></svg>{% endset %}
+    
+    {% set clipboardsymbol %}<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+	<path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+	<path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+    </svg>{% endset %}
+    
+    {% set urlgspersons = 'http://personendatenbank.germania-sacra.de/' %}
+    {% set urlgsmonasteries = 'http://klosterdatenbank.germania-sacra.de/' %}
+    {% set urlgnd = 'http://d-nb.info/gnd/' %}
+    {% set urlwikidata = 'https://www.wikidata.org/wiki/' %}
+    {% set urlviaf = 'https://viaf.org/viaf/' %}
+    
     {# person is passed as an object #}
     {% if not person%}
 	<p class="em">Person nicht gefunden.</p>
@@ -22,7 +37,9 @@
 	    </div>
 	    <div class="row mx-2 my-2">
 		<div class="col-8"><h2>{{ person.displayname[:200] }}</h2></div>
-		<div class="col-4 text-right wiag-id">{{ person.wiagidlong }}</div>
+ 		<div class="col-4 text-right text-nowrap">
+		    <button type="button" class="btn to-clipboard" title="{{ url('id', {id: person.wiagidlong}) }}" >{{ person.wiagidlong }} {{ linksymbol }}</button>
+		</div>
 	    </div>
 
 	    {% if person.flagcomment %}
@@ -172,16 +189,17 @@
 
 	    </dl>
 
-	    <div class="row mx-2 col-12">Empfohlene Zitierweise:<br/>
-		"{{ person.displayname }}" {# (WIAGID: {{ person.wiagidlong }}), #}
+	    <div class="row mx-2 col-12"><span class="align-baseline"> Empfohlene Zitierweise: <button type="button" class="btn btn-sm" id="copy-citation">{{ clipboardsymbol }}</button> </span></div>
+	    <div class="row mx-2 col-12">
+		{# (WIAGID: {{ person.wiagidlong }}), #}
 		{# app.request.schemeAndHttpHost ~ app.request.baseUrl  #}
-		in: WIAG, {{ url('id', {id: person.wiagidlong}) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</div>
+		<span id="citation">"{{ person.displayname }}" in: WIAG, {{ url('id', {id: person.wiagidlong}) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</span></div>
 
 	    <div class="row mx-2 col-12 mt-4">
 		{% if query_form is defined %}
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button>
 		    <a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm ml-1 mr-3">Neue Suche</button></a>
 		{% endif %}
 		<a href="{{ path('wiag_id_data', {id: person.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>

@@ -299,7 +299,10 @@ class Office
         if($fv) $ocj['diocese'] = $fv;
 
         $fv = $this->getMonastery();
-        if($fv) $ocj['monastery'] = $fv->getMonasteryName();
+        if($fv) {
+            $ocj['monasteryName'] = $fv->getMonasteryName();
+            $ocj['monasteryGsnId'] = $fv->getWiagid();
+        }
 
         $fv = $this->getDateStart();
         if($fv) $ocj['dateStart'] = $fv;
@@ -310,6 +313,9 @@ class Office
         $fv = $this->getComment();
         if($fv) $ocj['comment'] = $fv;
 
+        $fv = $this->getSortKey();
+        if($fv) $ocj['sort'] = $fv;
+        
         return $ocj;
     }
 
