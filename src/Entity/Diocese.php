@@ -300,6 +300,25 @@ class Diocese
         $id_padded = str_pad($this->id_diocese, 3, '0', STR_PAD_LEFT);
         return self::WIAGID_PREFIX.$id_padded.self::WIAGID_POSTFIX;
     }
+
+    public static function isIdDiocese(string $id) {
+        $headlen = strlen(self::WIAGID_PREFIX);
+        $head = substr($id, 0, $headlen);
+        return $head == self::WIAGID_PREFIX;
+    }
+
+
+    public static function shortId(?string $id) {
+        if (is_null($id)) return $id;
+        if (strpos($id, self::WIAGID_PREFIX) === false) {
+            return ltrim($id, "0");
+        }
+        $head = strlen(self::WIAGID_PREFIX);
+        $tail = strlen(self::WIAGID_POSTFIX);
+        $paddedId = substr($id, $head, -$tail);
+        $shortId = ltrim($paddedId, "0");
+        return $shortId;
+    }
     
     public function getBishopricseatobj(): ?Place
     {

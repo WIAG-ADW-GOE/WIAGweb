@@ -152,21 +152,23 @@ class Person {
      */
     private $offices;
 
-    public static function isWiagidLong($wiagidlong) {
-        $match = stristr($wiagidlong, self::WIAGID_PREFIX);
-        return strlen($match) > 0;
+    public static function isIdBishop(string $id) {
+        $headlen = strlen(self::WIAGID_PREFIX);
+        $head = substr($id, 0, $headlen);
+        return $head == self::WIAGID_PREFIX;
     }
 
-    public static function wiagidLongToWiagid($wiagidlong) {
-        if(strpos($wiagidlong, self::WIAGID_PREFIX) === false)
-            return $wiagidlong;
+    public static function shortId(?string $id) {
+        if (is_null($id)) return $id;
+        if (strpos($id, self::WIAGID_PREFIX) === false) {
+            return ltrim($id, "0");
+        }
         $head = strlen(self::WIAGID_PREFIX);
         $tail = strlen(self::WIAGID_POSTFIX);
-        $id_padded = substr($wiagidlong, $head, -$tail);
-        $id_pure = ltrim($id_padded, "0");
-        return $id_pure;
+        $paddedId = substr($id, $head, -$tail);
+        $shortId = ltrim($paddedId, "0");
+        return $shortId;
     }
-
 
     public function getWiagid(): ?string
     {

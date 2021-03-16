@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Canon
 {
+    const WIAGID_PREFIX = 'WIAG-Pers-CANON-';
+    const WIAGID_POSTFIX = '-001';
 
     /**
      * @ORM\OneToMany(targetEntity="CnNamelookup", mappedBy="canon")
@@ -228,6 +230,30 @@ class Canon
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getWiagidLong(): ?string
+    {
+        $id_padded = str_pad($this->id, 5, '0', STR_PAD_LEFT);
+        return self::WIAGID_PREFIX.$id_padded.self::WIAGID_POSTFIX;
+    }
+
+    public static function isIdCanon(string $id) {
+        $headlen = strlen(self::WIAGID_PREFIX);
+        $head = substr($id, 0, $headlen);
+        return $head == self::WIAGID_PREFIX;
+    }
+
+    public static function shortId(?string $id) {
+        if (is_null($id)) return $id;
+        if (strpos($id, self::WIAGID_PREFIX) === false) {
+            return ltrim($id, "0");
+        }
+        $head = strlen(self::WIAGID_PREFIX);
+        $tail = strlen(self::WIAGID_POSTFIX);
+        $paddedId = substr($id, $head, -$tail);
+        $shortId = ltrim($paddedId, "0");
+        return $shortId;
     }
 
     public function getItemReference(): ?string
@@ -535,10 +561,6 @@ class Canon
         }
         return false;
     }
-
-    public function getWiagidLong(): string {
-        return $this->id;
-    }    
 
     public function getDisplayname() {
         $prefixpart = strlen($this->prefixName) > 0 ? ' '.$this->prefixName : '';

@@ -11,10 +11,7 @@ use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
 use App\Entity\Diocese;
 
-use App\Service\CSVData;
-use App\Service\JSONData;
-use App\Service\RDFData;
-use App\Service\JSONLDData;
+use App\Service\CanonData;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,7 +35,8 @@ class CanonController extends AbstractController {
      * @Route("/domherren-schwerin", name="canons_schwerin")
      */
     public function launch_query(Request $request,
-                                 CanonRepository $repository) {
+                                 CanonRepository $repository,
+                                 CanonData $canonData) {
 
         // we need to pass an instance of BishopQueryFormModel, because facets depend on it's data
         $queryformdata = new CanonFormModel;
@@ -89,11 +87,11 @@ class CanonController extends AbstractController {
 
                     switch($buttonname) {
                     case 'searchJSON':
-                        $data = $jsondata->canonsToJSON($persons, $baseurl);
+                        $data = $canonData->canonsToJSON($persons, $baseurl);
                         $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
                         break;
                     case 'searchCSV':
-                        $data = $csvdata->canonsToCSV($persons, $baseurl);
+                        $data = $canonData->canonsToCSV($persons, $baseurl);
                         $response->headers->set('Content-Type', "text/csv; charset=utf-8");
                         $response->headers->set('Content-Disposition', "filename=WIAG-Pers-EPISCGatz.csv");
                         break;

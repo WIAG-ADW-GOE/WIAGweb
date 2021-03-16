@@ -6,10 +6,12 @@ use App\Form\BishopQueryFormType;
 use App\Form\Model\BishopQueryFormModel;
 use App\Entity\Person;
 use App\Entity\Diocese;
+use App\Entity\Canon;
 use App\Service\PersonData;
 use App\Service\PersonLinkedData;
 use App\Service\DioceseData;
 use App\Service\DioceseLinkedData;
+use App\Service\CanonData;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,6 +28,7 @@ class IDController extends AbstractController {
     private $personLinkedData;
     private $dioceseData;
     private $dioceseLinkedData;
+    private $canonData;
 
     const FORMAT_MAP = [
         'application/rdf+xml' => 'rdf',
@@ -35,11 +38,16 @@ class IDController extends AbstractController {
         'text/html' => 'rdf', # standard within the route for data
     ];
 
-    public function __construct(PersonData $personData, PersonLinkedData $personLinkedData, DioceseData $dioceseData, DioceseLinkedData $dioceseLinkedData) {
+    public function __construct(PersonData $personData,
+                                PersonLinkedData $personLinkedData,
+                                DioceseData $dioceseData,
+                                DioceseLinkedData $dioceseLinkedData,
+                                CanonData $canonData) {
         $this->personData = $personData;
         $this->personLinkedData = $personLinkedData;
         $this->dioceseData = $dioceseData;
         $this->dioceseLinkedData = $dioceseLinkedData;
+        $this->canonData = $canonData;
     }
 
     /**
@@ -65,29 +73,41 @@ class IDController extends AbstractController {
      */
     public function routeDoc(string $id, Request $request) {
         /* TODO check MIME type; default: HTML */
-        if(preg_match("/WIAG-Pers-EPISCGatz-.+/", $id))
+        if(Person::isIdBishop($id)) {
             return $this->bishophtml($id, $request);
-        elseif(preg_match("/WIAG-Inst-DIOCGatz-.+/", $id))
+        }
+        elseif(Canon::isIdCanon($id)) {
+            return $this->canonhtml($id, $request);
+        }
+        elseif(Diocese::isIdDiocese($id)) {
             return $this->diocesehtml($id, $request);
-        else
+        }
+        else {
             throw $this->createNotFoundException('Keine Objekte für dieses ID-Muster');
+        }
     }
 
     /**
      * @Route("/data/{id}", name="wiag_id_data")
      */
     public function routeData(string $id, Request $request) {
-        if(preg_match("/WIAG-Pers-EPISCGatz-.+/", $id))
+        if(Person::isIdBishop($id)) {
             return $this->bishopdata($id, $request);
-        elseif(preg_match("/WIAG-Inst-DIOCGatz-.+/", $id))
+        }
+        elseif(Canon::isIdCanon($id)) {
+            return $this->canondata($id, $request);
+        }
+        elseif(Diocese::isIdDiocese($id)) {
             return $this->diocesedata($id, $request);
-        else
+        }
+        else {
             throw $this->createNotFoundException('Keine Objekte für dieses ID-Muster');
+        }
     }
 
-    public function bishophtml(string $id, Request $request) {
+    public function bishophtml(string $id) {
 
-        $idindb = Person::wiagidLongToWiagid($id);
+        $idindb = Person::shortID($id);
 
         $person = $this->getDoctrine()
                        ->getRepository(Person::class)
@@ -109,7 +129,7 @@ class IDController extends AbstractController {
 
     public function bishopdata(string $id, Request $request) {
         $idbase = pathinfo($id, PATHINFO_FILENAME);
-        $idindb = Person::wiagidLongToWiagid($idbase);
+        $idindb = Person::shortId($idbase);
 
         $person = $this->getDoctrine()
                        ->getRepository(Person::class)
@@ -164,6 +184,85 @@ class IDController extends AbstractController {
         return $response;
     }
 
+    public function canonhtml(string $id) {
+
+        $idindb = Canon::shortId($id);
+
+        $canon = $this->getDoctrine()
+                       ->getRepository(Canon::class)
+                       ->findOneWithOffices($idindb);
+
+        if (!$canon) {
+            throw $this->createNotFoundException('Domherr wurde nicht gefunden');
+        }
+
+        $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
+
+        return $this->render('canon/details.html.twig', [
+            'person' => $canon,
+            'wiagidlong' => $id,
+            'querystr' => null,
+            'dioceserepository' => $dioceseRepository,
+        ]);
+    }
+
+    public function canondata(string $id, Request $request) {
+        $idbase = pathinfo($id, PATHINFO_FILENAME);
+        $idindb = Canon::shortId($idbase);
+
+        $canon = $this->getDoctrine()
+                       ->getRepository(Canon::class)
+                       ->findOneWithOffices($idindb);
+
+        if(!$canon) {
+            throw $this->createNotFoundException('Domherr wurde nicht gefunden');
+        }
+
+        $response = new Response();
+        $baseurl = $request->getSchemeAndHttpHost();
+        $extension = pathinfo($id, PATHINFO_EXTENSION);
+        $format = $request->query->get('format');
+        if(is_null($format)) {
+            $contentType = $request->getAcceptableContentTypes();
+            if(!is_null($contentType)) {
+                $key = $contentType[0];
+                if(!array_key_exists($key, self::FORMAT_MAP))
+                    throw $this->createNotFoundException('Unbekanntes Format '.$key);
+                $format = self::FORMAT_MAP[$key];
+            }
+        }
+
+        switch($format) {
+        case 'csv':
+            $canonID = $canon->getWiagidLong();
+            $data = $this->canonData->canonToCSV($canon, $baseurl);
+            $response->headers->set('Content-Type', "text/csv; charset=utf-8");
+            $response->headers->set('Content-Disposition', "filename={$canonID}.csv");
+            break;
+        case 'json':
+            $data = $this->canonData->canonToJSON($canon, $baseurl);
+            $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
+            break;
+        case 'jsonld':
+        case 'json-ld':
+            $data = $this->canonLinkedData->canonToJSONLD($canon, $baseurl);
+            $response->headers->set('Content-Type', 'application/ld+json;charset=UTF-8');
+            break;
+        case null:
+        case 'rdf':
+        case '':
+            $data = $this->canonLinkedData->canonToRdf($canon, $baseurl);
+            $response->headers->set('Content-Type', 'application/rdf+xml;charset=UTF-8');
+            break;
+        default:
+            throw $this->createNotFoundException('Unbekanntes Format '.$format);
+        }
+
+        $response->setContent($data);
+
+        return $response;
+    }
+
     public function diocesehtml(string $id, Request $request) {
 
         $diocese = $this->getDoctrine()
@@ -189,7 +288,7 @@ class IDController extends AbstractController {
                         ->findWithBishopricSeat($idbase);
 
         if(!$diocese) {
-            throw $this->createNotFoundException('Person wurde nicht gefunden');
+            throw $this->createNotFoundException('Bistum wurde nicht gefunden');
         }
 
         $response = new Response();

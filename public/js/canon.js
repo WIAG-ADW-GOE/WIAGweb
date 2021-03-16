@@ -70,5 +70,24 @@ $(document).ready(function() {
 	navigator.clipboard.writeText(clipboardText);
     });
 
+    // click on a checkbox submits the form
+    // console.log('query-bishop-fire-facet');
+    var fpx = $("input[id*='canon_form_facet']");
+    fpx.each(function() {
+	var btn_submit = $("#canon_form_searchHTML");
+	$(this)[0].addEventListener('click', function(event) {
+	    btn_submit.click();
+	});
+    });
 
+    // reset the facet if textboxes change
+    var input_text = $("#canon_form_name, #canon_form_place, #canon_form_office, #canon_form_year, #canon_form_someid");
+    input_text.each(function() {
+	$(this)[0].addEventListener('change', function(event) {
+	    fpx.each(function() {
+		console.log('remove checked');
+		$(this)[0].removeAttribute('checked');
+	    });
+	});
+    });
 });

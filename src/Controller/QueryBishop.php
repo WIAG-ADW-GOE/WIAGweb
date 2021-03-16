@@ -54,14 +54,10 @@ class QueryBishop extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
 
             $bishopquery = $form->getData();
-            $someid = $bishopquery->someid;
+            $bishopquery->someid = Person::shortId($bishopquery->someid);
 
             # strip 'Bistum' or 'Erzbistum'
             $bishopquery->normPlace();
-
-            if($someid && Person::isWiagidLong($someid)) {
-                $bishopquery->someid = Person::wiagidLongToWiagid($someid);
-            }
 
             $singleoffset = $request->request->get('singleoffset');
             if(!is_null($singleoffset)) {

@@ -150,8 +150,8 @@ class CanonRepository extends ServiceEntityRepository
                ->setParameter('qname', '%'.$formmodel->name.'%');
         }
 
-        # TODO
-        # $this->addFacets($formmodel, $qb);
+
+        $this->addFacets($formmodel, $qb);
 
 
         // for each individual person sort offices by start date in the template
@@ -203,6 +203,23 @@ class CanonRepository extends ServiceEntityRepository
         }
     }
 
+    public function findOneWithOffices($id) {
+        // fetch all data related to this canon
+        $query = $this->createQueryBuilder('canon')
+                      ->andWhere('canon.id = :id')
+                      ->setParameter('id', $id)
+                      ->leftJoin('canon.offices', 'oc')
+                      ->leftJoin('oc.numdate', 'ocdate')
+                      ->orderBy('ocdate.dateStart', 'ASC')
+                      ->leftJoin('oc.monastery', 'monastery')
+                      ->getQuery();
+
+        $canon = $query->getOneOrNullResult();
+
+        return $canon;
+    }
+
+
      public function findOfficeNames(CanonFormModel $canonquery) {
         $qb = $this->createQueryBuilder('canon')
                    ->andWhere('canon.isready = 1')
@@ -233,5 +250,29 @@ class CanonRepository extends ServiceEntityRepository
         $result = $query->getResult();
         return $result;
     }
+
+    public function addFacets($querydata, $qb) {
+        if($querydata->facetPlaces) {
+            $facetdioceses = array();
+            foreach($querydata->facetPlaces as $d) {
+                $facetdioceses[] = $d->name;
+            }
+            $qb->join('canon.offices', 'ocfctp')
+               ->andWhere("ocfctp.diocese IN (:facetdioceses)")
+               ->setParameter('facetdioceses', $facetdioceses);
+        }
+        if($querydata->facetOffices) {
+            $facetoffices = array();
+            foreach($querydata->facetOffices as $d) {
+                $facetoffices[] = $d->name;
+            }
+            $qb->join('canon.offices', 'ocfctoc')
+               ->andWhere("ocfctoc.officeName IN (:facetoffices)")
+               ->setParameter('facetoffices', $facetoffices);
+        }
+
+        return $qb;
+    }
+
     
 }
