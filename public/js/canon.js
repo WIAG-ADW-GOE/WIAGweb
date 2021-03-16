@@ -90,4 +90,21 @@ $(document).ready(function() {
 	    });
 	});
     });
+
+    // copy link for the current person to clipboard
+    $('.to-clipboard').each(function() {
+	$(this).click(function(event) {
+	    var buttonElem = $(this);
+	    var clipboardText = buttonElem[0].getAttribute('title');
+	    navigator.clipboard.writeText(clipboardText);
+	});
+    });
+
+    // copy citation to clipboard
+    $('#copy-citation').click(function() {
+	var citationElem = $('#citation');
+	var clipboardText = citationElem.text();
+	navigator.clipboard.writeText(clipboardText);
+    });
+    
 });

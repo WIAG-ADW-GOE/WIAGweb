@@ -2,6 +2,7 @@
 
 {% block javascripts %}
     {{ parent() }}
+    {# this is required for bishop.js, even if it is not necessary for this page #}
     <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
     <script src="{{ asset('js/bishop.js') }}"></script>
 {% endblock %}

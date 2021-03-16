@@ -136,7 +136,6 @@ class PersonRepository extends ServiceEntityRepository {
         // dump($qb->getDQL());
 
         $query = $qb->getQuery();
-        dump($query->getResult());
 
         $persons = new Paginator($query, true);
 
