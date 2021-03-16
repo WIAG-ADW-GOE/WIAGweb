@@ -121,7 +121,7 @@ class CSVData {
             $pj['offices'] = array();
             $ocJSON = &$pj['offices'];
             foreach($offices as $oc) {
-                dump($ocJSON);
+                // dump($ocJSON);
                 $ocJSON[] = $oc->toArray();
             }
         }

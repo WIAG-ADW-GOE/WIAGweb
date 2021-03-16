@@ -147,7 +147,7 @@ class PersonRepository extends ServiceEntityRepository {
 
     private function addQueryConditions(QueryBuilder $qb, BishopQueryFormModel $bishopquery): QueryBuilder {
 
-        dump($qb);
+        // dump($qb);
         
         # identifier
         if($bishopquery->someid && $bishopquery->someid != "") {
@@ -195,7 +195,7 @@ class PersonRepository extends ServiceEntityRepository {
                            " OR nlt.familyname LIKE :qname")
                ->setParameter('qname', '%'.$bishopquery->name.'%');
         }
-        dump($qb);
+        // dump($qb);
 
         $this->addFacets($bishopquery, $qb);
 
