@@ -12,6 +12,7 @@ use App\Service\PersonLinkedData;
 use App\Service\DioceseData;
 use App\Service\DioceseLinkedData;
 use App\Service\CanonData;
+use App\Service\CanonLinkedData;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,6 +30,7 @@ class IDController extends AbstractController {
     private $dioceseData;
     private $dioceseLinkedData;
     private $canonData;
+    private $canonLinkedData;
 
     const FORMAT_MAP = [
         'application/rdf+xml' => 'rdf',
@@ -42,12 +44,14 @@ class IDController extends AbstractController {
                                 PersonLinkedData $personLinkedData,
                                 DioceseData $dioceseData,
                                 DioceseLinkedData $dioceseLinkedData,
-                                CanonData $canonData) {
+                                CanonData $canonData,
+                                CanonLinkedData $canonLinkedData) {
         $this->personData = $personData;
         $this->personLinkedData = $personLinkedData;
         $this->dioceseData = $dioceseData;
         $this->dioceseLinkedData = $dioceseLinkedData;
         $this->canonData = $canonData;
+        $this->canonLinkedData = $canonLinkedData;
     }
 
     /**
