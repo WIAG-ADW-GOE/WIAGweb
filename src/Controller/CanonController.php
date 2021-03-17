@@ -22,7 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * @IsGranted("ROLE_QUERY")
+ * @IsGranted("ROLE_DATA_ADMIN")
  */
 class CanonController extends AbstractController {
     /**
@@ -32,7 +32,7 @@ class CanonController extends AbstractController {
     const HINT_LIST_LIMIT = 12;
 
     /**
-     * @Route("/domherren-schwerin", name="canons_schwerin")
+     * @Route("/domherren-wd", name="canons_wd")
      */
     public function launch_query(Request $request,
                                  CanonRepository $repository,
@@ -224,7 +224,7 @@ class CanonController extends AbstractController {
                             ->getRepository(CnNamelookup::class)
                             ->suggestName($request->query->get('query'),
                                           self::HINT_LIST_LIMIT);
-        
+
         return $this->json([
             'names' => $suggestions,
         ]);

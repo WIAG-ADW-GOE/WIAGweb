@@ -110,6 +110,11 @@ class CnOffice
      */
     private $idInReference;
 
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $dignity;
+
     public function getNumdate() {
         return $this->numdate;
     }
@@ -305,6 +310,18 @@ class CnOffice
     public function setIdInReference(?string $idInReference): self
     {
         $this->idInReference = $idInReference;
+
+        return $this;
+    }
+
+    public function getDignity(): ?string
+    {
+        return $this->dignity;
+    }
+
+    public function setDignity(?string $dignity): self
+    {
+        $this->dignity = $dignity;
 
         return $this;
     }

@@ -21,8 +21,8 @@ use Doctrine\ORM\QueryBuilder;
 class CanonRepository extends ServiceEntityRepository
 {
     // Allow deviations in the query parameter `year`.
-    const MARGINYEAR = 50;
-    
+    const MARGINYEAR = 1;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Canon::class);
@@ -90,7 +90,7 @@ class CanonRepository extends ServiceEntityRepository
         }
 
         // dump($qb->getDQL());
-        # TODO 
+        # TODO
         // $this->addSortParameter($qb, $formmodel);
 
         $query = $qb->getQuery();
@@ -274,5 +274,5 @@ class CanonRepository extends ServiceEntityRepository
         return $qb;
     }
 
-    
+
 }
