@@ -61,9 +61,8 @@ class CanonRepository extends ServiceEntityRepository
         if($formmodel->isEmpty()) return 0;
 
         $qb = $this->createQueryBuilder('canon')
-                   ->select('COUNT(DISTINCT canon.id)')
-                   ->andWhere('canon.isready = 1');
-
+                   ->select('COUNT(DISTINCT canon.id)');
+        $this->addBaseConditions($qb);
         $this->addQueryConditions($qb, $formmodel);
 
         $query = $qb->getQuery();
@@ -75,12 +74,12 @@ class CanonRepository extends ServiceEntityRepository
     public function findWithOffices(CanonFormModel $formmodel, $limit = 0, $offset = 0) {
 
         $qb = $this->createQueryBuilder('canon')
-                   ->andWhere('canon.isready = 1')
                    ->leftJoin('canon.offices', 'oc')
                    ->addSelect('oc')
                    ->leftJoin('oc.numdate', 'ocdatecmp')
                    ->addSelect('ocdatecmp');
 
+        $this->addBaseConditions($qb);
         $this->addQueryConditions($qb, $formmodel);
 
 
@@ -102,6 +101,12 @@ class CanonRepository extends ServiceEntityRepository
         return $persons;
     }
 
+    private function addBaseConditions(QueryBuilder $qb): QueryBuilder {
+        $qb->andWhere('canon.isready = 1')
+           ->andWhere('canon.mergedInto IS NULL OR canon.mergedInto = 0');
+
+        return $qb;
+    }
 
     private function addQueryConditions(QueryBuilder $qb, CanonFormModel $formmodel): QueryBuilder {
 

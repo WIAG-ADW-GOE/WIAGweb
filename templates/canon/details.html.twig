@@ -191,7 +191,7 @@
 		    </dd>
 		{% endif %}
 		{% if person.references %}
-		    <dt class="col-sm-3">Referenzwerk(e)</dt>
+		    <dt class="col-sm-3">{{ person.references|length > 1 ? 'Referenzwerke' : 'Referenzwerk' }}</dt>
 		    <dd class="col-sm-9">
 			<ul class="list-unstyled">
 			    {% for cnref in person.references %}
