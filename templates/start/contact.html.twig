@@ -21,10 +21,10 @@
 	    <li><a href="mailto:bkroege@gwdg.de">bkroege@gwdg.de</a></li>
 	</ul>
 	<ul class="list-unstyled">
-	    <li><a href="http://wiag.adw-goe.de">wiag.adw-goe.de</a>
+	    <li><a href="http://wiag.adw-goe.de">http://wiag.adw-goe.de</a>
 	</ul>
 	<ul class="list-unstyled">
-	    <li><a href="{{ url('wiag_welcome') }}">{{ url('wiag_welcome') }}</a></li>
+	    <li><a href="{{ protocol }}:{{ url('wiag_welcome', schemeRelative = true) }}">{{ protocol }}:{{ url('wiag_welcome', schemeRelative = true) }}</a></li>
 	</ul>
 
 	    </div>

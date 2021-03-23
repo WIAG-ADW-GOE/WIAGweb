@@ -4,3 +4,4 @@ twig:
       - bootstrap_4_layout.html.twig
     globals:
       url_geonames: https://www.geonames.org/
+      protocol: https

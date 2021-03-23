@@ -33,7 +33,7 @@
 	    <div class="row mx-2 mt-3 mb-0"><div class="col-9">
 		<h2>{{ displayname }}</h2></div>
 		<div class="col-3 text-right text-nowrap">
-		    <button type="button" class="btn btn-sm to-clipboard" title="{{ url('id', {id: diocese.wiagidlong}) }}" >{{ diocese.wiagidlong }} {{ linksymbol }}</button>
+		    <button type="button" class="btn btn-sm to-clipboard" title="{{ protocol }}:{{ url('id', {id: diocese.wiagidlong}, schemeRelative = true) }}" >{{ diocese.wiagidlong }} {{ linksymbol }}</button>
 		</div>
 
 	    </div>
@@ -99,7 +99,7 @@
 
 	    <div class="row mx-2 col-12"><span class="align-baseline"> Empfohlene Zitierweise: <button type="button" class="btn btn-sm" id="copy-citation">{{ clipboardsymbol }}</button></span></div>
 	    <div class="row mx-2 col-12">
-		<span id="citation">"{{ displayname }}" in: WIAG, {{ url('id', {id: diocese.wiagidlong}) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</span></div>
+		<span id="citation">"{{ displayname }}" in: WIAG, {{ protocol }}:{{ url('id', {id: diocese.wiagidlong}, schemeRelative = true) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</span></div>
 	    <div class="row mx-2 mt-4 col-12">
 		{% if form is defined %}
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>

@@ -1,7 +1,7 @@
 {% if details is defined %}<h2>{{ reference.shorttitle }}</h2>{% endif %}
 
-<p>{{ reference.fullcitation }}</p>
+<p>{{ reference.fullcitation }}{% if reference.onlineressource %} – <a class="ml-1" href="{{ reference.onlineressource }}" target="_blank" rel="noopener">{{ reference.onlineressource }}</a>{% endif %}</p>
 
 {% if reference.gbv or reference.riopacid %}<p>{% if reference.gbv %}GBV <a class="ml-1" href="{{ reference.gbv }}" target="_blank" rel="noopener">{{ reference.gbv|split('=')|last }}</a>{% endif %}{% if reference.riopacid %}<span class="ml-3">RI OPAC</span><a class="ml-1" href="{{ reference.riopacid }}" target="_blank" rel="noopener">{{ reference.riopacid|split('/')|last }}</a>{% endif %}</p>{% endif %}
 
-{% if reference.onlineressource %}<p>Online <a class="ml-1" href="{{ reference.onlineressource }}" target="_blank" rel="noopener">{{ reference.onlineressource }}</a></p>{% endif %}
+
