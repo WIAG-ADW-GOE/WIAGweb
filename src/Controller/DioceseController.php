@@ -20,9 +20,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
-/**
- * @IsGranted("ROLE_QUERY")
- */
 class DioceseController extends AbstractController {
     /**
      * Parameters

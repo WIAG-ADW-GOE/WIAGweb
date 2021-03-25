@@ -23,7 +23,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
 
 /**
- * @IsGranted("ROLE_QUERY")
+ * query bishops
  */
 class QueryBishop extends AbstractController {
     /**

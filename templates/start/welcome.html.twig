@@ -3,7 +3,6 @@
 
 {% block body %}
     {# It is ok to drop the wrapping container. This leads here to the desired left margin.#}
-    {% if is_granted('ROLE_USER') %}
 	<div class="row mx-2">
 	    <div class="col-md-3">
 		<figure class="figure">
@@ -42,7 +41,7 @@
 		</div>
 	    {% endif %}
 	</div>
-    {% else %}
+    {% if false %}
 	<div class="row justify-content-center">
 	    <figure role="group" class="col col-md-8 pt-3">
 		<img src="{{ asset('images/WIAG-netz-md.png') }}"

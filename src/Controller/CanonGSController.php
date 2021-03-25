@@ -19,9 +19,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 
 
-/**
- * @IsGranted("ROLE_QUERY")
- */
 class CanonGSController extends AbstractController {
     /**
      * Parameters

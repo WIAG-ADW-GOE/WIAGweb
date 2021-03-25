@@ -56,27 +56,6 @@ class PersonRepository extends ServiceEntityRepository {
     }
     */
 
-    /* AJAX callback function */
-    public function suggestNameObsolete($name, $limit = 40): array {
-
-        // get suggestion directly from the lookup table 2020-10-27
-        $qb = $this->createQueryBuilder('p')
-                   ->select("DISTINCT CASE WHEN p.prefix_name <> '' THEN CONCAT(p.givenname, ' ', p.prefix_name, ' ', p.familyname) ELSE CONCAT(p.givenname, ' ', p.familyname)END as suggestion")
-                   ->join('p.namelookup', 'nlt')
-                   ->andWhere("CONCAT(nlt.givenname, ' ', nlt.prefix_name, ' ', nlt.familyname) LIKE :qname".
-                           " OR CONCAT(nlt.givenname, ' ', nlt.familyname)LIKE :qname")
-                   ->setParameter('qname', '%'.$name.'%')
-                   ->setMaxResults($limit);
-
-        $suggestions = $qb->getQuery()->getResult();
-
-        return $suggestions;
-
-        //     $sql = "SELECT DISTINCT(familyname) as suggestion FROM familynamevariant".
-        //          " WHERE familyname like '%{$name}%'".
-        //          " UNION SELECT DISTINCT(givenname) as suggestion FROM givennamevariant".
-        //          " WHERE givenname like '%{$name}%' LIMIT $limiti";
-    }
 
     public function addFacets($querydata, $qb) {
         if($querydata->facetPlaces) {

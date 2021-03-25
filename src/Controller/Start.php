@@ -45,7 +45,6 @@ class Start extends AbstractController {
 
     /**
      * @Route("/about/images", name="about_images")
-     * @IsGranted("ROLE_USER")
      */
     public function images() {
         return $this->render('start/images.html.twig');
@@ -53,7 +52,6 @@ class Start extends AbstractController {
 
     /**
      * @Route("/about/data-service", name="data_service")
-     * @IsGranted("ROLE_USER")
      */
     public function dataService() {
         return $this->render('start/data_service.html.twig');

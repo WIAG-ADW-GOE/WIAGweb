@@ -28,39 +28,37 @@
 	<div class="container-fluid">
 		<nav class="navbar navbar-expand-sm navbar-light bg-white">
 		    <ul class="navbar-nav ml-auto">
+			<li class="nav-item active btn-group m-1"><div class="dropdown">
+			    {# border-white?! #}
+			    <button class="btn btn-light bg-white font-weight-bold" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Über&nbsp;WIAG</button>
+			    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+				<a class="dropdown-item" href="{{ path('wiag_about') }}">Ziele</a>
+				<a class="dropdown-item" href="{{ path('reference_list') }}">Referenzwerke</a>
+				<a class="dropdown-item" href="{{ path('api_documentation') }}">API</a>
+				<a class="dropdown-item" href="{{ path('wiag_contact') }}">Kontakt</a>
+			    </div>
+			</div></li>
+
+			<li class="nav-item active btn-group m-1"><div class="dropdown">
+			    <button class="btn btn-light font-weight-bold bg-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Datensammlungen</button>
+			    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+				<a class="dropdown-item" href="{{ path('launch_query') }}">Bischöfe des Alten Reiches</a>
+				<a class="dropdown-item" href="{{ path('query_dioceses') }}">Bistümer des Alten Reiches</a>
+				
+				<a class="dropdown-item" href="{{ path('query_canons') }}">Domherren des Alten Reiches (GS)</a>
+				{% if is_granted('ROLE_DATA_ADMIN') %}
+				    <a class="dropdown-item" href="{{ path('canons_wd') }}">Domherren (neu)</a>
+				{% endif %}
+				{% if is_granted('ROLE_DATA_ADMIN') %}
+				    <a class="dropdown-item" href="{{ path('bulk_export_dispatch') }}">Datenexport</a>
+				{% endif %}
+				
+			    </div>
+			</div></li>
+			<li class="nav-item m-1"><a href="{{ path('data_service') }}"><button class="btn btn-light font-weight-bold bg-white">Datenservice</button></a></li>
 			{% if is_granted('ROLE_USER') %}
-			    <li class="nav-item active btn-group m-1"><div class="dropdown">
-				{# border-white?! #}
-				<button class="btn btn-light bg-white font-weight-bold" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Über&nbsp;WIAG</button>
-				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-				    <a class="dropdown-item" href="{{ path('wiag_about') }}">Ziele</a>
-				    <a class="dropdown-item" href="{{ path('reference_list') }}">Referenzwerke</a>
-				    <a class="dropdown-item" href="{{ path('api_documentation') }}">API</a>
-				    <a class="dropdown-item" href="{{ path('wiag_contact') }}">Kontakt</a>
-				</div>
-			    </div></li>
-			    {% if is_granted('ROLE_QUERY') %}
-				<li class="nav-item active btn-group m-1"><div class="dropdown">
-				    <button class="btn btn-light font-weight-bold bg-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Datensammlungen</button>
-				    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-					<a class="dropdown-item" href="{{ path('launch_query') }}">Bischöfe des Alten Reiches</a>
-					<a class="dropdown-item" href="{{ path('query_dioceses') }}">Bistümer des Alten Reiches</a>
-
-					<a class="dropdown-item" href="{{ path('query_canons') }}">Domherren des Alten Reiches (GS)</a>
-					{% if is_granted('ROLE_DATA_ADMIN') %}
-					    <a class="dropdown-item" href="{{ path('canons_wd') }}">Domherren (neu)</a>
-					{% endif %}
-					{% if is_granted('ROLE_DATA_ADMIN') %}
-					    <a class="dropdown-item" href="{{ path('bulk_export_dispatch') }}">Datenexport</a>
-					{% endif %}
-
-				    </div>
-				</div></li>
-			    {% endif %}
-			    <li class="nav-item m-1"><a href="{{ path('data_service') }}"><button class="btn btn-light font-weight-bold bg-white">Datenservice</button></a></li>
 			    <li class="nav-item m-1"><a href="{{ path('wiag_logout') }}"><button class="btn btn-light font-weight-bold bg-white">Logout</button></a></li>
-			{% endif %}
-			{% if not is_granted('ROLE_USER') %}
+			{% else %}
 			    <li class="nav-item m-1"><a href="{{ path('wiag_login') }}"><button class="btn btn-light font-weight-bold bg-white">Login</button></a></li>
 			{% endif %}
 		    </ul>

@@ -11,9 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-/**
- * @IsGranted("ROLE_QUERY")
- */
 class QueryBishopUtility extends AbstractController {
     
     // size of autocompletion list
