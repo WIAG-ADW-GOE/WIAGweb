@@ -201,12 +201,12 @@ class PersonRepository extends ServiceEntityRepository {
                ->addSelect('ocsortkey')
                ->andWhere('ocsortkey.diocese = :diocese')
                ->setParameter('diocese', 'all')
-               ->orderBy('ocsortkey.sortkey, person.givenname');
+               ->orderBy('ocsortkey.sortkey, person.givenname, person.wiagid');
             break;
         case 'yearatplace':
             // $qb->join('ocplace.numdate', 'ocplacedate')
             //    ->orderBy('ocplacedate.date_start, person.givenname', 'ASC');
-            $qb->orderBy('ocselectandsort.sortkey, person.givenname');
+            $qb->orderBy('ocselectandsort.sortkey, person.givenname, person.wiagid');
             break;
         case 'name':
             // $qb->orderBy('person.familyname, person.givenname, oc.diocese');
@@ -214,7 +214,7 @@ class PersonRepository extends ServiceEntityRepository {
                ->addSelect('ocsortkey')
                ->andWhere('ocsortkey.diocese = :diocese')
                ->setParameter('diocese', 'all')
-               ->orderBy('ocsortkey.sortkey, person.givenname');
+               ->orderBy('ocsortkey.sortkey, person.givenname, person.wiagid');
             break;
         }
 

@@ -180,10 +180,10 @@ class CanonRepository extends ServiceEntityRepository
                ->addSelect('ocsortkey')
                ->andWhere('ocsortkey.diocese = :diocese')
                ->setParameter('diocese', 'all')
-               ->orderBy('ocsortkey.sortkey, canon.givenname');
+               ->orderBy('ocsortkey.sortkey, canon.givenname, canon.id');
             break;
         case 'yearatplace': // only relevant for bishops
-            $qb->orderBy('ocselectandsort.sortkey, canon.givenname');
+            $qb->orderBy('ocselectandsort.sortkey, canon.givenname, canon.id');
             break;
         case 'name':
             // $qb->orderBy('canon.familyname, canon.givenname, oc.diocese');
@@ -191,7 +191,7 @@ class CanonRepository extends ServiceEntityRepository
                ->addSelect('ocsortkey')
                ->andWhere('ocsortkey.diocese = :diocese')
                ->setParameter('diocese', 'all')
-               ->orderBy('ocsortkey.sortkey, canon.givenname');
+               ->orderBy('ocsortkey.sortkey, canon.givenname, canon.id');
             break;
         }
 

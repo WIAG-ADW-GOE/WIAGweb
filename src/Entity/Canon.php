@@ -419,7 +419,7 @@ class Canon
             }
         }
         $refids = array_merge([$this->idInReference], $refidsoc);
-        $refidstr = count($refids) > 0 ? $refidstr = implode(", ", $refids) : null;        
+        $refidstr = count($refids) > 0 ? $refidstr = implode(", ", $refids) : null;
         return $refidstr;
     }
 
