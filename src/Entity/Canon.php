@@ -404,6 +404,10 @@ class Canon
         return $this;
     }
 
+    /**
+     * get and merge ids in references
+     * source Canon and CnOffice
+     */
     public function getIdInReference(): ?string
     {
         // we can not use array_column here
@@ -414,7 +418,6 @@ class Canon
                 $refidsoc[] = $refidoc;
             }
         }
-        dump($this->idInReference);
         $refids = array_merge([$this->idInReference], $refidsoc);
         $refidstr = count($refids) > 0 ? $refidstr = implode(", ", $refids) : null;        
         return $refidstr;
