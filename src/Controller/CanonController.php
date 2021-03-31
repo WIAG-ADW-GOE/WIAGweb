@@ -217,7 +217,7 @@ class CanonController extends AbstractController {
 
     /**
      * AJAX callback
-     * @Route("canon-autocomplete-names", name="canon_autocomplete_names")
+     * @Route("domherren-wd/autocomplete/name", name="canon_autocomplete_name")
      */
     public function autocompletenames(Request $request) {
         $suggestions = $this->getDoctrine()
@@ -232,9 +232,9 @@ class CanonController extends AbstractController {
 
     /**
      * AJAX callback
-     * @Route("canon-autocomplete-places", name="canon_autocomplete_places")
+     * @Route("domherren-wd/autocomplete/XXX", name="canon_autocomplete_XXX")
      */
-    public function autocompleteplaces(Request $request) {
+    public function autocompletediocese(Request $request) {
         $query = trim($request->query->get('query'));
         # strip 'bistum' or 'erzbistum'
         foreach(['Erzbistum', 'erzbistum', 'Bistum', 'bistum'] as $bs) {
@@ -254,7 +254,30 @@ class CanonController extends AbstractController {
 
     /**
      * AJAX callback
-     * @Route("canon-autocomplete-offices", name="canon_autocomplete_offices")
+     * @Route("domherren-wd/autocomplete/place", name="canon_autocomplete_place")
+     */
+    public function autocompletemonastery(Request $request) {
+        $query = trim($request->query->get('query'));
+        # strip 'bistum' or 'erzbistum'
+        foreach(['Stift', 'Domstift'] as $bs) {
+            if(!is_null($query) && str_starts_with($query, $bs)) {
+                $query = trim(str_replace($bs, "", $query));
+                break;
+            }
+        }
+
+        $places = $this->getDoctrine()
+                       ->getRepository(CnOffice::class)
+                       ->suggestPlace($query, self::HINT_LIST_LIMIT);
+        return $this->json([
+            'places' => $places,
+        ]);
+    }
+
+
+    /**
+     * AJAX callback
+     * @Route("domherren-wd/autocomplete/office", name="canon_autocomplete_office")
      */
     public function autocompleteoffices(Request $request) {
         $offices = $this->getDoctrine()

@@ -137,12 +137,13 @@ class CanonRepository extends ServiceEntityRepository
                 ->setParameter('office', '%'.$formmodel->office.'%');
         }
 
-        # office diocese
+        # office place
         if($formmodel->place) {
             // we have to join office a second time to filter at the level of persons
             $sort = 'yearatplace';
-            $qb->join('canon.officeSortkeys', 'ocselectandsort')
-                ->andWhere('ocselectandsort.diocese LIKE :place')
+            $qb->join('canon.offices', 'oc_place')
+               ->join('oc_place.monastery', 'm')
+                ->andWhere('m.monastery_name LIKE :place')
                 ->setParameter('place', '%'.$formmodel->place.'%');
         }
         # names
@@ -240,40 +241,43 @@ class CanonRepository extends ServiceEntityRepository
         return $result;
     }
 
+    /**
+     * return list of places, where persons have an office;
+     * used for the facet of places
+     */
     public function findOfficePlaces(CanonFormModel $canonquery) {
         $qb = $this->createQueryBuilder('canon')
                    ->andWhere('canon.isready = 1')
-                   ->select('DISTINCT oc.diocese, COUNT(DISTINCT(canon.id)) as n')
+                   ->select('DISTINCT mfacet.monastery_name, COUNT(DISTINCT(canon.id)) as n')
                    ->join('canon.offices', 'oc')
-                   ->andWhere("oc.diocese <> ''");
+                   ->join('oc.monastery', 'mfacet')
+                   ->andWhere("mfacet.monastery_name <> ''");
 
         $this->addQueryConditions($qb, $canonquery);
 
-        $qb->groupBy('oc.diocese');
+        $qb->groupBy('mfacet.monastery_name');
 
         $query = $qb->getQuery();
         $result = $query->getResult();
         return $result;
     }
 
+    /**
+     * add conditions set by facets
+     */
     public function addFacets($querydata, $qb) {
         if($querydata->facetPlaces) {
-            $facetdioceses = array();
-            foreach($querydata->facetPlaces as $d) {
-                $facetdioceses[] = $d->name;
-            }
+            $facetPlaces = array_column($querydata->facetPlaces, 'name');
             $qb->join('canon.offices', 'ocfctp')
-               ->andWhere("ocfctp.diocese IN (:facetdioceses)")
-               ->setParameter('facetdioceses', $facetdioceses);
+               ->join('ocfctp.monastery', 'mfctp')
+                ->andWhere('mfctp.monastery_name IN (:places)')
+                ->setParameter(':places', $facetPlaces);
         }
         if($querydata->facetOffices) {
-            $facetoffices = array();
-            foreach($querydata->facetOffices as $d) {
-                $facetoffices[] = $d->name;
-            }
+            $facetOffices = array_column($querydata->facetOffices, 'name');
             $qb->join('canon.offices', 'ocfctoc')
-               ->andWhere("ocfctoc.officeName IN (:facetoffices)")
-               ->setParameter('facetoffices', $facetoffices);
+               ->andWhere("ocfctoc.officeName IN (:offices)")
+               ->setParameter('offices', $facetOffices);
         }
 
         return $qb;

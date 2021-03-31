@@ -47,4 +47,22 @@ class MonasteryRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /* AJAX callback */
+    public function suggestPlace($place, $limit = 200): array {
+        $qb = $this->createQueryBuilder('m')
+                   ->select('DISTINCT m.monastery_name AS suggestion')
+                   ->andWhere('m.monastery_name LIKE :place')
+                   ->setParameter('place', '%'.$place.'%')
+                   ->setMaxResults($limit);
+        $query = $qb->getQuery();
+
+        # dd($query->getDQL());
+
+        return $query->getResult();
+
+    }
+
+
+    
 }

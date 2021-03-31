@@ -52,17 +52,17 @@ class CanonFormType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Vor- oder Nachname',
                     'class' => 'js-name-autocomplete',
-                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_names'),
+                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_name'),
                     'size' => '30',
                 ],
             ])
             ->add('place', TextType::class, [
-                'label' => 'Erzbistum/Bistum',
+                'label' => 'Domstift',
                 'required' => false,
                 'attr' => [
-                    'placeholder' => 'Erzbistum/Bistum',
+                    'placeholder' => 'Domstift',
                     'class' => 'js-place-autocomplete',
-                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_places'),
+                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_place'),
                     'size' => '15',
                 ],
             ])
@@ -72,7 +72,7 @@ class CanonFormType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Amtsbezeichnung',
                     'class' => 'js-office-autocomplete',
-                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_offices'),
+                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_office'),
                     'size' => '18',
                 ],
             ])
@@ -128,7 +128,7 @@ class CanonFormType extends AbstractType
             $this->createFacetOffices($builder, $canon);
         }
 
-        
+
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
             array($this, 'createFacetPlacesByEvent'));
@@ -152,13 +152,12 @@ class CanonFormType extends AbstractType
 
         if ($canon->isEmpty()) return;
 
-
         $this->createFacetPlaces($event->getForm(), $canon);
 
     }
 
     public function createFacetPlaces($form, $canon) {
-        // do not filter by diocese themselves
+        // do not filter by diocese
         $bqsansfacetPlaces = clone $canon;
         $bqsansfacetPlaces->setFacetPlaces(array());
 
@@ -167,7 +166,7 @@ class CanonFormType extends AbstractType
         $choices = array();
 
         foreach($places as $place) {
-            $choices[] = new PlaceCount($place['diocese'], $place['n']);
+            $choices[] = new PlaceCount($place['monastery_name'], $place['n']);
         }
 
         // add selected fields with frequency 0
@@ -183,7 +182,7 @@ class CanonFormType extends AbstractType
 
         if ($places) {
             $form->add('facetPlaces', ChoiceType::class, [
-                'label' => 'Filter Bistum',
+                'label' => 'Filter Domstift/Kloster',
                 'expanded' => true,
                 'multiple' => true,
                 'choices' => $choices,

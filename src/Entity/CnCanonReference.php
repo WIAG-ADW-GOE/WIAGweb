@@ -12,7 +12,7 @@ class CnCanonReference
 {
 
     /**
-     * @ORM\ManyToOne(targetEntity="Canon")
+     * @ORM\ManyToOne(targetEntity="Canon", inversedBy="references")
      * @ORM\JoinColumn(name="id_canon", referencedColumnName="id")
      */
     private $canon;
@@ -36,7 +36,7 @@ class CnCanonReference
     private $idCanon;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=63)
      */
     private $idReference;
 
@@ -46,7 +46,7 @@ class CnCanonReference
     private $itemReference;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="string", length=511, nullable=true)
      */
     private $pageReference;
 

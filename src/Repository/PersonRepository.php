@@ -56,25 +56,21 @@ class PersonRepository extends ServiceEntityRepository {
     }
     */
 
-
+    /**
+     * add conditions set by facets
+     */
     public function addFacets($querydata, $qb) {
         if($querydata->facetPlaces) {
-            $facetdioceses = array();
-            foreach($querydata->facetPlaces as $d) {
-                $facetdioceses[] = $d->name;
-            }
+            $facetPlaces = array_column($querydata->facetPlaces, 'name');
             $qb->join('person.offices', 'ocfctp')
-               ->andWhere("ocfctp.diocese IN (:facetdioceses)")
-               ->setParameter('facetdioceses', $facetdioceses);
+               ->andWhere("ocfctp.diocese IN (:dioceses)")
+               ->setParameter('dioceses', $facetPlaces);
         }
         if($querydata->facetOffices) {
-            $facetoffices = array();
-            foreach($querydata->facetOffices as $d) {
-                $facetoffices[] = $d->name;
-            }
+            $facetOffices = array_column($querydata->facetOffices, 'name');
             $qb->join('person.offices', 'ocfctoc')
-               ->andWhere("ocfctoc.office_name IN (:facetoffices)")
-               ->setParameter('facetoffices', $facetoffices);
+               ->andWhere("ocfctoc.office_name IN (:offices)")
+               ->setParameter('offices', $facetOffices);
         }
 
         return $qb;
@@ -127,7 +123,7 @@ class PersonRepository extends ServiceEntityRepository {
     private function addQueryConditions(QueryBuilder $qb, BishopQueryFormModel $bishopquery): QueryBuilder {
 
         // dump($qb);
-        
+
         # identifier
         if($bishopquery->someid && $bishopquery->someid != "") {
             $id_pure = ltrim($bishopquery->someid, "0");
@@ -164,7 +160,7 @@ class PersonRepository extends ServiceEntityRepository {
                 ->andWhere('ocselectandsort.diocese LIKE :place')
                 ->setParameter('place', '%'.$bishopquery->place.'%');
         }
-        
+
         # names
         if($bishopquery->name && $bishopquery->name != "") {
             $qb->join('person.namelookup', 'nlt')
@@ -256,6 +252,10 @@ class PersonRepository extends ServiceEntityRepository {
         return $result;
     }
 
+    /**
+     * return list of places, where persons have an office;
+     * used for the facet of places
+     */
     public function findOfficePlaces(BishopQueryFormModel $bishopquery) {
         $qb = $this->createQueryBuilder('person')
                    ->select('DISTINCT oc.diocese, COUNT(DISTINCT(person.wiagid)) as n')

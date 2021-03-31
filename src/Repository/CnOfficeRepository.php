@@ -128,13 +128,19 @@ class CnOfficeRepository extends ServiceEntityRepository
         return $qrplaces;
     }
 
-        /* AJAX callback */
+    /* AJAX callback */
     public function suggestPlace($place, $limit = 200): array {
+        // $qb = $this->createQueryBuilder('oc')
+        //            ->join('oc.canon', 'c')
+        //            ->andWhere("c.isready = 1")
+        //            ->select('DISTINCT oc.diocese AS suggestion')
+        //            ->andWhere('oc.diocese LIKE :place')
+        //            ->setParameter('place', '%'.$place.'%')
+        //            ->setMaxResults($limit);
         $qb = $this->createQueryBuilder('oc')
-                   ->join('oc.canon', 'c')
-                   ->andWhere("c.isready = 1")
-                   ->select('DISTINCT oc.diocese AS suggestion')
-                   ->andWhere('oc.diocese LIKE :place')
+                   ->leftJoin('oc.monastery', 'm')
+                   ->select('DISTINCT m.monastery_name AS suggestion')
+                   ->andWhere('m.monastery_name LIKE :place')
                    ->setParameter('place', '%'.$place.'%')
                    ->setMaxResults($limit);
         $query = $qb->getQuery();

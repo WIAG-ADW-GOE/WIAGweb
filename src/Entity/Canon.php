@@ -199,6 +199,11 @@ class Canon
      */
     private $wikidataId;
 
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $status;
+
     public function __construct() {
         $this->officeSortkeys = new ArrayCollection();
     }
@@ -227,7 +232,7 @@ class Canon
         return $this->officeSortkeys;
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -656,6 +661,18 @@ class Canon
     public static function isWiagidLong($wiagidlong) {
         // do something reasonable as soon as the WIAG ID format is defined
         return false;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
     }
 
 

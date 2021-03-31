@@ -29,7 +29,7 @@ class CnOffice
     private $monastery;
 
     /**
-     * if an office is at a monastery we lookup it's place(s) (see OfficeRepository)
+     * if an office is at a monastery we lookup it's place(s) (see CnOfficeRepository)
      */
     private $monasterylocationstr;
 
@@ -66,7 +66,7 @@ class CnOffice
     private $idCanon;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="string", length=127, nullable=true)
      */
     private $institution;
 
@@ -86,7 +86,7 @@ class CnOffice
     private $location;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=511, nullable=true)
      */
     private $comment;
 
@@ -119,17 +119,6 @@ class CnOffice
         return $this->numdate;
     }
 
-    public function getMonastery()
-    {
-        return $this->monastery;
-    }
-
-
-    public function getMonasterylocation()
-    {
-        return $this->monasterylocation;
-    }
-
     public function getMonasterylocationstr()
     {
         return $this->monasterylocationstr;
@@ -138,10 +127,16 @@ class CnOffice
     public function setMonasterylocationstr($monasterylocationstr): self
     {
         $this->monasterylocationstr = $monasterylocationstr;
+
         return $this;
     }
 
-    public function getId(): ?int
+    public function getMonastery()
+    {
+        return $this->monastery;
+    }
+
+    public function getId(): ?string
     {
         return $this->id;
     }

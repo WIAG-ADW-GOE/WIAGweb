@@ -34,11 +34,6 @@ class CnOfficedate
      */
     private $dateEnd;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
     public function getDateStart(): ?int
     {
         return $this->dateStart;

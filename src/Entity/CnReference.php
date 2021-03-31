@@ -14,7 +14,7 @@ class CnReference
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=31)
      */
     private $id;
 
@@ -24,7 +24,7 @@ class CnReference
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="string", length=511, nullable=true)
      */
     private $author;
 
@@ -34,11 +34,16 @@ class CnReference
     private $onlineResource;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="string", length=127, nullable=true)
      */
     private $shorttitle;
 
-    public function getId(): ?int
+    /**
+     * @ORM\Column(type="string", length=31, nullable=true)
+     */
+    private $number_vol;
+
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -87,6 +92,18 @@ class CnReference
     public function setShorttitle(?string $shorttitle): self
     {
         $this->shorttitle = $shorttitle;
+
+        return $this;
+    }
+
+    public function getNumberVol(): ?string
+    {
+        return $this->number_vol;
+    }
+
+    public function setNumberVol(?string $number_vol): self
+    {
+        $this->number_vol = $number_vol;
 
         return $this;
     }

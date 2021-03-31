@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\MonasteryRepository;
+use App\Repository\CnMonasteryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -79,18 +79,6 @@ class CnMonastery
      * @ORM\JoinColumn(name="wiagid", referencedColumnName="id_monastery")
      */
     private $office;
-
-    /**
-     * @ORM\OneToMany(targetEntity=MonasteryLocation::class, mappedBy="monastery")
-     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_monastery")
-     */
-    private $locations;
-
-    public function __construct()
-    {
-        $this->locations = new ArrayCollection();
-    }
-
 
     public function getIdMonastery(): ?int
     {
@@ -236,34 +224,4 @@ class CnMonastery
         return $this;
     }
 
-    /**
-     * @return Collection|MonasteryLocation[]
-     */
-    public function getLocations(): Collection
-    {
-        return $this->locations;
-    }
-
-    public function addLocation(MonasteryLocation $location): self
-    {
-        if (!$this->locations->contains($location)) {
-            $this->locations[] = $location;
-            $location->setMonastery($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLocation(MonasteryLocation $location): self
-    {
-        if ($this->locations->contains($location)) {
-            $this->locations->removeElement($location);
-            // set the owning side to null (unless already changed)
-            if ($location->getMonastery() === $this) {
-                $location->setMonastery(null);
-            }
-        }
-
-        return $this;
-    }
 }
