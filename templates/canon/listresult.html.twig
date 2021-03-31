@@ -65,7 +65,7 @@
 					</td>
 					<td>{% for o in person.offices|sort((a, b) => a.numdate.datestart <=> b.numdate.datestart) %}
 					    <small>{{ o.officename }}
-						{% if o.diocese %}({{ o.diocese }}){% endif %}
+						{% if o.diocese and not o.idmonastery %}({{ o.diocese }}){% endif %}
 						{% if o.idmonastery %}({{ o.monasterylocationstr }}){% endif %}
 						{% if o.datestart and not o.dateend %}{{ o.datestart }}
 						{% elseif not o.datestart and o.dateend %}{{ o.dateend }}
@@ -86,7 +86,7 @@
 		<div class="col-3">
 		    {% if query_form.facetPlaces is defined %}
 			<div class="card card-body">
-			    <strong class="card-title">Filter Domstift/Kloster</strong>
+			    <strong class="card-title">Filter Domstift</strong>
 			    {% for fpl in query_form.facetPlaces%}
 				{# <div class="form-group small"> #}
 				<div class="form-group">

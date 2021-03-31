@@ -20,6 +20,17 @@ class PlaceCount {
         return $label;
     }
 
+    static public function domstift($monastery_name): string {
+        $name = ltrim($monastery_name);
+        $prefix = "Domstift";
+        $flag = strpos($name, $prefix);
+        if ($flag !== false and $flag == 0) {
+            $name = ltrim(substr($name, strlen($prefix)));
+        }
+        return $name;
+    }
+
+
     public function getAttr() {
         $attr = array();
         if ($this->name == 'Pedena') {

@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass=MonasteryRepository::class)
  */
 class Monastery
-{
+{    
     /**
      * @ORM\Column(type="integer")
      */

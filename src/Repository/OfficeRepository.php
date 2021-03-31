@@ -107,23 +107,6 @@ class OfficeRepository extends ServiceEntityRepository
     public function setMonasteryLocation(Office $oc) {
 
         if($oc->getIdMonastery()) {
-                        // $em = $this->getEntityManager();
-            // $ocid = $oc->getWiagid();
-            // $query = $em->createQuery("SELECT place.place_name FROM App\Entity\Office oc ".
-            //                           "INNER JOIN oc.monastery monastery ".
-            //                           "INNER JOIN monastery.locations loc ".
-            //                           "INNER JOIN loc.place place ".
-            //                           "WHERE oc.wiagid = :ocid");
-            // $query->setParameter('ocid', $ocid);
-
-            // $qrplacenames = $query->getResult();
-            // $placenames = array_map(
-            //     function($el) {
-            //         return $el['place_name'];
-            //     },
-            //     $qrplacenames
-            // );
-            // $oc->setMonasterylocation(implode(', ', $placenames));
 
             // DQL
             $em = $this->getEntityManager();
@@ -135,15 +118,6 @@ class OfficeRepository extends ServiceEntityRepository
                                       "WHERE oc.wiagid = :ocid ".
                                       "AND loc.location_name IS NOT NULL")
                         ->setParameter('ocid', $oc->getWiagid());
-
-            // $qb = $this->createQueryBuilder('oc')
-            //          ->select('loc.location_name, loc.location_begin_tpq, loc.location_end_tpq')
-            //          ->join('oc.monasterylocationobj', 'loc')
-            //          ->andWhere('oc.wiagid = :ocid')
-            //          ->andWhere('loc.location_name IS NOT NULL')
-            //          ->setParameter('ocid', $oc->getWiagid());
-
-            // $query = $qb->getQuery();
 
             $qrplaces = $query->getResult();
 

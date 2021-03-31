@@ -65,7 +65,7 @@ class CanonController extends AbstractController {
 
             $singleoffset = $request->request->get('singleoffset');
             if(!is_null($singleoffset)) {
-                return $this->getBishopInQuery($form, $singleoffset);
+                return $this->getCanonInQuery($form, $singleoffset);
             }
 
 
@@ -150,7 +150,7 @@ class CanonController extends AbstractController {
     }
 
 
-    public function getBishopInQuery($form, $offset) {
+    public function getCanonInQuery($form, $offset) {
 
         $queryformdata = $form->getData();
 

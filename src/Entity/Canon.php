@@ -406,7 +406,18 @@ class Canon
 
     public function getIdInReference(): ?string
     {
-        return $this->idInReference;
+        // we can not use array_column here
+        $refidsoc = array();
+        foreach ($this->offices as $oc) {
+            $refidoc = $oc->getIdInReference();
+            if (!is_null($refidoc)) {
+                $refidsoc[] = $refidoc;
+            }
+        }
+        dump($this->idInReference);
+        $refids = array_merge([$this->idInReference], $refidsoc);
+        $refidstr = count($refids) > 0 ? $refidstr = implode(", ", $refids) : null;        
+        return $refidstr;
     }
 
     public function setIdInReference(?string $idInReference): self

@@ -57,10 +57,10 @@ class CanonFormType extends AbstractType
                 ],
             ])
             ->add('place', TextType::class, [
-                'label' => 'Domstift',
+                'label' => 'Ort/Domstift',
                 'required' => false,
                 'attr' => [
-                    'placeholder' => 'Domstift',
+                    'placeholder' => 'Ort/Domstift',
                     'class' => 'js-place-autocomplete',
                     'data-autocomplete-url' => $this->router->generate('canon_autocomplete_place'),
                     'size' => '15',
@@ -166,7 +166,7 @@ class CanonFormType extends AbstractType
         $choices = array();
 
         foreach($places as $place) {
-            $choices[] = new PlaceCount($place['monastery_name'], $place['n']);
+            $choices[] = new PlaceCount(PlaceCount::domstift($place['monastery_name']), $place['n']);
         }
 
         // add selected fields with frequency 0
@@ -182,7 +182,7 @@ class CanonFormType extends AbstractType
 
         if ($places) {
             $form->add('facetPlaces', ChoiceType::class, [
-                'label' => 'Filter Domstift/Kloster',
+                'label' => 'Filter Domstift',
                 'expanded' => true,
                 'multiple' => true,
                 'choices' => $choices,

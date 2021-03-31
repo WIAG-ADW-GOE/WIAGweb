@@ -191,11 +191,12 @@
 		    </dd>
 		{% endif %}
 		{% if person.references %}
+		    {% set refid = person.idinreference %}
 		    <dt class="col-sm-3">{{ person.references|length > 1 ? 'Referenzwerke' : 'Referenzwerk' }}</dt>
 		    <dd class="col-sm-9">
 			<ul class="list-unstyled">
 			    {% for cnref in person.references %}
-				<li><a href="{{ path('canon_reference', {'id': cnref.reference.id }) }}">{{ cnref.reference.shorttitle }}</a>, S. {{ cnref.pagereference }}</li>
+				<li><a href="{{ path('canon_reference', {'id': cnref.reference.id }) }}">{{ cnref.reference.shorttitle }}</a>, {% if loop.index == 1 and refid %} S. {{ cnref.pagereference|raw }}; {{ refid }} {% else %} S. {{ cnref.pagereference|raw }} {% endif %}</li>
 			    {% endfor %}
 			</ul>
 		    </dd>

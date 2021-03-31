@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Canon;
 use App\Entity\CnOffice;
+use App\Entity\CnMonastery;
 use App\Form\Model\CanonFormModel;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -89,14 +90,11 @@ class CanonRepository extends ServiceEntityRepository
         }
 
         // dump($qb->getDQL());
-        # TODO
-        // $this->addSortParameter($qb, $formmodel);
+        $this->addSortParameter($qb, $formmodel);
 
         $query = $qb->getQuery();
         // dd($query->getResult());
         $persons = new Paginator($query, true);
-
-
 
         return $persons;
     }
@@ -168,7 +166,7 @@ class CanonRepository extends ServiceEntityRepository
 
         $sort = 'name';
         if($formmodel->year || $formmodel->office) $sort = 'year';
-        if($formmodel->place) $sort = 'yearatplace';
+        if($formmodel->place) $sort = 'year';
         if($formmodel->name) $sort = 'name';
 
         /**
@@ -184,7 +182,7 @@ class CanonRepository extends ServiceEntityRepository
                ->setParameter('diocese', 'all')
                ->orderBy('ocsortkey.sortkey, canon.givenname');
             break;
-        case 'yearatplace':
+        case 'yearatplace': // only relevant for bishops
             $qb->orderBy('ocselectandsort.sortkey, canon.givenname');
             break;
         case 'name':
@@ -251,7 +249,8 @@ class CanonRepository extends ServiceEntityRepository
                    ->select('DISTINCT mfacet.monastery_name, COUNT(DISTINCT(canon.id)) as n')
                    ->join('canon.offices', 'oc')
                    ->join('oc.monastery', 'mfacet')
-                   ->andWhere("mfacet.monastery_name <> ''");
+                   ->andWhere("mfacet.wiagid IN (:domstifte)")
+                   ->setParameter('domstifte', CnMonastery::IDS_DOMSTIFTE);
 
         $this->addQueryConditions($qb, $canonquery);
 
@@ -268,6 +267,7 @@ class CanonRepository extends ServiceEntityRepository
     public function addFacets($querydata, $qb) {
         if($querydata->facetPlaces) {
             $facetPlaces = array_column($querydata->facetPlaces, 'name');
+            $facetPlaces = array_map(function($a) {return 'Domstift '.$a;}, $facetPlaces);
             $qb->join('canon.offices', 'ocfctp')
                ->join('ocfctp.monastery', 'mfctp')
                 ->andWhere('mfctp.monastery_name IN (:places)')
