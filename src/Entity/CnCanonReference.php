@@ -129,7 +129,7 @@ class CnCanonReference
             return null;
         }
         $matches = [];
-        preg_match("~<b>([0-9]+)</b>~", $this->pageReference, $matches);
+        preg_match("~<b>(.*)</b>~", $this->pageReference, $matches);
         if (count($matches) < 2) {
             return null;
         } else {

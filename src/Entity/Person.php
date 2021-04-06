@@ -487,7 +487,7 @@ class Person {
                 or $this->comment_person and
                 $this->comment_person != '');
     }
-    
+
     public function hasMonastery(): bool {
         foreach($this->offices as $oc) {
             if($oc->getIdMonastery()) return true;
