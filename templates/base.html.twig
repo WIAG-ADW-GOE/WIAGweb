@@ -44,15 +44,15 @@
 			    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 				<a class="dropdown-item" href="{{ path('launch_query') }}">Bischöfe des Alten Reiches</a>
 				<a class="dropdown-item" href="{{ path('query_dioceses') }}">Bistümer des Alten Reiches</a>
-				
+
 				<a class="dropdown-item" href="{{ path('query_canons') }}">Domherren des Alten Reiches (GS)</a>
 				{% if is_granted('ROLE_DATA_ADMIN') %}
-				    <a class="dropdown-item" href="{{ path('canons_wd') }}">Domherren (neu)</a>
+				    <a class="dropdown-item" href="{{ path('canons_wd') }}">Domherren des Alten Reiches</a>
 				{% endif %}
 				{% if is_granted('ROLE_DATA_ADMIN') %}
 				    <a class="dropdown-item" href="{{ path('bulk_export_dispatch') }}">Datenexport</a>
 				{% endif %}
-				
+
 			    </div>
 			</div></li>
 			<li class="nav-item m-1"><a href="{{ path('data_service') }}"><button class="btn btn-light font-weight-bold bg-white">Datenservice</button></a></li>

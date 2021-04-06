@@ -55,12 +55,10 @@ class CnOfficeRepository extends ServiceEntityRepository
             $em = $this->getEntityManager();
 
             $query = $em->createQuery("SELECT loc.location_name, loc.location_begin_tpq, loc.location_end_tpq ".
-                                      "FROM App\Entity\CnOffice oc ".
-                                      "INNER JOIN App\Entity\MonasteryLocation loc ".
-                                      "WITH loc.wiagid_monastery = oc.idMonastery ".
-                                      "WHERE oc.id = :ocid ".
+                                      "FROM App\Entity\MonasteryLocation loc ".
+                                      "WHERE loc.wiagid_monastery = :idMonastery ".
                                       "AND loc.location_name IS NOT NULL")
-                        ->setParameter('ocid', $oc->getId());
+                        ->setParameter('idMonastery', $oc->getIdMonastery());
 
             $qrplaces = $query->getResult();
 
@@ -110,18 +108,26 @@ class CnOfficeRepository extends ServiceEntityRepository
     }
 
     public function findMonasteryLocationByPlaceId(CnOffice $oc) {
+        // $sql = "SELECT place.place_name as place_name, ".
+        //      "loc.location_begin_tpq, loc.location_end_tpq ".
+        //      "FROM App\Entity\CnOffice oc ".
+        //      "INNER JOIN App\Entity\Monasterylocation loc ".
+        //      "WITH loc.wiagid_monastery = oc.idMonastery ".
+        //      "INNER JOIN App\Entity\Place place ".
+        //      "WITH place.id_places = loc.place_id ".
+        //      "WHERE oc.id = :ocid ";
+        
         $sql = "SELECT place.place_name as place_name, ".
              "loc.location_begin_tpq, loc.location_end_tpq ".
-             "FROM App\Entity\CnOffice oc ".
-             "INNER JOIN App\Entity\Monasterylocation loc ".
-             "WITH loc.wiagid_monastery = oc.idMonastery ".
+             "FROM App\Entity\Monasterylocation loc ".
              "INNER JOIN App\Entity\Place place ".
              "WITH place.id_places = loc.place_id ".
-             "WHERE oc.id = :ocid ";
+             "WHERE loc.wiagid_monastery = :idMonastery ";
+             
 
         $em = $this->getEntityManager();
         $query = $em->createQuery($sql)
-                    ->setParameter('ocid', $oc->getId());
+                    ->setParameter('idMonastery', $oc->getIdMonastery());
 
         $qrplaces = $query->getResult();
 

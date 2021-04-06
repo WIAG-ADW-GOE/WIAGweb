@@ -16,6 +16,8 @@ class Canon
 {
     const WIAGID_PREFIX = 'WIAG-Pers-CANON-';
     const WIAGID_POSTFIX = '-001';
+    const WIAGID_EPISC_PREFIX = 'WIAG-Pers-EPISCGatz-';
+    const WIAGID_EPISC_POSTFIX = '-001';
 
     /**
      * @ORM\OneToMany(targetEntity="CnNamelookup", mappedBy="canon")
@@ -404,23 +406,9 @@ class Canon
         return $this;
     }
 
-    /**
-     * get and merge ids in references
-     * source Canon and CnOffice
-     */
     public function getIdInReference(): ?string
     {
-        // we can not use array_column here
-        $refidsoc = array();
-        foreach ($this->offices as $oc) {
-            $refidoc = $oc->getIdInReference();
-            if (!is_null($refidoc)) {
-                $refidsoc[] = $refidoc;
-            }
-        }
-        $refids = array_merge([$this->idInReference], $refidsoc);
-        $refidstr = count($refids) > 0 ? $refidstr = implode(", ", $refids) : null;
-        return $refidstr;
+        return $this->idInReference;
     }
 
     public function setIdInReference(?string $idInReference): self
@@ -541,6 +529,14 @@ class Canon
     public function getIdWiagEpisc(): ?int
     {
         return $this->idWiagEpisc;
+    }
+
+    public function getIdWiagEpiscLong(): ?string {
+        if (is_null($this->idWiagEpisc)) {
+            return null;
+        }
+        $id_padded = str_pad($this->idWiagEpisc, 5, '0', STR_PAD_LEFT);
+        return self::WIAGID_EPISC_PREFIX.$id_padded.self::WIAGID_EPISC_POSTFIX;
     }
 
     public function setIdWiagEpisc(?int $idWiagEpisc): self

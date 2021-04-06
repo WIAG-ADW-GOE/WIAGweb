@@ -111,13 +111,20 @@ class OfficeRepository extends ServiceEntityRepository
             // DQL
             $em = $this->getEntityManager();
 
+            // $query = $em->createQuery("SELECT loc.location_name, loc.location_begin_tpq, loc.location_end_tpq ".
+            //                           "FROM App\Entity\Office oc ".
+            //                           "LEFT JOIN App\Entity\MonasteryLocation loc ".
+            //                           "WITH loc.wiagid_monastery = oc.id_monastery ".
+            //                           "WHERE oc.wiagid = :ocid ".
+            //                           "AND loc.location_name IS NOT NULL")
+            //             ->setParameter('ocid', $oc->getWiagid());
+            
             $query = $em->createQuery("SELECT loc.location_name, loc.location_begin_tpq, loc.location_end_tpq ".
-                                      "FROM App\Entity\Office oc ".
-                                      "LEFT JOIN App\Entity\MonasteryLocation loc ".
-                                      "WITH loc.wiagid_monastery = oc.id_monastery ".
-                                      "WHERE oc.wiagid = :ocid ".
+                                      "FROM App\Entity\MonasteryLocation loc ".
+                                      "WHERE loc.wiagid_monastery = :idMonastery ".
                                       "AND loc.location_name IS NOT NULL")
-                        ->setParameter('ocid', $oc->getWiagid());
+                        ->setParameter('idMonastery', $oc->getIdMonastery());
+
 
             $qrplaces = $query->getResult();
 

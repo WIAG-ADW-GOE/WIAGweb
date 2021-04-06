@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CnCanonReference
 {
-
     /**
      * @ORM\ManyToOne(targetEntity="Canon", inversedBy="references")
      * @ORM\JoinColumn(name="id_canon", referencedColumnName="id")
@@ -22,7 +21,7 @@ class CnCanonReference
      * @ORM\JoinColumn(name="id_reference", referencedColumnName="id")
      */
     private $reference;
-    
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -49,6 +48,11 @@ class CnCanonReference
      * @ORM\Column(type="string", length=511, nullable=true)
      */
     private $pageReference;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isbio;
 
     public function getId(): ?int
     {
@@ -106,6 +110,31 @@ class CnCanonReference
     public function getReference(): ?object
     {
         return $this->reference;
+    }
+
+    public function getIsbio(): ?bool
+    {
+        return $this->isbio;
+    }
+
+    public function setIsbio(bool $isbio): self
+    {
+        $this->isbio = $isbio;
+
+        return $this;
+    }
+
+    public function getPageBio(): ?string {
+        if (!$this->isbio) {
+            return null;
+        }
+        $matches = [];
+        preg_match("~<b>([0-9]+)</b>~", $this->pageReference, $matches);
+        if (count($matches) < 2) {
+            return null;
+        } else {
+            return $matches[1];
+        }
     }
 
 }
