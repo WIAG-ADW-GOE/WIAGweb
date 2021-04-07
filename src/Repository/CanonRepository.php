@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Canon;
 use App\Entity\CnOffice;
-use App\Entity\CnMonastery;
+use App\Entity\Monastery;
 use App\Form\Model\CanonFormModel;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -199,6 +199,7 @@ class CanonRepository extends ServiceEntityRepository
 
     }
 
+    // 2021-04-07 obsolete use CnOffice.location instead
     public function addMonasteryLocation(Canon $person) {
         $em = $this->getEntityManager();
         $officeRepository = $em->getRepository(CnOffice::class);
@@ -246,11 +247,11 @@ class CanonRepository extends ServiceEntityRepository
     public function findOfficePlaces(CanonFormModel $canonquery) {
         $qb = $this->createQueryBuilder('canon')
                    ->andWhere('canon.isready = 1')
-                   ->select('DISTINCT mfacet.monastery_name, COUNT(DISTINCT(canon.id)) as n')
+                   ->select('DISTINCT mfacet.wiagid, mfacet.monastery_name, COUNT(DISTINCT(canon.id)) as n')
                    ->join('canon.offices', 'oc')
                    ->join('oc.monastery', 'mfacet')
                    ->andWhere("mfacet.wiagid IN (:domstifte)")
-                   ->setParameter('domstifte', CnMonastery::IDS_DOMSTIFTE);
+                   ->setParameter('domstifte', Monastery::IDS_DOMSTIFTE);
 
         $this->addQueryConditions($qb, $canonquery);
 
@@ -258,6 +259,10 @@ class CanonRepository extends ServiceEntityRepository
 
         $query = $qb->getQuery();
         $result = $query->getResult();
+        $prefix = "Domstift";
+        foreach ($result as $key => $value) {
+            $result[$key]['monastery_name'] = Monastery::trimDomstift($result[$key]['monastery_name']);
+        }
         return $result;
     }
 
@@ -265,13 +270,13 @@ class CanonRepository extends ServiceEntityRepository
      * add conditions set by facets
      */
     public function addFacets($querydata, $qb) {
-        if($querydata->facetPlaces) {
-            $facetPlaces = array_column($querydata->facetPlaces, 'name');
-            $facetPlaces = array_map(function($a) {return 'Domstift '.$a;}, $facetPlaces);
+        if($querydata->facetInstitutions) {
+            $ids_monastery = array_column($querydata->facetInstitutions, 'id');
+            // $facetInstitutions = array_map(function($a) {return 'Domstift '.$a;}, $facetInstitutions);
             $qb->join('canon.offices', 'ocfctp')
                ->join('ocfctp.monastery', 'mfctp')
-                ->andWhere('mfctp.monastery_name IN (:places)')
-                ->setParameter(':places', $facetPlaces);
+               ->andWhere('mfctp.wiagid IN (:places)')
+               ->setParameter(':places', $ids_monastery);
         }
         if($querydata->facetOffices) {
             $facetOffices = array_column($querydata->facetOffices, 'name');

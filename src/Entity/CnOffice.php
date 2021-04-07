@@ -23,7 +23,7 @@ class CnOffice
     private $numdate;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CnMonastery", inversedBy="office")
+     * @ORM\ManyToOne(targetEntity="Monastery", inversedBy="office")
      * @ORM\JoinColumn(nullable=true, name="id_monastery", referencedColumnName="wiagid")
      */
     private $monastery;

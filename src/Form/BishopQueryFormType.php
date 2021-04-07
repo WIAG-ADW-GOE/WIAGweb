@@ -166,15 +166,16 @@ class BishopQueryFormType extends AbstractType
         $choices = array();
 
         foreach($places as $place) {
-            $choices[] = new PlaceCount($place['diocese'], $place['n']);
+            $choices[] = new PlaceCount($place['diocese'], $place['diocese'], $place['n']);
         }
 
         // add selected fields with frequency 0
         $facetPlaces = $bishopquery->getFacetPlacesAsArray();
         if ($facetPlaces) {
+            $ids_choice = array_map(function($a) {return $a->getId();}, $choices);
             foreach($facetPlaces as $fpl) {
-                if (!PlaceCount::find($fpl, $choices)) {
-                    $choices[] = new PlaceCount($fpl, '0');
+                if (!in_array($fpl, $ids_choice)) {
+                    $choices[] = new PlaceCount($fpl, $fpl, 0);
                 }
             }
             uasort($choices, array('App\Entity\PlaceCount', 'isless'));

@@ -64,7 +64,7 @@ class BishopQueryFormModel {
             $facetPlaces = array();
             foreach($a['facetPlaces'] as $fpl) {
                 // we have no count data at this point
-                $facetPlaces[] = new PlaceCount($fpl, 0);
+                $facetPlaces[] = new PlaceCount($fpl, $fpl, 0);
             }
             $this->facetPlaces = $facetPlaces;
         }

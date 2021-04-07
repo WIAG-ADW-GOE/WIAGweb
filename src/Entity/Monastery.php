@@ -10,8 +10,25 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=MonasteryRepository::class)
  */
-class Monastery
-{    
+class Monastery {
+
+    const IDS_DOMSTIFTE = [3498,  3492,   701,   343, 60130,  3493,  3496,   783,
+                           675,   739,   832,  3503,  3499,   736,   676,  3488,
+                           3501,   792,   794,   616,   628,  3491,   803,   953,
+                           3495,   226,  3494,   679,  2066,  3489,  3500,  3487,
+                           3490,  3502];
+    
+    static public function trimDomstift($name): ?string {
+        $prefix = 'Domstift';
+        $name = ltrim($name);
+        $flag = strpos($name, $prefix);
+        if ($flag !== false and $flag == 0) {
+            return ltrim(substr($name, strlen($prefix)));
+        } else {
+            return $name;
+        }
+    }
+    
     /**
      * @ORM\Column(type="integer")
      */

@@ -38,7 +38,7 @@
 		<span class="ml-3">{{ fb_elements }}</span>
 	    </div>
 	</div>
-	{% if count > 0 or query_form.facetPlaces is defined or query_form.facetOffices is defined%}
+	{% if count > 0 or query_form.facetInstitutions is defined or query_form.facetOffices is defined%}
 	    <div class="container-fluid">
 	    <div class="row mt-2 mx-2 mb-2">
 		<div class="col-9">
@@ -66,7 +66,7 @@
 					<td>{% for o in person.offices|sort((a, b) => a.numdate.datestart <=> b.numdate.datestart) %}
 					    <small>{{ o.officename }}
 						{% if o.diocese and not o.idmonastery %}({{ o.diocese }}){% endif %}
-						{% if o.idmonastery %}({{ o.monasterylocationstr }}){% endif %}
+						{% if o.idmonastery %}({{ o.location }}){% endif %}
 						{% if o.datestart and not o.dateend %}{{ o.datestart }}
 						{% elseif not o.datestart and o.dateend %}{{ o.dateend }}
 						{% elseif o.datestart and o.dateend %}{{ o.datestart }}-{{ o.dateend }}{% endif %}
@@ -84,10 +84,10 @@
 		</div>
 		{# facets #}
 		<div class="col-3">
-		    {% if query_form.facetPlaces is defined %}
+		    {% if query_form.facetInstitutions is defined %}
 			<div class="card card-body">
 			    <strong class="card-title">Filter Domstift</strong>
-			    {% for fpl in query_form.facetPlaces%}
+			    {% for fpl in query_form.facetInstitutions%}
 				{# <div class="form-group small"> #}
 				<div class="form-group">
 				    {{ form_widget(fpl) }}

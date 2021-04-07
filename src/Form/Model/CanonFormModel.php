@@ -12,7 +12,7 @@ class CanonFormModel {
     public $office;
     public $year;
     public $someid;
-    public $facetPlaces;
+    public $facetInstitutions;
     public $facetOffices;
 
     public function __construct($n = null,
@@ -27,7 +27,7 @@ class CanonFormModel {
         $this->office = $o;
         $this->year = $y;
         $this->someid = $id;
-        $this->facetPlaces = $fpl;
+        $this->facetInstitutions = $fpl;
         $this->facetOffices = $fof;
     }
 
@@ -35,8 +35,12 @@ class CanonFormModel {
         return (!$this->name and !$this->place and !$this->office and !$this->year and !$this->someid);
     }
 
-    public function setFacetPlaces($fpl) {
-        $this->facetPlaces = $fpl;
+    public function getFacetInstitutions() {
+        return $this->facetInstitutions;
+    }
+
+    public function setFacetInstitutions($fpl) {
+        $this->facetInstitutions = $fpl;
         return $this;
     }
 
@@ -60,21 +64,21 @@ class CanonFormModel {
             }
             $this->facetOffices = $facetOffices;
         }
-        if (array_key_exists('facetPlaces', $a)) {
-            $facetPlaces = array();
-            foreach($a['facetPlaces'] as $fpl) {
+        if (array_key_exists('facetInstitutions', $a)) {
+            $facetInstitutions = array();
+            foreach($a['facetInstitutions'] as $fpl) {
                 // we have no count data at this point
-                $facetPlaces[] = new PlaceCount($fpl, 0);
+                $facetInstitutions[] = new PlaceCount($fpl, '',  0);
             }
-            $this->facetPlaces = $facetPlaces;
+            $this->facetInstitutions = $facetInstitutions;
         }
 
         return $this;
     }
 
-    public function getFacetPlacesAsArray(): array {
+    public function getFacetInstitutionsAsArray(): array {
         return array_map(function($el) {return $el->getName();},
-                         $this->facetPlaces);
+                         $this->facetInstitutions);
     }
 
     public function getFacetOfficesAsArray(): array {
@@ -96,11 +100,11 @@ class CanonFormModel {
     public function toArray() {
         $qelts = $this->toArraySansFacets();
 
-        if($this->facetPlaces) {
+        if($this->facetInstitutions) {
             $fpsc = array_map(function($el) { return $el->getName(); },
-                              $this->facetPlaces);
+                              $this->facetInstitutions);
             $fpsstr = implode(',', $fpsc);
-            $qelts['facetPlaces'] = $fpsstr;
+            $qelts['facetInstitutions'] = $fpsstr;
         }
 
         if($this->facetOffices) {
@@ -121,7 +125,7 @@ class CanonFormModel {
         $this->year = $query->get('year');
         $this->someid = $query->get('someid');
 
-        $fpsstr = $query->get('facetPlaces');
+        $fpsstr = $query->get('facetInstitutions');
 
         if($fpsstr) {
             $fpsoc = array();
@@ -129,7 +133,7 @@ class CanonFormModel {
             foreach($fpsc as $el) {
                 $fpsoc[] = new PlaceCount($el, '1');
             }
-            $this->facetPlaces = $fpsoc;
+            $this->facetInstitutions = $fpsoc;
         }
 
         $fosstr = $query->get('facetOffices');

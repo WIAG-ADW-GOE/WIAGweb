@@ -48,6 +48,7 @@ class CnOfficeRepository extends ServiceEntityRepository
     }
     */
 
+    // 2021-04-07 obsolete: use CnOffice.location instead
     public function setMonasteryLocation(CnOffice $oc) {
 
         if($oc->getIdMonastery()) {
@@ -81,6 +82,7 @@ class CnOfficeRepository extends ServiceEntityRepository
         }
     }
 
+    // 2021-04-07 obsolete: use CnOffice.location instead
     public function checkMonasteryLocationDates($locations, CnOffice $oc) {
         $locations_s = array();
         foreach($locations as $el) {
@@ -107,6 +109,7 @@ class CnOfficeRepository extends ServiceEntityRepository
         return implode(", ", $as);
     }
 
+    // 2021-04-07 obsolete: use CnOffice.location instead
     public function findMonasteryLocationByPlaceId(CnOffice $oc) {
         // $sql = "SELECT place.place_name as place_name, ".
         //      "loc.location_begin_tpq, loc.location_end_tpq ".
@@ -116,14 +119,14 @@ class CnOfficeRepository extends ServiceEntityRepository
         //      "INNER JOIN App\Entity\Place place ".
         //      "WITH place.id_places = loc.place_id ".
         //      "WHERE oc.id = :ocid ";
-        
+
         $sql = "SELECT place.place_name as place_name, ".
              "loc.location_begin_tpq, loc.location_end_tpq ".
              "FROM App\Entity\Monasterylocation loc ".
              "INNER JOIN App\Entity\Place place ".
              "WITH place.id_places = loc.place_id ".
              "WHERE loc.wiagid_monastery = :idMonastery ";
-             
+
 
         $em = $this->getEntityManager();
         $query = $em->createQuery($sql)

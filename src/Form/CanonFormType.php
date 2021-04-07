@@ -3,6 +3,8 @@ namespace App\Form;
 
 use App\Form\Model\CanonFormModel;
 use App\Repository\CanonRepository;
+use App\Entity\Monastery;
+use App\Repository\MonasteryRepository;
 use App\Entity\PlaceCount;
 use App\Entity\OfficeCount;
 
@@ -28,11 +30,14 @@ class CanonFormType extends AbstractType
 {
     private $router;
     private $repository;
+    private $monastery_repository;
 
     public function __construct(RouterInterface $routerInterface,
-                                CanonRepository $repository) {
+                                CanonRepository $repository,
+                                MonasteryRepository $monastery_repository) {
         $this->router = $routerInterface;
         $this->repository = $repository;
+        $this->monastery_repository = $monastery_repository;
     }
 
     public function configureOptions(OptionsResolver $resolver) {
@@ -124,14 +129,14 @@ class CanonFormType extends AbstractType
             ]);
 
         if($canon && !$canon->isEmpty()) {
-            $this->createFacetPlaces($builder, $canon);
+            $this->createFacetInstitutions($builder, $canon);
             $this->createFacetOffices($builder, $canon);
         }
 
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
-            array($this, 'createFacetPlacesByEvent'));
+            array($this, 'createFacetInstitutionsByEvent'));
 
 
         $builder->addEventListener(
@@ -140,7 +145,7 @@ class CanonFormType extends AbstractType
 
     }
 
-    public function createFacetPlacesByEvent(FormEvent $event) {
+    public function createFacetInstitutionsByEvent(FormEvent $event) {
         $data = $event->getData();
         if (!$data) return;
         if (is_a($data, CanonFormModel::class)) {
@@ -152,42 +157,45 @@ class CanonFormType extends AbstractType
 
         if ($canon->isEmpty()) return;
 
-        $this->createFacetPlaces($event->getForm(), $canon);
+        $this->createFacetInstitutions($event->getForm(), $canon);
 
     }
 
-    public function createFacetPlaces($form, $canon) {
+    public function createFacetInstitutions($form, $canon) {
         // do not filter by diocese
-        $bqsansfacetPlaces = clone $canon;
-        $bqsansfacetPlaces->setFacetPlaces(array());
+        $bqsansfacetInstitutions = clone $canon;
+        $bqsansfacetInstitutions->setFacetInstitutions(array());
 
-        $places = $this->repository->findOfficePlaces($bqsansfacetPlaces);
+        $places = $this->repository->findOfficePlaces($bqsansfacetInstitutions);
 
         $choices = array();
 
         foreach($places as $place) {
-            $choices[] = new PlaceCount(PlaceCount::domstift($place['monastery_name']), $place['n']);
+            $choices[] = new PlaceCount($place['wiagid'], $place['monastery_name'], $place['n']);
         }
 
         // add selected fields with frequency 0
-        $facetPlaces = $canon->getFacetPlacesAsArray();
-        if ($facetPlaces) {
-            foreach($facetPlaces as $fpl) {
-                if (!PlaceCount::find($fpl, $choices)) {
-                    $choices[] = new PlaceCount($fpl, '0');
+        $facetInstitutions = $canon->getFacetInstitutions();
+        if ($facetInstitutions) {
+            $ids_choice = array_map(function($a) {return $a->getId();}, $choices);
+            foreach($facetInstitutions as $fpl) {                
+                if (!in_array($fpl->getId(), $ids_choice)) {
+                    $place = $this->monastery_repository->find($fpl->getId());
+                    $placename = Monastery::trimDomstift($place->getMonasteryName());
+                    $choices[] = new PlaceCount($place->getWiagid(), $placename, 0);
                 }
             }
             uasort($choices, array('App\Entity\PlaceCount', 'isless'));
         }
 
         if ($places) {
-            $form->add('facetPlaces', ChoiceType::class, [
+            $form->add('facetInstitutions', ChoiceType::class, [
                 'label' => 'Filter Domstift',
                 'expanded' => true,
                 'multiple' => true,
                 'choices' => $choices,
                 'choice_label' => ChoiceList::label($this, 'label'),
-                'choice_value' => 'name',
+                'choice_value' => ChoiceList::value($this, 'value'),
             ]);
         }
     }

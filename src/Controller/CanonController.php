@@ -46,9 +46,9 @@ class CanonController extends AbstractController {
 
         $form->handlerequest($request);
 
-        // $facetPlacesState = 'hide';
+        // $facetInstitutionsState = 'hide';
         // $facetOfficesState = 'hide';
-        $facetPlacesState = 'show';
+        $facetInstitutionsState = 'show';
         $facetOfficesState = 'show';
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -120,11 +120,12 @@ class CanonController extends AbstractController {
 
             $persons = $repository->findWithOffices($queryformdata, self::LIST_LIMIT, $offset);
 
-            foreach($persons as $p) {
-                if($p->hasMonastery()) {
-                    $repository->addMonasteryLocation($p);
-                }
-            }
+            // 2021-04-07 use field CnOffice.location instead
+            // foreach($persons as $p) {
+            //     if($p->hasMonastery()) {
+            //         $repository->addMonasteryLocation($p);
+            //     }
+            // }
 
             // combination of POST_SET_DATA and POST_SUBMIT
             // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
@@ -135,15 +136,15 @@ class CanonController extends AbstractController {
                 'limit' => self::LIST_LIMIT,
                 'offset' => $offset,
                 'persons' => $persons,
-                'facetPlacesState' => $facetPlacesState,
+                'facetInstitutionsState' => $facetInstitutionsState,
                 'facetOfficesState' => $facetOfficesState,
             ]);
 
         } else {
-            # dd($form, $facetPlacesState, $facetOfficesState);
+            # dd($form, $facetInstitutionsState, $facetOfficesState);
             return $this->render('canon/launch_query.html.twig', [
                 'query_form' => $form->createView(),
-                'facetPlacesState' => $facetPlacesState,
+                'facetInstitutionsState' => $facetInstitutionsState,
                 'facetOfficesState' => $facetOfficesState,
             ]);
         }
