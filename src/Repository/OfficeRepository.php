@@ -177,7 +177,7 @@ class OfficeRepository extends ServiceEntityRepository
         $sql = "SELECT place.place_name as place_name, ".
              "loc.location_begin_tpq, loc.location_end_tpq ".
              "FROM App\Entity\Office oc ".
-             "INNER JOIN App\Entity\Monasterylocation loc ".
+             "INNER JOIN App\Entity\MonasteryLocation loc ".
              "WITH loc.wiagid_monastery = oc.id_monastery ".
              "INNER JOIN App\Entity\Place place ".
              "WITH place.id_places = loc.place_id ".

@@ -114,7 +114,7 @@ class CnOfficeRepository extends ServiceEntityRepository
         // $sql = "SELECT place.place_name as place_name, ".
         //      "loc.location_begin_tpq, loc.location_end_tpq ".
         //      "FROM App\Entity\CnOffice oc ".
-        //      "INNER JOIN App\Entity\Monasterylocation loc ".
+        //      "INNER JOIN App\Entity\MonasteryLocation loc ".
         //      "WITH loc.wiagid_monastery = oc.idMonastery ".
         //      "INNER JOIN App\Entity\Place place ".
         //      "WITH place.id_places = loc.place_id ".
@@ -122,7 +122,7 @@ class CnOfficeRepository extends ServiceEntityRepository
 
         $sql = "SELECT place.place_name as place_name, ".
              "loc.location_begin_tpq, loc.location_end_tpq ".
-             "FROM App\Entity\Monasterylocation loc ".
+             "FROM App\Entity\MonasteryLocation loc ".
              "INNER JOIN App\Entity\Place place ".
              "WITH place.id_places = loc.place_id ".
              "WHERE loc.wiagid_monastery = :idMonastery ";
