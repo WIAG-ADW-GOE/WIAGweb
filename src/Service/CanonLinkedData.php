@@ -271,8 +271,13 @@ class CanonLinkedData {
             $ocld[$scafx.'description'] = RDFData::xmlStringData($fv);
         }
 
-        $fv = $office->getMonastery();
-        if($fv) $ocld[$scafx.'description'] = RDFData::xmlStringData($fv->getMonasteryName());
+        $id_monastery = $office->getIdMonastery();
+        if (!is_null($id_monastery) && $id_monastery != "") {
+            $fv = $office->getMonastery();
+            if ($fv) {
+                $ocld[$scafx.'description'] = RDFData::xmlStringData($fv->getMonasteryName());
+            }
+        }
 
         $roleNode = [
             '@rdf:nodeID' => $roleNodeID,
@@ -490,9 +495,13 @@ class CanonLinkedData {
             if($dioceseID) $ocld[$gndfx.'affiliation'] = $idpath.$dioceseID;
         }
 
-        $fv = $office->getMonastery();
-        if($fv) $ocld[$scafx.'description'] = $fv->getMonasteryName();
-
+        $id_monastery = $office->getIdMonastery();
+        if (!is_null($id_monastery) && $id_monastery != "") {
+            $fv = $office->getMonastery();
+            if ($fv) {
+                $ocld[$scafx.'description'] = $fv->getMonasteryName();
+            }
+        }
         return $ocld;
     }
 

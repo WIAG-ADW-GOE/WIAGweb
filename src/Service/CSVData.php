@@ -52,12 +52,12 @@ class CSVData {
         return $csv;
     }
 
-    
+
     public function personData($person, $baseurl): array {
         $wiagid = $person->getWiagidLong();
-        
+
         $pj = array();
-        
+
         $pj['wiagId'] = $wiagid;
 
         $idpath = $baseurl.'/'.self::ID_PATH;
@@ -153,36 +153,6 @@ class CSVData {
         }
         return $diocID;
     }
-
-    public function roleNode($office) {
-        $scafx = "schema:";
-        $gndfx = "gndo:";
-
-        // $ocld['@id'] = $roleNodeID;
-        $ocld['@type'] = self::NAMESP_SCHEMA.'Role';
-
-        $ocld[$scafx.'roleName'] = $office->getOfficeName();
-
-        $fv = $office->getDateStart();
-        if($fv) $ocld[$scafx.'startDate'] = $fv;
-
-        $fv = $office->getDateEnd();
-        if($fv) $ocld[$scafx.'endDate'] = $fv;
-
-        $diocese = $office->getDiocese();
-        if($diocese) {
-            $ocld[$scafx.'description'] = $diocese;
-            $dioceseID = $this->getDioceseID($diocese);
-            if($dioceseID) $ocld[$gndfx.'affiliation'] = $dioceseID;
-        }
-
-
-        $fv = $office->getMonastery();
-        if($fv) $ocld[$scafx.'description'] = $fv->getMonasteryName();
-
-        return $ocld;
-    }
-
 
     public function dioceseToCSV($diocese, $baseurl) {
         $dioceseNode = $this->dioceseData($diocese, $baseurl);
