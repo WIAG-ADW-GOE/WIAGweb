@@ -221,7 +221,6 @@ class ExportController extends AbstractController {
 
 
         $cdata = array_merge($cbeaconheader, array_column($gnds, 'gndid'));
-        dump($cdata);
 
         $data = implode($cdata, "\n");
 
