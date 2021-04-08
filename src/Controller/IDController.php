@@ -22,7 +22,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
-
+/**
+ * provide single page data for bishops, canons, dioceses
+ */
 class IDController extends AbstractController {
 
     private $personData;
@@ -59,7 +61,7 @@ class IDController extends AbstractController {
      */
     public function redirectID(string $id, Request $request) {
         $format = $request->query->get('format');
-        if(!is_null($format))
+        if (!is_null($format))
             return $this->redirectToRoute('wiag_id_data', ['id' => $id, 'format' => $format], 303);
         else {
             // $format = $request->getPreferredFormat();
@@ -77,13 +79,13 @@ class IDController extends AbstractController {
      */
     public function routeDoc(string $id, Request $request) {
         /* TODO check MIME type; default: HTML */
-        if(Person::isIdBishop($id)) {
-            return $this->bishophtml($id, $request);
+        if (Person::isIdBishop($id)) {
+            return $this->bishophtmlbyID($id);
         }
-        elseif(Canon::isIdCanon($id)) {
+        elseif (Canon::isIdCanon($id)) {
             return $this->canonhtml($id, $request);
         }
-        elseif(Diocese::isIdDiocese($id)) {
+        elseif (Diocese::isIdDiocese($id)) {
             return $this->diocesehtml($id, $request);
         }
         else {
@@ -109,7 +111,7 @@ class IDController extends AbstractController {
         }
     }
 
-    public function bishophtml(string $id) {
+    public function bishophtmlbyID(string $id) {
 
         $idindb = Person::shortID($id);
 
@@ -120,12 +122,17 @@ class IDController extends AbstractController {
         if (!$person) {
             throw $this->createNotFoundException('Person wurde nicht gefunden');
         }
+        return $this->bishophtml($person);
+    }
+
+    public function bishophtml(?Person $person) {
+
 
         $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,
-            'wiagidlong' => $id,
+            'wiagidlong' => $person->getWiagidLong(),
             'querystr' => null,
             'dioceserepository' => $dioceseRepository,
         ]);
@@ -339,6 +346,19 @@ class IDController extends AbstractController {
         return $response;
     }
 
+    /**
+     * @Route("/gnd/{id}", name="gnd_id")
+     */
+    public function detailsByGndId(string $id) {
+        $person = $this->getDoctrine()
+                       ->getRepository(Person::class)
+                       ->findOneByGndid($id);
 
+        if (!$person) {
+            throw $this->createNotFoundException('Person wurde nicht gefunden');
+        }
+
+        return $this->bishophtml($person);
+    }
 
 }

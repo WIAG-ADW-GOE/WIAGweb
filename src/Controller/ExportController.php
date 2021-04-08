@@ -13,6 +13,7 @@ use App\Service\DioceseLinkedData;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -185,6 +186,48 @@ class ExportController extends AbstractController {
         return $response;
     }
 
+    /**
+     * @Route("/beacon.txt", name="beacon")
+     * Return list of GND numbers for all bishops
+     */
+    public function beacon (Request $request) {
+        $response = new Response();
+        $data = "line1\nline2";
+        $mimeType = 'text/plain';
+        $filename = "beacon.txt";
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            $filename
+        );
+        $response->headers->set('Content-Type', $mimeType.'; charset=UTF-8');
+        $response->headers->set('Content-Disposition', $disposition);
+        $baseurl = $request->getSchemeAndHttpHost();
+        $cbeaconheader = [
+            "#FORMAT: BEACON",
+            "#VERSION: 0.1",
+            "#PREFIX: http://d-nb.info/gnd/",
+            "#TARGET: ".$baseurl."/gnd/{ID}",
+            "#FEED: ".$baseurl."/beacon.txt",
+            "#NAME: Wissensaggregator Mittelalter und Frühe Neuzeit",
+            "#DESCRIPTION: ",
+            "#INSTITUTION: Germania Sacra, Akademie der Wissenschaften zu Goettingen",
+            "#CONTACT: bkroege@gwdg.de",
+            "#TIMESTAMP: ".date(DATE_ATOM),
+        ];
+
+        $gnds = $this->getDoctrine()
+                      ->getRepository(Person::class)
+                      ->findAllGnds();
+
+
+        $cdata = array_merge($cbeaconheader, array_column($gnds, 'gndid'));
+        dump($cdata);
+
+        $data = implode($cdata, "\n");
+
+        $response->setContent($data);
+        return $response;
+    }
 
 
 }

@@ -316,4 +316,20 @@ class PersonRepository extends ServiceEntityRepository {
         }
     }
 
+    public function findAllGnds($limit = 0, $offset = 0) {
+        $qb = $this->createQueryBuilder('p')
+                   ->select('DISTINCT p.gndid')
+                   ->where('p.gndid is not null');
+
+        if($limit > 0) {
+            $qb->setMaxResults($limit);
+            $qb->setFirstResult($offset);
+        }
+
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        return $result;
+
+    }
+
 }
