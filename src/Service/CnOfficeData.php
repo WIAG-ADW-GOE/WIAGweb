@@ -14,10 +14,13 @@ class CnOfficeData {
         $fv = $oc->getDiocese();
         if($fv) $ocj['diocese'] = $fv;
 
-        $fv = $oc->getMonastery();
-        if($fv) {
-            $ocj['monasteryName'] = $fv->getMonasteryName();
-            $ocj['monasteryGsnId'] = $fv->getWiagid();
+        $id_monastery = $oc->getIdMonastery();
+        if (!is_null($id_monastery) && $id_monastery != "") {
+            $fv = $oc->getMonastery();
+            if($fv) {
+                $ocj['monasteryName'] = $fv->getMonasteryName();
+                $ocj['monasteryGsnId'] = $fv->getWiagid();
+            }
         }
 
         $fv = $oc->getDateStart();
@@ -31,8 +34,7 @@ class CnOfficeData {
 
         $fv = $oc->getSortKey();
         if($fv) $ocj['sort'] = $fv;
-        
+
         return $ocj;
     }
 }
-
