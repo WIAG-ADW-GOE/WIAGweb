@@ -1,5 +1,5 @@
 {% if details is defined %}<h2>{{ reference.shorttitle }}</h2>{% endif %}
 
-<p>{{ reference.title }}</p>
+<p>{% if reference.fulltitle %}{{ reference.fulltitle}}{% else %}{{ reference.title }}{% endif %}</p>
 
 {% if reference.onlineresource %}<p>Online <a class="ml-1" href="{{ reference.onlineresource }}" target="_blank" rel="noopener">{{ reference.onlineresource }}</a></p>{% endif %}

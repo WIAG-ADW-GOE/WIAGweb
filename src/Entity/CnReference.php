@@ -43,6 +43,11 @@ class CnReference
      */
     private $number_vol;
 
+    /**
+     * @ORM\Column(type="string", length=1023, nullable=true)
+     */
+    private $full_title;
+
     public function getId(): ?string
     {
         return $this->id;
@@ -104,6 +109,18 @@ class CnReference
     public function setNumberVol(?string $number_vol): self
     {
         $this->number_vol = $number_vol;
+
+        return $this;
+    }
+
+    public function getFullTitle(): ?string
+    {
+        return $this->full_title;
+    }
+
+    public function setFullTitle(?string $full_title): self
+    {
+        $this->full_title = $full_title;
 
         return $this;
     }
