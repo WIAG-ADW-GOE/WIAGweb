@@ -19,9 +19,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * @IsGranted("ROLE_DATA_ADMIN")
- */
 class ExportController extends AbstractController {
 
     private $personData;
@@ -46,6 +43,7 @@ class ExportController extends AbstractController {
 
     /**
      * @Route("/bulk/export", name="bulk_export_dispatch")
+     * @IsGranted("ROLE_DATA_ADMIN")
      */
     public function dispatchexport (Request $request) {
         return $this->render('admin/data_export.html.twig');
@@ -53,6 +51,7 @@ class ExportController extends AbstractController {
 
     /**
      * @Route("/bulk/export/bishop/{format}", name="bulk_bishop_export")
+     * @IsGranted("ROLE_DATA_ADMIN")
      */
     public function personsData(string $format, Request $request) {
         $test = false;
@@ -126,6 +125,7 @@ class ExportController extends AbstractController {
 
     /**
      * @Route("/bulk/export/diocese/{format}", name="bulk_diocese_export")
+     * @IsGranted("ROLE_DATA_ADMIN")
      */
     public function diocesesdata(string $format, Request $request) {
         $dioceses = $this->getDoctrine()
