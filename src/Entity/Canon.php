@@ -19,6 +19,20 @@ class Canon
     const WIAGID_EPISC_PREFIX = 'WIAG-Pers-EPISCGatz-';
     const WIAGID_EPISC_POSTFIX = '-001';
 
+    static public function extractDbId($id): ?string {
+        $db_id = [];
+        # at the moment we do not take care about multiple IDs for one person
+        $id_prefix = Canon::WIAGID_PREFIX;
+        $rgs = "/{$id_prefix}((gs)?[0-9]+)-[0-9]{3}/";
+        preg_match($rgs, $id, $db_id);
+        if (count($db_id) > 1) {
+            return ltrim($db_id[1], "0");
+        } else {
+            return null;
+        }
+    }
+
+
     /**
      * @ORM\OneToMany(targetEntity="CnNamelookup", mappedBy="canon")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
@@ -251,6 +265,7 @@ class Canon
         return $head == self::WIAGID_PREFIX;
     }
 
+    // 2021-09-04 obsolete see extractDbId
     public static function shortId(?string $id) {
         if (is_null($id)) return $id;
         if (strpos($id, self::WIAGID_PREFIX) === false) {

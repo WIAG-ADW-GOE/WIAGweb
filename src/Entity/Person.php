@@ -16,6 +16,21 @@ class Person {
     const WIAGID_POSTFIX = '-001';
 
     /**
+     * remove prefix and suffix, return null if $id does not match
+     */
+    static public function extractDbId($id): ?string {
+        $db_id = [];
+        # at the moment we do not take care about multiple IDs for one person
+        $id_prefix = Person::WIAGID_PREFIX;
+        preg_match("/{$id_prefix}([0-9]{3}[0-9]?[0-9]?)-[0-9]{3}/", $id, $db_id);
+        if (count($db_id) > 0) {
+            return ltrim($db_id[1], "0");
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * @ORM\OneToMany(targetEntity=OfficeSortkey::class, mappedBy="person")
      * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
      */
@@ -158,6 +173,7 @@ class Person {
         return $head == self::WIAGID_PREFIX;
     }
 
+    // 2021-04-09 obsolete see extractDbId
     public static function shortId(?string $id) {
         if (is_null($id)) return $id;
         if (strpos($id, self::WIAGID_PREFIX) === false) {

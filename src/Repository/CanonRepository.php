@@ -110,12 +110,16 @@ class CanonRepository extends ServiceEntityRepository
 
         # identifier
         if($formmodel->someid) {
+            $db_id = Canon::extractDbId($formmodel->someid);
+            $id_param = $db_id ? $db_id : $formmodel->someid;
+            // dump($db_id, $id_param);
+
             $qb->andWhere(":someid = canon.id".
                           " OR :someid = canon.gsnId".
                           " OR :someid = canon.viafId".
                           " OR :someid = canon.wikidataId".
                           " OR :someid = canon.gndId")
-               ->setParameter(':someid', $formmodel->someid);
+               ->setParameter(':someid', $id_param);
         }
 
         # year
@@ -210,9 +214,11 @@ class CanonRepository extends ServiceEntityRepository
 
     public function findOneWithOffices($id) {
         // fetch all data related to this canon
+        $db_id = Canon::extractDbId($id);
+        $id_param = $db_id ? $db_id : $id;
         $query = $this->createQueryBuilder('canon')
                       ->andWhere('canon.id = :id')
-                      ->setParameter('id', $id)
+                      ->setParameter('id', $id_param)
                       ->leftJoin('canon.offices', 'oc')
                       ->leftJoin('oc.numdate', 'ocdate')
                       ->orderBy('ocdate.dateStart', 'ASC')

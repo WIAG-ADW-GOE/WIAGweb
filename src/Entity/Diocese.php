@@ -110,7 +110,7 @@ class Diocese
         $this->altlabel = new ArrayCollection();
     }
 
-    public static function wiagidLongToId($wiagidlong) {        
+    public static function wiagidLongToId($wiagidlong) {
         if(strpos($wiagidlong, self::WIAGID_PREFIX) === false)
             return $wiagidlong;
         $head = strlen(self::WIAGID_PREFIX);
@@ -307,7 +307,7 @@ class Diocese
         return $head == self::WIAGID_PREFIX;
     }
 
-
+    // 2021-04-09 obsolete see extractDbId
     public static function shortId(?string $id) {
         if (is_null($id)) return $id;
         if (strpos($id, self::WIAGID_PREFIX) === false) {
@@ -319,7 +319,7 @@ class Diocese
         $shortId = ltrim($paddedId, "0");
         return $shortId;
     }
-    
+
     public function getBishopricseatobj(): ?Place
     {
         return $this->bishopricseatobj;

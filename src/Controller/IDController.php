@@ -79,14 +79,14 @@ class IDController extends AbstractController {
      */
     public function routeDoc(string $id, Request $request) {
         /* TODO check MIME type; default: HTML */
-        if (Person::isIdBishop($id)) {
+        if (Person::extractDbId($id)) {
             return $this->bishophtmlbyID($id);
         }
-        elseif (Canon::isIdCanon($id)) {
-            return $this->canonhtml($id, $request);
+        elseif (Canon::extractDbId($id)) {
+            return $this->canonhtmlbyID($id, $request);
         }
         elseif (Diocese::isIdDiocese($id)) {
-            return $this->diocesehtml($id, $request);
+            return $this->diocesehtmlbyID($id, $request);
         }
         else {
             throw $this->createNotFoundException('Keine Objekte für dieses ID-Muster');
@@ -113,11 +113,9 @@ class IDController extends AbstractController {
 
     public function bishophtmlbyID(string $id) {
 
-        $idindb = Person::shortID($id);
-
         $person = $this->getDoctrine()
                        ->getRepository(Person::class)
-                       ->findOneWithOffices($idindb);
+                       ->findOneWithOffices($id);
 
         if (!$person) {
             throw $this->createNotFoundException('Person wurde nicht gefunden');
@@ -140,11 +138,10 @@ class IDController extends AbstractController {
 
     public function bishopdata(string $id, Request $request) {
         $idbase = pathinfo($id, PATHINFO_FILENAME);
-        $idindb = Person::shortId($idbase);
 
         $person = $this->getDoctrine()
                        ->getRepository(Person::class)
-                       ->findOneWithOffices($idindb);
+                       ->findOneWithOffices($idbase);
 
         if(!$person) {
             throw $this->createNotFoundException('Person wurde nicht gefunden');
@@ -195,23 +192,26 @@ class IDController extends AbstractController {
         return $response;
     }
 
-    public function canonhtml(string $id) {
-
-        $idindb = Canon::shortId($id);
+    public function canonhtmlbyID(string $id) {
 
         $canon = $this->getDoctrine()
                        ->getRepository(Canon::class)
-                       ->findOneWithOffices($idindb);
+                       ->findOneWithOffices($id);
 
         if (!$canon) {
             throw $this->createNotFoundException('Domherr wurde nicht gefunden');
+        } else {
+            return $this->canonhtml($canon);
         }
+    }
 
+    public function canonhtml(Canon $canon) {
+        # TODO do we need this here?
         $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 
         return $this->render('canon/details.html.twig', [
             'person' => $canon,
-            'wiagidlong' => $id,
+            'wiagidlong' => $canon->getId(),
             'querystr' => null,
             'dioceserepository' => $dioceseRepository,
         ]);
@@ -219,11 +219,10 @@ class IDController extends AbstractController {
 
     public function canondata(string $id, Request $request) {
         $idbase = pathinfo($id, PATHINFO_FILENAME);
-        $idindb = Canon::shortId($idbase);
-
+        
         $canon = $this->getDoctrine()
                        ->getRepository(Canon::class)
-                       ->findOneWithOffices($idindb);
+                       ->findOneWithOffices($idbase);
 
         if(!$canon) {
             throw $this->createNotFoundException('Domherr wurde nicht gefunden');
@@ -274,7 +273,7 @@ class IDController extends AbstractController {
         return $response;
     }
 
-    public function diocesehtml(string $id, Request $request) {
+    public function diocesehtmlbyID(string $id, Request $request) {
 
         $diocese = $this->getDoctrine()
                         ->getRepository(Diocese::class)
@@ -284,7 +283,10 @@ class IDController extends AbstractController {
             throw $this->createNotFoundException("Bistum wurde nicht gefunden: {$id}");
         }
 
+        return $this->diocesehtml($diocese);
+    }
 
+    public function diocesehtml($diocese) {
         return $this->render('query_diocese/details.html.twig', [
             'diocese' => $diocese,
         ]);
@@ -354,11 +356,28 @@ class IDController extends AbstractController {
                        ->getRepository(Person::class)
                        ->findOneByGndid($id);
 
-        if (!$person) {
-            throw $this->createNotFoundException('Person wurde nicht gefunden');
+        if ($person) {
+            return $this->bishophtml($person);
         }
 
-        return $this->bishophtml($person);
+        $canon = $this->getDoctrine()
+                      ->getRepository(Canon::class)
+                      ->findOneByGndId($id);
+
+        if ($canon) {
+            return $this->canonhtml($canon);
+        }
+
+        $diocese = $this->getDoctrine()
+                        ->getRepository(Diocese::class)
+                        ->findOneByGndId($id);
+        
+        if ($diocese) {
+            return $this->diocesehtml($diocese);
+        }
+
+        throw $this->createNotFoundException('GND-ID wurde nicht gefunden');
+
     }
 
 }

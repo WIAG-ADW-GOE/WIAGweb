@@ -122,17 +122,17 @@ class PersonRepository extends ServiceEntityRepository {
 
     private function addQueryConditions(QueryBuilder $qb, BishopQueryFormModel $bishopquery): QueryBuilder {
 
-        // dump($qb);
-
         # identifier
         if($bishopquery->someid && $bishopquery->someid != "") {
-            $id_pure = ltrim($bishopquery->someid, "0");
+            $db_id = Person::extractDbId($bishopquery->someid);
+            $id_param = $db_id ? $db_id : $bishopquery->someid;
+            
             $qb->andWhere(":someid = person.wiagid".
                           " OR :someid = person.gsid".
                           " OR :someid = person.viafid".
                           " OR :someid = person.wikidataid".
                           " OR :someid = person.gndid")
-               ->setParameter(':someid', $id_pure);
+               ->setParameter(':someid', $id_param);
         }
 
         # year
@@ -223,10 +223,12 @@ class PersonRepository extends ServiceEntityRepository {
     }
 
     public function findOneWithOffices($wiagid) {
+        $db_id = Person::extractDbId($wiagid);
+        $id_param = $db_id ? $db_id : $wiagid;
         // fetch all data related to this person
         $query = $this->createQueryBuilder('person')
-                      ->andWhere('person.wiagid = :wiagid')
-                      ->setParameter('wiagid', $wiagid)
+                      ->andWhere('person.wiagid = :id')
+                      ->setParameter('id', $id_param)
                       ->leftJoin('person.offices', 'oc')
                       ->leftJoin('oc.numdate', 'ocdate')
                       ->orderBy('ocdate.date_start', 'ASC')

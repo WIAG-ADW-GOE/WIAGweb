@@ -54,7 +54,6 @@ class QueryBishop extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
 
             $bishopquery = $form->getData();
-            $bishopquery->someid = Person::shortId($bishopquery->someid);
 
             # strip 'Bistum' or 'Erzbistum'
             $bishopquery->normPlace();

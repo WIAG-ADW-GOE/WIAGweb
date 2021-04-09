@@ -17,6 +17,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class DioceseRepository extends ServiceEntityRepository
 {
+    const GND_URL_TYPE_ID = '1';
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Diocese::class);
@@ -157,6 +159,18 @@ class DioceseRepository extends ServiceEntityRepository
 
         }
         return $diocID;
+    }
+
+    public function findOneByGndId($id) {
+        $qb = $this->createQueryBuilder('dc')
+                   ->select('dc')
+                   ->join('dc.external_urls', 'extern')
+                   ->andWhere('extern.url_value = :id')
+                   ->setParameter('id', $id)
+                   ->andWhere('extern.url_type_id = '.self::GND_URL_TYPE_ID);
+
+        $query = $qb->getQuery();
+        return $query->getOneOrNullResult();
     }
 
     /* AJAX callback */

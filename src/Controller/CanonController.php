@@ -59,10 +59,6 @@ class CanonController extends AbstractController {
             # strip 'Bistum' or 'Erzbistum'
             $queryformdata->normPlace();
 
-            if($someid && Canon::isWiagidLong($someid)) {
-                $queryformdata->someid = Canon::wiagidLongToWiagid($someid);
-            }
-
             $singleoffset = $request->request->get('singleoffset');
             if(!is_null($singleoffset)) {
                 return $this->getCanonInQuery($form, $singleoffset);
