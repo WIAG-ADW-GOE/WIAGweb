@@ -129,15 +129,19 @@ class CanonFormType extends AbstractType
             ]);
 
         if($canon && !$canon->isEmpty()) {
-            $this->createFacetInstitutions($builder, $canon);
+            $this->createFacetMonasteries($builder, $canon);
+            $this->createFacetLocations($builder, $canon);
             $this->createFacetOffices($builder, $canon);
         }
 
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
-            array($this, 'createFacetInstitutionsByEvent'));
+            array($this, 'createFacetMonasteriesByEvent'));
 
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            array($this, 'createFacetLocationsByEvent'));
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
@@ -145,7 +149,7 @@ class CanonFormType extends AbstractType
 
     }
 
-    public function createFacetInstitutionsByEvent(FormEvent $event) {
+    public function createFacetLocationsByEvent(FormEvent $event) {
         $data = $event->getData();
         if (!$data) return;
         if (is_a($data, CanonFormModel::class)) {
@@ -157,16 +161,73 @@ class CanonFormType extends AbstractType
 
         if ($canon->isEmpty()) return;
 
-        $this->createFacetInstitutions($event->getForm(), $canon);
+        $this->createFacetLocations($event->getForm(), $canon);
 
     }
 
-    public function createFacetInstitutions($form, $canon) {
-        // do not filter by diocese
-        $bqsansfacetInstitutions = clone $canon;
-        $bqsansfacetInstitutions->setFacetInstitutions(array());
+    public function createFacetLocations($form, $canon) {
+        // do not filter by location
+        $bqsansfacetLocations = clone $canon;
+        $bqsansfacetLocations->setFacetLocations(array());
 
-        $places = $this->repository->findOfficePlaces($bqsansfacetInstitutions);
+        $places = $this->repository->findOfficeLocations($bqsansfacetLocations);
+
+        $choices = array();
+
+        foreach($places as $place) {
+            $choices[] = new PlaceCount($place['location'], $place['location'], $place['n']);
+        }
+
+        // add selected fields with frequency 0
+        $facetLocations = $canon->getFacetLocations();
+        if ($facetLocations) {
+            $ids_choice = array_map(function($a) {return $a->getId();}, $choices);
+            foreach($facetLocations as $fpl) {
+                if (!in_array($fpl->getId(), $ids_choice)) {
+                    # location is a field in office
+                    $choice_id = $fpl->getId();
+                    $choice_name = $fpl->getId();
+                    $choices[] = new PlaceCount($choice_id, $choice_name, 0);
+                }
+            }
+            uasort($choices, array('App\Entity\PlaceCount', 'isless'));
+        }
+
+        if ($places) {
+            $form->add('facetLocations', ChoiceType::class, [
+                'label' => 'Filter Domstift',
+                'expanded' => true,
+                'multiple' => true,
+                'choices' => $choices,
+                'choice_label' => ChoiceList::label($this, 'label'),
+                'choice_value' => ChoiceList::value($this, 'value'),
+            ]);
+        }
+    }
+
+
+    public function createFacetMonasteriesByEvent(FormEvent $event) {
+        $data = $event->getData();
+        if (!$data) return;
+        if (is_a($data, CanonFormModel::class)) {
+            $canon = $data;
+        } else {
+            $canon = new CanonFormModel();
+            $canon->setFieldsByArray($data);
+        }
+
+        if ($canon->isEmpty()) return;
+
+        $this->createFacetMonasteries($event->getForm(), $canon);
+
+    }
+
+    public function createFacetMonasteries($form, $canon) {
+        // do not filter by monastery
+        $bqsansfacetMonasteries = clone $canon;
+        $bqsansfacetMonasteries->setFacetMonasteries(array());
+
+        $places = $this->repository->findOfficePlaces($bqsansfacetMonasteries);
 
         $choices = array();
 
@@ -175,10 +236,10 @@ class CanonFormType extends AbstractType
         }
 
         // add selected fields with frequency 0
-        $facetInstitutions = $canon->getFacetInstitutions();
-        if ($facetInstitutions) {
+        $facetMonasteries = $canon->getFacetMonasteries();
+        if ($facetMonasteries) {
             $ids_choice = array_map(function($a) {return $a->getId();}, $choices);
-            foreach($facetInstitutions as $fpl) {                
+            foreach($facetMonasteries as $fpl) {
                 if (!in_array($fpl->getId(), $ids_choice)) {
                     $place = $this->monastery_repository->find($fpl->getId());
                     $placename = Monastery::trimDomstift($place->getMonasteryName());
@@ -189,7 +250,7 @@ class CanonFormType extends AbstractType
         }
 
         if ($places) {
-            $form->add('facetInstitutions', ChoiceType::class, [
+            $form->add('facetMonasteries', ChoiceType::class, [
                 'label' => 'Filter Domstift',
                 'expanded' => true,
                 'multiple' => true,

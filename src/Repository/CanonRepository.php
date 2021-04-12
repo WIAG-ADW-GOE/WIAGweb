@@ -273,16 +273,43 @@ class CanonRepository extends ServiceEntityRepository
     }
 
     /**
+     * return list of places, where persons have an office;
+     * used for the facet of locations
+     */
+    public function findOfficeLocations(CanonFormModel $canonquery) {
+        $qb = $this->createQueryBuilder('canon')
+                   ->join('canon.offices', 'lfacet')
+                   ->select('DISTINCT lfacet.location, lfacet.location, COUNT(DISTINCT(canon.id)) as n')
+                   ->andWhere('canon.isready = 1')
+                   ->andWhere('lfacet.location IS NOT NULL');
+
+
+        $this->addQueryConditions($qb, $canonquery);
+
+        $qb->groupBy('lfacet.location');
+
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        return $result;
+    }
+
+    /**
      * add conditions set by facets
      */
     public function addFacets($querydata, $qb) {
-        if($querydata->facetInstitutions) {
-            $ids_monastery = array_column($querydata->facetInstitutions, 'id');
-            // $facetInstitutions = array_map(function($a) {return 'Domstift '.$a;}, $facetInstitutions);
+        if($querydata->facetLocations) {
+            $locations = array_column($querydata->facetLocations, 'id');
+            $qb->join('canon.offices', 'ocfctl')
+               ->andWhere('ocfctl.location IN (:locations)')
+               ->setParameter('locations', $locations);
+        }
+        if($querydata->facetMonasteries) {
+            $ids_monastery = array_column($querydata->facetMonasteries, 'id');
+            // $facetMonasteries = array_map(function($a) {return 'Domstift '.$a;}, $facetMonasteries);
             $qb->join('canon.offices', 'ocfctp')
                ->join('ocfctp.monastery', 'mfctp')
                ->andWhere('mfctp.wiagid IN (:places)')
-               ->setParameter(':places', $ids_monastery);
+               ->setParameter('places', $ids_monastery);
         }
         if($querydata->facetOffices) {
             $facetOffices = array_column($querydata->facetOffices, 'name');

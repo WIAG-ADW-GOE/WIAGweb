@@ -71,7 +71,6 @@ $(document).ready(function() {
     });
 
     // click on a checkbox submits the form
-    // console.log('query-bishop-fire-facet');
     var fpx = $("input[id*='canon_form_facet']");
     fpx.each(function() {
 	var btn_submit = $("#canon_form_searchHTML");
@@ -106,5 +105,5 @@ $(document).ready(function() {
 	var clipboardText = citationElem.text();
 	navigator.clipboard.writeText(clipboardText);
     });
-    
+
 });

@@ -183,7 +183,7 @@ class Canon
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $idWiagEpisc;
+    private $wiagEpiscId;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -541,22 +541,22 @@ class Canon
         return $this;
     }
 
-    public function getIdWiagEpisc(): ?int
+    public function getWiagEpiscId(): ?int
     {
-        return $this->idWiagEpisc;
+        return $this->wiagEpiscId;
     }
 
-    public function getIdWiagEpiscLong(): ?string {
-        if (is_null($this->idWiagEpisc)) {
+    public function getWiagEpiscIdLong(): ?string {
+        if (is_null($this->wiagEpiscId)) {
             return null;
         }
-        $id_padded = str_pad($this->idWiagEpisc, 5, '0', STR_PAD_LEFT);
+        $id_padded = str_pad($this->wiagEpiscId, 5, '0', STR_PAD_LEFT);
         return self::WIAGID_EPISC_PREFIX.$id_padded.self::WIAGID_EPISC_POSTFIX;
     }
 
-    public function setIdWiagEpisc(?int $idWiagEpisc): self
+    public function setWiagEpiscId(?int $wiagEpiscId): self
     {
-        $this->idWiagEpisc = $idWiagEpisc;
+        $this->wiagEpiscId = $wiagEpiscId;
 
         return $this;
     }
