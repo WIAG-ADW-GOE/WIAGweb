@@ -131,7 +131,7 @@ class Canon
     private $annotationEd;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="string", length=127, nullable=true)
      */
     private $idInReference;
 
@@ -181,7 +181,7 @@ class Canon
     private $dateHistLast;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="string", length=63, nullable=true)
      */
     private $wiagEpiscId;
 
@@ -541,7 +541,7 @@ class Canon
         return $this;
     }
 
-    public function getWiagEpiscId(): ?int
+    public function getWiagEpiscId(): ?string
     {
         return $this->wiagEpiscId;
     }
@@ -549,6 +549,9 @@ class Canon
     public function getWiagEpiscIdLong(): ?string {
         if (is_null($this->wiagEpiscId)) {
             return null;
+        }
+        if (str_contains($this->wiagEpiscId, self::WIAGID_EPISC_PREFIX)) {
+            return $this->wiagEpiscId;
         }
         $id_padded = str_pad($this->wiagEpiscId, 5, '0', STR_PAD_LEFT);
         return self::WIAGID_EPISC_PREFIX.$id_padded.self::WIAGID_EPISC_POSTFIX;

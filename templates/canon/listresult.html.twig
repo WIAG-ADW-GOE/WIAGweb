@@ -85,10 +85,11 @@
 		{# facets #}
 		<div class="col-3">
 		    {% if query_form.facetLocations is defined %}
+			{# set lenfctl=query_form.facetLocations|length #}			
 			<div class="card card-body">
 			    <strong class="card-title">Filter Ort</strong>
-			    {% for flc in query_form.facetLocations%}
-				{# <div class="form-group small"> #}
+			    {% for flc in query_form.facetLocations %}
+			     {# <div class="form-group small"> #}
 				<div class="form-group">
 				    {{ form_widget(flc) }}
 				</div>

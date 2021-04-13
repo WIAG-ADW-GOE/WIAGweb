@@ -100,8 +100,7 @@ class CanonRepository extends ServiceEntityRepository
     }
 
     private function addBaseConditions(QueryBuilder $qb): QueryBuilder {
-        $qb->andWhere('canon.isready = 1')
-           ->andWhere('canon.mergedInto IS NULL OR canon.mergedInto = 0');
+        $qb->andWhere("canon.status = 'online'");
 
         return $qb;
     }

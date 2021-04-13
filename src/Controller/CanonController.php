@@ -132,6 +132,7 @@ class CanonController extends AbstractController {
                 'limit' => self::LIST_LIMIT,
                 'offset' => $offset,
                 'persons' => $persons,
+                'header' => [0, 1, 2, 3, 4],
                 'facetInstitutionsState' => $facetInstitutionsState,
                 'facetOfficesState' => $facetOfficesState,
             ]);

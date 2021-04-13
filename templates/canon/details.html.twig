@@ -200,7 +200,7 @@
 				{% if cnref.isbio %}
 				    <li><a href="{{ path('canon_reference', {'id': cnref.reference.id }) }}">{% if cnref.reference.fulltitle %}{{ cnref.reference.fulltitle }}{% else %}{{ cnref.reference.author }}, {{ cnref.reference.title|trim }}{% endif %}</a>, S. {{ cnref.pagebio }}, <a href ="{{ url_gs_bios }}{{ cnref.reference.numbervol }}/{{ cnref.pagebio }}" target="_blank" rel="noopener"><strong>Biogramm online lesen</strong></a></li>
 				{% else %}
-				    <li><a href="{{ path('canon_reference', {'id': cnref.reference.id }) }}">{{ cnref.reference.shorttitle }}</a>, {% if refid %} S. {{ cnref.pagereference }}; {{ refid }} {% else %} S. {{ cnref.pagereference }} {% endif %}</li>
+				    <li><a href="{{ path('canon_reference', {'id': cnref.reference.id }) }}">{{ cnref.reference.fulltitle }}</a>, {% if refid %} S. {{ cnref.pagereference }}, ID/Nr. {{ refid }} {% else %} S. {{ cnref.pagereference }} {% endif %}</li>
 				{% endif %}
 			    {% endfor %}
 			</ul>
