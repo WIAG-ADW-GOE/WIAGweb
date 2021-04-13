@@ -54,6 +54,11 @@ class CnCanonReference
      */
     private $isbio;
 
+    /**
+     * @ORM\Column(type="string", length=127, nullable=true)
+     */
+    private $idInReference;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -135,6 +140,18 @@ class CnCanonReference
         } else {
             return $matches[1];
         }
+    }
+
+    public function getIdInReference(): ?string
+    {
+        return $this->idInReference;
+    }
+
+    public function setIdInReference(?string $idInReference): self
+    {
+        $this->idInReference = $idInReference;
+
+        return $this;
     }
 
 }

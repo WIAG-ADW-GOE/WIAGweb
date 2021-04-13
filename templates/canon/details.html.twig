@@ -192,11 +192,11 @@
 		    </dd>
 		{% endif %}
 		{% if person.references %}
-		    {% set refid = person.idinreference %}
 		    <dt class="col-sm-3">{{ person.references|length > 1 ? 'Referenzwerke' : 'Referenzwerk' }}</dt>
 		    <dd class="col-sm-9">
 			<ul class="list-unstyled">
 			    {% for cnref in person.references %}
+				{% set refid = cnref.idinreference %}
 				{% if cnref.isbio %}
 				    <li><a href="{{ path('canon_reference', {'id': cnref.reference.id }) }}">{% if cnref.reference.fulltitle %}{{ cnref.reference.fulltitle }}{% else %}{{ cnref.reference.author }}, {{ cnref.reference.title|trim }}{% endif %}</a>, S. {{ cnref.pagebio }}, <a href ="{{ url_gs_bios }}{{ cnref.reference.numbervol }}/{{ cnref.pagebio }}" target="_blank" rel="noopener"><strong>Biogramm online lesen</strong></a></li>
 				{% else %}

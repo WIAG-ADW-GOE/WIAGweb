@@ -200,7 +200,8 @@ class ExportController extends AbstractController {
             $filename
         );
         $response->headers->set('Content-Type', $mimeType.'; charset=UTF-8');
-        $response->headers->set('Content-Disposition', $disposition);
+        // deliver beacon data directly
+        // $response->headers->set('Content-Disposition', $disposition);
         $baseurl = $request->getSchemeAndHttpHost();
         $cbeaconheader = [
             "#FORMAT: BEACON",
