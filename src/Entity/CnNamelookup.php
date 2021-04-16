@@ -12,10 +12,10 @@ class CnNamelookup
 {
 
     /**
-     * @ORM\ManyToOne(targetEntity="Canon", inversedBy="namelookup")
-     * @ORM\JoinColumn(name="id_canon", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="CnOnline", inversedBy="namelookup")
+     * @ORM\JoinColumn(name="id_online", referencedColumnName="id")
      */
-    private $canon;
+    private $cnonline;
     
     /**
      * @ORM\Id
@@ -27,7 +27,7 @@ class CnNamelookup
     /**
      * @ORM\Column(type="string", length=63)
      */
-    private $idCanon;
+    private $id_online;
 
     /**
      * @ORM\Column(type="string", length=63)
@@ -44,10 +44,19 @@ class CnNamelookup
      */
     private $familyname;
 
+    /**
+     * @ORM\Column(type="string", length=127, nullable=true)
+     */
+    private $sortkey;
+
     public function getId(): ?int
     {
         return $this->id;
     }
+
+    public function getIdOnline(): ?string {
+        return $this->id_online;
+    }        
 
     public function getIdCanon(): ?string
     {
@@ -93,6 +102,18 @@ class CnNamelookup
     public function setFamilyname(?string $familyname): self
     {
         $this->familyname = $familyname;
+
+        return $this;
+    }
+
+    public function getSortkey(): ?string
+    {
+        return $this->sortkey;
+    }
+
+    public function setSortkey(?string $sortkey): self
+    {
+        $this->sortkey = $sortkey;
 
         return $this;
     }

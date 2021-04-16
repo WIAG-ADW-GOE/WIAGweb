@@ -2,17 +2,17 @@
 
 namespace App\Entity;
 
-use App\Repository\CanonRepository;
+use App\Repository\CanonGSRepository;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="cn_canon")
- * @ORM\Entity(repositoryClass=CanonRepository::class)
+ * @ORM\Table(name="cn_canon_gs")
+ * @ORM\Entity(repositoryClass=CanonGSRepository::class)
  */
-class Canon
+class CanonGS
 {
     const WIAGID_PREFIX = 'WIAG-Pers-CANON-';
     const WIAGID_POSTFIX = '-001';
@@ -33,35 +33,28 @@ class Canon
     }
 
     /**
-     * @ORM\OneToOne(targetEntity="CnOnline", mappedBy="canon_dh")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id_dh")
-     */
-    // private $online;
-
-
-    /**
      * @ORM\OneToOne(targetEntity="CnEra", mappedBy="canon")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
      */
-    private $era;
+    // private $era;
 
     /**
      * @ORM\OneToMany(targetEntity="CnOffice", mappedBy="canon")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
      */
-    private $offices;
+    // private $offices;
 
     /**
      * @ORM\OneToMany(targetEntity=CnOfficeSortkey::class, mappedBy="canon")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
      */
-    private $officeSortkeys;
+    // private $officeSortkeys;
 
     /**
      * @ORM\OneToMany(targetEntity="CnCanonReference", mappedBy="canon")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
      */
-    private $references;
+    // private $references;
 
     /**
      * @ORM\Id

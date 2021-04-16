@@ -128,24 +128,27 @@ class CanonFormType extends AbstractType
                 ]
             ]);
 
-        if($canon && !$canon->isEmpty()) {
-            $this->createFacetMonasteries($builder, $canon);
-            $this->createFacetLocations($builder, $canon);
-            $this->createFacetOffices($builder, $canon);
+        $ffacets = false; # TODO
+        if($ffacets) {
+            if($canon && !$canon->isEmpty()) {
+                $this->createFacetMonasteries($builder, $canon);
+                $this->createFacetLocations($builder, $canon);
+                $this->createFacetOffices($builder, $canon);
+            }
+            
+
+            $builder->addEventListener(
+                FormEvents::PRE_SUBMIT,
+                array($this, 'createFacetMonasteriesByEvent'));
+            
+            $builder->addEventListener(
+                FormEvents::PRE_SUBMIT,
+                array($this, 'createFacetLocationsByEvent'));
+            
+            $builder->addEventListener(
+                FormEvents::PRE_SUBMIT,
+                array($this, 'createFacetOfficesByEvent'));
         }
-
-
-        $builder->addEventListener(
-            FormEvents::PRE_SUBMIT,
-            array($this, 'createFacetMonasteriesByEvent'));
-
-        $builder->addEventListener(
-            FormEvents::PRE_SUBMIT,
-            array($this, 'createFacetLocationsByEvent'));
-
-        $builder->addEventListener(
-            FormEvents::PRE_SUBMIT,
-            array($this, 'createFacetOfficesByEvent'));
 
     }
 

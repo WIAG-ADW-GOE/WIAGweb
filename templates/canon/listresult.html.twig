@@ -11,12 +11,38 @@
     <script src="{{ asset('js/canon.js') }}"></script>
 {% endblock %}
 
+{% macro canonrow(person, offices, offset) %}
+    <tr>
+	<td><button type="submit" form="q_form" class="btn btn-link text-sm-left" name="singleoffset" value="{{ offset }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
+	    {% if not person.datebirth and not person.datedeath %}
+	    {% elseif person.datebirth and not person.datedeath %}
+		<p class="ml-3">* {{ person.datebirth }}</p>
+	    {% elseif not person.datebirth and person.datedeath %}
+		<p class="ml-3">&dagger; {{ person.datedeath }}</p>
+	    {% else %}
+		<p class="ml-3">* {{ person.datebirth }} <span class="ml-2">&dagger; {{ person.datedeath }}</span></p>
+	    {% endif %}
+	</td>
+	<td>
+	    {% for o in offices%}
+		<small>{{ o.officename }}
+		    {% if o.diocese and not o.idmonastery %}({{ o.diocese }}){% endif %}
+		    {% if o.idmonastery %}({{ o.location }}){% endif %}
+		    {% if o.datestart and not o.dateend %}{{ o.datestart }}
+		    {% elseif not o.datestart and o.dateend %}{{ o.dateend }}
+		    {% elseif o.datestart and o.dateend %}{{ o.datestart }}-{{ o.dateend }}{% endif %}
+		</small><br/>
+	    {% endfor %}
+	</td>
+    </tr>    
+{% endmacro %}
+
 {% block body %}
     {# add page forward and backward buttons #}
     {% set fb_elements %}
     {% if count > 0 %}
-	    <button type="submit" form="q_form" class="btn btn-secondary" {% if offset < limit %} disabled="disabled" {% endif %} name="offset" value="{{ offset - limit }}"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-left-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/></svg> zurück</button>
-	    <button type="submit" form="q_form" class="btn btn-secondary ml-1" {% if offset + limit >= count%}disabled="disabled"{% endif %} name="offset" value="{{ offset + limit }}">vor <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-right-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/></svg></button>
+	<button type="submit" form="q_form" class="btn btn-secondary" {% if offset < limit %} disabled="disabled" {% endif %} name="offset" value="{{ offset - limit }}"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-left-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/></svg> zurück</button>
+	<button type="submit" form="q_form" class="btn btn-secondary ml-1" {% if offset + limit >= count%}disabled="disabled"{% endif %} name="offset" value="{{ offset + limit }}">vor <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-right-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/></svg></button>
     {% endif %}
     {% endset %}
 
@@ -52,27 +78,11 @@
 			    </thead>
 			    <tbody>
 				{% for person in persons %}
-				    <tr>
-					<td><button type="submit" form="q_form" class="btn btn-link text-sm-left" name="singleoffset" value="{{ offset + loop.index0 }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
-					    {% if not person.datebirth and not person.datedeath %}
-					    {% elseif person.datebirth and not person.datedeath %}
-						<p class="ml-3">* {{ person.datebirth }}</p>
-					    {% elseif not person.datebirth and person.datedeath %}
-						<p class="ml-3">&dagger; {{ person.datedeath }}</p>
-					    {% else %}
-						<p class="ml-3">* {{ person.datebirth }} <span class="ml-2">&dagger; {{ person.datedeath }}</span></p>
-					    {% endif %}
-					</td>
-					<td>{% for o in person.offices|sort((a, b) => a.numdate.datestart <=> b.numdate.datestart) %}
-					    <small>{{ o.officename }}
-						{% if o.diocese and not o.idmonastery %}({{ o.diocese }}){% endif %}
-						{% if o.idmonastery %}({{ o.location }}){% endif %}
-						{% if o.datestart and not o.dateend %}{{ o.datestart }}
-						{% elseif not o.datestart and o.dateend %}{{ o.dateend }}
-						{% elseif o.datestart and o.dateend %}{{ o.datestart }}-{{ o.dateend }}{% endif %}
-					    </small><br/>{% endfor %}
-					</td>
-				    </tr>
+				    {% if person.iddh %}
+					{{ _self.canonrow(person.canondh, person.officesdh, offset + loop.index0) }}
+				    {% elseif person.idgs %}
+					{{ _self.canonrow(person.canongs, person.officesgs, offset + loop.index0) }}
+				    {% endif %}
 				{% endfor %}
 				<tr>
 				    <td>{{ fb_elements }}</td>

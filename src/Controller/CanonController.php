@@ -3,10 +3,12 @@ namespace App\Controller;
 
 use App\Form\CanonFormType;
 use App\Form\Model\CanonFormModel;
+use App\Entity\CnOnline;
 use App\Entity\Canon;
 use App\Entity\CnOffice;
 use App\Entity\CnNamelookup;
 use App\Repository\CanonRepository;
+use App\Repository\CnOnlineRepository;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
 use App\Entity\Diocese;
@@ -35,7 +37,7 @@ class CanonController extends AbstractController {
      * @Route("/domherren-wd", name="canons_wd")
      */
     public function launch_query(Request $request,
-                                 CanonRepository $repository,
+                                 CnOnlineRepository $repository,
                                  CanonData $canonData,
                                  CanonLinkedData $canonLinkedData) {
 
@@ -66,9 +68,7 @@ class CanonController extends AbstractController {
 
 
             // get the number of results (without page limit restriction)
-            $count = $this->getDoctrine()
-                          ->getRepository(Canon::class)
-                          ->countByQueryObject($queryformdata)[1];
+            $count = $repository->countByQueryObject($queryformdata)[1];
 
             $offset = 0;
             $querystr = null;
@@ -78,7 +78,7 @@ class CanonController extends AbstractController {
 
                 $buttonname = $form->getClickedButton()->getName();
                 if($buttonname != 'searchHTML') {
-                    $persons = $repository->findWithOffices($queryformdata);
+                    $persons = $repository->findByQueryObject($queryformdata);
                     $baseurl = $request->getSchemeAndHttpHost();
                     $response = new Response();
 
@@ -114,7 +114,14 @@ class CanonController extends AbstractController {
 
             $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
 
-            $persons = $repository->findWithOffices($queryformdata, self::LIST_LIMIT, $offset);
+            $persons = $repository->findByQueryObject($queryformdata, self::LIST_LIMIT, $offset);
+
+            foreach($persons as $p) {
+                /* It may look strange to do queries in a loop, but we have two data sources. 
+                   The list is not long (LIST_LIMIT).
+                 */
+                $repository->fillListData($p);
+            }
 
             // 2021-04-07 use field CnOffice.location instead
             // foreach($persons as $p) {
@@ -132,7 +139,6 @@ class CanonController extends AbstractController {
                 'limit' => self::LIST_LIMIT,
                 'offset' => $offset,
                 'persons' => $persons,
-                'header' => [0, 1, 2, 3, 4],
                 'facetInstitutionsState' => $facetInstitutionsState,
                 'facetOfficesState' => $facetOfficesState,
             ]);

@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\CnOffice;
+use App\Entity\CnOfficeGS;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method CnOffice|null find($id, $lockMode = null, $lockVersion = null)
- * @method CnOffice|null findOneBy(array $criteria, array $orderBy = null)
- * @method CnOffice[]    findAll()
- * @method CnOffice[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method CnOfficeGS|null find($id, $lockMode = null, $lockVersion = null)
+ * @method CnOfficeGS|null findOneBy(array $criteria, array $orderBy = null)
+ * @method CnOfficeGS[]    findAll()
+ * @method CnOfficeGS[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CnOfficeRepository extends ServiceEntityRepository
+class CnOfficeGSRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, CnOffice::class);
+        parent::__construct($registry, CnOfficeGS::class);
     }
 
     // /**
-    //  * @return CnOffice[] Returns an array of CnOffice objects
+    //  * @return CnOfficeGS[] Returns an array of CnOfficeGS objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class CnOfficeRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?CnOffice
+    public function findOneBySomeField($value): ?CnOfficeGS
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.exampleField = :val')
@@ -48,8 +48,8 @@ class CnOfficeRepository extends ServiceEntityRepository
     }
     */
 
-    // 2021-04-07 obsolete: use CnOffice.location instead
-    public function setMonasteryLocation(CnOffice $oc) {
+    // 2021-04-07 obsolete: use CnOfficeGS.location instead
+    public function setMonasteryLocation(CnOfficeGS $oc) {
 
         if($oc->getIdMonastery()) {
             // DQL
@@ -82,8 +82,8 @@ class CnOfficeRepository extends ServiceEntityRepository
         }
     }
 
-    // 2021-04-07 obsolete: use CnOffice.location instead
-    public function checkMonasteryLocationDates($locations, CnOffice $oc) {
+    // 2021-04-07 obsolete: use CnOfficeGS.location instead
+    public function checkMonasteryLocationDates($locations, CnOfficeGS $oc) {
         $locations_s = array();
         foreach($locations as $el) {
             $l_begin = intval($el['location_begin_tpq']);
@@ -109,11 +109,11 @@ class CnOfficeRepository extends ServiceEntityRepository
         return implode(", ", $as);
     }
 
-    // 2021-04-07 obsolete: use CnOffice.location instead
-    public function findMonasteryLocationByPlaceId(CnOffice $oc) {
+    // 2021-04-07 obsolete: use CnOfficeGS.location instead
+    public function findMonasteryLocationByPlaceId(CnOfficeGS $oc) {
         // $sql = "SELECT place.place_name as place_name, ".
         //      "loc.location_begin_tpq, loc.location_end_tpq ".
-        //      "FROM App\Entity\CnOffice oc ".
+        //      "FROM App\Entity\CnOfficeGS oc ".
         //      "INNER JOIN App\Entity\MonasteryLocation loc ".
         //      "WITH loc.wiagid_monastery = oc.idMonastery ".
         //      "INNER JOIN App\Entity\Place place ".
@@ -136,21 +136,6 @@ class CnOfficeRepository extends ServiceEntityRepository
 
         return $qrplaces;
     }
-
-    public function findByIdCanonAndSort($id_canon) {
-        $qb = $this->createQueryBuilder('o')
-                   ->andWhere('o.idCanon = :idCanon')
-                   ->setParameter('idCanon', $id_canon)
-                   ->join('o.monastery', 'monastery')
-                   ->addOrderBy('monastery.monastery_name', 'ASC')
-                   ->addOrderBy('o.location', 'ASC')
-                   ->join('o.numdate', 'numdate')
-                   ->addOrderBy('numdate.dateStart', 'ASC');
-        $query = $qb->getQuery();
-
-        return $query->getResult();
-    }
-
 
     /* AJAX callback */
     public function suggestPlace($place, $limit = 200): array {
@@ -175,8 +160,23 @@ class CnOfficeRepository extends ServiceEntityRepository
 
     }
 
+    public function findByIdCanonAndSort($id_canon) {
+        $qb = $this->createQueryBuilder('o')
+                   ->andWhere('o.idCanon = :idCanon')
+                   ->setParameter('idCanon', $id_canon)
+                   ->join('o.monastery', 'monastery')
+                   ->addOrderBy('monastery.monastery_name', 'ASC')
+                   ->addOrderBy('o.location', 'ASC')
+                   ->join('o.numdate', 'numdate')
+                   ->addOrderBy('numdate.dateStart', 'ASC');
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+    }
+
+    /* TODO move to the lookup class */
     /* AJAX callback */
-    public function suggestOffice($office, $limit = 200): array {
+    public function suggestOfficeGS($office, $limit = 200): array {
         $qb = $this->createQueryBuilder('oc')
                    ->select('DISTINCT oc.officeName AS suggestion')
                    ->andWhere('oc.officeName LIKE :title')
