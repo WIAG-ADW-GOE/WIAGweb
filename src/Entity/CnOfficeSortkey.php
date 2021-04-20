@@ -10,79 +10,55 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass=CnOfficeSortkeyRepository::class)
  * @ORM\Table(name="cn_officesortkey")
  */
-class CnOfficeSortkey
-{
+class CnOfficeSortkey {
+
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=63)
      */
-    private $id;
+    private $id_online;
+
+    /**
+     * @ORM\Column(type="string", length=31)
+     */
+    private $id_office;
 
     /**
      * @ORM\Column(type="string", length=63)
      */
-    private $id_canon;
-
-    /**
-     * @ORM\Column(type="string", length=63)
-     */
-    private $diocese;
+    private $location_name;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $sortkey;
+    private $numdate_start;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Canon::class, inversedBy="officeSortkeys")
-     * @ORM\JoinColumn(name="id_canon", referencedColumnName="id")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="integer")
      */
-    private $canon;
+    private $numdate_end;
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getIdCanon(): ?string
+    public function getIdOnline(): ?string
     {
         return $this->id_canon;
     }
 
-    public function getDiocese(): ?string
-    {
-        return $this->diocese;
+    public function getLocationName(): ?string {
+        return $this->location_name;
     }
 
-    public function setDiocese(string $diocese): self
-    {
-        $this->diocese = $diocese;
-
-        return $this;
+    public function getNumdateStart(): ?int {
+        return $this->numdate_start;
     }
 
-    public function getSortkey(): ?int
-    {
-        return $this->sortkey;
+    public function getNumdateEnd(): ?int {
+        return $this->numdate_end;
     }
 
-    public function setSortkey(int $sortkey): self
-    {
-        $this->sortkey = $sortkey;
-
-        return $this;
-    }
-
-    public function getCanon(): ?Canon
-    {
-        return $this->canon;
-    }
-
-    public function setCanon(?Canon $canon): self
-    {
-        $this->canon = $canon;
-
-        return $this;
-    }
 }

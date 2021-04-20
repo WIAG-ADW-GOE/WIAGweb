@@ -16,7 +16,30 @@ class CnOnline {
      */
     private $namelookup;
 
-    
+    /**
+     * @ORM\OneToMany(targetEntity="CnOfficelookup", mappedBy="cnonline")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id_online")
+     */
+    private $officelookup;
+
+    /**
+     * @ORM\OneToOne(targetEntity="CnOfficeSortkey")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id_online")
+     */
+    private $officesortkey;
+
+    /**
+     * @ORM\OneToOne(targetEntity="CnEra")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id_online")
+     */
+    private $era;
+
+    /**
+     * @ORM\OneToMany(targetEntity="CnIdlookup", mappedBy="cnonline")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id_online")
+     */
+    private $idlookup;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

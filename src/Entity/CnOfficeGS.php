@@ -76,7 +76,7 @@ class CnOfficeGS
     private $location;
 
     /**
-     * @ORM\Column(type="string", length=511, nullable=true)
+     * @ORM\Column(type="string", length=1023, nullable=true)
      */
     private $comment;
 
@@ -104,6 +104,11 @@ class CnOfficeGS
      * @ORM\Column(type="string", length=63, nullable=true)
      */
     private $dignity;
+
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $location_show;
 
     public function getNumdate() {
         return $this->numdate;
@@ -307,6 +312,18 @@ class CnOfficeGS
     public function setDignity(?string $dignity): self
     {
         $this->dignity = $dignity;
+
+        return $this;
+    }
+
+    public function getLocationShow(): ?string
+    {
+        return $this->location_show;
+    }
+
+    public function setLocationShow(?string $location_show): self
+    {
+        $this->location_show = $location_show;
 
         return $this;
     }

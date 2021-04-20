@@ -19,8 +19,7 @@ use Doctrine\ORM\QueryBuilder;
  * @method Canon[]    findAll()
  * @method Canon[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CanonRepository extends ServiceEntityRepository
-{
+class CanonRepository extends ServiceEntityRepository {
     // Allow deviations in the query parameter `year`.
     const MARGINYEAR = 1;
 

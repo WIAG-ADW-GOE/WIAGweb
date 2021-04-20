@@ -5,8 +5,8 @@ use App\Form\CanonFormType;
 use App\Form\Model\CanonFormModel;
 use App\Entity\CnOnline;
 use App\Entity\Canon;
-use App\Entity\CnOffice;
 use App\Entity\CnNamelookup;
+use App\Entity\CnOfficelookup;
 use App\Repository\CanonRepository;
 use App\Repository\CnOnlineRepository;
 use App\Entity\Monastery;
@@ -117,7 +117,7 @@ class CanonController extends AbstractController {
             $persons = $repository->findByQueryObject($queryformdata, self::LIST_LIMIT, $offset);
 
             foreach($persons as $p) {
-                /* It may look strange to do queries in a loop, but we have two data sources. 
+                /* It may look strange to do queries in a loop, but we have two data sources.
                    The list is not long (LIST_LIMIT).
                  */
                 $repository->fillListData($p);
@@ -234,33 +234,12 @@ class CanonController extends AbstractController {
         ]);
     }
 
-    /**
-     * AJAX callback
-     * @Route("domherren-wd/autocomplete/XXX", name="canon_autocomplete_XXX")
-     */
-    public function autocompletediocese(Request $request) {
-        $query = trim($request->query->get('query'));
-        # strip 'bistum' or 'erzbistum'
-        foreach(['Erzbistum', 'erzbistum', 'Bistum', 'bistum'] as $bs) {
-            if(!is_null($query) && str_starts_with($query, $bs)) {
-                $query = trim(str_replace($bs, "", $query));
-                break;
-            }
-        }
-
-        $places = $this->getDoctrine()
-                       ->getRepository(CnOffice::class)
-                       ->suggestPlace($query, self::HINT_LIST_LIMIT);
-        return $this->json([
-            'places' => $places,
-        ]);
-    }
 
     /**
      * AJAX callback
      * @Route("domherren-wd/autocomplete/place", name="canon_autocomplete_place")
      */
-    public function autocompletemonastery(Request $request) {
+    public function autocompleteplace(Request $request) {
         $query = trim($request->query->get('query'));
         # strip 'bistum' or 'erzbistum'
         foreach(['Stift', 'Domstift'] as $bs) {
@@ -271,7 +250,7 @@ class CanonController extends AbstractController {
         }
 
         $places = $this->getDoctrine()
-                       ->getRepository(CnOffice::class)
+                       ->getRepository(CnOfficelookup::class)
                        ->suggestPlace($query, self::HINT_LIST_LIMIT);
         return $this->json([
             'places' => $places,
@@ -285,7 +264,7 @@ class CanonController extends AbstractController {
      */
     public function autocompleteoffices(Request $request) {
         $offices = $this->getDoctrine()
-                        ->getRepository(CnOffice::class)
+                        ->getRepository(CnOfficelookup::class)
                         ->suggestOffice($request->query->get('query'),
                                         self::HINT_LIST_LIMIT);
 

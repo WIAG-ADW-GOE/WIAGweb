@@ -8,20 +8,13 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=CnEraRepository::class)
  */
-class CnEra
-{
-
-    /**
-     * @ORM\OneToOne(targetEntity="Canon", inversedBy="era")
-     * @ORM\JoinColumn(name="id_canon", referencedColumnName="id")
-     */
-    private $canon;
+class CnEra {
 
     /**
      * @ORM\Id
      * @ORM\Column(type="string", length=63)
      */
-    private $idCanon;
+    private $idOnline;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -37,9 +30,9 @@ class CnEra
         return $this->canon;
     }
 
-    public function getIdCanon(): ?string
+    public function getIdOnline(): ?string
     {
-        return $this->idCanon;
+        return $this->idOnline;
     }
 
     public function getEraStart(): ?int

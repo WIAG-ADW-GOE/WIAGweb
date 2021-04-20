@@ -26,8 +26,7 @@
 	<td>
 	    {% for o in offices%}
 		<small>{{ o.officename }}
-		    {% if o.diocese and not o.idmonastery %}({{ o.diocese }}){% endif %}
-		    {% if o.idmonastery %}({{ o.location }}){% endif %}
+		    {% if o.locationshow %}({{ o.locationshow }}){% endif %}
 		    {% if o.datestart and not o.dateend %}{{ o.datestart }}
 		    {% elseif not o.datestart and o.dateend %}{{ o.dateend }}
 		    {% elseif o.datestart and o.dateend %}{{ o.datestart }}-{{ o.dateend }}{% endif %}

@@ -16,7 +16,7 @@ class CnNamelookup
      * @ORM\JoinColumn(name="id_online", referencedColumnName="id")
      */
     private $cnonline;
-    
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -56,7 +56,7 @@ class CnNamelookup
 
     public function getIdOnline(): ?string {
         return $this->id_online;
-    }        
+    }
 
     public function getIdCanon(): ?string
     {

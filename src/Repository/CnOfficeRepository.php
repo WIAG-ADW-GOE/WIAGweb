@@ -141,53 +141,14 @@ class CnOfficeRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('o')
                    ->andWhere('o.idCanon = :idCanon')
                    ->setParameter('idCanon', $id_canon)
-                   ->join('o.monastery', 'monastery')
-                   ->addOrderBy('monastery.monastery_name', 'ASC')
-                   ->addOrderBy('o.location', 'ASC')
+            // ->join('o.monastery', 'monastery')
+            // ->addOrderBy('monastery.monastery_name', 'ASC')
+                   ->addOrderBy('o.location_show', 'ASC')
                    ->join('o.numdate', 'numdate')
                    ->addOrderBy('numdate.dateStart', 'ASC');
         $query = $qb->getQuery();
 
         return $query->getResult();
     }
-
-
-    /* AJAX callback */
-    public function suggestPlace($place, $limit = 200): array {
-        // $qb = $this->createQueryBuilder('oc')
-        //            ->join('oc.canon', 'c')
-        //            ->andWhere("c.isready = 1")
-        //            ->select('DISTINCT oc.diocese AS suggestion')
-        //            ->andWhere('oc.diocese LIKE :place')
-        //            ->setParameter('place', '%'.$place.'%')
-        //            ->setMaxResults($limit);
-        $qb = $this->createQueryBuilder('oc')
-                   ->leftJoin('oc.monastery', 'm')
-                   ->select('DISTINCT m.monastery_name AS suggestion')
-                   ->andWhere('m.monastery_name LIKE :place')
-                   ->setParameter('place', '%'.$place.'%')
-                   ->setMaxResults($limit);
-        $query = $qb->getQuery();
-
-        # dd($query->getDQL());
-
-        return $query->getResult();
-
-    }
-
-    /* AJAX callback */
-    public function suggestOffice($office, $limit = 200): array {
-        $qb = $this->createQueryBuilder('oc')
-                   ->select('DISTINCT oc.officeName AS suggestion')
-                   ->andWhere('oc.officeName LIKE :title')
-                   ->setParameter('title', '%'.$office.'%')
-                   ->setMaxResults($limit);
-
-        $query = $qb->getQuery();
-
-        return $query->getResult();
-
-    }
-
 
 }

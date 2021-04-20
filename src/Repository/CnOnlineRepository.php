@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\CnOnline;
+use App\Entity\Canon;
 use App\Form\Model\CanonFormModel;
 use App\Repository\CanonRepository;
 use App\Repository\CnOfficeRepository;
@@ -21,14 +22,16 @@ use Doctrine\ORM\QueryBuilder;
  * @method CnOnline[]    findAll()
  * @method CnOnline[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CnOnlineRepository extends ServiceEntityRepository
-{
+class CnOnlineRepository extends ServiceEntityRepository {
+    // Allow deviations in the query parameter `year`.
+    const MARGINYEAR = 1;
+
     private $canonrepository;
     private $cnofficerepository;
     private $canonGSrepository;
     private $cnofficeGSrepository;
 
-    
+
     public function __construct(ManagerRegistry $registry,
                                 CanonRepository $canonrepository,
                                 CnOfficeRepository $cnofficerepository,
@@ -76,7 +79,7 @@ class CnOnlineRepository extends ServiceEntityRepository
 
         $qb = $this->createQueryBuilder('co')
                    ->select('COUNT(DISTINCT co.id)');
-        
+
         $this->addQueryConditions($qb, $formmodel);
 
         $query = $qb->getQuery();
@@ -88,8 +91,7 @@ class CnOnlineRepository extends ServiceEntityRepository
     public function findByQueryObject(CanonFormModel $formmodel, $limit = 0, $offset = 0) {
 
         $qb = $this->createQueryBuilder('co');
-                   # ->andWhere('co.id_dh IS NOT NULL'); # TODO remove this when data are complete
-        
+
         $this->addQueryConditions($qb, $formmodel);
 
         if($limit > 0) {
@@ -98,7 +100,7 @@ class CnOnlineRepository extends ServiceEntityRepository
         }
 
         // dump($qb->getDQL());
-        // $this->addSortParameter($qb, $formmodel);
+        $this->addSortParameter($qb, $formmodel);
 
         $query = $qb->getQuery();
         // dd($query->getResult());
@@ -116,18 +118,15 @@ class CnOnlineRepository extends ServiceEntityRepository
             $id_param = $db_id ? $db_id : $formmodel->someid;
             // dump($db_id, $id_param);
 
-            $qb->andWhere(":someid = canon.id".
-                          " OR :someid = canon.gsnId".
-                          " OR :someid = canon.viafId".
-                          " OR :someid = canon.wikidataId".
-                          " OR :someid = canon.gndId")
+            $qb->join('co.idlookup', 'ilt')
+               ->andWhere('ilt.authority_id = :someid OR co.id = :someid')
                ->setParameter(':someid', $id_param);
         }
 
         # year
         if($formmodel->year) {
             $erajoined = true;
-            $qb->join('canon.era', 'era')
+            $qb->join('co.era', 'era')
                 ->andWhere('era.eraStart - :mgnyear < :qyear AND :qyear < era.eraEnd + :mgnyear')
                 ->setParameter(':mgnyear', self::MARGINYEAR)
                 ->setParameter(':qyear', $formmodel->year);
@@ -135,19 +134,15 @@ class CnOnlineRepository extends ServiceEntityRepository
 
         # office title
         if($formmodel->office) {
-            // we have to join office a second time to filter at the level of persons
-            $qb->join('canon.offices', 'octitle')
-                ->andWhere('octitle.officeName LIKE :office')
-                ->setParameter('office', '%'.$formmodel->office.'%');
+            $qb->join('co.officelookup', 'olt_name')
+               ->andWhere('olt_name.office_name LIKE :office')
+               ->setParameter('office', '%'.$formmodel->office.'%');
         }
 
         # office place
         if($formmodel->place) {
-            // we have to join office a second time to filter at the level of persons
-            $sort = 'yearatplace';
-            $qb->join('canon.offices', 'oc_place')
-               ->join('oc_place.monastery', 'm')
-                ->andWhere('m.monastery_name LIKE :place')
+            $qb->join('co.officelookup', 'olt_place')
+                ->andWhere('olt_place.location_name LIKE :place')
                 ->setParameter('place', '%'.$formmodel->place.'%');
         }
         # names
@@ -157,8 +152,6 @@ class CnOnlineRepository extends ServiceEntityRepository
                            " OR CONCAT(nlt.givenname, ' ', nlt.familyname)LIKE :qname".
                            " OR nlt.givenname LIKE :qname".
                            " OR nlt.familyname LIKE :qname")
-               ->addOrderBy("nlt.familyname", "ASC")
-               ->addOrderBy("nlt.givenname", "ASC")
                ->setParameter('qname', '%'.$formmodel->name.'%');
         }
 
@@ -190,5 +183,42 @@ class CnOnlineRepository extends ServiceEntityRepository
 
     }
 
-    
+    public function addSortParameter($qb, $bishopquery) {
+
+        $sort = 'year';
+        if($bishopquery->someid) $sort = 'year';
+        if($bishopquery->year) $sort = 'year';
+        if($bishopquery->name) $sort = 'name';
+        if($bishopquery->place) $sort = 'location';
+        if($bishopquery->office) $sort = 'location';
+        /**
+         * a reliable order is required, therefore person.givenname shows up
+         * in each sort clause
+         */
+
+        switch($sort) {
+        case 'year':
+            $qb->leftJoin('co.era', 'erasort')
+               ->addOrderBy('erasort.eraStart', 'ASC')
+               ->addOrderBy('co.id');
+            break;
+        case 'name':
+            // $qb->orderBy('person.familyname, person.givenname, oc.diocese');
+            $qb->addOrderBy('nlt.familyname', 'ASC')
+               ->addOrderBy('nlt.givenname', 'ASC')
+               ->addOrderBy('co.id');
+            break;
+        case 'location':
+            $qb->leftJoin('co.officesortkey', 'os')
+               ->addOrderBy('os.location_name', 'ASC')
+               ->addOrderBy('os.numdate_start', 'ASC')
+               ->addOrderBy('os.numdate_end', 'ASC');
+            break;
+        }
+
+        return $qb;
+
+    }
+
+
 }

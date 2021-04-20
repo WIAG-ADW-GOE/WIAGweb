@@ -164,9 +164,9 @@ class CnOfficeGSRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('o')
                    ->andWhere('o.idCanon = :idCanon')
                    ->setParameter('idCanon', $id_canon)
-                   ->join('o.monastery', 'monastery')
-                   ->addOrderBy('monastery.monastery_name', 'ASC')
-                   ->addOrderBy('o.location', 'ASC')
+            // ->join('o.monastery', 'monastery')
+            // ->addOrderBy('monastery.monastery_name', 'ASC')
+                   ->addOrderBy('o.location_show', 'ASC')
                    ->join('o.numdate', 'numdate')
                    ->addOrderBy('numdate.dateStart', 'ASC');
         $query = $qb->getQuery();
