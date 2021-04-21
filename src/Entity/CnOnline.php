@@ -57,11 +57,21 @@ class CnOnline {
      */
     private $id_gs;
 
+    /* fill these properties, for the list view or the detail view */
+
     private $canon_dh = null;
 
     private $canon_gs = null;
 
     private $offices_dh = null;
+
+    private $offices_gs = null;
+
+    private $references_dh = null;
+
+    private $references_gs = null;
+
+    private $bishop = null;
 
     public function getId(): ?string
     {
@@ -127,5 +137,33 @@ class CnOnline {
         $this->offices_gs = $officesgs;
         return $this;
     }
+
+    public function getReferencesDh() {
+        return $this->references_dh;
+    }
+
+    public function setReferencesDh($referencesdh) {
+        $this->references_dh = $referencesdh;
+        return $this;
+    }
+
+    public function getReferencesGs() {
+        return $this->references_gs;
+    }
+
+    public function setReferencesGs($referencesgs) {
+        $this->references_gs = $referencesgs;
+        return $this;
+    }
+
+    public function setBishop($bishop) {
+        $this->bishop = $bishop;
+        return $this;
+    }
+
+    public function getBishop() {
+        return $this->bishop;
+    }
+
 
 }

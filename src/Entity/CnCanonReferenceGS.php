@@ -2,15 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\CnCanonReferenceRepository;
+use App\Repository\CnCanonReferenceGSRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=CnCanonReferenceRepository::class)
+ * @ORM\Entity(repositoryClass=CnCanonReferenceGSRepository::class)
  */
-class CnCanonReference
+class CnCanonReferenceGS
 {
-
     /**
      * @ORM\ManyToOne(targetEntity="CnReference")
      * @ORM\JoinColumn(name="id_reference", referencedColumnName="id")

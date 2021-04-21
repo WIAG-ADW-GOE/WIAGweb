@@ -4,11 +4,13 @@ namespace App\Repository;
 
 use App\Entity\CnOnline;
 use App\Entity\Canon;
+use App\Entity\CanonGS;
+use App\Entity\CnOffice;
+use App\Entity\CnOfficeGS;
+use App\Entity\CnCanonReference;
+use App\Entity\CnCanonReferenceGS;
+use App\Entity\Person;
 use App\Form\Model\CanonFormModel;
-use App\Repository\CanonRepository;
-use App\Repository\CnOfficeRepository;
-use App\Repository\CanonGSRepository;
-use App\Repository\CnOfficeGSRepository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -26,21 +28,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
     // Allow deviations in the query parameter `year`.
     const MARGINYEAR = 1;
 
-    private $canonrepository;
-    private $cnofficerepository;
-    private $canonGSrepository;
-    private $cnofficeGSrepository;
-
-
-    public function __construct(ManagerRegistry $registry,
-                                CanonRepository $canonrepository,
-                                CnOfficeRepository $cnofficerepository,
-                                CanonGSRepository $canonGSrepository,
-                                CnOfficeGSRepository $cnofficeGSrepository) {
-        $this->canonrepository = $canonrepository;
-        $this->cnofficerepository = $cnofficerepository;
-        $this->canonGSrepository = $canonGSrepository;
-        $this->cnofficeGSrepository = $cnofficeGSrepository;
+    public function __construct(ManagerRegistry $registry) {
 
         parent::__construct($registry, CnOnline::class);
     }
@@ -164,24 +152,6 @@ class CnOnlineRepository extends ServiceEntityRepository {
         return $qb;
     }
 
-    /*
-      Fill the object `online` with data for the list view.
-     */
-    public function fillListData(CnOnline $online) {
-        if (!is_null($online->getIdDh())) {
-            $canon = $this->canonrepository->findOneById($online->getIdDh());
-            $online->setCanonDh($canon);
-            $officesdh = $this->cnofficerepository->findByIdCanonAndSort($online->getIdDh());
-            $online->setOfficesDh($officesdh);
-        }
-        if (!is_null($online->getIdGs())) {
-            $canon = $this->canonGSrepository->findOneById($online->getIdGs());
-            $online->setCanonGs($canon);
-            $officesgs = $this->cnofficeGSrepository->findByIdCanonAndSort($online->getIdGs());
-            $online->setOfficesGs($officesgs);
-        }
-
-    }
 
     public function addSortParameter($qb, $bishopquery) {
 
@@ -219,6 +189,78 @@ class CnOnlineRepository extends ServiceEntityRepository {
         return $qb;
 
     }
+
+    /*
+      Fill the object `online` with data for the list view.
+     */
+    public function fillListData(CnOnline $online) {
+        $em = $this->getEntityManager();
+        if (!is_null($online->getIdDh())) {
+            $canon = $em->getRepository(Canon::class)->findOneById($online->getIdDh());
+            $online->setCanonDh($canon);
+            $officesdh = $em->getRepository(CnOffice::class)->findByIdCanonAndSort($online->getIdDh());
+            $online->setOfficesDh($officesdh);
+        } elseif (!is_null($online->getIdGs())) {
+            $canon = $em->getRepository(CanonGS::class)->findOneById($online->getIdGs());
+            $online->setCanonGs($canon);
+            $officesgs = $em->getRepository(CnOfficeGS::class)->findByIdCanonAndSort($online->getIdGs());
+            $online->setOfficesGs($officesgs);
+        }
+
+    }
+
+    /*
+      Fill the object `online` with data for the detail view.
+    */
+    public function fillData(CnOnline $online) {
+        // this looks not very elegant, but it is simple and each step is easy to control
+        $em = $this->getEntityManager();
+        if (!is_null($online->getIdDh())) {
+            $canon = $em->getRepository(Canon::class)->findOneById($online->getIdDh());
+            $online->setCanonDh($canon);
+
+            $officesdh = $em->getRepository(CnOffice::class)->findByIdCanonAndSort($online->getIdDh());
+            $online->setOfficesDh($officesdh);
+
+            $refsrepodh = $em->getRepository(CnCanonReference::class);
+            $refsdh = $refsrepodh->findByIdCanon($online->getIdDh());
+            $online->setReferencesDh($refsdh);
+            # add GS data
+            if (!is_null($online->getIdGs())) {
+                $officesgs = $em->getRepository(CnOfficeGS::class)->findByIdCanonAndSort($online->getIdGs());
+                $online->setOfficesGs($officesgs);
+
+                $refsrepogs = $em->getRepository(CnCanonReferenceGS::class);
+                $refsgs = $refsrepogs->findByIdCanon($online->getIdGs());
+                $online->setReferencesGS($refsgs);
+            }
+            # add WIAG bishop data
+            $episc_id = $online->getCanonDh() ?? $online->getCanonDh()->getWiagEpiscId();
+            if ($episc_id) {
+                $personrepo = $em->getRepository(Person::class);
+                $episc = $personrepo->findOneByWiagid($episc_id);
+                if (!is_null($episc) && $episc->hasMonastery()) {
+                    $personrepo->addMonasteryLocation($episc);
+                }
+                $online->setBishop($episc);
+            }
+        }
+        # GS only
+        elseif (!is_null($online->getIdGs())) {
+            $canon = $em->getRepository(CanonGS::class)->findOneById($online->getIdGs());
+            $online->setCanonGs($canon);
+
+            $officesgs = $em->getRepository(CnOfficeGS::class)->findByIdCanonAndSort($online->getIdGs());
+            $online->setOfficesGs($officesgs);
+
+            $refsrepogs = $em->getRepository(CnCanonReferenceGS::class);
+            $refsgs = $refsrepogs->findByIdCanon($online->getIdGs());
+            $online->setReferencesGS($refsgs);
+        }
+
+    }
+
+
 
 
 }

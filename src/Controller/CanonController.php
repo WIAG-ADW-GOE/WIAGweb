@@ -159,20 +159,22 @@ class CanonController extends AbstractController {
         $queryformdata = $form->getData();
 
         $personRepository = $this->getDoctrine()
-                                 ->getRepository(Canon::class);
+                                 ->getRepository(CnOnline::class);
         $hassuccessor = false;
         if($offset == 0) {
-            $persons = $personRepository->findWithOffices($queryformdata, 2, $offset);
+            $persons = $personRepository->findByQueryObject($queryformdata, 2, $offset);
             $iterator = $persons->getIterator();
             if(count($iterator) == 2) $hassuccessor = true;
 
         } else {
-            $persons = $personRepository->findWithOffices($queryformdata, 3, $offset - 1);
+            $persons = $personRepository->findByQueryObject($queryformdata, 3, $offset - 1);
             $iterator = $persons->getIterator();
             if(count($iterator) == 3) $hassuccessor = true;
             $iterator->next();
         }
         $person = $iterator->current();
+
+        $personRepository->fillData($person);
 
         $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 

@@ -19,6 +19,10 @@ class Canon
     const WIAGID_EPISC_PREFIX = 'WIAG-Pers-EPISCGatz-';
     const WIAGID_EPISC_POSTFIX = '-001';
 
+    static public function datasource(): string {
+        return 'dh';
+    }
+
     static public function extractDbId($id): ?string {
         $db_id = [];
         # at the moment we do not take care about multiple IDs for one person

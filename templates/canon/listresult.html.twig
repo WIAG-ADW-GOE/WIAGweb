@@ -11,9 +11,9 @@
     <script src="{{ asset('js/canon.js') }}"></script>
 {% endblock %}
 
-{% macro canonrow(person, offices, offset) %}
+{% macro canonrow(person, iddh, idgs, offices, offset) %}
     <tr>
-	<td><button type="submit" form="q_form" class="btn btn-link text-sm-left" name="singleoffset" value="{{ offset }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
+	<td><button type="submit" form="q_form" class="btn btn-link text-sm-left p-0" name="singleoffset" value="{{ offset }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
 	    {% if not person.datebirth and not person.datedeath %}
 	    {% elseif person.datebirth and not person.datedeath %}
 		<p class="ml-3">* {{ person.datebirth }}</p>
@@ -32,8 +32,14 @@
 		    {% elseif o.datestart and o.dateend %}{{ o.datestart }}-{{ o.dateend }}{% endif %}
 		</small><br/>
 	    {% endfor %}
+	    {% if iddh and idgs %}
+		<button type="submit"
+			form="q_form"
+			class="btn btn-link text-sm-left p-0"
+			name="singleoffset" value="{{ offset }}"><small>&hellip;</small></button>
+	    {% endif %}
 	</td>
-    </tr>    
+    </tr>
 {% endmacro %}
 
 {% block body %}
@@ -78,9 +84,9 @@
 			    <tbody>
 				{% for person in persons %}
 				    {% if person.iddh %}
-					{{ _self.canonrow(person.canondh, person.officesdh, offset + loop.index0) }}
+					{{ _self.canonrow(person.canondh, true, person.idgs, person.officesdh, offset + loop.index0) }}
 				    {% elseif person.idgs %}
-					{{ _self.canonrow(person.canongs, person.officesgs, offset + loop.index0) }}
+					{{ _self.canonrow(person.canongs, false, true, person.officesgs, offset + loop.index0) }}
 				    {% endif %}
 				{% endfor %}
 				<tr>
@@ -94,7 +100,7 @@
 		{# facets #}
 		<div class="col-3">
 		    {% if query_form.facetLocations is defined %}
-			{# set lenfctl=query_form.facetLocations|length #}			
+			{# set lenfctl=query_form.facetLocations|length #}
 			<div class="card card-body">
 			    <strong class="card-title">Filter Ort</strong>
 			    {% for flc in query_form.facetLocations %}

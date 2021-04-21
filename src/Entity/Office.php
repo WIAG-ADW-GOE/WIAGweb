@@ -12,6 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Office
 {
+    // There is no field 'dignity' (different from canons)
+    static public function getDignity() {
+        return null;
+    }
 
     /**
      * @ORM\Id
@@ -315,7 +319,7 @@ class Office
 
         $fv = $this->getSortKey();
         if($fv) $ocj['sort'] = $fv;
-        
+
         return $ocj;
     }
 
@@ -330,6 +334,5 @@ class Office
 
         return $this;
     }
-
 
 }
