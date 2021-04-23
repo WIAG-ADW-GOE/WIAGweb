@@ -63,14 +63,16 @@ $(document).ready(function() {
 
     // see bootstrap for shown.bs.collaps, hidden.bs.collaps, collaps
     if (div_fctcpsloc.length > 0) {
-	div_fctcpsloc.on('shown.bs.collapse', function () {	    
-	    btn_cpsloc.html("<img src=\"/images/arrow-up.svg\"/>");
+	div_fctcpsloc.on('shown.bs.collapse', function () {
+	    var btn_html = btn_cpsloc.html();	    
+	    btn_cpsloc.html(btn_html.replace('arrow-down', 'arrow-up'));
 	    input_statefctloc[0].setAttribute('value', '1');
 	    // console.log(input_statefctloc);
 	});
 	
 	div_fctcpsloc.on('hidden.bs.collapse', function () {
-	    btn_cpsloc.html("<img src=\"/images/arrow-down.svg\"/>");
+	    var btn_html = btn_cpsloc.html();	    
+	    btn_cpsloc.html(btn_html.replace('arrow-up', 'arrow-down'));
 	    input_statefctloc[0].setAttribute('value', '0');
 	    // console.log(input_statefctloc);
 	});
