@@ -7,12 +7,17 @@ use App\Form\Model\BishopQueryFormModel;
 use App\Entity\Person;
 use App\Entity\Diocese;
 use App\Entity\Canon;
+use App\Entity\CanonGS;
+use App\Entity\CnOnline;
 use App\Service\PersonData;
 use App\Service\PersonLinkedData;
 use App\Service\DioceseData;
 use App\Service\DioceseLinkedData;
 use App\Service\CanonData;
 use App\Service\CanonLinkedData;
+// use App\Service\CanonGSData;
+// use App\Service\CanonGSLinkedData;
+
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,8 +36,11 @@ class IDController extends AbstractController {
     private $personLinkedData;
     private $dioceseData;
     private $dioceseLinkedData;
-    private $canonData;
-    private $canonLinkedData;
+    private $svccanonData;
+    private $svccanonLinkedData;
+    //    private $svccanonGsData;
+    //    private $svccanonGsLinkedData;
+
 
     const FORMAT_MAP = [
         'application/rdf+xml' => 'rdf',
@@ -46,14 +54,18 @@ class IDController extends AbstractController {
                                 PersonLinkedData $personLinkedData,
                                 DioceseData $dioceseData,
                                 DioceseLinkedData $dioceseLinkedData,
-                                CanonData $canonData,
-                                CanonLinkedData $canonLinkedData) {
+                                CanonData $svccanonData,
+                                CanonLinkedData $svccanonLinkedData) {
+                                // CanonGSData $svccanonGsData,
+                                // CanonGSLinkedData $svccanonGsLinkedData) {
         $this->personData = $personData;
         $this->personLinkedData = $personLinkedData;
         $this->dioceseData = $dioceseData;
         $this->dioceseLinkedData = $dioceseLinkedData;
-        $this->canonData = $canonData;
-        $this->canonLinkedData = $canonLinkedData;
+        $this->svccanonData = $svccanonData;
+        $this->svccanonLinkedData = $svccanonLinkedData;
+        // $this->svccanonGsData = $svccanonGsData;
+        // $this->svccanonGsLinkedData = $svccanonGsLinkedData;
     }
 
     /**
@@ -70,7 +82,8 @@ class IDController extends AbstractController {
                 return $this->redirectToRoute('wiag_id_data', ['id' => $id], 303);
             }
             else
-                return $this->redirectToRoute('wiag_id_html', ['id' => $id], 303);
+                // return $this->redirectToRoute('wiag_id_html', ['id' => $id], 303);
+                return $this->routeDoc($id, $request);
         }
     }
 
@@ -193,19 +206,21 @@ class IDController extends AbstractController {
     }
 
     public function canonhtmlbyID(string $id) {
+        $dbid = Canon::extractDbId($id);
 
-        $canon = $this->getDoctrine()
-                       ->getRepository(Canon::class)
-                       ->findOneWithOffices($id);
+        $repo = $this->getDoctrine()
+                     ->getRepository(CnOnline::class);
 
-        if (!$canon) {
+        $cnonline = $repo->findOneById($dbid);
+        if (!$cnonline) {
             throw $this->createNotFoundException('Domherr wurde nicht gefunden');
         } else {
-            return $this->canonhtml($canon);
+            $repo->fillData($cnonline);
+            return $this->canonhtml($cnonline);
         }
     }
 
-    public function canonhtml(Canon $canon) {
+    public function canonhtml($canon) {
         # TODO do we need this here?
         $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 
@@ -219,10 +234,26 @@ class IDController extends AbstractController {
 
     public function canondata(string $id, Request $request) {
         $idbase = pathinfo($id, PATHINFO_FILENAME);
-        
-        $canon = $this->getDoctrine()
-                       ->getRepository(Canon::class)
-                       ->findOneWithOffices($idbase);
+        $dbid = Canon::extractDbId($idbase);
+
+        $canononline = $this->getDoctrine()
+                            ->getRepository(CnOnline::class)
+                            ->findOneById($dbid);
+        // dd($idbase, $canononline);
+
+        $canon = null;
+        if ($canononline->getIdDh()) {
+            $canon = $this->getDoctrine()
+                          ->getRepository(Canon::class)
+                          ->findOneWithOffices($idbase);
+        } elseif ($canononline->getIdGs()) {
+            $canon = $this->getDoctrine()
+                          ->getRepository(CanonGS::class)
+                          ->findOneWithOffices($idbase);
+        }
+        $svcData = $this->svccanonData;
+        $svcLinkedData = $this->svccanonLinkedData;
+
 
         if(!$canon) {
             throw $this->createNotFoundException('Domherr wurde nicht gefunden');
@@ -245,23 +276,23 @@ class IDController extends AbstractController {
         switch($format) {
         case 'csv':
             $canonID = $canon->getWiagidLong();
-            $data = $this->canonData->canonToCSV($canon, $baseurl);
+            $data = $svcData->canonToCSV($canon, $baseurl);
             $response->headers->set('Content-Type', "text/csv; charset=utf-8");
             $response->headers->set('Content-Disposition', "filename={$canonID}.csv");
             break;
         case 'json':
-            $data = $this->canonData->canonToJSON($canon, $baseurl);
+            $data = $svcData->canonToJSON($canon, $baseurl);
             $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
             break;
         case 'jsonld':
         case 'json-ld':
-            $data = $this->canonLinkedData->canonToJSONLD($canon, $baseurl);
+            $data = $svcLinkedData->canonToJSONLD($canon, $baseurl);
             $response->headers->set('Content-Type', 'application/ld+json;charset=UTF-8');
             break;
         case null:
         case 'rdf':
         case '':
-            $data = $this->canonLinkedData->canonToRdf($canon, $baseurl);
+            $data = $svcLinkedData->canonToRdf($canon, $baseurl);
             $response->headers->set('Content-Type', 'application/rdf+xml;charset=UTF-8');
             break;
         default:
@@ -371,7 +402,7 @@ class IDController extends AbstractController {
         $diocese = $this->getDoctrine()
                         ->getRepository(Diocese::class)
                         ->findOneByGndId($id);
-        
+
         if ($diocese) {
             return $this->diocesehtml($diocese);
         }

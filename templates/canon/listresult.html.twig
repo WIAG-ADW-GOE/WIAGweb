@@ -11,7 +11,7 @@
     <script src="{{ asset('js/canon.js') }}"></script>
 {% endblock %}
 
-{% macro canonrow(person, iddh, idgs, offices, offset) %}
+{% macro canonrow(person, iddh, idgs, idepisc, offices, offset) %}
     <tr>
 	<td><button type="submit" form="q_form" class="btn btn-link text-sm-left p-0" name="singleoffset" value="{{ offset }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
 	    {% if not person.datebirth and not person.datedeath %}
@@ -32,7 +32,7 @@
 		    {% elseif o.datestart and o.dateend %}{{ o.datestart }}-{{ o.dateend }}{% endif %}
 		</small><br/>
 	    {% endfor %}
-	    {% if iddh and idgs %}
+	    {% if iddh and (idgs or idepisc) %}
 		<button type="submit"
 			form="q_form"
 			class="btn btn-link text-sm-left p-0"
@@ -84,9 +84,9 @@
 			    <tbody>
 				{% for person in persons %}
 				    {% if person.iddh %}
-					{{ _self.canonrow(person.canondh, true, person.idgs, person.officesdh, offset + loop.index0) }}
+					{{ _self.canonrow(person.canondh, true, person.idgs, person.canondh.wiagepiscid, person.officesdh, offset + loop.index0) }}
 				    {% elseif person.idgs %}
-					{{ _self.canonrow(person.canongs, false, true, person.officesgs, offset + loop.index0) }}
+					{{ _self.canonrow(person.canongs, false, true, false, person.officesgs, offset + loop.index0) }}
 				    {% endif %}
 				{% endfor %}
 				<tr>
@@ -100,36 +100,74 @@
 		{# facets #}
 		<div class="col-3">
 		    {% if query_form.facetLocations is defined %}
-			{# set lenfctl=query_form.facetLocations|length #}
+			{% set longFctLoc=query_form.facetLocations|length > 12 %}
+			{% set btnTglFctLoc %}<button id="btnTglFctLoc" class="btn btn-outline-secondary btn-sm" type="button" data-toggle="collapse" href="#restFctLoc" aria-expanded="false" aria-controls="restFctLoc"><img src="{{ asset('images/arrow-down.svg') }}"/></button>{% endset %}
 			<div class="card card-body">
-			    <strong class="card-title">Filter Ort</strong>
-			    {% for flc in query_form.facetLocations %}
-			     {# <div class="form-group small"> #}
-				<div class="form-group">
-				    {{ form_widget(flc) }}
-				</div>
-			    {% endfor %}
+			    {% if longFctLoc %}
+				<p class="card-title mb-0"><strong>Filter Ort</strong></p>
+				<p class="text-right mt-n3 mb-n1">{{ btnTglFctLoc }}</p>
+			    {% else %}
+				<p class="card-title"><strong>Filter Ort</strong></p>
+			    {% endif %}
+			    <div>
+				{% for flc in query_form.facetLocations %}
+				    {# <div class="form-group small"> #}
+				    <div class="form-group p-1 m-0">
+					{{ form_widget(flc) }}
+				    </div>
+				    {% if longFctLoc and loop.index == 7 %}
+			    </div>			    
+			    <div class="collapse" id="restFctLoc">
+				    {% endif %}
+				{% endfor %}
+			    </div>
 			</div>
 		    {% endif %}
 		    {% if query_form.facetMonasteries is defined %}
+			{% set longFctMon=query_form.facetMonasteries|length > 12 %}
+			{% set btnTglFctMon %}<button id="btnTglFctMon" class="btn btn-outline-secondary btn-sm" type="button" data-toggle="collapse" href="#restFctMon" aria-expanded="false" aria-controls="restFctMon"><img src="{{ asset('images/arrow-down.svg') }}"/></button>{% endset %}
 			<div class="card card-body">
-			    <strong class="card-title">Filter Domstift</strong>
-			    {% for fpl in query_form.facetMonasteries%}
+			    {% if longFctMon %}
+				<p class="card-title mb-0"><strong>Filter Domstift</strong></p>
+				<p class="text-right mt-n3 mb-n1">{{ btnTglFctMon }}</p>
+			    {% else %}
+				<p class="card-title"><strong>Filter Domstift</strong></p>
+			    {% endif %}
+			    <div>
+				{% for fpl in query_form.facetMonasteries%}
 				{# <div class="form-group small"> #}
-				<div class="form-group">
-				    {{ form_widget(fpl) }}
-				</div>
-			    {% endfor %}
+				    <div class="form-group p-1 m-0">
+					{{ form_widget(fpl) }}
+				    </div>
+				    {% if longFctMon and loop.index == 7 %}
+			    </div>			    
+			    <div class="collapse" id="restFctMon">
+				    {% endif %}
+				{% endfor %}
+			    </div>
 			</div>
 		    {% endif %}
 		    {% if query_form.facetOffices is defined %}
+			{% set longFctOfc=query_form.facetOffices|length > 12 %}
+			{% set btnTglFctOfc %}<button id="btnTglFctOfc" class="btn btn-outline-secondary btn-sm" type="button" data-toggle="collapse" href="#restFctOfc" aria-expanded="false" aria-controls="restFctOfc"><img src="{{ asset('images/arrow-down.svg') }}"/></button>{% endset %}
 			<div class="card card-body">
-			    <strong class="card-title">Filter Amt</strong>
-			    {% for foc in query_form.facetOffices%}
-				<div class="form-group">
-				    {{ form_widget(foc) }}
-				</div>
-			    {% endfor %}
+			    {% if longFctOfc %}
+				<p class="card-title mb-0"><strong>Filter Amt</strong></p>
+				<p class="text-right mt-n3 mb-n1">{{ btnTglFctOfc }}</p>
+			    {% else %}
+				<p class="card-title"><strong>Filter Amt</strong></p>
+			    {% endif %}
+			    <div>
+				{% for foc in query_form.facetOffices%}
+				    <div class="form-group p-1 m-0">
+					{{ form_widget(foc) }}
+				    </div>
+				    {% if longFctOfc and loop.index == 7 %}
+			    </div>			    
+			    <div class="collapse" id="restFctOfc">
+				    {% endif %}				    
+				{% endfor %}
+			    </div>
 			</div>
 		    {% endif %}
 		</div>

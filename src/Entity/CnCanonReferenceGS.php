@@ -10,6 +10,13 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CnCanonReferenceGS
 {
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CanonGS", inversedBy="references")
+     * @ORM\JoinColumn(name="id_canon", referencedColumnName="id")
+     */
+    private $canon;
+
     /**
      * @ORM\ManyToOne(targetEntity="CnReference")
      * @ORM\JoinColumn(name="id_reference", referencedColumnName="id")

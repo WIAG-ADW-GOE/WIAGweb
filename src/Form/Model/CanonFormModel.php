@@ -15,6 +15,9 @@ class CanonFormModel {
     public $facetLocations;
     public $facetMonasteries;
     public $facetOffices;
+    public $stateFctLoc;
+    public $stateFctMon;
+    public $stateFctOfc;
 
     public function __construct($n = null,
                                 $p = null,
@@ -23,7 +26,10 @@ class CanonFormModel {
                                 $id = null,
                                 $flc = array(),
                                 $fpl = array(),
-                                $fof = array()) {
+                                $fof = array(),
+                                $stateFctLoc = "0",
+                                $stateFctMon = "0",
+                                $stateFctOfc = "0") {
         $this->name = $n;
         $this->place = $p;
         $this->office = $o;
@@ -32,6 +38,9 @@ class CanonFormModel {
         $this->facetLocations = $flc;
         $this->facetMonasteries = $fpl;
         $this->facetOffices = $fof;
+        $this->stateFctLoc = $stateFctLoc;
+        $this->stateFctMon = $stateFctMon;
+        $this->stateFctOfc = $stateFctOfc;
     }
 
     public function isEmpty() {
@@ -68,6 +77,9 @@ class CanonFormModel {
         $this->office = $a['office'];
         $this->year = $a['year'];
         $this->someid = $a['someid'];
+        $this->stateFctLoc = $a['stateFctLoc'];
+        $this->stateFctMon = $a['stateFctMon'];
+        $this->stateFctOfc = $a['stateFctOfc'];
 
 
         if (array_key_exists('facetLocations', $a)) {
@@ -117,6 +129,9 @@ class CanonFormModel {
         if($this->office) $qelts['office'] = $this->office;
         if($this->year) $qelts['year'] = $this->year;
         if($this->someid) $qelts['someid'] = $this->someid;
+        if($this->stateFctLoc) $qelts['stateFctLoc'] = $this->stateFctLoc;
+        if($this->stateFctMon) $qelts['stateFctMon'] = $this->stateFctMon;
+        if($this->stateFctOfc) $qelts['stateFctOfc'] = $this->stateFctOfc;
 
         return $qelts;
     }
@@ -142,39 +157,40 @@ class CanonFormModel {
     }
 
     // 2021-04-12 obsolete?
-    public function setByRequest(Request $request) {
-        $query = $request->query;
-        $this->name = $query->get('name');
-        $this->place = $query->get('place');
-        $this->office = $query->get('office');
-        $this->year = $query->get('year');
-        $this->someid = $query->get('someid');
+    // public function setByRequest(Request $request) {
+    //     $query = $request->query;
+    //     $this->name = $query->get('name');
+    //     $this->place = $query->get('place');
+    //     $this->office = $query->get('office');
+    //     $this->year = $query->get('year');
+    //     $this->someid = $query->get('someid');
+    //     $this->stateFctLoc = $query->get('stateFctLoc');
 
-        $fpsstr = $query->get('facetMonasteries');
+    //     $fpsstr = $query->get('facetMonasteries');
 
-        if($fpsstr) {
-            $fpsoc = array();
-            $fpsc = explode(',', $fpsstr);
-            foreach($fpsc as $el) {
-                $fpsoc[] = new PlaceCount($el, '1');
-            }
-            $this->facetMonasteries = $fpsoc;
-        }
+    //     if($fpsstr) {
+    //         $fpsoc = array();
+    //         $fpsc = explode(',', $fpsstr);
+    //         foreach($fpsc as $el) {
+    //             $fpsoc[] = new PlaceCount($el, '1');
+    //         }
+    //         $this->facetMonasteries = $fpsoc;
+    //     }
 
-        $fosstr = $query->get('facetOffices');
+    //     $fosstr = $query->get('facetOffices');
 
-        if($fosstr) {
-            $fosoc = array();
-            $fosc = explode(',', $fosstr);
-            foreach($fosc as $el) {
-                $fosoc[] = new PlaceCount($el, '1');
-            }
-            $this->facetOffices = $fosoc;
-        }
+    //     if($fosstr) {
+    //         $fosoc = array();
+    //         $fosc = explode(',', $fosstr);
+    //         foreach($fosc as $el) {
+    //             $fosoc[] = new PlaceCount($el, '1');
+    //         }
+    //         $this->facetOffices = $fosoc;
+    //     }
 
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * strip 'Bistum' or 'Erzbistum' from search field.
@@ -188,6 +204,10 @@ class CanonFormModel {
             }
         }
         return null;
+    }
+
+    public function getStateFctLoc() {
+        return $this->stateFctLoc;
     }
 
 }

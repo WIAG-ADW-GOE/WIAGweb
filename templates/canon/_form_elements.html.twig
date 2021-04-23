@@ -11,10 +11,15 @@
 <div class="row ml-2 col-12">
     {{ form_row(query_form.searchHTML) }}
     <a href="{{ path('canons_wd') }}" class="ml-1"><button class="btn btn-secondary btn-light btn-sm" type="button">Neue Suche</button></a>
-    <span class="ml-3">{{ form_widget(query_form.searchJSON) }}</span>
-    <span class="ml-1">{{ form_widget(query_form.searchCSV) }}</span>
-    <span class="ml-1">{{ form_widget(query_form.searchRDF) }}</span>
-    <span class="ml-1">{{ form_widget(query_form.searchJSONLD) }}</span>
+    <div hidden="hidden">
+	<span class="ml-3">{{ form_widget(query_form.searchJSON) }}</span>
+	<span class="ml-1">{{ form_widget(query_form.searchCSV) }}</span>
+	<span class="ml-1">{{ form_widget(query_form.searchRDF) }}</span>
+	<span class="ml-1">{{ form_widget(query_form.searchJSONLD) }}</span>
+    </div>
+    {{ form_widget(query_form.stateFctLoc) }}
+    {{ form_widget(query_form.stateFctMon) }}
+    {{ form_widget(query_form.stateFctOfc) }}
 </div>
 
 {# {{ form_end(query_form) }} #}

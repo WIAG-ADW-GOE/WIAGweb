@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Person;
 use App\Repository\CanonRepository;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -688,6 +689,15 @@ class Canon
         return $this;
     }
 
+    public function copyExternalIds(Person $person): self {
+        $this->gsnId = $person->getGsId();
+        $this->gndId = $person->getGndId();
+        $this->viafId = $person->getViafId();
+        $this->wikidataId = $person->getWikidataId();
+        $this->wikipediaUrl = $person->getWikipediaurl();
+
+        return $this;
+    }
 
 
 }

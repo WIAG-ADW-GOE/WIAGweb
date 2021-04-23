@@ -56,13 +56,16 @@
 {% macro sectionreferences(references, url_gs_bios) %}
     <dt class="col-sm-3">{{ references|length > 1 ? 'Referenzwerke' : 'Referenzwerk' }}</dt>
     <dd class="col-sm-9">
-	<ul class="list-unstyled">
+	{# <ul class="list-unstyled">  #}
+	<ul class="{% if references|length == 1 %}list-unstyled{% else %}pl-3{% endif %} small">
 	    {% for cnref in references %}
 		{% set refid = cnref.idinreference %}
+		{% set refuri %}{% if cnref.reference.onlineresource %}{{ cnref.reference.onlineresource }}{% else %}{{ path('canon_reference', {'id': cnref.reference.id }) }}{% endif %}{% endset %}
+		{% set refdisplaytitle %}{% if cnref.reference.fulltitle %}{{ cnref.reference.fulltitle }}{% else %}{{ cnref.reference.author }}, {{ cnref.reference.title }}{% endif %}{% endset %}
 		{% if cnref.isbio %}
-		    <li><a href="{{ path('canon_reference', {'id': cnref.reference.id }) }}">{% if cnref.reference.fulltitle %}{{ cnref.reference.fulltitle }}{% else %}{{ cnref.reference.author }}, {{ cnref.reference.title|trim }}{% endif %}</a>, S. {{ cnref.pagebio }}, <a href ="{{ url_gs_bios }}{{ cnref.reference.numbervol }}/{{ cnref.pagebio }}" target="_blank" rel="noopener"><strong>Biogramm online lesen</strong></a></li>
+		    <li><a href="{{ refuri }}">{{ refdisplaytitle }}</a>, S. {{ cnref.pagebio }}, <a class="btn btn-danger btn-sm" role="button" href="{{ url_gs_bios }}{{ cnref.reference.numbervol }}/{{ cnref.pagebio }}" target="_blank" rel="noopener">Biogramm in Printpublikation vorhanden</a></li>
 		{% else %}
-		    <li><a href="{{ path('canon_reference', {'id': cnref.reference.id }) }}">{{ cnref.reference.fulltitle }}</a>, {% if refid %} S. {{ cnref.pagereference }}, ID/Nr. {{ refid }} {% else %} S. {{ cnref.pagereference }} {% endif %}</li>
+		    <li><a href="{{ refuri }}">{{ refdisplaytitle }}</a>, {% if refid %} S. {{ cnref.pagereference }}, ID/Nr. {{ refid }} {% else %} S. {{ cnref.pagereference }} {% endif %}</li>
 		{% endif %}
 	    {% endfor %}
 	</ul>
@@ -87,7 +90,7 @@
 		{% if person.iddh %}{% set canon=person.canondh %}{% else %}{% set canon=person.canongs %}{% endif %}
 		<div class="col-8"><h2>{{ canon.displayname[:200] }}</h2></div>
 		<div class="col-4 text-right text-nowrap">
-		    <button type="button" class="btn to-clipboard" title="{{ url('id', {id: canon.wiagidlong}) }}" >{{ canon.wiagidlong }} <img src="{{ asset('images/link45deg.svg') }}" width="18"></button>
+		    <button type="button" class="btn to-clipboard" title="{{ protocol }}:{{ url('id', {id: canon.wiagidlong}, schemeRelative=true) }}" >{{ canon.wiagidlong }} <img src="{{ asset('images/link45deg.svg') }}" width="18"></button>
 		</div>
 	    </div>
 
@@ -144,33 +147,45 @@
 		    <dt class="col-sm-3">Akademischer Titel</dt>
 		    <dd class="col-sm-9">{{ canon.academictitle }}</dd>
 		{% endif %}
-
-		{# offices and references#}
-		{% if person.iddh %}
-		    <dt class="col-sm-3 comment">Domherren-Datenbank</dt>
-		    <dd class="col-sm-9"></dd>
-		    {{ _self.sectionoffices(person.officesdh, urlgsmonasteries, dioceserepository) }}
-		    {{ _self.sectionreferences(person.referencesdh, url_gs_bios) }}
-		{% endif %}
-		{% if person.idgs %}
-		    <dt class="col-sm-3 comment">Digitales Personenregister</dt>
-		    <dd class="col-sm-9"></dd>
-		    {{ _self.sectionoffices(person.officesgs, urlgsmonasteries, dioceserepository) }}
-		    {{ _self.sectionreferences(person.referencesgs, url_gs_bios) }}
-		{% endif %}
-		{% if person.bishop %}
-		    <dt class="col-sm-3 comment">WIAG Bischofs-Datenbank</dt>
-		    <dd class="col-sm-9"></dd>
-		    {% set bishop = person.bishop %}
-		    {{ _self.sectionoffices(bishop.offices, urlgsmonasteries, dioceserepository) }}
-		    {% if bishop.reference %}
-			<dt class="col-sm-3">Referenzwerk</dt>
-			<dd class="col-sm-9"><a href="{{ path('reference', {'id': bishop.referenceid}) }}">{{ bishop.reference.shorttitle }}</a>, S. {{ bishop.pagesgatz }}</dd>
-		    {% endif %}
-		{% endif %}
 	    </dl>
-	    <dl class="row mx-2" style="background: #ffe6e6">
-		{% if canon.hasExternalIdentifier %}
+	    {% if person.iddh %}
+		<div class="card mx-2 mb-2">
+		    <span class="card-header"><strong>Datenbank "Domherren des Alten Reiches"</strong></span>
+		    <dl class="card-body row mb-0 pb-0">
+			{# offices and references#}
+			{{ _self.sectionoffices(person.officesdh, urlgsmonasteries, dioceserepository) }}
+			{{ _self.sectionreferences(person.referencesdh, url_gs_bios) }}
+		    </dl>
+		</div>
+	    {% endif %}
+	    {% if person.idgs %}
+		<div class="card mx-2 mb-2">
+		    <span class="card-header"><a href="{{ urlgspersons }}index/gsn/{{ canon.gsnid }}" target="_blank" rel="noopener"><strong>Digitales Personenregister der Germania Sacra</strong></a></span>
+		    <dl class="card-body row mb-0 pb-0">
+			{{ _self.sectionoffices(person.officesgs, urlgsmonasteries, dioceserepository) }}
+			{{ _self.sectionreferences(person.referencesgs, url_gs_bios) }}
+		    </dl>
+		</div>
+	    {% endif %}
+	    {% if person.bishop %}
+		<div class="card mx-2 mb-2">
+		    <span class="card-header"><a href="{{ protocol }}:{{ url('id', {'id': canon.wiagepiscidlong}, schemeRelative=true) }}" target="_blank" rel="noopener"><strong>Datenbank "Bischöfe des Alten Reiches"</strong></span></a>
+		    <dl class="card-body row">
+			{% set bishop = person.bishop %}
+			{{ _self.sectionoffices(bishop.offices, urlgsmonasteries, dioceserepository) }}
+			{% if bishop.reference %}
+			    <dt class="col-sm-3">Referenzwerk</dt>
+			    <dd class="col-sm-9"><a href="{{ path('reference', {'id': bishop.referenceid}) }}">{{ bishop.reference.shorttitle }}</a>, S. {{ bishop.pagesgatz }}</dd>
+			{% endif %}
+		    </dl>
+		</div>
+	    {% endif %}
+	    {# external identifiers and other identifiers (canondh holds a copy of bishop data if available#}
+	    {% if person.iddh %}{% set canon = person.canondh %}
+	    {% else %}{% set canon = person.canongs %}
+	    {% endif %}
+	    {% if canon.hasExternalIdentifier %}
+		<dl class="row mx-2 mt-1">
 		    <dt class="col-sm-3">Externe Identifier</dt>
 		    <dd class="col-sm-9">
 			<ul class ="list-unstyled">
@@ -200,8 +215,10 @@
 			    {% endif %}
 			</ul>
 		    </dd>
-		{% endif %}
-		{% if canon.hasOtherIdentifier %}
+		</dl>
+	    {% endif %}
+	    {% if canon.hasOtherIdentifier %}
+		<dl class="row mx-2 mt-1">
 		    <dt class="col-sm-3">Siehe auch</dt>
 		    <dd class="col-sm-9">
 			<ul class ="list-unstyled">
@@ -226,20 +243,20 @@
 				<li>
 				    <ul class="list-inlined list-unstyled">
 					<li class="list-inline-item">WIAG</li>
-					<li class="list-inline-item"><a href="{{ url('id', {'id': canon.wiagepiscidlong}) }}" target="_blank" rel="noopener">{{ canon.wiagepiscidlong }}</a></li>
+					<li class="list-inline-item"><a href="{{ protocol }}:{{ url('id', {'id': canon.wiagepiscidlong}, schemeRelative=true) }}" target="_blank" rel="noopener">{{ canon.wiagepiscidlong }}</a></li>
 				    </ul>
 				</li>
 			    {% endif %}
 
 			</ul>
 		    </dd>
-		{% endif %}
-	    </dl>
+		</dl>
+	    {% endif %}
 	    <div class="row mx-2 col-12"><span class="align-baseline"> Empfohlene Zitierweise: <button type="button" class="btn btn-sm" id="copy-citation"> <img src="{{ asset('images/clipboard.svg') }}"></button> </span></div>
 	    <div class="row mx-2 col-12">
 		{# (WIAGID: {{ person.wiagidlong }}), #}
 		{# app.request.schemeAndHttpHost ~ app.request.baseUrl  #}
-		<span id="citation">"{{ canon.displayname }}" in: WIAG, {{ url('id', {id: canon.wiagidlong}) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</span></div>
+		<span id="citation">"{{ canon.displayname }}" in: WIAG, {{ protocol }}:{{ url('id', {id: canon.wiagidlong}, schemeRelative=true) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</span></div>
 	    <div class="row mx-2 col-12 mt-4">
 		{% if query_form is defined %}
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>

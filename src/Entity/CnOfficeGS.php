@@ -12,6 +12,12 @@ class CnOfficeGS
 {
 
     /**
+     * @ORM\ManyToOne(targetEntity="CanonGS", inversedBy="offices")
+     * @ORM\JoinColumn(name="id_canon", referencedColumnName="id")
+     */
+    private $canon;
+
+    /**
      * @ORM\OneToOne(targetEntity="CnOfficedate", mappedBy="office")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_office")
      */

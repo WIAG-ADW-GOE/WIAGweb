@@ -2,11 +2,9 @@
 
 namespace App\Service;
 
-use App\Entity\CnOffice;
-
 class CnOfficeData {
 
-    static public function toArray(CnOffice $oc) {
+    static public function toArray($oc) {
         $ocj = array();
 
         $ocj['officeTitle'] = $oc->getOfficeName();

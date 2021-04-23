@@ -10,6 +10,7 @@ use App\Entity\CnOfficeGS;
 use App\Entity\CnCanonReference;
 use App\Entity\CnCanonReferenceGS;
 use App\Entity\Person;
+use App\Entity\Monastery;
 use App\Form\Model\CanonFormModel;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -143,14 +144,41 @@ class CnOnlineRepository extends ServiceEntityRepository {
                ->setParameter('qname', '%'.$formmodel->name.'%');
         }
 
-
-        // TODO
-        // $this->addFacets($formmodel, $qb);
+        $this->addFacets($formmodel, $qb);
 
 
         // for each individual person sort offices by start date in the template
         return $qb;
     }
+
+    /**
+     * add conditions set by facets
+     */
+    public function addFacets($querydata, $qb) {
+        if($querydata->facetLocations) {
+            $locations = array_column($querydata->facetLocations, 'id');
+            $qb->join('co.officelookup', 'ocfctl')
+               ->andWhere('ocfctl.location_name IN (:locations)')
+               ->setParameter('locations', $locations);
+        }
+        if($querydata->facetMonasteries) {
+            $ids_monastery = array_column($querydata->facetMonasteries, 'id');
+            // $facetMonasteries = array_map(function($a) {return 'Domstift '.$a;}, $facetMonasteries);
+            $qb->join('co.officelookup', 'ocfctp')
+               ->join('ocfctp.monastery', 'mfctp')
+               ->andWhere('mfctp.wiagid IN (:places)')
+               ->setParameter('places', $ids_monastery);
+        }
+        if($querydata->facetOffices) {
+            $facetOffices = array_column($querydata->facetOffices, 'name');
+            $qb->join('co.officelookup', 'ocfctoc')
+               ->andWhere("ocfctoc.office_name IN (:offices)")
+               ->setParameter('offices', $facetOffices);
+        }
+
+        return $qb;
+    }
+
 
 
     public function addSortParameter($qb, $bishopquery) {
@@ -189,6 +217,67 @@ class CnOnlineRepository extends ServiceEntityRepository {
         return $qb;
 
     }
+
+    /**
+     * return list of places, where persons have an office;
+     * used for the facet of places
+     */
+    public function findOfficePlaces(CanonFormModel $canonquery) {
+        $qb = $this->createQueryBuilder('co')
+                   ->select('DISTINCT mfacet.wiagid, mfacet.monastery_name, COUNT(DISTINCT(co.id)) as n')
+                   ->join('co.officelookup', 'oc')
+                   ->join('oc.monastery', 'mfacet')
+                   ->andWhere("mfacet.wiagid IN (:domstifte)")
+                   ->setParameter('domstifte', Monastery::IDS_DOMSTIFTE);
+
+        $this->addQueryConditions($qb, $canonquery);
+
+        $qb->groupBy('mfacet.monastery_name');
+
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        $prefix = "Domstift";
+        foreach ($result as $key => $value) {
+            $result[$key]['monastery_name'] = Monastery::trimDomstift($result[$key]['monastery_name']);
+        }
+        return $result;
+    }
+
+    /**
+     * return list of places, where persons have an office;
+     * used for the facet of locations
+     */
+    public function findOfficeLocations(CanonFormModel $canonquery) {
+        $qb = $this->createQueryBuilder('co')
+                   ->join('co.officelookup', 'lfacet')
+                   ->select('DISTINCT lfacet.location_name, lfacet.location_name, COUNT(DISTINCT(co.id)) as n')
+                   ->andWhere('lfacet.location_name IS NOT NULL');
+
+        $this->addQueryConditions($qb, $canonquery);
+
+        $qb->groupBy('lfacet.location_name');
+
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        return $result;
+    }
+
+    public function findOfficeNames(CanonFormModel $canonquery) {
+        $qb = $this->createQueryBuilder('co')
+                   ->select('DISTINCT nfacet.office_name, COUNT(DISTINCT(co.id)) as n')
+                   ->join('co.officelookup', 'nfacet');
+
+        $this->addQueryConditions($qb, $canonquery);
+
+        $qb->groupBy('nfacet.office_name');
+
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        return $result;
+    }
+
+
+
 
     /*
       Fill the object `online` with data for the list view.
@@ -235,14 +324,15 @@ class CnOnlineRepository extends ServiceEntityRepository {
                 $online->setReferencesGS($refsgs);
             }
             # add WIAG bishop data
-            $episc_id = $online->getCanonDh() ?? $online->getCanonDh()->getWiagEpiscId();
+            $episc_id = $online->getCanonDh()->getWiagEpiscId();
             if ($episc_id) {
                 $personrepo = $em->getRepository(Person::class);
-                $episc = $personrepo->findOneByWiagid($episc_id);
+                $episc = $personrepo->findOneWithOffices($episc_id);
                 if (!is_null($episc) && $episc->hasMonastery()) {
                     $personrepo->addMonasteryLocation($episc);
                 }
                 $online->setBishop($episc);
+                $online->getCanonDh()->copyExternalIds($episc);
             }
         }
         # GS only
@@ -259,8 +349,5 @@ class CnOnlineRepository extends ServiceEntityRepository {
         }
 
     }
-
-
-
 
 }

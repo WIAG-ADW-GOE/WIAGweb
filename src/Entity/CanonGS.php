@@ -37,6 +37,19 @@ class CanonGS
     }
 
     /**
+     * @ORM\OneToMany(targetEntity="CnOfficeGS", mappedBy="canon")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
+     */
+    private $offices;
+
+    /**
+     * @ORM\OneToMany(targetEntity="CnCanonReferenceGS", mappedBy="canon")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
+     */
+    private $references;
+
+
+    /**
      * @ORM\OneToOne(targetEntity="CnEra", mappedBy="canon")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
      */

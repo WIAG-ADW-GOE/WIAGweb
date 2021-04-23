@@ -245,7 +245,7 @@ class CanonRepository extends ServiceEntityRepository {
     }
 
     /**
-     * return list of places, where persons have an office;
+     * return list of monasteries, where persons have an office;
      * used for the facet of places
      */
     public function findOfficePlaces(CanonFormModel $canonquery) {

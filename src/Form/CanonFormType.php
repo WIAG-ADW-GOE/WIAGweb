@@ -2,7 +2,7 @@
 namespace App\Form;
 
 use App\Form\Model\CanonFormModel;
-use App\Repository\CanonRepository;
+use App\Repository\CnOnlineRepository;
 use App\Entity\Monastery;
 use App\Repository\MonasteryRepository;
 use App\Entity\PlaceCount;
@@ -15,7 +15,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
@@ -33,7 +33,7 @@ class CanonFormType extends AbstractType
     private $monastery_repository;
 
     public function __construct(RouterInterface $routerInterface,
-                                CanonRepository $repository,
+                                CnOnlineRepository $repository,
                                 MonasteryRepository $monastery_repository) {
         $this->router = $routerInterface;
         $this->repository = $repository;
@@ -126,30 +126,29 @@ class CanonFormType extends AbstractType
                 'attr' => [
                     'class' => 'btn btn-light btn-sm',
                 ]
-            ]);
+            ])
+            ->add('stateFctLoc', HiddenType::class)
+            ->add('stateFctMon', HiddenType::class)
+            ->add('stateFctOfc', HiddenType::class);
 
-        $ffacets = false; # TODO
-        if($ffacets) {
-            if($canon && !$canon->isEmpty()) {
+        if($canon && !$canon->isEmpty()) {
                 $this->createFacetMonasteries($builder, $canon);
                 $this->createFacetLocations($builder, $canon);
                 $this->createFacetOffices($builder, $canon);
-            }
-            
-
-            $builder->addEventListener(
-                FormEvents::PRE_SUBMIT,
-                array($this, 'createFacetMonasteriesByEvent'));
-            
-            $builder->addEventListener(
-                FormEvents::PRE_SUBMIT,
-                array($this, 'createFacetLocationsByEvent'));
-            
-            $builder->addEventListener(
-                FormEvents::PRE_SUBMIT,
-                array($this, 'createFacetOfficesByEvent'));
         }
 
+
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            array($this, 'createFacetMonasteriesByEvent'));
+
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            array($this, 'createFacetLocationsByEvent'));
+
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            array($this, 'createFacetOfficesByEvent'));
     }
 
     public function createFacetLocationsByEvent(FormEvent $event) {
@@ -178,7 +177,7 @@ class CanonFormType extends AbstractType
         $choices = array();
 
         foreach($places as $place) {
-            $choices[] = new PlaceCount($place['location'], $place['location'], $place['n']);
+            $choices[] = new PlaceCount($place['location_name'], $place['location_name'], $place['n']);
         }
 
         // add selected fields with frequency 0
@@ -291,7 +290,7 @@ class CanonFormType extends AbstractType
 
         $choices = array();
         foreach($offices as $office) {
-            $choices[] = new OfficeCount($office['officeName'], $office['n']);
+            $choices[] = new OfficeCount($office['office_name'], $office['n']);
         }
 
         // add selected fields with frequency 0
