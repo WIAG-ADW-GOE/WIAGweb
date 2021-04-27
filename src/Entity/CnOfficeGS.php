@@ -29,6 +29,13 @@ class CnOfficeGS
      */
     private $monastery;
 
+    static public function getArchdeaconTerritory(): ?string
+    {
+        // only relevant for canons from the canon database
+        return null;
+    }
+
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -333,4 +340,6 @@ class CnOfficeGS
 
         return $this;
     }
+
+    
 }

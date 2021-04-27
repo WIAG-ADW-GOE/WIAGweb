@@ -120,6 +120,11 @@ class CnOffice
      */
     private $location_show;
 
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $archdeaconTerritory;
+
     public function getNumdate() {
         return $this->numdate;
     }
@@ -334,6 +339,18 @@ class CnOffice
     public function setLocationShow(?string $location_show): self
     {
         $this->location_show = $location_show;
+
+        return $this;
+    }
+
+    public function getArchdeaconTerritory(): ?string
+    {
+        return $this->archdeaconTerritory;
+    }
+
+    public function setArchdeaconTerritory(?string $archdeaconTerritory): self
+    {
+        $this->archdeaconTerritory = $archdeaconTerritory;
 
         return $this;
     }

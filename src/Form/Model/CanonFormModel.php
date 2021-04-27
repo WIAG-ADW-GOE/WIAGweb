@@ -8,43 +8,55 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CanonFormModel {
     public $name;
-    public $place;
+    public $monastery;
     public $office;
+    public $place;
     public $year;
     public $someid;
     public $facetLocations;
     public $facetMonasteries;
     public $facetOffices;
+    public $showAll;
     public $stateFctLoc;
     public $stateFctMon;
     public $stateFctOfc;
 
     public function __construct($n = null,
-                                $p = null,
+                                $m = null,
                                 $o = null,
+                                $p = null,                                
                                 $y = null,
                                 $id = null,
                                 $flc = array(),
                                 $fpl = array(),
                                 $fof = array(),
+                                $showAll = null,
                                 $stateFctLoc = "0",
                                 $stateFctMon = "0",
                                 $stateFctOfc = "0") {
         $this->name = $n;
-        $this->place = $p;
+        $this->monastery = $m;
         $this->office = $o;
+        $this->place = $p;                
         $this->year = $y;
         $this->someid = $id;
         $this->facetLocations = $flc;
         $this->facetMonasteries = $fpl;
         $this->facetOffices = $fof;
+        $this->showAll = $showAll;
         $this->stateFctLoc = $stateFctLoc;
         $this->stateFctMon = $stateFctMon;
         $this->stateFctOfc = $stateFctOfc;
     }
 
     public function isEmpty() {
-        return (!$this->name and !$this->place and !$this->office and !$this->year and !$this->someid);
+        return (!$this->name and
+                !$this->monastery and
+                !$this->office and
+                !$this->place and
+                !$this->year and
+                !$this->someid and
+                !$this->showAll);
     }
 
     public function getFacetLocations() {
@@ -73,10 +85,12 @@ class CanonFormModel {
 
     public function setFieldsByArray(array $a) {
         $this->name = $a['name'];
+        $this->monastery = $a['monastery'];
         $this->place = $a['place'];
         $this->office = $a['office'];
         $this->year = $a['year'];
         $this->someid = $a['someid'];
+        $this->showAll = $a['showAll'];
         $this->stateFctLoc = $a['stateFctLoc'];
         $this->stateFctMon = $a['stateFctMon'];
         $this->stateFctOfc = $a['stateFctOfc'];
@@ -125,8 +139,9 @@ class CanonFormModel {
     public function toArraySansFacets() {
         $qelts = array();
         if($this->name) $qelts['name'] = $this->name;
-        if($this->place) $qelts['place'] = $this->place;
+        if($this->monastery) $qelts['monastery'] = $this->monastery;
         if($this->office) $qelts['office'] = $this->office;
+        if($this->place) $qelts['place'] = $this->place;
         if($this->year) $qelts['year'] = $this->year;
         if($this->someid) $qelts['someid'] = $this->someid;
         if($this->stateFctLoc) $qelts['stateFctLoc'] = $this->stateFctLoc;

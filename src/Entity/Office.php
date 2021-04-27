@@ -12,10 +12,17 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Office
 {
-    // There is no field 'dignity' (different from canons)
+    // 'dignity' exists only in offices for canons
     static public function getDignity() {
         return null;
     }
+
+    // 'archdeacon_territory' exists only in offices for canons
+    static public function getArchdeaconTerritory(): ?string
+    {
+        return null;
+    }
+
 
     /**
      * @ORM\Id

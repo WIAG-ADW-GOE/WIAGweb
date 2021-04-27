@@ -36,6 +36,23 @@ $(document).ready(function() {
 	// window.alert('suggest place');
     });
 
+    $('.js-monastery-autocomplete').each(function() {
+	var autocompleteUrl = $(this).data('autocomplete-url');
+	$(this).autocomplete({hint: false}, [
+	    {
+		source: function(query, cb) {
+		    $.ajax({
+			url: autocompleteUrl+'?query='+query
+		    }).then(function(data) {
+			cb(data.monasteries);
+		    });
+		},
+		displayKey: 'suggestion',
+		debounce: 400 // only request every 400 ms
+	    }
+	]);
+    });
+
     $('.js-office-autocomplete').each(function() {
 	var autocompleteUrl = $(this).data('autocomplete-url');
 	$(this).autocomplete({hint: false}, [

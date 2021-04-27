@@ -49,6 +49,23 @@ class CnOfficelookupRepository extends ServiceEntityRepository
     */
 
     /* AJAX callback */
+    public function suggestMonastery($monastery, $limit = 100): array {
+        $qb = $this->createQueryBuilder('olt')
+                   ->select('DISTINCT monastery.monastery_name AS suggestion')
+                   ->join('olt.monastery', 'monastery')
+                   ->andWhere('monastery.monastery_name LIKE :monastery')
+                   ->setParameter('monastery', '%'.$monastery.'%')
+                   ->setMaxResults($limit);
+        $query = $qb->getQuery();
+
+        # dd($query->getDQL());
+
+        return $query->getResult();
+
+    }
+
+
+    /* AJAX callback */
     public function suggestPlace($place, $limit = 100): array {
         $qb = $this->createQueryBuilder('olt')
                    ->select('DISTINCT olt.location_name AS suggestion')
@@ -59,8 +76,7 @@ class CnOfficelookupRepository extends ServiceEntityRepository
 
         # dd($query->getDQL());
 
-        return $query->getResult();
-
+        return $query->getResult();       
     }
 
     /* AJAX callback */

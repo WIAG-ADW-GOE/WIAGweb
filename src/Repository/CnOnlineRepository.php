@@ -63,9 +63,18 @@ class CnOnlineRepository extends ServiceEntityRepository {
     }
     */
 
+    public function countAll() {
+        $qb = $this->createQueryBuilder('co')
+                   ->select('COUNT(DISTINCT co.id)');
+
+        $query = $qb->getQuery();
+
+        $ncount = $query->getOneOrNullResult();
+        return $ncount;
+    }
+
     public function countByQueryObject(CanonFormModel $formmodel) {
         if($formmodel->isEmpty()) return 0;
-
         $qb = $this->createQueryBuilder('co')
                    ->select('COUNT(DISTINCT co.id)');
 
@@ -98,6 +107,26 @@ class CnOnlineRepository extends ServiceEntityRepository {
         return $persons;
     }
 
+    public function findAllWithLimit($limit = 0, $offset = 0) {
+
+        $qb = $this->createQueryBuilder('co')
+                   ->leftJoin('co.officesortkey', 'os')
+                   ->addOrderBy('os.location_name', 'ASC')
+                   ->addOrderBy('os.numdate_start', 'ASC')
+                   ->addOrderBy('os.numdate_end', 'ASC');
+        
+        if($limit > 0) {
+            $qb->setMaxResults($limit);
+            $qb->setFirstResult($offset);
+        }
+
+        $query = $qb->getQuery();
+        // dd($query->getResult());
+        $persons = new Paginator($query, true);
+
+        return $persons;
+    }
+
 
     private function addQueryConditions(QueryBuilder $qb, CanonFormModel $formmodel): QueryBuilder {
 
@@ -120,6 +149,14 @@ class CnOnlineRepository extends ServiceEntityRepository {
                 ->setParameter(':mgnyear', self::MARGINYEAR)
                 ->setParameter(':qyear', $formmodel->year);
         }
+        
+        # monastery
+        if($formmodel->monastery) {
+            $qb->join('co.officelookup', 'olt_monastery')
+               ->join('olt_monastery.monastery', 'monastery')
+                ->andWhere('monastery.monastery_name LIKE :monastery')
+                ->setParameter('monastery', '%'.$formmodel->monastery.'%');
+        }
 
         # office title
         if($formmodel->office) {
@@ -131,7 +168,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
         # office place
         if($formmodel->place) {
             $qb->join('co.officelookup', 'olt_place')
-                ->andWhere('olt_place.location_name LIKE :place')
+                ->andWhere('olt_place.location_name LIKE :place OR olt_place.archdeacon_territory LIKE :place')
                 ->setParameter('place', '%'.$formmodel->place.'%');
         }
         # names
@@ -276,9 +313,6 @@ class CnOnlineRepository extends ServiceEntityRepository {
         return $result;
     }
 
-
-
-
     /*
       Fill the object `online` with data for the list view.
      */
@@ -346,6 +380,18 @@ class CnOnlineRepository extends ServiceEntityRepository {
             $refsrepogs = $em->getRepository(CnCanonReferenceGS::class);
             $refsgs = $refsrepogs->findByIdCanon($online->getIdGs());
             $online->setReferencesGS($refsgs);
+            # add WIAG bishop data
+            $episc_id = $online->getCanonGs()->getWiagEpiscId();
+            if ($episc_id) {
+                $personrepo = $em->getRepository(Person::class);
+                $episc = $personrepo->findOneWithOffices($episc_id);
+                if (!is_null($episc) && $episc->hasMonastery()) {
+                    $personrepo->addMonasteryLocation($episc);
+                }
+                $online->setBishop($episc);
+                $online->getCanonGs()->copyExternalIds($episc);
+            }
+
         }
 
     }

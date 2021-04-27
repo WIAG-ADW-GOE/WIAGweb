@@ -60,6 +60,11 @@ class CnCanonReferenceGS
      */
     private $idInReference;
 
+    /**
+     * @ORM\Column(type="string", length=31, nullable=true)
+     */
+    private $status;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -151,6 +156,18 @@ class CnCanonReferenceGS
     public function setIdInReference(?string $idInReference): self
     {
         $this->idInReference = $idInReference;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

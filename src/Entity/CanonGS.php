@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CanonGSRepository;
+use App\Entity\Person;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -637,15 +638,18 @@ class CanonGS
                 || $this->wikipediaUrl);
     }
 
-    public function getFlagComment() {
+    public function getFlagNameVariant() {
         return ($this->givennameVariant and
                 $this->givennameVariant != ''
                 or $this->familynameVariant and
                 $this->familynameVariant != ''
                 or $this->commentName and
-                $this->commentName != ''
-                or $this->commentPerson and
-                $this->commentPerson != '');
+                $this->commentName != '');
+    }
+
+    public function getFlagComment() {
+        return ($this->commentPerson and
+                $this->commentPerson != ''); 
     }
 
     public function getGsnId(): ?string
@@ -713,6 +717,14 @@ class CanonGS
         return $this;
     }
 
+    public function copyExternalIds(Person $person): self {
+        $this->gsnId = $person->getGsId();
+        $this->gndId = $person->getGndId();
+        $this->viafId = $person->getViafId();
+        $this->wikidataId = $person->getWikidataId();
+        $this->wikipediaUrl = $person->getWikipediaurl();
 
+        return $this;
+    }
 
 }

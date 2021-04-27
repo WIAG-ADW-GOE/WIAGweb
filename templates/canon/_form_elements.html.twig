@@ -1,8 +1,9 @@
 {# {{ form_start(query_form, {'attr': {'id':'q_form'}}) }} #}
 <div class="row ml-2 col-12">
     {{  form_row(query_form.name) }}
-    <span class="ml-2">{{ form_row(query_form.place) }}</span>
+    <span class="ml-2">{{ form_row(query_form.monastery) }}</span>
     <span class="ml-2">{{ form_row(query_form.office) }}</span>
+    <span class="ml-2">{{ form_row(query_form.place) }}</span>
     <span class="ml-2">{{ form_row(query_form.year) }}</span>
     {% if query_form.someid is defined %}
 	<span class="ml-2">{{ form_row(query_form.someid) }}</span>
@@ -17,6 +18,7 @@
 	<span class="ml-1">{{ form_widget(query_form.searchRDF) }}</span>
 	<span class="ml-1">{{ form_widget(query_form.searchJSONLD) }}</span>
     </div>
+    {{ form_widget(query_form.showAll) }}
     {{ form_widget(query_form.stateFctLoc) }}
     {{ form_widget(query_form.stateFctMon) }}
     {{ form_widget(query_form.stateFctOfc) }}

@@ -86,7 +86,7 @@ class DioceseController extends AbstractController {
                      ->getForm();
 
         $form->handlerequest($request);
-        
+
         if($form->isSubmitted() && $form->isValid()) {
             $diocesequery = $form->getData();
 
@@ -95,7 +95,7 @@ class DioceseController extends AbstractController {
 
             $offset = $request->request->get('offset') ?? 0;
             $format = $request->request->get('format') ?? null;
-            
+
             $offset = floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
 
             $singleoffset = $request->request->get('singleoffset');
@@ -123,7 +123,7 @@ class DioceseController extends AbstractController {
                         $response =  new Response($data);
                         $response->headers->set('Content-Type', "text/csv; charset=utf-8");
                         $response->headers->set('Content-Disposition', "filename=WIAGDioceses.csv");
-                        
+
                         return $response;
                         break;
                     case 'JSON':
@@ -178,7 +178,7 @@ class DioceseController extends AbstractController {
                 'name' => $name,
                 'limit' => self::LIST_LIMIT,
             ]);
-        }            
+        }
 
 
         return $this->render('query_diocese/launch_query.html.twig', [

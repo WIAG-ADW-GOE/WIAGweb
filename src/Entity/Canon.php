@@ -613,14 +613,17 @@ class Canon
                 || $this->wikipediaUrl);
     }
 
-    public function getFlagComment() {
+    public function getFlagNameVariant() {
         return ($this->givennameVariant and
                 $this->givennameVariant != ''
                 or $this->familynameVariant and
                 $this->familynameVariant != ''
                 or $this->commentName and
-                $this->commentName != ''
-                or $this->commentPerson and
+                $this->commentName != '');
+    }
+
+    public function getFlagComment() {
+        return ($this->commentPerson and
                 $this->commentPerson != '');
     }
 

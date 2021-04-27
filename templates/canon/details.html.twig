@@ -39,8 +39,8 @@
 				{{ office.datestart }}–{{ office.dateend }}
 			    {% endif %}
 			</li>
-			{% if office.dignity %}
-			    <li class="list-inline-item comment"> {{ office.dignity }} </li>
+			{% if office.archdeaconterritory %}
+			    <li class="list-inline-item comment"> Archidiakonat {{ office.archdeaconterritory }} </li>
 			{% endif %}
 			{% if office.comment %}
 			    <li class="list-inline-item comment"> ({{ office.comment }}) </li>
@@ -53,7 +53,7 @@
     </dd>
 {% endmacro %}
 
-{% macro sectionreferences(references, url_gs_bios) %}
+{% macro sectionreferences(references, isgs, url_gs_bios) %}
     <dt class="col-sm-3">{{ references|length > 1 ? 'Referenzwerke' : 'Referenzwerk' }}</dt>
     <dd class="col-sm-9">
 	{# <ul class="list-unstyled">  #}
@@ -61,11 +61,15 @@
 	    {% for cnref in references %}
 		{% set refid = cnref.idinreference %}
 		{% set refuri %}{% if cnref.reference.onlineresource %}{{ cnref.reference.onlineresource }}{% else %}{{ path('canon_reference', {'id': cnref.reference.id }) }}{% endif %}{% endset %}
-		{% set refdisplaytitle %}{% if cnref.reference.fulltitle %}{{ cnref.reference.fulltitle }}{% else %}{{ cnref.reference.author }}, {{ cnref.reference.title }}{% endif %}{% endset %}
-		{% if cnref.isbio %}
-		    <li><a href="{{ refuri }}">{{ refdisplaytitle }}</a>, S. {{ cnref.pagebio }}, <a class="btn btn-danger btn-sm" role="button" href="{{ url_gs_bios }}{{ cnref.reference.numbervol }}/{{ cnref.pagebio }}" target="_blank" rel="noopener">Biogramm in Printpublikation vorhanden</a></li>
+		{# % set refdisplaytitle %}{% if cnref.reference.fulltitle %}{{ cnref.reference.fulltitle }}{% else %}{{ cnref.reference.author }}, {{ cnref.reference.title }}{% endif %}{% endset % #}
+		{% set refdisplaytitle=cnref.reference.title %}
+		{% if cnref.isbio and cnref.status == 'online' %}
+		    {# version with link <li><a href="{{ refuri }}">{{ refdisplaytitle }}</a>, S. {{ cnref.pagebio }}, <a class="btn btn-danger btn-sm" role="button" href="{{ url_gs_bios }}{{ cnref.reference.numbervol }}/{{ cnref.pagebio }}" target="_blank" rel="noopener">Biogramm online lesen</a></li> #}
+		    <li>{{ refdisplaytitle }}, S. {{ cnref.pagebio }}. <a class="btn btn-danger btn-sm" role="button" href="{{ url_gs_bios }}{{ cnref.reference.numbervol }}/{{ cnref.pagebio }}" target="_blank" rel="noopener">Biogramm online lesen</a></li>
+		{% elseif isgs %}
+		    <li>{{ refdisplaytitle }}, {% if refid %} S. {{ cnref.pagereference }}, ID/Nr. {{ refid }}. {% else %} S. {{ cnref.pagereference|raw }}. {% endif %} Biogramm in Printpublikation vorhanden </li>
 		{% else %}
-		    <li><a href="{{ refuri }}">{{ refdisplaytitle }}</a>, {% if refid %} S. {{ cnref.pagereference }}, ID/Nr. {{ refid }} {% else %} S. {{ cnref.pagereference }} {% endif %}</li>
+		    <li>{{ refdisplaytitle }}, {% if refid %} S. {{ cnref.pagereference }}, ID/Nr. {{ refid }} {% else %} S. {{ cnref.pagereference }} {% endif %}</li>		    
 		{% endif %}
 	    {% endfor %}
 	</ul>
@@ -86,7 +90,7 @@
 	    <div class="row mx-2 col-12">
 		{{ include('canon/_title.html.twig') }}
 	    </div>
-	    <div class="row mx-2 my-2">
+	    <div class="row mx-2 mt-2 mb-1">
 		{% if person.iddh %}{% set canon=person.canondh %}{% else %}{% set canon=person.canongs %}{% endif %}
 		<div class="col-8"><h2>{{ canon.displayname[:200] }}</h2></div>
 		<div class="col-4 text-right text-nowrap">
@@ -94,7 +98,7 @@
 		</div>
 	    </div>
 
-	    {% if canon.flagcomment %}
+	    {% if canon.flagnamevariant %}
 		<div class="row mx-2 col-12">
 		    {% if canon.givennamevariant is defined and canon.givennamevariant != '' %}
 			<span class="comment">{{ canon.givennamevariant }}</span>
@@ -104,31 +108,18 @@
 			{% if canon.commentname is defined and canon.commentname != '' %}
 			    <span class="comment">; {{ canon.commentname }}</span>
 			{% endif %}
-			{% if canon.commentperson is defined and canon.commentperson != '' %}
-			    <span class="comment">; {{ canon.commentperson }}</span>
-			{% endif %}
 		    {% elseif canon.familynamevariant is defined and canon.familynamevariant != '' %}
 			<span class="comment">{{ canon.familynamevariant }}</span>
 			{% if canon.commentname is defined and canon.commentname != '' %}
 			    <span class="comment">; {{ canon.commentname }}</span>
 			{% endif %}
-			{% if canon.commentperson is defined and canon.commentperson != '' %}
-			    <span class="comment">; {{ canon.commentperson }}</span>
-			{% endif %}
-		    {% elseif canon.commentname is defined and canon.commentname != '' %}
-			<span class="comment">{{ canon.commentname }}</span>
-			{% if canon.commentperson is defined and canon.commentperson != '' %}
-			    <span class="comment">; {{ canon.commentperson }}</span>
-			{% endif %}
-		    {% elseif canon.commentperson is defined and canon.commentperson != '' %}
-			<span class="comment">{{ canon.commentperson }}</span>
 		    {% endif %}
 		</div>
 	    {% endif %}
 
 	    {% if not canon.datebirth and not canon.datedeath %}
 	    {% else %}
-		<div class="row mx-2 col-12 mt-2">
+		<div class="row mx-2 col-12 mt-2 mb-1">
 		    {% if canon.datebirth and not canon.datedeath %}
 			<span class="wiag-large">* {{ canon.datebirth }}</span>
 		    {% elseif not canon.datebirth and canon.datedeath %}
@@ -138,6 +129,13 @@
 		    {% endif %}
 		</div>
 	    {% endif %}
+
+	    {% if canon.flagcomment%}
+		<div class="row mx-2 col-12">
+		    <span class="comment">Bemerkungen: {{ canon.commentperson }}</span>
+		</div>
+	    {% endif %}
+	    
 	    <dl class="row mx-2 mt-3">
 		{% if canon.religiousorder %}
 		    <dt class="col-sm-3">Orden</dt>
@@ -148,28 +146,33 @@
 		    <dd class="col-sm-9">{{ canon.academictitle }}</dd>
 		{% endif %}
 	    </dl>
+	    
 	    {% if person.iddh %}
 		<div class="card mx-2 mb-2">
-		    <span class="card-header"><strong>Datenbank "Domherren des Alten Reiches"</strong></span>
+		    <span class="card-header"><strong>Amtsangaben aus Referenzwerken</strong></span>
 		    <dl class="card-body row mb-0 pb-0">
 			{# offices and references#}
 			{{ _self.sectionoffices(person.officesdh, urlgsmonasteries, dioceserepository) }}
-			{{ _self.sectionreferences(person.referencesdh, url_gs_bios) }}
+			{{ _self.sectionreferences(person.referencesdh, false, url_gs_bios) }}
 		    </dl>
 		</div>
 	    {% endif %}
+	    {# Germania Sacra #}
 	    {% if person.idgs %}
 		<div class="card mx-2 mb-2">
-		    <span class="card-header"><a href="{{ urlgspersons }}index/gsn/{{ canon.gsnid }}" target="_blank" rel="noopener"><strong>Digitales Personenregister der Germania Sacra</strong></a></span>
+		    <span class="card-header"><a href="{{ urlgspersons }}index/gsn/{{ canon.gsnid }}" target="_blank" rel="noopener"><strong>Amtsangaben aus dem Digitalen Personenregister der Germania Sacra — {{ canon.gsnid }}</strong></a></span>
 		    <dl class="card-body row mb-0 pb-0">
 			{{ _self.sectionoffices(person.officesgs, urlgsmonasteries, dioceserepository) }}
-			{{ _self.sectionreferences(person.referencesgs, url_gs_bios) }}
+			{% if person.referencesgs|length > 0 %}
+			    {{ _self.sectionreferences(person.referencesgs, true, url_gs_bios) }}
+			{% endif %}
 		    </dl>
 		</div>
 	    {% endif %}
+	    {# WIAG bishop database #}
 	    {% if person.bishop %}
 		<div class="card mx-2 mb-2">
-		    <span class="card-header"><a href="{{ protocol }}:{{ url('id', {'id': canon.wiagepiscidlong}, schemeRelative=true) }}" target="_blank" rel="noopener"><strong>Datenbank "Bischöfe des Alten Reiches"</strong></span></a>
+		    <span class="card-header"><a href="{{ protocol }}:{{ url('id', {'id': canon.wiagepiscidlong}, schemeRelative=true) }}" target="_blank" rel="noopener"><strong>Amtsangaben aus der Datenbank Bischöfe des Alten Reiches (WIAG) — {{ canon.wiagepiscidlong }}</strong></span></a>
 		    <dl class="card-body row">
 			{% set bishop = person.bishop %}
 			{{ _self.sectionoffices(bishop.offices, urlgsmonasteries, dioceserepository) }}
@@ -185,10 +188,10 @@
 	    {% else %}{% set canon = person.canongs %}
 	    {% endif %}
 	    {% if canon.hasExternalIdentifier %}
-		<dl class="row mx-2 mt-1">
-		    <dt class="col-sm-3">Externe Identifier</dt>
-		    <dd class="col-sm-9">
-			<ul class ="list-unstyled">
+		<div class="card mx-2">
+		    <span class="card-header"><strong>Externe Identifier</strong></span>
+		    <div class="card-body">
+			<ul class="list-unstyled mb-0">
 			    {% if canon.gndid %}
 				<li>
 				    <ul class="list-inlined list-unstyled">
@@ -213,15 +216,6 @@
 				    </ul>
 				</li>
 			    {% endif %}
-			</ul>
-		    </dd>
-		</dl>
-	    {% endif %}
-	    {% if canon.hasOtherIdentifier %}
-		<dl class="row mx-2 mt-1">
-		    <dt class="col-sm-3">Siehe auch</dt>
-		    <dd class="col-sm-9">
-			<ul class ="list-unstyled">
 			    {% if canon.gsnid %}
 				<li>
 				    <ul class="list-inlined list-unstyled">
@@ -247,10 +241,9 @@
 				    </ul>
 				</li>
 			    {% endif %}
-
 			</ul>
-		    </dd>
-		</dl>
+		    </div>
+		</div>
 	    {% endif %}
 	    <div class="row mx-2 col-12"><span class="align-baseline"> Empfohlene Zitierweise: <button type="button" class="btn btn-sm" id="copy-citation"> <img src="{{ asset('images/clipboard.svg') }}"></button> </span></div>
 	    <div class="row mx-2 col-12">
@@ -263,6 +256,8 @@
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
 		    <a href="{{ path('canons_wd') }}"><button class="btn btn-secondary btn-sm ml-1 mr-3">Neue Suche</button></a>
+		{% else %}
+		    <a href="{{ path('canons_wd') }}"><button class="btn btn-secondary btn-sm mr-2" type="button">Suche</button></a>
 		{% endif %}
 		<a href="{{ path('wiag_id_data', {id: canon.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
 		<a href="{{ path('wiag_id_data', {id: canon.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">CSV</button></a>

@@ -69,7 +69,7 @@ class CanonController extends AbstractController {
 
             // get the number of results (without page limit restriction)
             $count = $repository->countByQueryObject($queryformdata)[1];
-
+            
             $offset = 0;
             $querystr = null;
             $persons = null;
@@ -123,12 +123,6 @@ class CanonController extends AbstractController {
                 $repository->fillListData($p);
             }
 
-            // 2021-04-07 use field CnOffice.location instead
-            // foreach($persons as $p) {
-            //     if($p->hasMonastery()) {
-            //         $repository->addMonasteryLocation($p);
-            //     }
-            // }
 
             // combination of POST_SET_DATA and POST_SUBMIT
             // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
@@ -143,13 +137,49 @@ class CanonController extends AbstractController {
                 'facetOfficesState' => $facetOfficesState,
             ]);
 
-        } else {
-            # dd($form, $facetInstitutionsState, $facetOfficesState);
-            return $this->render('canon/launch_query.html.twig', [
+        } else { // select all
+            
+            $offset = $request->request->get('offset') ?? 0;
+            $count = $repository->countAll()[1];
+
+            // extra check to avoid empty lists
+            if($count < self::LIST_LIMIT) $offset = 0;
+
+            $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
+
+            $queryformdata->showAll = true;
+            $form = $this->createForm(CanonFormType::class, $queryformdata);
+            $persons = $repository->findAllWithLimit(self::LIST_LIMIT, $offset);
+          
+
+            foreach($persons as $p) {
+                /* It may look strange to do queries in a loop, but we have two data sources.
+                   The list is not long (LIST_LIMIT).
+                 */
+                $repository->fillListData($p);
+            }
+
+
+            // combination of POST_SET_DATA and POST_SUBMIT
+            // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
+
+            return $this->render('canon/listresult.html.twig', [
                 'query_form' => $form->createView(),
+                'count' => $count,
+                'limit' => self::LIST_LIMIT,
+                'offset' => $offset,
+                'persons' => $persons,
                 'facetInstitutionsState' => $facetInstitutionsState,
                 'facetOfficesState' => $facetOfficesState,
             ]);
+            
+
+            // alternative: show empty form only
+            // return $this->render('canon/launch_query.html.twig', [
+            //     'query_form' => $form->createView(),
+            //     'facetInstitutionsState' => $facetInstitutionsState,
+            //     'facetOfficesState' => $facetOfficesState,
+            // ]);
         }
     }
 
@@ -221,6 +251,7 @@ class CanonController extends AbstractController {
         dd($canon);
     }
 
+
     /**
      * AJAX callback
      * @Route("domherren-wd/autocomplete/name", name="canon_autocomplete_name")
@@ -233,6 +264,28 @@ class CanonController extends AbstractController {
 
         return $this->json([
             'names' => $suggestions,
+        ]);
+    }
+
+    /**
+     * AJAX callback
+     * @Route("domherren-wd/autocomplete/monastery", name="canon_autocomplete_monastery")
+     */
+    public function autocompletemonastery(Request $request) {
+        $query = trim($request->query->get('query'));
+        # strip 'bistum' or 'erzbistum'
+        foreach(['Stift', 'Domstift'] as $bs) {
+            if(!is_null($query) && str_starts_with($query, $bs)) {
+                $query = trim(str_replace($bs, "", $query));
+                break;
+            }
+        }
+
+        $monasteries = $this->getDoctrine()
+                       ->getRepository(CnOfficelookup::class)
+                       ->suggestMonastery($query, self::HINT_LIST_LIMIT);
+        return $this->json([
+            'monasteries' => $monasteries,
         ]);
     }
 

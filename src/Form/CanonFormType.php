@@ -61,14 +61,14 @@ class CanonFormType extends AbstractType
                     'size' => '30',
                 ],
             ])
-            ->add('place', TextType::class, [
-                'label' => 'Ort/Domstift',
+            ->add('monastery', TextType::class, [
+                'label' => 'Domstift',
                 'required' => false,
                 'attr' => [
-                    'placeholder' => 'Ort/Domstift',
-                    'class' => 'js-place-autocomplete',
-                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_place'),
-                    'size' => '15',
+                    'placeholder' => 'Domstift',
+                    'class' => 'js-monastery-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_monastery'),
+                    'size' => '8',
                 ],
             ])
             ->add('office', TextType::class, [
@@ -81,6 +81,17 @@ class CanonFormType extends AbstractType
                     'size' => '18',
                 ],
             ])
+            ->add('place', TextType::class, [
+                'label' => 'Ort',
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'Ort',
+                    'class' => 'js-place-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_place'),
+                    'size' => '12',
+                ],
+            ])
+
             ->add('year', NumberType::class, [
                 'label' => 'Jahr',
                 'required' => false,
@@ -127,6 +138,7 @@ class CanonFormType extends AbstractType
                     'class' => 'btn btn-light btn-sm',
                 ]
             ])
+            ->add('showAll', HiddenType::class)
             ->add('stateFctLoc', HiddenType::class)
             ->add('stateFctMon', HiddenType::class)
             ->add('stateFctOfc', HiddenType::class);
@@ -172,7 +184,7 @@ class CanonFormType extends AbstractType
         $bqsansfacetLocations = clone $canon;
         $bqsansfacetLocations->setFacetLocations(array());
 
-        $places = $this->repository->findOfficeLocations($bqsansfacetLocations);
+        $places = $this->repository->findOfficeLocations($bqsansfacetLocations);        
 
         $choices = array();
 
@@ -197,7 +209,7 @@ class CanonFormType extends AbstractType
 
         if ($places) {
             $form->add('facetLocations', ChoiceType::class, [
-                'label' => 'Filter Domstift',
+                'label' => 'Filter Ort',
                 'expanded' => true,
                 'multiple' => true,
                 'choices' => $choices,

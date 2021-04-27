@@ -167,6 +167,7 @@ class CnOfficeGSRepository extends ServiceEntityRepository
             // ->join('o.monastery', 'monastery')
             // ->addOrderBy('monastery.monastery_name', 'ASC')
                    ->addOrderBy('o.location_show', 'ASC')
+                   ->addOrderBy('o.idMonastery', 'ASC')
                    ->join('o.numdate', 'numdate')
                    ->addOrderBy('numdate.dateStart', 'ASC');
         $query = $qb->getQuery();

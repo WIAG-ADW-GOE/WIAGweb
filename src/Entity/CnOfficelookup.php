@@ -59,6 +59,11 @@ class CnOfficelookup {
      */
     private $numdate_end;
 
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $archdeacon_territory;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -132,6 +137,18 @@ class CnOfficelookup {
     public function setNumdateEnd(?int $numdate_end): self
     {
         $this->numdate_end = $numdate_end;
+
+        return $this;
+    }
+
+    public function getArchdeaconTerritory(): ?string
+    {
+        return $this->archdeacon_territory;
+    }
+
+    public function setArchdeaconTerritory(?string $archdeacon_territory): self
+    {
+        $this->archdeacon_territory = $archdeacon_territory;
 
         return $this;
     }
