@@ -38,10 +38,15 @@ class CanonController extends AbstractController {
                                  CanonData $canonData,
                                  CanonLinkedData $canonLinkedData) {
 
-        // we need to pass an instance of BishopQueryFormModel, because facets depend on it's data
         $queryformdata = new CanonFormModel;
 
-        $form = $this->createForm(CanonFormType::class, $queryformdata);
+        if (count($request->request->all()) > 0) {
+            $form = $this->createForm(CanonFormType::class, $queryformdata);
+        } else {
+            $form = $this->createForm(CanonFormType::class, $queryformdata, [
+                'force_facets' => true,
+            ]);
+        }
         $form->handlerequest($request);
 
 
@@ -53,16 +58,17 @@ class CanonController extends AbstractController {
         // if ($form->isSubmitted() && $form->isValid()) {
         if (true) {
 
-            $queryformdata = $form->getData();
+            $queryformdata = $form->getData() ?? new CanonFormModel;
             // start with a list of all canons and build facets
-            if (!$form->isSubmitted()) {
-                $form = $this->createForm(CanonFormType::class, $queryformdata, [
-                    'force_facets' => true,
-                ]);
-            }
-            
-            $someid = $queryformdata->someid;
+            // this leads to an illegal form
+            // if (!$form->isSubmitted()) {
+            //     $form = $this->createForm(CanonFormType::class, $queryformdata, [
+            //         'force_facets' => true,
+            //     ]);
+            // }
 
+            
+            
             # strip 'Bistum' or 'Erzbistum'
             $queryformdata->normPlace();
 

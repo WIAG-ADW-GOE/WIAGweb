@@ -145,12 +145,13 @@ class CanonFormType extends AbstractType
             ->add('stateFctMon', HiddenType::class)
             ->add('stateFctOfc', HiddenType::class);
 
-        // if($canon && !$canon->isEmpty()) {
+        // for initial list
         if ($force_facets) {
             $this->createFacetMonasteries($builder, $canon);
             $this->createFacetLocations($builder, $canon);
             $this->createFacetOffices($builder, $canon);
-        } else {
+        }
+
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
             array($this, 'createFacetMonasteriesByEvent'));
@@ -162,7 +163,7 @@ class CanonFormType extends AbstractType
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
             array($this, 'createFacetOfficesByEvent'));
-        }
+
     }
 
     public function createFacetLocationsByEvent(FormEvent $event) {
@@ -175,7 +176,7 @@ class CanonFormType extends AbstractType
             $canon->setFieldsByArray($data);
         }
 
-        if ($canon->isEmpty()) return;
+        // if ($canon->isEmpty()) return;
 
         $this->createFacetLocations($event->getForm(), $canon);
 
@@ -185,8 +186,7 @@ class CanonFormType extends AbstractType
         // do not filter by location
         $bqsansfacetLocations = clone $canon;
         $bqsansfacetLocations->setFacetLocations(array());
-
-        $places = $this->repository->findOfficeLocations($bqsansfacetLocations);        
+        $places = $this->repository->findOfficeLocations($bqsansfacetLocations);
 
         $choices = array();
 
@@ -232,7 +232,7 @@ class CanonFormType extends AbstractType
             $canon->setFieldsByArray($data);
         }
 
-        if ($canon->isEmpty()) return;
+        // if ($canon->isEmpty()) return;
 
         $this->createFacetMonasteries($event->getForm(), $canon);
 
@@ -288,7 +288,7 @@ class CanonFormType extends AbstractType
             $canon->setFieldsByArray($data);
         }
 
-        if ($canon->isEmpty()) return;
+        // if ($canon->isEmpty()) return;
 
         $form = $event->getForm();
         $this->createFacetOffices($form, $canon);

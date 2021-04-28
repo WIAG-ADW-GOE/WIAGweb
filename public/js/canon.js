@@ -179,11 +179,11 @@ $(document).ready(function() {
     });
 
     // reset the facets if textboxes change
-    var input_text = $("#canon_form_name, #canon_form_place, #canon_form_office, #canon_form_year, #canon_form_someid");
+    var input_text = $("#canon_form_name, #canon_form_monastery, #canon_form_place, #canon_form_office, #canon_form_year, #canon_form_someid");
     input_text.each(function() {
 	$(this)[0].addEventListener('change', function(event) {
 	    fpx.each(function() {
-		// console.log('remove checked');
+		console.log('remove checked');
 		$(this)[0].removeAttribute('checked');
 	    });
 	    input_statefctloc[0].setAttribute('value', '0');
