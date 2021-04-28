@@ -18,7 +18,9 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 
-
+/**
+ * @IsGranted("ROLE_DATA_ADMIN")
+ */
 class CanonGSController extends AbstractController {
     /**
      * Parameters
@@ -27,7 +29,7 @@ class CanonGSController extends AbstractController {
 
 
     /**
-     * @Route("/domherren", name="query_canons")
+     * @Route("/domherren-gs", name="query_canons_gs")
      */
     public function canons (Request $request, HTTPClient $client) {
 

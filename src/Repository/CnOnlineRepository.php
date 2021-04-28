@@ -74,7 +74,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
     }
 
     public function countByQueryObject(CanonFormModel $formmodel) {
-        if($formmodel->isEmpty()) return 0;
+        // if($formmodel->isEmpty()) return 0;
         $qb = $this->createQueryBuilder('co')
                    ->select('COUNT(DISTINCT co.id)');
 
@@ -91,6 +91,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
         $qb = $this->createQueryBuilder('co');
 
         $this->addQueryConditions($qb, $formmodel);
+
 
         if($limit > 0) {
             $qb->setMaxResults($limit);
@@ -113,8 +114,9 @@ class CnOnlineRepository extends ServiceEntityRepository {
                    ->leftJoin('co.officesortkey', 'os')
                    ->addOrderBy('os.location_name', 'ASC')
                    ->addOrderBy('os.numdate_start', 'ASC')
-                   ->addOrderBy('os.numdate_end', 'ASC');
-        
+                   ->addOrderBy('os.numdate_end', 'ASC')
+                   ->addOrderBy('co.id', 'ASC');
+
         if($limit > 0) {
             $qb->setMaxResults($limit);
             $qb->setFirstResult($offset);
@@ -149,7 +151,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
                 ->setParameter(':mgnyear', self::MARGINYEAR)
                 ->setParameter(':qyear', $formmodel->year);
         }
-        
+
         # monastery
         if($formmodel->monastery) {
             $qb->join('co.officelookup', 'olt_monastery')
@@ -220,12 +222,13 @@ class CnOnlineRepository extends ServiceEntityRepository {
 
     public function addSortParameter($qb, $bishopquery) {
 
-        $sort = 'year';
+        $sort = 'location';
         if($bishopquery->someid) $sort = 'year';
         if($bishopquery->year) $sort = 'year';
         if($bishopquery->name) $sort = 'name';
         if($bishopquery->place) $sort = 'location';
         if($bishopquery->office) $sort = 'location';
+        if($bishopquery->showAll) $sort = 'location';
         /**
          * a reliable order is required, therefore person.givenname shows up
          * in each sort clause
@@ -247,7 +250,8 @@ class CnOnlineRepository extends ServiceEntityRepository {
             $qb->leftJoin('co.officesortkey', 'os')
                ->addOrderBy('os.location_name', 'ASC')
                ->addOrderBy('os.numdate_start', 'ASC')
-               ->addOrderBy('os.numdate_end', 'ASC');
+               ->addOrderBy('os.numdate_end', 'ASC')
+               ->addOrderBy('co.id');
             break;
         }
 
@@ -256,8 +260,8 @@ class CnOnlineRepository extends ServiceEntityRepository {
     }
 
     /**
-     * return list of places, where persons have an office;
-     * used for the facet of places
+     * return list of monasteries, where persons have an office;
+     * used for the facet of monasteries
      */
     public function findOfficePlaces(CanonFormModel $canonquery) {
         $qb = $this->createQueryBuilder('co')
@@ -302,7 +306,8 @@ class CnOnlineRepository extends ServiceEntityRepository {
     public function findOfficeNames(CanonFormModel $canonquery) {
         $qb = $this->createQueryBuilder('co')
                    ->select('DISTINCT nfacet.office_name, COUNT(DISTINCT(co.id)) as n')
-                   ->join('co.officelookup', 'nfacet');
+                   ->join('co.officelookup', 'nfacet')
+                   ->andWhere('nfacet.office_name is not NULL');
 
         $this->addQueryConditions($qb, $canonquery);
 

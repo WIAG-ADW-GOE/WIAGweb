@@ -23,9 +23,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * @IsGranted("ROLE_DATA_ADMIN")
- */
 class CanonController extends AbstractController {
     /**
      * Parameters
@@ -34,7 +31,7 @@ class CanonController extends AbstractController {
     const HINT_LIST_LIMIT = 12;
 
     /**
-     * @Route("/domherren-wd", name="canons_wd")
+     * @Route("/domherren", name="query_canons")
      */
     public function launch_query(Request $request,
                                  CnOnlineRepository $repository,
@@ -45,15 +42,16 @@ class CanonController extends AbstractController {
         $queryformdata = new CanonFormModel;
 
         $form = $this->createForm(CanonFormType::class, $queryformdata);
-
         $form->handlerequest($request);
+
 
         // $facetInstitutionsState = 'hide';
         // $facetOfficesState = 'hide';
         $facetInstitutionsState = 'show';
         $facetOfficesState = 'show';
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        // if ($form->isSubmitted() && $form->isValid()) {
+        if (true) {
 
             $queryformdata = $form->getData();
             $someid = $queryformdata->someid;
@@ -69,7 +67,7 @@ class CanonController extends AbstractController {
 
             // get the number of results (without page limit restriction)
             $count = $repository->countByQueryObject($queryformdata)[1];
-            
+
             $offset = 0;
             $querystr = null;
             $persons = null;
@@ -137,49 +135,13 @@ class CanonController extends AbstractController {
                 'facetOfficesState' => $facetOfficesState,
             ]);
 
-        } else { // select all
-            
-            $offset = $request->request->get('offset') ?? 0;
-            $count = $repository->countAll()[1];
-
-            // extra check to avoid empty lists
-            if($count < self::LIST_LIMIT) $offset = 0;
-
-            $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
-
-            $queryformdata->showAll = true;
-            $form = $this->createForm(CanonFormType::class, $queryformdata);
-            $persons = $repository->findAllWithLimit(self::LIST_LIMIT, $offset);
-          
-
-            foreach($persons as $p) {
-                /* It may look strange to do queries in a loop, but we have two data sources.
-                   The list is not long (LIST_LIMIT).
-                 */
-                $repository->fillListData($p);
-            }
-
-
-            // combination of POST_SET_DATA and POST_SUBMIT
-            // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
-
-            return $this->render('canon/listresult.html.twig', [
+        } else {
+            // show empty form only
+            return $this->render('canon/launch_query.html.twig', [
                 'query_form' => $form->createView(),
-                'count' => $count,
-                'limit' => self::LIST_LIMIT,
-                'offset' => $offset,
-                'persons' => $persons,
                 'facetInstitutionsState' => $facetInstitutionsState,
                 'facetOfficesState' => $facetOfficesState,
             ]);
-            
-
-            // alternative: show empty form only
-            // return $this->render('canon/launch_query.html.twig', [
-            //     'query_form' => $form->createView(),
-            //     'facetInstitutionsState' => $facetInstitutionsState,
-            //     'facetOfficesState' => $facetOfficesState,
-            // ]);
         }
     }
 

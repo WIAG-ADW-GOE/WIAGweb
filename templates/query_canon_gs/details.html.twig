@@ -12,7 +12,7 @@
 	<p class="em">Person nicht gefunden.</p>
     {% else %}
 	{% if query_form is defined %}
-	    {{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('query_canons'), 'hidden': 'hidden'} }) }}
+	    {{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('query_canons_gs'), 'hidden': 'hidden'} }) }}
 	    {{ form_end(query_form) }}
 	{% endif %}
 	<div class="container-fluid mt-3 mb-2">
@@ -157,7 +157,7 @@
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
-		    <a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm ml-1 mr-3">Neue Suche</button></a>
+		    <a href="{{ path('query_canons_gs') }}"><button class="btn btn-secondary btn-sm ml-1 mr-3">Neue Suche</button></a>
 		{% endif %}
 	    </div>
 	</div>

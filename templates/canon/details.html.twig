@@ -69,7 +69,7 @@
 		{% elseif isgs %}
 		    <li>{{ refdisplaytitle }}, {% if refid %} S. {{ cnref.pagereference }}, ID/Nr. {{ refid }}. {% else %} S. {{ cnref.pagereference|raw }}. {% endif %} Biogramm in Printpublikation vorhanden </li>
 		{% else %}
-		    <li>{{ refdisplaytitle }}, {% if refid %} S. {{ cnref.pagereference }}, ID/Nr. {{ refid }} {% else %} S. {{ cnref.pagereference }} {% endif %}</li>		    
+		    <li>{{ refdisplaytitle }}, {% if refid %} S. {{ cnref.pagereference }}, ID/Nr. {{ refid }} {% else %} S. {{ cnref.pagereference }} {% endif %}</li>
 		{% endif %}
 	    {% endfor %}
 	</ul>
@@ -82,7 +82,7 @@
 	<p class="em">Person nicht gefunden.</p>
     {% else %}
 	{% if query_form is defined %}
-	    {{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('canons_wd'), 'hidden': 'hidden'} }) }}
+	    {{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('query_canons'), 'hidden': 'hidden'} }) }}
 		{{ include('canon/_form_elements.html.twig') }}
 	    {{ form_end(query_form) }}
 	{% endif %}
@@ -135,7 +135,7 @@
 		    <span class="comment">Bemerkungen: {{ canon.commentperson }}</span>
 		</div>
 	    {% endif %}
-	    
+
 	    <dl class="row mx-2 mt-3">
 		{% if canon.religiousorder %}
 		    <dt class="col-sm-3">Orden</dt>
@@ -146,7 +146,7 @@
 		    <dd class="col-sm-9">{{ canon.academictitle }}</dd>
 		{% endif %}
 	    </dl>
-	    
+
 	    {% if person.iddh %}
 		<div class="card mx-2 mb-2">
 		    <span class="card-header"><strong>Amtsangaben aus Referenzwerken</strong></span>
@@ -255,9 +255,9 @@
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
-		    <a href="{{ path('canons_wd') }}"><button class="btn btn-secondary btn-sm ml-1 mr-3">Neue Suche</button></a>
+		    <a href="{{ path('query_canons') }}"><button class="btn btn-secondary btn-sm ml-1 mr-3">Neue Suche</button></a>
 		{% else %}
-		    <a href="{{ path('canons_wd') }}"><button class="btn btn-secondary btn-sm mr-2" type="button">Suche</button></a>
+		    <a href="{{ path('query_canons') }}"><button class="btn btn-secondary btn-sm mr-2" type="button">Suche</button></a>
 		{% endif %}
 		<a href="{{ path('wiag_id_data', {id: canon.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
 		<a href="{{ path('wiag_id_data', {id: canon.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">CSV</button></a>

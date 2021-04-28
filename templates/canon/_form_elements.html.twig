@@ -11,7 +11,7 @@
 </div>
 <div class="row ml-2 col-12">
     {{ form_row(query_form.searchHTML) }}
-    <a href="{{ path('canons_wd') }}" class="ml-1"><button class="btn btn-secondary btn-light btn-sm" type="button">Neue Suche</button></a>
+    <a href="{{ path('query_canons') }}" class="ml-1"><button class="btn btn-secondary btn-light btn-sm" type="button">Neue Suche</button></a>
     <div hidden="hidden">
 	<span class="ml-3">{{ form_widget(query_form.searchJSON) }}</span>
 	<span class="ml-1">{{ form_widget(query_form.searchCSV) }}</span>

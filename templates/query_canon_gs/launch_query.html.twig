@@ -15,7 +15,7 @@
 	<div class="row ml-2 col-12">
 	    {{ include('query_canon_gs/_title.html.twig') }}
 	</div>
-	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_canons')}}) }}
+	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_canons_gs')}}) }}
 	    <div class="row ml-2 col-12">
 		{{ form_row(form.domstift) }}
 		<span class = "ml-2">{{ form_row(form.searchHTML) }}</span>

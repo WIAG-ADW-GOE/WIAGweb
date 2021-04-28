@@ -143,10 +143,11 @@ class CanonFormType extends AbstractType
             ->add('stateFctMon', HiddenType::class)
             ->add('stateFctOfc', HiddenType::class);
 
-        if($canon && !$canon->isEmpty()) {
-                $this->createFacetMonasteries($builder, $canon);
-                $this->createFacetLocations($builder, $canon);
-                $this->createFacetOffices($builder, $canon);
+        // if($canon && !$canon->isEmpty()) {
+        if($canon) {
+            $this->createFacetMonasteries($builder, $canon);
+            $this->createFacetLocations($builder, $canon);
+            $this->createFacetOffices($builder, $canon);
         }
 
 
