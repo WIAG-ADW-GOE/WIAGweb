@@ -54,6 +54,13 @@ class CanonController extends AbstractController {
         if (true) {
 
             $queryformdata = $form->getData();
+            // start with a list of all canons and build facets
+            if (!$form->isSubmitted()) {
+                $form = $this->createForm(CanonFormType::class, $queryformdata, [
+                    'force_facets' => true,
+                ]);
+            }
+            
             $someid = $queryformdata->someid;
 
             # strip 'Bistum' or 'Erzbistum'

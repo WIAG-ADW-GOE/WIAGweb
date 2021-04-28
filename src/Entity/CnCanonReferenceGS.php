@@ -140,7 +140,7 @@ class CnCanonReferenceGS
             return null;
         }
         $matches = [];
-        preg_match("~<b>(.*)</b>~", $this->pageReference, $matches);
+        preg_match("~<b>([0-9]+)~", $this->pageReference, $matches);
         if (count($matches) < 2) {
             return null;
         } else {
@@ -171,5 +171,34 @@ class CnCanonReferenceGS
 
         return $this;
     }
+
+    /**
+     * check if a reference contains a biogram
+     * return list of pages
+     */
+    public function getPages() {
+        $s = $this->pageReference;
+        if (is_null($s)) {
+            return array();
+        }
+        $cs = explode(',', $s);
+        $cs = array_map('trim', $cs);
+
+        $cpages = [];
+        $matches = [];
+        foreach ($cs as $es) {
+            $matches = [];
+            preg_match("~<b>(.*)</b>~", $es, $matches);
+            $isbio = count($matches) > 1;
+            $page = $isbio ? $matches[1] : $es;
+            $cpages[] = [
+                'page' => $page,
+                'isbio' => $isbio,
+            ];
+        }
+
+        return $cpages;
+    }
+
 
 }

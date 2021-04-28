@@ -43,12 +43,14 @@ class CanonFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver) {
         $resolver->setDefaults([
             'data_class' => CanonFormModel::class,
+            'force_facets' => false,
         ]);
 
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $canon = $options['data'] ?? null;
+        $force_facets = $options['force_facets'] ?? null;
 
         $builder
             ->add('name', TextType::class, [
@@ -144,13 +146,11 @@ class CanonFormType extends AbstractType
             ->add('stateFctOfc', HiddenType::class);
 
         // if($canon && !$canon->isEmpty()) {
-        if($canon) {
+        if ($force_facets) {
             $this->createFacetMonasteries($builder, $canon);
             $this->createFacetLocations($builder, $canon);
             $this->createFacetOffices($builder, $canon);
-        }
-
-
+        } else {
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
             array($this, 'createFacetMonasteriesByEvent'));
@@ -162,6 +162,7 @@ class CanonFormType extends AbstractType
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
             array($this, 'createFacetOfficesByEvent'));
+        }
     }
 
     public function createFacetLocationsByEvent(FormEvent $event) {

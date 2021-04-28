@@ -53,6 +53,14 @@
     </dd>
 {% endmacro %}
 
+{% macro makebiogramlink(p, last, url_gs_bios) %}
+    {% if p.isbio %}<strong>{{ p.page }} </strong><a href="{{ url_gs_bios }}/{{ p.page }}" target="_blank" rel="noopener"><strong>Biogramm online lesen</strong></a>{% else %}{{ p.page }}{% endif %}{%if not last %},{% endif %}
+{% endmacro %}
+
+{% macro biogramlinks(pages, url_gs_bios) %}
+    {% for p in pages %}{{ _self.makebiogramlink(p, loop.last, url_gs_bios) }}{% endfor %}
+{% endmacro %}
+
 {% macro sectionreferences(references, isgs, url_gs_bios) %}
     <dt class="col-sm-3">{{ references|length > 1 ? 'Referenzwerke' : 'Referenzwerk' }}</dt>
     <dd class="col-sm-9">
@@ -65,9 +73,9 @@
 		{% set refdisplaytitle=cnref.reference.title %}
 		{% if cnref.isbio and cnref.status == 'online' %}
 		    {# version with link <li><a href="{{ refuri }}">{{ refdisplaytitle }}</a>, S. {{ cnref.pagebio }}, <a class="btn btn-danger btn-sm" role="button" href="{{ url_gs_bios }}{{ cnref.reference.numbervol }}/{{ cnref.pagebio }}" target="_blank" rel="noopener">Biogramm online lesen</a></li> #}
-		    <li>{{ refdisplaytitle }}, S. {{ cnref.pagebio }}. <a class="btn btn-danger btn-sm" role="button" href="{{ url_gs_bios }}{{ cnref.reference.numbervol }}/{{ cnref.pagebio }}" target="_blank" rel="noopener">Biogramm online lesen</a></li>
+		    <li>{{ refdisplaytitle }}, S. {{ _self.biogramlinks(cnref.pages, url_gs_bios ~ cnref.reference.numbervol) }}</li>
 		{% elseif isgs %}
-		    <li>{{ refdisplaytitle }}, {% if refid %} S. {{ cnref.pagereference }}, ID/Nr. {{ refid }}. {% else %} S. {{ cnref.pagereference|raw }}. {% endif %} Biogramm in Printpublikation vorhanden </li>
+		    <li>{{ refdisplaytitle }}, {% if refid %} S. {{ cnref.pagereference|raw }}, ID/Nr. {{ refid }}. {% else %} S. {{ cnref.pagereference|raw }}. {% endif %}<strong>Biogramm in Printpublikation vorhanden</strong></li>
 		{% else %}
 		    <li>{{ refdisplaytitle }}, {% if refid %} S. {{ cnref.pagereference }}, ID/Nr. {{ refid }} {% else %} S. {{ cnref.pagereference }} {% endif %}</li>
 		{% endif %}
@@ -178,7 +186,7 @@
 			{{ _self.sectionoffices(bishop.offices, urlgsmonasteries, dioceserepository) }}
 			{% if bishop.reference %}
 			    <dt class="col-sm-3">Referenzwerk</dt>
-			    <dd class="col-sm-9"><a href="{{ path('reference', {'id': bishop.referenceid}) }}">{{ bishop.reference.shorttitle }}</a>, S. {{ bishop.pagesgatz }}</dd>
+			    <dd class="col-sm-9 small"><a href="{{ path('reference', {'id': bishop.referenceid}) }}">{{ bishop.reference.shorttitle }}</a>, S. {{ bishop.pagesgatz }}</dd>
 			{% endif %}
 		    </dl>
 		</div>
@@ -253,8 +261,8 @@
 	    <div class="row mx-2 col-12 mt-4">
 		{% if query_form is defined %}
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button></a>
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button></a>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button>
+		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button>
 		    <a href="{{ path('query_canons') }}"><button class="btn btn-secondary btn-sm ml-1 mr-3">Neue Suche</button></a>
 		{% else %}
 		    <a href="{{ path('query_canons') }}"><button class="btn btn-secondary btn-sm mr-2" type="button">Suche</button></a>

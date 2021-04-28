@@ -136,17 +136,9 @@ class CnCanonReference
         return $this;
     }
 
-    public function getPageBio(): ?string {
-        if (!$this->isbio) {
-            return null;
-        }
-        $matches = [];
-        preg_match("~<b>(.*)</b>~", $this->pageReference, $matches);
-        if (count($matches) < 2) {
-            return null;
-        } else {
-            return $matches[1];
-        }
+    // only relevant for CnCanonReferenceGS
+    static public function getPageBio(): ?string {
+        return null;
     }
 
     public function getIdInReference(): ?string
@@ -172,5 +164,6 @@ class CnCanonReference
 
         return $this;
     }
+
 
 }

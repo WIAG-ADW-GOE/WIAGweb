@@ -63,16 +63,6 @@ class CnOnlineRepository extends ServiceEntityRepository {
     }
     */
 
-    public function countAll() {
-        $qb = $this->createQueryBuilder('co')
-                   ->select('COUNT(DISTINCT co.id)');
-
-        $query = $qb->getQuery();
-
-        $ncount = $query->getOneOrNullResult();
-        return $ncount;
-    }
-
     public function countByQueryObject(CanonFormModel $formmodel) {
         // if($formmodel->isEmpty()) return 0;
         $qb = $this->createQueryBuilder('co')
