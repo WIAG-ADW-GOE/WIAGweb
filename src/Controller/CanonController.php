@@ -116,7 +116,6 @@ class CanonController extends AbstractController {
             $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
 
             $persons = $repository->findByQueryObject($queryformdata, self::LIST_LIMIT, $offset);
-            dump($persons);
 
             foreach($persons as $p) {
                 /* It may look strange to do queries in a loop, but we have two data sources.

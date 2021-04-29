@@ -223,7 +223,6 @@ class CnOnlineRepository extends ServiceEntityRepository {
         /**
          * a reliable order is required
          */
-        dump($sort, $monastery_sort);
         switch ($sort) {
         case 'specific_domstift':
             $qb->join('co.officelookup', 'olt_sort')
