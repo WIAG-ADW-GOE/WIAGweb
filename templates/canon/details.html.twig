@@ -54,7 +54,7 @@
 {% endmacro %}
 
 {% macro makebiogramlink(p, last, url_gs_bios) %}
-    {% if p.isbio %}<strong>{{ p.page }} </strong><a href="{{ url_gs_bios }}/{{ p.page }}" target="_blank" rel="noopener"><strong>Biogramm online lesen</strong></a>{% else %}{{ p.page }}{% endif %}{%if not last %},{% endif %}
+    {% if p.isbio %}<strong>{{ p.page }} </strong><a class="btn btn-danger btn-sm" role="button" href="{{ url_gs_bios }}/{{ p.page }}" target="_blank" rel="noopener"><strong>Biogramm online lesen</strong></a>{% else %}{{ p.page }}{% endif %}{%if not last %},{% endif %}
 {% endmacro %}
 
 {% macro biogramlinks(pages, url_gs_bios) %}
