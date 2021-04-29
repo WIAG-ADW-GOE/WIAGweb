@@ -59,16 +59,7 @@ class CanonController extends AbstractController {
         if (true) {
 
             $queryformdata = $form->getData() ?? new CanonFormModel;
-            // start with a list of all canons and build facets
-            // this leads to an illegal form
-            // if (!$form->isSubmitted()) {
-            //     $form = $this->createForm(CanonFormType::class, $queryformdata, [
-            //         'force_facets' => true,
-            //     ]);
-            // }
 
-            
-            
             # strip 'Bistum' or 'Erzbistum'
             $queryformdata->normPlace();
 
@@ -76,7 +67,6 @@ class CanonController extends AbstractController {
             if(!is_null($singleoffset)) {
                 return $this->getCanonInQuery($form, $singleoffset);
             }
-
 
             // get the number of results (without page limit restriction)
             $count = $repository->countByQueryObject($queryformdata)[1];
@@ -126,6 +116,7 @@ class CanonController extends AbstractController {
             $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
 
             $persons = $repository->findByQueryObject($queryformdata, self::LIST_LIMIT, $offset);
+            dump($persons);
 
             foreach($persons as $p) {
                 /* It may look strange to do queries in a loop, but we have two data sources.

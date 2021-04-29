@@ -9,6 +9,7 @@ use App\Entity\CnOffice;
 use App\Entity\CnOfficeGS;
 use App\Entity\CnCanonReference;
 use App\Entity\CnCanonReferenceGS;
+use App\Entity\Domstift;
 use App\Entity\Person;
 use App\Entity\Monastery;
 use App\Form\Model\CanonFormModel;
@@ -78,6 +79,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
 
     public function findByQueryObject(CanonFormModel $formmodel, $limit = 0, $offset = 0) {
 
+        // join with tables that are needed for sorting anyway
         $qb = $this->createQueryBuilder('co');
 
         $this->addQueryConditions($qb, $formmodel);
@@ -98,29 +100,11 @@ class CnOnlineRepository extends ServiceEntityRepository {
         return $persons;
     }
 
-    public function findAllWithLimit($limit = 0, $offset = 0) {
-
-        $qb = $this->createQueryBuilder('co')
-                   ->leftJoin('co.officesortkey', 'os')
-                   ->addOrderBy('os.location_name', 'ASC')
-                   ->addOrderBy('os.numdate_start', 'ASC')
-                   ->addOrderBy('os.numdate_end', 'ASC')
-                   ->addOrderBy('co.id', 'ASC');
-
-        if($limit > 0) {
-            $qb->setMaxResults($limit);
-            $qb->setFirstResult($offset);
-        }
-
-        $query = $qb->getQuery();
-        // dd($query->getResult());
-        $persons = new Paginator($query, true);
-
-        return $persons;
-    }
-
-
     private function addQueryConditions(QueryBuilder $qb, CanonFormModel $formmodel): QueryBuilder {
+
+        // conditions are independent from each other
+        // e.g. search for a 'Kanoniker' who had also an office in 'Mainz' says not that the
+        // person was 'Kononiker' in 'Mainz';
 
         # identifier
         if($formmodel->someid) {
@@ -135,38 +119,38 @@ class CnOnlineRepository extends ServiceEntityRepository {
 
         # year
         if($formmodel->year) {
-            $erajoined = true;
             $qb->join('co.era', 'era')
-                ->andWhere('era.eraStart - :mgnyear < :qyear AND :qyear < era.eraEnd + :mgnyear')
-                ->setParameter(':mgnyear', self::MARGINYEAR)
-                ->setParameter(':qyear', $formmodel->year);
+               ->andWhere('era.eraStart - :mgnyear < :qyear AND :qyear < era.eraEnd + :mgnyear')
+               ->setParameter(':mgnyear', self::MARGINYEAR)
+               ->setParameter(':qyear', $formmodel->year);
         }
 
         # monastery
         if($formmodel->monastery) {
             $qb->join('co.officelookup', 'olt_monastery')
                ->join('olt_monastery.monastery', 'monastery')
-                ->andWhere('monastery.monastery_name LIKE :monastery')
-                ->setParameter('monastery', '%'.$formmodel->monastery.'%');
+               ->andWhere('monastery.monastery_name LIKE :monastery')
+               ->setParameter('monastery', '%'.$formmodel->monastery.'%');
         }
 
         # office title
         if($formmodel->office) {
-            $qb->join('co.officelookup', 'olt_name')
-               ->andWhere('olt_name.office_name LIKE :office')
+            $qb->join('co.officelookup', 'olt_office')
+               ->andWhere('olt_office.office_name LIKE :office')
                ->setParameter('office', '%'.$formmodel->office.'%');
         }
 
         # office place
         if($formmodel->place) {
             $qb->join('co.officelookup', 'olt_place')
-                ->andWhere('olt_place.location_name LIKE :place OR olt_place.archdeacon_territory LIKE :place')
-                ->setParameter('place', '%'.$formmodel->place.'%');
+               ->andWhere('olt_place.location_name LIKE :place OR olt_place.archdeacon_territory LIKE :place')
+               ->setParameter('place', '%'.$formmodel->place.'%');
         }
+
         # names
         if($formmodel->name) {
             $qb->join('co.namelookup', 'nlt')
-                ->andWhere("CONCAT(nlt.givenname, ' ', nlt.prefixName, ' ', nlt.familyname) LIKE :qname".
+               ->andWhere("CONCAT(nlt.givenname, ' ', nlt.prefixName, ' ', nlt.familyname) LIKE :qname".
                            " OR CONCAT(nlt.givenname, ' ', nlt.familyname)LIKE :qname".
                            " OR nlt.givenname LIKE :qname".
                            " OR nlt.familyname LIKE :qname")
@@ -208,39 +192,67 @@ class CnOnlineRepository extends ServiceEntityRepository {
         return $qb;
     }
 
-
-
     public function addSortParameter($qb, $bishopquery) {
 
-        $sort = 'location';
-        if($bishopquery->someid) $sort = 'year';
-        if($bishopquery->year) $sort = 'year';
-        if($bishopquery->name) $sort = 'name';
-        if($bishopquery->place) $sort = 'location';
-        if($bishopquery->office) $sort = 'location';
-        if($bishopquery->showAll) $sort = 'location';
-        /**
-         * a reliable order is required, therefore person.givenname shows up
-         * in each sort clause
-         */
+        $sort = 'domstift';
 
-        switch($sort) {
+        if ($bishopquery->someid) $sort = 'domstift';
+        if ($bishopquery->name) $sort = 'name';
+        if ($bishopquery->year) $sort = 'year';
+        if ($bishopquery->monastery) $sort = 'domstift';
+        if ($bishopquery->office) $sort = 'domstift';
+        if ($bishopquery->place) $sort = 'domstift';
+
+        $monastery_sort = null;
+        if ($bishopquery->isEmpty() and $bishopquery->facetMonasteries) {
+            $facetMonasteries = $bishopquery->facetMonasteries;
+            if (count($facetMonasteries) == 1) {
+                $sort = 'specific_domstift';
+                $monastery_sort = $facetMonasteries[0]->getId();
+            }
+        }
+
+        // this is not possible, because the sorting would be more restrictive as the
+        // query condition
+        // $monastery_sort_candidate = $this->getIdDomstift($bishopquery->monastery);
+        // if (!is_null($monastery_sort_candidate)) {
+        //     $sort = 'specific_domstift';
+        //     $monastery_sort = $monastery_sort_candidate;
+        // }
+
+        /**
+         * a reliable order is required
+         */
+        dump($sort, $monastery_sort);
+        switch ($sort) {
+        case 'specific_domstift':
+            $qb->join('co.officelookup', 'olt_sort')
+               ->andWhere('olt_sort.id_monastery = :monastery_sort')
+               ->setParameter('monastery_sort', $monastery_sort)
+               ->addOrderBy('olt_sort.numdate_start', 'ASC')
+               ->addOrderBy('co.familyname', 'ASC')
+               ->addOrderBy('co.givenname', 'ASC')
+               ->addOrderBy('co.id');
+            break;
         case 'year':
-            $qb->leftJoin('co.era', 'erasort')
-               ->addOrderBy('erasort.eraStart', 'ASC')
+            $qb->addOrderBy('era.eraStart', 'ASC')
+               ->addOrderBy('co.familyname', 'ASC')
+               ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('co.id');
             break;
         case 'name':
             // $qb->orderBy('person.familyname, person.givenname, oc.diocese');
-            $qb->addOrderBy('nlt.familyname', 'ASC')
-               ->addOrderBy('nlt.givenname', 'ASC')
+            $qb->join('co.era', 'era', 'ASC')
+               ->addOrderBy('co.familyname', 'ASC')
+               ->addOrderBy('co.givenname', 'ASC')
+               ->addOrderBy('era.eraStart', 'ASC')
                ->addOrderBy('co.id');
             break;
-        case 'location':
-            $qb->leftJoin('co.officesortkey', 'os')
-               ->addOrderBy('os.location_name', 'ASC')
-               ->addOrderBy('os.numdate_start', 'ASC')
-               ->addOrderBy('os.numdate_end', 'ASC')
+        case 'domstift':
+            $qb->addOrderBy('co.domstift', 'ASC')
+               ->addOrderBy('co.domstift_start', 'ASC')
+               ->addOrderBy('co.familyname', 'ASC')
+               ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('co.id');
             break;
         }
@@ -249,28 +261,35 @@ class CnOnlineRepository extends ServiceEntityRepository {
 
     }
 
+    public function getIdDomstift($monastery_name) {
+        if (is_null($monastery_name)) {
+            return null;
+        }
+        $em = $this->getEntityManager();
+        $mon = $em->getRepository(Domstift::class)->findOneByName($monastery_name);
+        if($mon) {
+            return $mon->getGsId();
+        } else {
+            return null;
+        }
+    }
+
     /**
      * return list of monasteries, where persons have an office;
      * used for the facet of monasteries
      */
     public function findOfficePlaces(CanonFormModel $canonquery) {
         $qb = $this->createQueryBuilder('co')
-                   ->select('DISTINCT mfacet.wiagid, mfacet.monastery_name, COUNT(DISTINCT(co.id)) as n')
-                   ->join('co.officelookup', 'oc')
-                   ->join('oc.monastery', 'mfacet')
-                   ->andWhere("mfacet.wiagid IN (:domstifte)")
-                   ->setParameter('domstifte', Monastery::IDS_DOMSTIFTE);
+                   ->select('DISTINCT domstift.gs_id as id, domstift.name as name, COUNT(DISTINCT(co.id)) as n')
+                   ->join('co.officelookup', 'oltdomstift')
+                   ->join('oltdomstift.domstift', 'domstift');
 
         $this->addQueryConditions($qb, $canonquery);
 
-        $qb->groupBy('mfacet.monastery_name');
+        $qb->groupBy('domstift.name');
 
         $query = $qb->getQuery();
         $result = $query->getResult();
-        $prefix = "Domstift";
-        foreach ($result as $key => $value) {
-            $result[$key]['monastery_name'] = Monastery::trimDomstift($result[$key]['monastery_name']);
-        }
         return $result;
     }
 
@@ -345,21 +364,15 @@ class CnOnlineRepository extends ServiceEntityRepository {
             $online->setReferencesDh($refsdh);
             # add GS data
             if (!is_null($online->getIdGs())) {
-                $officesgs = $em->getRepository(CnOfficeGS::class)->findByIdCanonAndSort($online->getIdGs());
-                $online->setOfficesGs($officesgs);
-
-                $refsrepogs = $em->getRepository(CnCanonReferenceGS::class);
-                $refsgs = $refsrepogs->findByIdCanon($online->getIdGs());
-                $online->setReferencesGS($refsgs);
+                $canongs = $em->getRepository(CanonGS::class)->findOneById($online->getIdGs());
+                $online->setCanonGs($canongs);
+                $this->fillGSOfficesAndReferences($online);
             }
             # add WIAG bishop data
             $episc_id = $online->getCanonDh()->getWiagEpiscId();
             if ($episc_id) {
                 $personrepo = $em->getRepository(Person::class);
-                $episc = $personrepo->findOneWithOffices($episc_id);
-                if (!is_null($episc) && $episc->hasMonastery()) {
-                    $personrepo->addMonasteryLocation($episc);
-                }
+                $episc = $this->findEpisc($episc_id);
                 $online->setBishop($episc);
                 $online->getCanonDh()->copyExternalIds($episc);
             }
@@ -368,27 +381,38 @@ class CnOnlineRepository extends ServiceEntityRepository {
         elseif (!is_null($online->getIdGs())) {
             $canon = $em->getRepository(CanonGS::class)->findOneById($online->getIdGs());
             $online->setCanonGs($canon);
-
-            $officesgs = $em->getRepository(CnOfficeGS::class)->findByIdCanonAndSort($online->getIdGs());
-            $online->setOfficesGs($officesgs);
-
-            $refsrepogs = $em->getRepository(CnCanonReferenceGS::class);
-            $refsgs = $refsrepogs->findByIdCanon($online->getIdGs());
-            $online->setReferencesGS($refsgs);
+            $this->fillGSOfficesAndReferences($online);
             # add WIAG bishop data
             $episc_id = $online->getCanonGs()->getWiagEpiscId();
             if ($episc_id) {
-                $personrepo = $em->getRepository(Person::class);
-                $episc = $personrepo->findOneWithOffices($episc_id);
-                if (!is_null($episc) && $episc->hasMonastery()) {
-                    $personrepo->addMonasteryLocation($episc);
-                }
+                $episc = $this->findEpisc($episc_id);
                 $online->setBishop($episc);
                 $online->getCanonGs()->copyExternalIds($episc);
             }
 
         }
 
+    }
+
+    public function fillGSOfficesAndReferences(CnOnline $online) {
+        $em = $this->getEntityManager();
+        $officesgs = $em->getRepository(CnOfficeGS::class)->findByIdCanonAndSort($online->getIdGs());
+        $online->setOfficesGs($officesgs);
+
+        $refsrepogs = $em->getRepository(CnCanonReferenceGS::class);
+        $refsgs = $refsrepogs->findByIdCanon($online->getIdGs());
+        $online->setReferencesGS($refsgs);
+        return $online;
+    }
+
+    public function findEpisc($episc_id) {
+        $em = $this->getEntityManager();
+        $personrepo = $em->getRepository(Person::class);
+        $episc = $personrepo->findOneWithOffices($episc_id);
+        if (!is_null($episc) && $episc->hasMonastery()) {
+            $personrepo->addMonasteryLocation($episc);
+        }
+        return($episc);
     }
 
 }

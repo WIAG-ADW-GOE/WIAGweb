@@ -73,6 +73,26 @@ class CnOnline {
 
     private $bishop = null;
 
+    /**
+     * @ORM\Column(type="string", length=127, nullable=true)
+     */
+    private $givenname;
+
+    /**
+     * @ORM\Column(type="string", length=127, nullable=true)
+     */
+    private $familyname;
+
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $domstift;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $domstift_start;
+
     public function getId(): ?string
     {
         return $this->id;
@@ -163,6 +183,54 @@ class CnOnline {
 
     public function getBishop() {
         return $this->bishop;
+    }
+
+    public function getGivenname(): ?string
+    {
+        return $this->givenname;
+    }
+
+    public function setGivenname(?string $givenname): self
+    {
+        $this->givenname = $givenname;
+
+        return $this;
+    }
+
+    public function getFamilyname(): ?string
+    {
+        return $this->familyname;
+    }
+
+    public function setFamilyname(?string $familyname): self
+    {
+        $this->familyname = $familyname;
+
+        return $this;
+    }
+
+    public function getDomstift(): ?string
+    {
+        return $this->domstift;
+    }
+
+    public function setDomstift(?string $domstift): self
+    {
+        $this->domstift = $domstift;
+
+        return $this;
+    }
+
+    public function getDomstiftStart(): ?int
+    {
+        return $this->domstift_start;
+    }
+
+    public function setDomstiftStart(?int $domstift_start): self
+    {
+        $this->domstift_start = $domstift_start;
+
+        return $this;
     }
 
 

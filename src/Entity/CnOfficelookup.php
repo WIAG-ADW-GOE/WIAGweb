@@ -23,6 +23,13 @@ class CnOfficelookup {
     private $monastery;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Domstift")
+     * @ORM\JoinColumn(nullable=true, name="id_monastery", referencedColumnName="gs_id")
+     */
+    private $domstift;
+
+
+    /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="string", length=31)

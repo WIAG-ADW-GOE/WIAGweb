@@ -248,7 +248,7 @@ class CanonFormType extends AbstractType
         $choices = array();
 
         foreach($places as $place) {
-            $choices[] = new PlaceCount($place['wiagid'], $place['monastery_name'], $place['n']);
+            $choices[] = new PlaceCount($place['id'], $place['name'], $place['n']);
         }
 
         // add selected fields with frequency 0

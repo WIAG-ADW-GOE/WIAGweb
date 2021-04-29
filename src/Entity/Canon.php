@@ -693,6 +693,9 @@ class Canon
     }
 
     public function copyExternalIds(Person $person): self {
+        if (is_null($person)) {
+            return $this;
+        }
         $this->gsnId = $person->getGsId();
         $this->gndId = $person->getGndId();
         $this->viafId = $person->getViafId();

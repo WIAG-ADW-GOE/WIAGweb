@@ -11,7 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Domstift
 {
     /**
-     * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
@@ -23,6 +22,7 @@ class Domstift
     private $name;
 
     /**
+     * @ORM\Id
      * @ORM\Column(type="integer")
      */
     private $gs_id;
