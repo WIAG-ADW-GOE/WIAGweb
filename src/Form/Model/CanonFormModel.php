@@ -16,7 +16,6 @@ class CanonFormModel {
     public $facetLocations;
     public $facetMonasteries;
     public $facetOffices;
-    public $showAll;
     public $stateFctLoc;
     public $stateFctMon;
     public $stateFctOfc;
@@ -24,26 +23,24 @@ class CanonFormModel {
     public function __construct($n = null,
                                 $m = null,
                                 $o = null,
-                                $p = null,                                
+                                $p = null,
                                 $y = null,
                                 $id = null,
                                 $flc = array(),
                                 $fpl = array(),
                                 $fof = array(),
-                                $showAll = null,
                                 $stateFctLoc = "0",
                                 $stateFctMon = "0",
                                 $stateFctOfc = "0") {
         $this->name = $n;
         $this->monastery = $m;
         $this->office = $o;
-        $this->place = $p;                
+        $this->place = $p;
         $this->year = $y;
         $this->someid = $id;
         $this->facetLocations = $flc;
         $this->facetMonasteries = $fpl;
         $this->facetOffices = $fof;
-        $this->showAll = $showAll;
         $this->stateFctLoc = $stateFctLoc;
         $this->stateFctMon = $stateFctMon;
         $this->stateFctOfc = $stateFctOfc;
@@ -55,8 +52,7 @@ class CanonFormModel {
                 !$this->office and
                 !$this->place and
                 !$this->year and
-                !$this->someid and
-                !$this->showAll);
+                !$this->someid);
     }
 
     public function getFacetLocations() {
@@ -90,7 +86,6 @@ class CanonFormModel {
         $this->office = $a['office'];
         $this->year = $a['year'];
         $this->someid = $a['someid'];
-        $this->showAll = $a['showAll'];
         $this->stateFctLoc = $a['stateFctLoc'];
         $this->stateFctMon = $a['stateFctMon'];
         $this->stateFctOfc = $a['stateFctOfc'];

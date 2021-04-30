@@ -140,7 +140,6 @@ class CanonFormType extends AbstractType
                     'class' => 'btn btn-light btn-sm',
                 ]
             ])
-            ->add('showAll', HiddenType::class)
             ->add('stateFctLoc', HiddenType::class)
             ->add('stateFctMon', HiddenType::class)
             ->add('stateFctOfc', HiddenType::class);
