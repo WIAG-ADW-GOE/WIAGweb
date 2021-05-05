@@ -126,7 +126,7 @@ class PersonRepository extends ServiceEntityRepository {
         if($bishopquery->someid && $bishopquery->someid != "") {
             $db_id = Person::extractDbId($bishopquery->someid);
             $id_param = $db_id ? $db_id : $bishopquery->someid;
-            
+
             $qb->andWhere(":someid = person.wiagid".
                           " OR :someid = person.gsid".
                           " OR :someid = person.viafid".

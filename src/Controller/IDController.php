@@ -95,7 +95,7 @@ class IDController extends AbstractController {
         if (Person::extractDbId($id)) {
             return $this->bishophtmlbyID($id);
         }
-        elseif (Canon::extractDbId($id)) {
+        elseif (Canon::isCanonId($id)) {
             return $this->canonhtmlbyID($id, $request);
         }
         elseif (Diocese::isIdDiocese($id)) {
@@ -206,12 +206,11 @@ class IDController extends AbstractController {
     }
 
     public function canonhtmlbyID(string $id) {
-        $dbid = Canon::extractDbId($id);
 
         $repo = $this->getDoctrine()
                      ->getRepository(CnOnline::class);
 
-        $cnonline = $repo->findOneById($dbid);
+        $cnonline = $repo->findOneById($id);
         if (!$cnonline) {
             throw $this->createNotFoundException('Domherr wurde nicht gefunden');
         } else {
@@ -234,12 +233,11 @@ class IDController extends AbstractController {
 
     public function canondata(string $id, Request $request) {
         $idbase = pathinfo($id, PATHINFO_FILENAME);
-        $dbid = Canon::extractDbId($idbase);
 
         $canononline = $this->getDoctrine()
                             ->getRepository(CnOnline::class)
-                            ->findOneById($dbid);
-        // dd($idbase, $canononline);
+                            ->findOneById($idbase);
+        # dd($idbase, $canononline);
 
         $canon = null;
         if ($canononline->getIdDh()) {

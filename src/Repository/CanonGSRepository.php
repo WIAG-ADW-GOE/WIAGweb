@@ -60,11 +60,9 @@ class CanonGSRepository extends ServiceEntityRepository {
 
     public function findOneWithOffices($id) {
         // fetch all data related to this canon
-        $db_id = CanonGS::extractDbId($id);
-        $id_param = $db_id ? $db_id : $id;
         $query = $this->createQueryBuilder('canon')
                       ->andWhere('canon.id = :id')
-                      ->setParameter('id', $id_param)
+                      ->setParameter('id', $id)
                       ->leftJoin('canon.offices', 'oc')
                       ->leftJoin('oc.numdate', 'ocdate')
                       ->orderBy('ocdate.dateStart', 'ASC')

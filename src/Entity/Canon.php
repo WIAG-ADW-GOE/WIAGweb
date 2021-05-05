@@ -37,6 +37,16 @@ class Canon
         }
     }
 
+    static public function isCanonId($id): ?string {
+        $db_id = [];
+        # at the moment we do not take care about multiple IDs for one person
+        $id_prefix = Canon::WIAGID_PREFIX;
+        $rgs = "/{$id_prefix}((gs)?[0-9]+)-[0-9]{3}/";
+        preg_match($rgs, $id, $db_id);
+        return count($db_id) == 2;
+    }
+
+
     /**
      * @ORM\OneToMany(targetEntity="CnOffice", mappedBy="canon")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")

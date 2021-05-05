@@ -17,7 +17,7 @@ class Monastery {
                            3501,   792,   794,   616,   628,  3491,   803,   953,
                            3495,   226,  3494,   679,  2066,  3489,  3500,  3487,
                            3490,  3502];
-    
+
     static public function trimDomstift($name): ?string {
         $prefix = 'Domstift';
         $name = ltrim($name);
@@ -28,7 +28,13 @@ class Monastery {
             return $name;
         }
     }
-    
+
+    /**
+     * @ORM\OneToOne(targetEntity="Domstift")
+     * @ORM\JoinColumn(name="wiagid", referencedColumnName="gs_id")
+     */
+    private $domstift;
+
     /**
      * @ORM\Column(type="integer")
      */

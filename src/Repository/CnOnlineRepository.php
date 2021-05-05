@@ -129,6 +129,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
         if($formmodel->monastery) {
             $qb->join('co.officelookup', 'olt_monastery')
                ->join('olt_monastery.monastery', 'monastery')
+               ->join('monastery.domstift', 'query_domstift')
                ->andWhere('monastery.monastery_name LIKE :monastery')
                ->setParameter('monastery', '%'.$formmodel->monastery.'%');
         }
@@ -231,9 +232,6 @@ class CnOnlineRepository extends ServiceEntityRepository {
                ->setParameter('monastery', $monastery)
                ->addOrderBy('olt_sort.numdate_start', 'ASC')
                ->addOrderBy('olt_sort.numdate_end', 'ASC')
-               ->join('co.era', 'era_sort')
-               ->addOrderBy('era_sort.eraStart')
-               ->addOrderBy('era_sort.eraEnd') 
                ->addOrderBy('co.familyname', 'ASC')
                ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('co.id');
@@ -243,7 +241,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
                ->addOrderBy('olt_monastery.numdate_end', 'ASC')
                ->join('co.era', 'era_sort')
                ->addOrderBy('era_sort.eraStart')
-               ->addOrderBy('era_sort.eraEnd') 
+               ->addOrderBy('era_sort.eraEnd')
                ->addOrderBy('co.familyname', 'ASC')
                ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('co.id');
@@ -384,12 +382,10 @@ class CnOnlineRepository extends ServiceEntityRepository {
                 $this->fillGSOfficesAndReferences($online);
             }
             # add WIAG bishop data
-            $episc_id = $online->getCanonDh()->getWiagEpiscId();
-            if ($episc_id) {
+            if (!is_null($online->getIdEp())) {
                 $personrepo = $em->getRepository(Person::class);
-                $episc = $this->findEpisc($episc_id);
+                $episc = $personrepo->findOneWithOffices($online->getIdEp());
                 $online->setBishop($episc);
-                $online->getCanonDh()->copyExternalIds($episc);
             }
         }
         # GS only
@@ -398,15 +394,12 @@ class CnOnlineRepository extends ServiceEntityRepository {
             $online->setCanonGs($canon);
             $this->fillGSOfficesAndReferences($online);
             # add WIAG bishop data
-            $episc_id = $online->getCanonGs()->getWiagEpiscId();
-            if ($episc_id) {
-                $episc = $this->findEpisc($episc_id);
+            if (!is_null($online->getIdEp())) {
+                $personrepo = $em->getRepository(Person::class);
+                $episc = $personrepo->findOneWithOffices($online->getIdEp());
                 $online->setBishop($episc);
-                $online->getCanonGs()->copyExternalIds($episc);
             }
-
         }
-
     }
 
     public function fillGSOfficesAndReferences(CnOnline $online) {

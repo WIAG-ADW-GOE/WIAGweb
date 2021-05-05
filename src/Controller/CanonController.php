@@ -247,8 +247,8 @@ class CanonController extends AbstractController {
         }
 
         $monasteries = $this->getDoctrine()
-                       ->getRepository(CnOfficelookup::class)
-                       ->suggestMonastery($query, self::HINT_LIST_LIMIT);
+                            ->getRepository(Monastery::class)
+                            ->suggestPlace($query, self::HINT_LIST_LIMIT);
         return $this->json([
             'monasteries' => $monasteries,
         ]);

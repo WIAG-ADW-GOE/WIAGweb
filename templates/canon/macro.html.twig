@@ -1,4 +1,4 @@
-{% macro canonrow(person, iddh, idgs, idepisc, offices, offset) %}
+{% macro canonrow(person, iddh, idgs, idep, offices, offset) %}
     <tr>
 	<td><button type="submit" form="q_form" class="btn btn-link text-sm-left p-0" name="singleoffset" value="{{ offset }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
 	    {% if not person.datebirth and not person.datedeath %}
@@ -19,7 +19,7 @@
 		    {% elseif o.datestart and o.dateend %}{{ o.datestart }}-{{ o.dateend }}{% endif %}
 		</small><br/>
 	    {% endfor %}
-	    {% if iddh and (idgs or idepisc) %}
+	    {% if iddh and idgs or iddh and idep or idgs and idep %}
 		<button type="submit"
 			form="q_form"
 			class="btn btn-link text-sm-left p-0"

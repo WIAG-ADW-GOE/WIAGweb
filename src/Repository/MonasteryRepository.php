@@ -52,17 +52,19 @@ class MonasteryRepository extends ServiceEntityRepository
     public function suggestPlace($place, $limit = 200): array {
         $qb = $this->createQueryBuilder('m')
                    ->select('DISTINCT m.monastery_name AS suggestion')
+                   ->join('m.domstift', 'domstift')
                    ->andWhere('m.monastery_name LIKE :place')
                    ->setParameter('place', '%'.$place.'%')
                    ->setMaxResults($limit);
         $query = $qb->getQuery();
 
         # dd($query->getDQL());
+        dump($query);
 
         return $query->getResult();
 
     }
 
 
-    
+
 }

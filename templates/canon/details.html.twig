@@ -77,7 +77,7 @@
 		{% elseif isgs %}
 		    <li>{{ refdisplaytitle }}, {% if refid %} S. {{ cnref.pagereference|raw }}, ID/Nr. {{ refid }}. {% else %} S. {{ cnref.pagereference|raw }}. {% endif %}<strong>Biogramm in Printpublikation vorhanden</strong></li>
 		{% else %}
-		    <li>{{ refdisplaytitle }}, {% if refid %} S. {{ cnref.pagereference }}, ID/Nr. {{ refid }} {% else %} S. {{ cnref.pagereference }} {% endif %}</li>
+		    <li>{{ refdisplaytitle }}{% if cnref.pagereference %}, S. {{ cnref.pagereference }}{% if refid %}, ID/Nr. {{ refid }}{% endif %}{% else %}{% if refid %}, ID/Nr. {{ refid }}{% endif %}{% endif %}</li>
 		{% endif %}
 	    {% endfor %}
 	</ul>
@@ -102,10 +102,9 @@
 		{% if person.iddh %}{% set canon=person.canondh %}{% else %}{% set canon=person.canongs %}{% endif %}
 		<div class="col-8"><h2>{{ canon.displayname[:200] }}</h2></div>
 		<div class="col-4 text-right text-nowrap">
-		    <button type="button" class="btn to-clipboard" title="{{ protocol }}:{{ url('id', {id: canon.wiagidlong}, schemeRelative=true) }}" >{{ canon.wiagidlong }} <img src="{{ asset('images/link45deg.svg') }}" width="18"></button>
+		    <button type="button" class="btn to-clipboard" title="{{ protocol }}:{{ url('id', {id: person.id}, schemeRelative=true) }}" >{{ person.id }} <img src="{{ asset('images/link45deg.svg') }}" width="18"></button>
 		</div>
 	    </div>
-
 	    {% if canon.flagnamevariant %}
 		<div class="row mx-2 col-12">
 		    {% if canon.givennamevariant is defined and canon.givennamevariant != '' %}
@@ -154,7 +153,7 @@
 		    <dd class="col-sm-9">{{ canon.academictitle }}</dd>
 		{% endif %}
 	    </dl>
-
+	    {# <p>{{ dump(person) }}</p> #}
 	    {% if person.iddh %}
 		<div class="card mx-2 mb-2">
 		    <span class="card-header"><strong>Amtsangaben aus Referenzwerken</strong></span>
@@ -180,7 +179,7 @@
 	    {# WIAG bishop database #}
 	    {% if person.bishop %}
 		<div class="card mx-2 mb-2">
-		    <span class="card-header"><a href="{{ protocol }}:{{ url('id', {'id': canon.wiagepiscidlong}, schemeRelative=true) }}" target="_blank" rel="noopener"><strong>Amtsangaben aus der Datenbank Bischöfe des Alten Reiches (WIAG) — {{ canon.wiagepiscidlong }}</strong></span></a>
+		    <span class="card-header"><a href="{{ protocol }}:{{ url('id', {'id': person.idep}, schemeRelative=true) }}" target="_blank" rel="noopener"><strong>Amtsangaben aus der Datenbank Bischöfe des Alten Reiches (WIAG) — {{ person.idep }}</strong></span></a>
 		    <dl class="card-body row">
 			{% set bishop = person.bishop %}
 			{{ _self.sectionoffices(bishop.offices, urlgsmonasteries, dioceserepository) }}
@@ -257,7 +256,7 @@
 	    <div class="row mx-2 col-12">
 		{# (WIAGID: {{ person.wiagidlong }}), #}
 		{# app.request.schemeAndHttpHost ~ app.request.baseUrl  #}
-		<span id="citation">"{{ canon.displayname }}" in: WIAG, {{ protocol }}:{{ url('id', {id: canon.wiagidlong}, schemeRelative=true) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</span></div>
+		<span id="citation">"{{ canon.displayname }}" in: WIAG, {{ protocol }}:{{ url('id', {id: person.id}, schemeRelative=true) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</span></div>
 	    <div class="row mx-2 col-12 mt-4">
 		{% if query_form is defined %}
 		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
@@ -267,10 +266,10 @@
 		{% else %}
 		    <a href="{{ path('query_canons') }}"><button class="btn btn-secondary btn-sm mr-2" type="button">Suche</button></a>
 		{% endif %}
-		<a href="{{ path('wiag_id_data', {id: canon.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
-		<a href="{{ path('wiag_id_data', {id: canon.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">CSV</button></a>
-		<a href="{{ path('wiag_id_data', {id: canon.wiagidlong}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">RDF-XML</button></a>
-		<a href="{{ path('wiag_id_data', {id: canon.wiagidlong, format: 'json-ld'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">JSON-LD</button></a>
+		<a href="{{ path('wiag_id_data', {id: canon.id, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
+		<a href="{{ path('wiag_id_data', {id: canon.id, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">CSV</button></a>
+		<a href="{{ path('wiag_id_data', {id: canon.id}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">RDF-XML</button></a>
+		<a href="{{ path('wiag_id_data', {id: canon.id, format: 'json-ld'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">JSON-LD</button></a>
 	    </div>
 	</div>
 

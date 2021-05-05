@@ -57,21 +57,32 @@ class CnOnline {
      */
     private $id_gs;
 
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $id_ep;
+
+
     /* fill these properties, for the list view or the detail view */
 
     private $canon_dh = null;
 
     private $canon_gs = null;
 
+    private $bishop = null;
+
     private $offices_dh = null;
 
     private $offices_gs = null;
+
+    private $offices_ep = null;
 
     private $references_dh = null;
 
     private $references_gs = null;
 
-    private $bishop = null;
+    private $references_ep = null;
+
 
     /**
      * @ORM\Column(type="string", length=127, nullable=true)
@@ -122,21 +133,25 @@ class CnOnline {
         return $this;
     }
 
+    public function getIdEp(): ?string
+    {
+        return $this->id_ep;
+    }
+
+    public function setIdEp(?string $id_ep): self
+    {
+        $this->id_ep = $id_ep;
+
+        return $this;
+    }
+
+
     public function getCanonDh() {
         return $this->canon_dh;
     }
 
     public function setCanonDh($canon) {
         $this->canon_dh = $canon;
-        return $this;
-    }
-
-    public function getOfficesDh() {
-        return $this->offices_dh;
-    }
-
-    public function setOfficesDh($officesdh) {
-        $this->offices_dh = $officesdh;
         return $this;
     }
 
@@ -149,6 +164,15 @@ class CnOnline {
         return $this;
     }
 
+    public function getOfficesDh() {
+        return $this->offices_dh;
+    }
+
+    public function setOfficesDh($officesdh) {
+        $this->offices_dh = $officesdh;
+        return $this;
+    }
+
     public function getOfficesGs() {
         return $this->offices_gs;
     }
@@ -157,6 +181,16 @@ class CnOnline {
         $this->offices_gs = $officesgs;
         return $this;
     }
+
+    public function getOfficesEp() {
+        return $this->offices_ep;
+    }
+
+    public function setOfficesEp($officesep) {
+        $this->offices_ep = $officesep;
+        return $this;
+    }
+
 
     public function getReferencesDh() {
         return $this->references_dh;
@@ -175,6 +209,16 @@ class CnOnline {
         $this->references_gs = $referencesgs;
         return $this;
     }
+
+    public function getReferencesEp() {
+        return $this->references_ep;
+    }
+
+    public function setReferencesEp($referencesep) {
+        $this->references_ep = $referencesep;
+        return $this;
+    }
+
 
     public function setBishop($bishop) {
         $this->bishop = $bishop;

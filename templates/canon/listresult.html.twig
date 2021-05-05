@@ -45,9 +45,9 @@
 				<tbody>
 				    {% for person in persons %}
 					{% if person.iddh %}
-					    {{ macro.canonrow(person.canondh, true, person.idgs, person.canondh.wiagepiscid, person.officesdh, offset + loop.index0) }}
+					    {{ macro.canonrow(person.canondh, true, person.idgs, person.idep, person.officesdh, offset + loop.index0) }}
 					{% elseif person.idgs %}
-					    {{ macro.canonrow(person.canongs, false, true, false, person.officesgs, offset + loop.index0) }}
+					    {{ macro.canonrow(person.canongs, false, true, person.idep, person.officesgs, offset + loop.index0) }}
 					{% endif %}
 				    {% endfor %}
 				    <tr>
