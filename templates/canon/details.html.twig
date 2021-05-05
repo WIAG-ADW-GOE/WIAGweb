@@ -266,10 +266,10 @@
 		{% else %}
 		    <a href="{{ path('query_canons') }}"><button class="btn btn-secondary btn-sm mr-2" type="button">Suche</button></a>
 		{% endif %}
-		<a href="{{ path('wiag_id_data', {id: canon.id, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
-		<a href="{{ path('wiag_id_data', {id: canon.id, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">CSV</button></a>
-		<a href="{{ path('wiag_id_data', {id: canon.id}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">RDF-XML</button></a>
-		<a href="{{ path('wiag_id_data', {id: canon.id, format: 'json-ld'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">JSON-LD</button></a>
+		<a href="{{ path('wiag_id_data', {id: person.id, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
+		<a href="{{ path('wiag_id_data', {id: person.id, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">CSV</button></a>
+		<a href="{{ path('wiag_id_data', {id: person.id}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">RDF-XML</button></a>
+		<a href="{{ path('wiag_id_data', {id: person.id, format: 'json-ld'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">JSON-LD</button></a>
 	    </div>
 	</div>
 
