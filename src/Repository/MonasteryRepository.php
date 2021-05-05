@@ -59,7 +59,6 @@ class MonasteryRepository extends ServiceEntityRepository
         $query = $qb->getQuery();
 
         # dd($query->getDQL());
-        dump($query);
 
         return $query->getResult();
 
