@@ -82,7 +82,7 @@ class CnOfficeGS
      * @ORM\Column(type="string", length=63, nullable=true)
      */
     private $dominion;
-
+    
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
      */
@@ -104,7 +104,7 @@ class CnOfficeGS
     private $profession;
 
     /**
-     * @ORM\Column(type="string", length=31, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $idMonastery;
 
@@ -123,8 +123,22 @@ class CnOfficeGS
      */
     private $location_show;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $numdate_start;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $numdate_end;
+
     public function getNumdate() {
         return $this->numdate;
+    }
+
+    public function getNumdateStart() {
+        return $this->numdate->getDateStart();
     }
 
     public function getMonasterylocationstr()
@@ -337,6 +351,25 @@ class CnOfficeGS
     public function setLocationShow(?string $location_show): self
     {
         $this->location_show = $location_show;
+
+        return $this;
+    }
+
+    public function setNumdateStart(?int $numdate_start): self
+    {
+        $this->numdate_start = $numdate_start;
+
+        return $this;
+    }
+
+    public function getNumdateEnd(): ?int
+    {
+        return $this->numdate_end;
+    }
+
+    public function setNumdateEnd(?int $numdate_end): self
+    {
+        $this->numdate_end = $numdate_end;
 
         return $this;
     }

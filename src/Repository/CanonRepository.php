@@ -57,23 +57,19 @@ class CanonRepository extends ServiceEntityRepository {
     }
     */
 
-
     public function findOneWithOffices($id) {
         // fetch all data related to this canon
+        // sorting of offices is specified by an annotation to CanonGS.offices
         $query = $this->createQueryBuilder('canon')
+                      ->leftJoin('canon.offices', 'oc')
+                      ->addSelect('oc')
                       ->andWhere('canon.id = :id')
                       ->setParameter('id', $id)
-                      ->leftJoin('canon.offices', 'oc')
-                      ->leftJoin('oc.numdate', 'ocdate')
-                      ->orderBy('ocdate.dateStart', 'ASC')
-                      ->leftJoin('oc.monastery', 'monastery')
                       ->getQuery();
 
         $canon = $query->getOneOrNullResult();
-
         return $canon;
     }
-
 
      public function findOfficeNames(CanonFormModel $canonquery) {
         $qb = $this->createQueryBuilder('canon')

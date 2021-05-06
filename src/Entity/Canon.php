@@ -46,10 +46,10 @@ class Canon
         return count($db_id) == 2;
     }
 
-
     /**
      * @ORM\OneToMany(targetEntity="CnOffice", mappedBy="canon")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
+     * @ORM\OrderBy({"location_show" = "ASC", "idMonastery" = "ASC", "numdate_start" = "ASC"})
      */
     private $offices;
 
