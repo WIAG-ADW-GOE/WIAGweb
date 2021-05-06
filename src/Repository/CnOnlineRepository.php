@@ -108,13 +108,11 @@ class CnOnlineRepository extends ServiceEntityRepository {
 
         # identifier
         if($formmodel->someid) {
-            $db_id = Canon::extractDbId($formmodel->someid);
-            $id_param = $db_id ? $db_id : $formmodel->someid;
             // dump($db_id, $id_param);
 
             $qb->join('co.idlookup', 'ilt')
-               ->andWhere('ilt.authority_id = :someid OR co.id = :someid')
-               ->setParameter(':someid', $id_param);
+               ->andWhere('ilt.authority_id = :someid OR co.id = :someid OR co.id_dh = :someid')
+               ->setParameter(':someid', $formmodel->someid);
         }
 
         # year
