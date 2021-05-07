@@ -108,9 +108,9 @@ class CnOnlineRepository extends ServiceEntityRepository {
 
         # identifier
         if($formmodel->someid) {
-            // dump($db_id, $id_param);
-
-            $qb->join('co.idlookup', 'ilt')
+            # dump($formmodel->someid);
+            
+            $qb->leftJoin('co.idlookup', 'ilt')
                ->andWhere('ilt.authority_id = :someid OR co.id = :someid OR co.id_dh = :someid')
                ->setParameter(':someid', $formmodel->someid);
         }
