@@ -185,7 +185,7 @@ class Person {
     /**
      * canon references (Domherren-Datenbank)
      */
-    private $refencesdh;
+    private $referencesdh;
 
     /**
      * canon offices (Germania Sacra)
@@ -195,7 +195,7 @@ class Person {
     /**
      * canon references (Germania Sacra)
      */
-    private $refencesgs;
+    private $referencesgs;
 
     public static function isIdBishop(string $id) {
         $headlen = strlen(self::WIAGID_PREFIX);
