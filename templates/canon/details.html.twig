@@ -142,7 +142,7 @@
 		    <span class="comment">Bemerkungen: {{ canon.commentperson }}</span>
 		</div>
 	    {% endif %}
-
+	    {% if canon.religiousorder or canon.academictitle %}
 	    <dl class="row mx-2 mt-3">
 		{% if canon.religiousorder %}
 		    <dt class="col-sm-3">Orden</dt>
@@ -153,9 +153,10 @@
 		    <dd class="col-sm-9">{{ canon.academictitle }}</dd>
 		{% endif %}
 	    </dl>
+	    {% endif %}
 	    {# <p>{{ dump(person) }}</p> #}
 	    {% if person.iddh %}
-		<div class="card mx-2 mb-2">
+		<div class="card mx-2 mb-2 mt-3">
 		    <span class="card-header"><strong>Amtsangaben aus Referenzwerken</strong></span>
 		    <dl class="card-body row mb-0 pb-0">
 			{# offices and references#}

@@ -125,14 +125,16 @@ class IDController extends AbstractController {
     }
 
     public function bishophtmlbyID(string $id) {
+        $repository = $this->getDoctrine()
+                           ->getRepository(Person::class);
 
-        $person = $this->getDoctrine()
-                       ->getRepository(Person::class)
-                       ->findOneWithOffices($id);
+        $person = $repository->findOneWithOffices($id);
+        $repository->fillCnData($person);
 
         if (!$person) {
             throw $this->createNotFoundException('Person wurde nicht gefunden');
         }
+
         return $this->bishophtml($person);
     }
 

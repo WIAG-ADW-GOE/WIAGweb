@@ -4,6 +4,10 @@ namespace App\Repository;
 
 use App\Entity\Person;
 use App\Entity\Office;
+use App\Entity\CnOffice;
+use App\Entity\CnOfficeGS;
+use App\Entity\CnCanonReference;
+use App\Entity\CnCanonReferenceGS;
 use App\Form\Model\BishopQueryFormModel;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -333,5 +337,51 @@ class PersonRepository extends ServiceEntityRepository {
         return $result;
 
     }
+
+    /**
+     * get data from cn_canon_gs
+     */
+    public function fillGSOfficesAndReferences($person) {
+        $em = $this->getEntityManager();
+        $officesgs = $em->getRepository(CnOfficeGS::class)->findByIdCanonAndSort($online->getIdGs());
+        $online->setOfficesGs($officesgs);
+
+        $refsrepogs = $em->getRepository(CnCanonReferenceGS::class);
+        $refsgs = $refsrepogs->findByIdCanon($online->getIdGs());
+        $online->setReferencesGS($refsgs);
+        return $online;
+    }
+
+    /**
+     * get data from canon database and GS
+     * We cannot delegate this to the ORM, becaucse id_dh and id_gs are no primary keys
+     */
+    public function fillCnData(Person $person) {
+        $em = $this->getEntityManager();
+
+        $id_dh = $person->getIdDh();
+        
+        if (!is_null($id_dh)) {
+            $officesdh = $em->getRepository(CnOffice::class)
+                            ->findByIdCanonAndSort($id_dh);
+            $person->setOfficesDh($officesdh);
+            $referencesdh = $em->getRepository(CnCanonReference::class)
+                               ->findByIdCanon($id_dh);
+            $person->setReferencesDh($referencesdh);
+        }
+
+        $id_gs = $person->getIdGs();
+        
+        if (!is_null($id_gs)) {
+            $officesgs = $em->getRepository(CnOfficeGS::class)
+                            ->findByIdCanonAndSort($id_gs);
+            $person->setOfficesGs($officesgs);
+            $referencesgs = $em->getRepository(CnCanonReferenceGS::class)
+                               ->findByIdCanon($id_gs);
+            $person->setReferencesGs($referencesgs);
+        }
+
+    }
+
 
 }

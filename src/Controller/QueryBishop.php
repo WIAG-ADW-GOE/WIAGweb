@@ -9,6 +9,10 @@ use App\Entity\Office;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
 use App\Entity\Diocese;
+use App\Entity\CnOffice;
+use App\Entity\CnCanonReference;
+use App\Entity\CnOfficeGS;
+use App\Entity\CnCanonReferenceGS;
 use App\Repository\PersonRepository;
 use App\Service\PersonData;
 use App\Service\PersonLinkedData;
@@ -311,6 +315,8 @@ class QueryBishop extends AbstractController {
             $iterator->next();
         }
         $person = $iterator->current();
+
+        $personRepository->fillCnData($person);
 
         $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 

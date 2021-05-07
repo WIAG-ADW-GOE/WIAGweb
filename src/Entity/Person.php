@@ -156,16 +156,46 @@ class Person {
     private $era;
 
     /**
+     * @ORM\OneToMany(targetEntity="Office", mappedBy="wiagid_person")
+     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
+     */
+    private $offices;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Reference")
      * @ORM\JoinColumn(name="reference_id", referencedColumnName="id_ref")
      */
     private $reference;
 
     /**
-     * @ORM\OneToMany(targetEntity="Office", mappedBy="wiagid_person")
-     * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_person")
+     * @ORM\Column(type="string", length=63, nullable=true)
      */
-    private $offices;
+    private $id_dh;
+
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $id_gs;
+
+    /**
+     * canon offices (Domherren-Datenbank)
+     */
+    private $officesdh;
+
+    /**
+     * canon references (Domherren-Datenbank)
+     */
+    private $refencesdh;
+
+    /**
+     * canon offices (Germania Sacra)
+     */
+    private $officesgs;
+
+    /**
+     * canon references (Germania Sacra)
+     */
+    private $refencesgs;
 
     public static function isIdBishop(string $id) {
         $headlen = strlen(self::WIAGID_PREFIX);
@@ -467,6 +497,25 @@ class Person {
         return $this;
     }
 
+    public function getOfficesDh() {
+        return $this->officesdh;
+    }
+
+    public function setOfficesDh($officesdh) {
+        $this->officesdh = $officesdh;
+        return $this;
+    }
+
+    public function getOfficesGs() {
+        return $this->officesgs;
+    }
+
+    public function setOfficesGs($officesgs) {
+        $this->officesgs = $officesgs;
+        return $this;
+    }
+
+
     public function getEra() {
         return $this->era;
     }
@@ -490,6 +539,25 @@ class Person {
     public function getReference() {
         return $this->reference;
     }
+
+    public function getReferencesDh() {
+        return $this->referencesdh;
+    }
+
+    public function setReferencesDh($referencesdh) {
+        $this->referencesdh = $referencesdh;
+        return $this;
+    }
+
+    public function getReferencesGs() {
+        return $this->referencesgs;
+    }
+
+    public function setReferencesGs($referencesgs) {
+        $this->referencesgs = $referencesgs;
+        return $this;
+    }
+
 
     public function getDisplayname() {
         $prefixpart = strlen($this->prefix_name) > 0 ? ' '.$this->prefix_name : '';
@@ -561,6 +629,30 @@ class Person {
                 $officeSortkey->setPerson(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIdDh(): ?string
+    {
+        return $this->id_dh;
+    }
+
+    public function setIdDh(?string $id_dh): self
+    {
+        $this->id_dh = $id_dh;
+
+        return $this;
+    }
+
+    public function getIdGs(): ?string
+    {
+        return $this->id_gs;
+    }
+
+    public function setIdGs(?string $id_gs): self
+    {
+        $this->id_gs = $id_gs;
 
         return $this;
     }
