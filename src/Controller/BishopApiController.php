@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Person;
 use App\Entity\Office;
 use App\Form\Model\BishopQueryFormModel;
+use App\Service\PersonData;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -26,7 +27,7 @@ class BishopApiController extends AbstractController {
     /**
      * @Route("/api/bishop/{wiagidlong}", name="api_bishop")
      */
-    public function getperson($wiagidlong, Request $request) {
+    public function getperson($wiagidlong, Request $request, PersonData $persondata) {
 
         $format = $request->query->get('format') ?? 'json';
 
@@ -45,7 +46,7 @@ class BishopApiController extends AbstractController {
             throw $this->createNotFoundException('Person wurde nicht gefunden');
         }
 
-        $personExport = array('person' => $person->toArray());
+        $personExport = $personData->personToJSON($person);
         switch($format) {
         case 'json':
             return $this->json($personExport);
@@ -65,7 +66,7 @@ class BishopApiController extends AbstractController {
     /**
      * @Route("/api/query-bishops", name="api_query_bishops")
      */
-    public function apigetpersons(Request $request) {
+    public function apigetpersons(Request $request, PersonData $personData) {
 
         $format = $request->query->get('format') ?? 'json';
 
@@ -80,15 +81,13 @@ class BishopApiController extends AbstractController {
         $year = $request->query->get('year');
         $someid = $request->query->get('someid');
 
-        if($someid && Person::isWiagidLong($someid)) {
-            $someid = Person::wiagidLongToWiagid($someid);
-        }
+        $dbId = Person::extractDbId($someid) ?? $someid;
 
         $bishopquery = new BishopQueryFormModel($name,
                                                 $place,
                                                 $office,
                                                 $year,
-                                                $someid,
+                                                $dbId,
                                                 array(),
                                                 array());
 
@@ -96,34 +95,23 @@ class BishopApiController extends AbstractController {
                         ->getRepository(Person::class)
                         ->findWithOffices($bishopquery);
 
-        # dump($persons);
 
-        $personsExport = array();
-        foreach($persons as $p) {
-            $personsExport[] = $p->toArray();
-        }
-
+        $response = new Response();
         switch($format) {
         case 'json':
-            return $this->json(array(
-                'persons' => [
-                    'count' => count($persons),
-                    'list' => array_map(function($el) {return array('person' => $el);},
-                                        $personsExport),
-                ]
-            ));
+            $data = $personData->personsToJSON($persons, null);
+            $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
+            break;
         case 'csv':
-            $csvencoder = new CsvEncoder();
-            $csvdata = $csvencoder->encode($personsExport, 'csv', [
-                'csv_delimiter' => "\t",
-            ]);
-            $response =  new Response($csvdata);
+            $data = $personData->personsToCSV($persons, null);
             $response->headers->set('Content-Type', "text/csv; charset=utf-8");
             $response->headers->set('Content-Disposition', "filename=WIAGBishops.csv");
-            return $response;
+            break;
         }
 
-        // return $this->render('start/welcome.html.twig');
+        $response->setContent($data);
+
+        return $response;
     }
 
 }

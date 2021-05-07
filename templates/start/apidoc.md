@@ -1,4 +1,4 @@
-{% set wiagbaseurl=app.request.getSchemeAndHttpHost() %}
+{% set wiagbaseurl='https://' ~ app.request.getHttpHost() %}
 WIAG API
 ========
 
@@ -16,19 +16,18 @@ Die Daten werden als ein [JSON](https://www.json.org/json-de.html)- oder CSV-Dok
 ## <a id="bischoefe"></a>Bischöfe
 
 ### <a id="bischofeinzel"></a>Einzelabfrage
-Mit der Angabe einer WIAG-Kennung erhält man alle Elemente eines Datensatzes. Die URL hat folgenden Aufbau: `{{ wiagbaseurl }}/api/bishop/[ID]?format=[json|csv]`. 
+Mit der Angabe einer WIAG-Kennung erhält man alle Elemente eines Datensatzes. Die URL hat folgenden Aufbau: `{{ wiagbaseurl }}/id/[ID]?format=[json|csv]`. 
 
 Beispiel:<br/>
-{{ url('api\_bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-10076-001', format: 'json'}) }}<br/>
-{{ url('api\_bishop', {wiagidlong: 'WIAG-Pers-EPISCGatz-10076-001', format: 'csv'}) }}
+{{ url('id', {id: 'WIAG-Pers-EPISCGatz-10076-001', format: 'json'})|replace({'http:' : 'https:'}) }}<br/>
+{{ url('id', {id: 'WIAG-Pers-EPISCGatz-10076-001', format: 'csv'})|replace({'http:' : 'https:'}) }}
 
 #### Struktur
-Das JSON-Dokument enthält ein Element `person`, das die einzelnen Angaben zu der
+Das JSON-Dokument enthält ein Element, das die einzelnen Angaben zu der
 Person umfasst. Dazu gehört bei fast allen Personen eine Gruppe von externen Kennungen im Element `identifiers` sowie eine Liste von Ämtern im Element `offices`.
 
 Beispiel:
 ``` json
-{"person":
  {"wiagId":"WIAG-Pers-EPISCGatz-10076-001",
   "familyName":"Braida",
   "givenName":"Franz Julian",
@@ -55,7 +54,6 @@ Beispiel:
    "pages":"41"
   }
  }
-}
 ```
 
 Das CSV Dokument ist ein UTF-8-Text. Die erste Zeile enthält die Feldbezeichner. Die
@@ -64,8 +62,8 @@ Tabulator voneinander getrennt.
 
 Beispiel:
 ``` text
-person.wiagId                   person.familyName   person.givenName    person.prefix   person.comment_person   ...
-WIAG-Pers-EPISCGatz-10076-001   Braida              "Franz Julian"      "Graf von"      "Ep. tit. Hipponensis"  ...
+wiagId	familyName	givenName	prefix	commentPerson	dateOfBirth	dateOfDeath	identifier.viafId ...
+WIAG-Pers-EPISCGatz-10076-001	Braida	"Franz Julian"	"Graf von"	"Ep. tit. Hipponensis"	1654	1727	5652149719115111130002 ...
 
 ```
 
@@ -126,29 +124,55 @@ Beispiele (CSV):<br/>
 Siehe [Hinweise zur Anzeige im Browser](#csvinbrowser).
 
 #### Struktur
-Das JSON-Dokument enthält ein Element `persons`, mit den Kindern `count` (Anzahl der Datensätze) und `list` (Liste der Datensätze).
+Das JSON-Dokument enthält ein Element `persons`, mit der Liste der Datensätze.
 
 Beispiel:
 ```json
-{"persons":
- {"count":22,
-  "list":
-  [{"person":
-	{"wiagId":"WIAG-Pers-EPISCGatz-3302-001",
-	 "familyName":"Hohenlohe",
-	 ...
-	}
-	"person":
-	{"wiagId":"WIAG-Pers-EPISCGatz-21477-001",
-	 "familyName":"Hohenlohe",
-	 ...
-	}
+{
+  "persons": [
+    {
+      "wiagId": "WIAG-Pers-EPISCGatz-03302-001",
+      "familyName": "Hohenlohe",
+      "givenName": "Georg",
+      "prefix": "von",
+      "dateOfBirth": "um 1350",
+      "dateOfDeath": "1423",
+      "identifier": {
+        "gsId": "019-01009-001",
+        "gndId": "124115535",
+        "viafId": "15696513",
+        "wikidataId": "Q1506604",
+        "wikipediaUrl": "https://de.wikipedia.org/wiki/Georg_von_Hohenlohe"
+      },
+      "offices": [
+        {
+          "officeTitle": "Bischof",
+          "diocese": "Passau",
+          "dateStart": "1389",
+          "dateEnd": "1423",
+          "sort": 6000
+        },
+		...
+      ],
+    },
+	{
+      "wiagId": "WIAG-Pers-EPISCGatz-02554-001",
+      "familyName": "Hohenlohe",
+      "givenName": "Friedrich",
+      "prefix": "von",
+      "dateOfDeath": "1352",
+      "identifier": {
+        "gsId": "054-00923-001",
+        "gndId": "110092236",
+        "viafId": "37502849",
+        "wikidataId": "Q1459890",
+        "wikipediaUrl": "https://de.wikipedia.org/wiki/Friedrich_I._von_Hohenlohe"
+      },
+	  ...
+    }
 	...
-   }
   ]
- }
 }
-
 ```
 
 Das CSV Dokument ist ein UTF-8-Text. Die erste Zeile enthält die Feldbezeichner. Die
@@ -156,12 +180,13 @@ folgenden Zeilen enthalten die Feldwerte. Die Feldinhalte einer Zeile sind durch
 
 Beispiel:
 ```text
-person.wiagId                   person.familyName               person.givenName    person.variantFamilyName    person.comment_name    person.prefix   person.comment_person   ...
-WIAG-Pers-EPISCGatz-3627-001    "Falkenstein und Königstein"    Werner                                                                 von             ...
-WIAG-Pers-EPISCGatz-21476-001   Aldendorf                       Konrad                                                                 von             "Ep. tit. Azotensis"    ...
-WIAG-Pers-EPISCGatz-21477-001   Eydel                           Tilman                                                                 von             "Ep. tit. Azotensis ?"  ...
-WIAG-Pers-EPISCGatz-3673-001    Blankenheim                     Friedrich                                                              von             ...
-WIAG-Pers-EPISCGatz-21281-001   "Franqueloy de Vico"            Joannes                                                                                "Ep. tit. Taurisiensis" ...
+wiagId	familyName	givenName	prefix	commentPerson	dateOfBirth	dateOfDeath	identifier.gsId	identifier.gndId	...
+WIAG-Pers-EPISCGatz-03302-001	Hohenlohe	Georg	von		"um 1350"	1423	019-01009-001	124115535	...
+WIAG-Pers-EPISCGatz-02554-001	Hohenlohe	Friedrich	von			1352	054-00923-001	110092236	...
+WIAG-Pers-EPISCGatz-12609-001	Hohenlohe-Waldenburg-Bartenstein	"Joseph Christian Franz"	"Prinz zu"		1740	1817	048-03097-001	119536463	...
+WIAG-Pers-EPISCGatz-03753-001	Hohenlohe	Gottfried	von			1322	059-00674-001	100943365	...
+WIAG-Pers-EPISCGatz-03757-001	Hohenlohe	Albrecht	von			1372	059-00048-001	11864775X	...
+WIAG-Pers-EPISCGatz-12605-001	Hohenlohe-Waldenburg-Schillingsfürst	"Franz Karl Joseph"	"Fürst von"	"1812–1819 Generalvikar von Ellwangen. Titularbistum Tempe"	1745	1819		1169559   ...
 ```
 
 Siehe [Hinweise zur Anzeige im Browser](#csvinbrowser).
@@ -172,8 +197,8 @@ Siehe [Hinweise zur Anzeige im Browser](#csvinbrowser).
 Mit der Angabe einer WIAG-Kennung erhält man alle Elemente eines Datensatzes. Die URL hat folgenden Aufbau: `{{ wiagbaseurl }}/api/diocese/[ID]?format=[json|csv]`. 
 
 Beispiel:<br/>
-{{ url('api\_diocese', {wiagidlong: 'WIAG-Dioc-2-001', format: 'json'}) }}<br/>
-{{ url('api\_diocese', {wiagidlong: 'WIAG-Dioc-2-001', format: 'csv'}) }}
+{{ url('api\_diocese', {wiagidlong: 'WIAG-Inst-DIOCGatz-047-001', format: 'json'}) }}<br/>
+{{ url('api\_diocese', {wiagidlong: 'WIAG-Inst-DIOCGatz-047-001', format: 'csv'}) }}
 
 #### Struktur
 Das JSON-Dokument enthält ein Element `diocese`, das die einzelnen Angaben zu dem
