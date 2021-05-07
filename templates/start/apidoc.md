@@ -108,18 +108,18 @@ Standard-Format, d.h. hier kann die Angabe des Formats entfallen:
 `{{ wiagbaseurl }}/api/query-bishops?key1=value1&key2=value2&format=[json|csv]`
 
 Beispiele (JSON):<br/>
-{{ url('api\_query\_bishops', {name: 'gondo', format: 'json'})|raw }}<br/>
-{{ url('api\_query\_bishops', {name: 'Hohenlohe', diocese: 'Bamberg'})|raw }}<br/>
-{{ url('api\_query\_bishops', {diocese: 'Trier', year: '1450', format: 'json'})|raw }}<br/>
-{{ url('api\_query\_bishops', {someid: 'WIAG-Pers-EPISCGatz-3302-001', format: 'json'})|raw }}<br/>
-{{ url('api\_query\_bishops', {someid: 'Q1506604'})|raw }}<br/>
+{{ url('api\_query\_bishops', {name: 'gondo', format: 'json'})|replace({'http:' : 'https:'})|raw }}<br/>
+{{ url('api\_query\_bishops', {name: 'Hohenlohe', diocese: 'Bamberg'})|replace({'http:' : 'https:'})|raw }}<br/>
+{{ url('api\_query\_bishops', {diocese: 'Trier', year: '1450', format: 'json'})|replace({'http:' : 'https:'})|raw }}<br/>
+{{ url('api\_query\_bishops', {someid: 'WIAG-Pers-EPISCGatz-3302-001', format: 'json'})|replace({'http:' : 'https:'})|raw }}<br/>
+{{ url('api\_query\_bishops', {someid: 'Q1506604'})|replace({'http:' : 'https:'})|raw }}<br/>
 
 Beispiele (CSV):<br/>
-{{ url('api\_query\_bishops', {name: 'gondo', format: 'csv'})|raw }}<br/>
-{{ url('api\_query\_bishops', {name: 'Hohenlohe', diocese: 'Bamberg', format: 'csv'})|raw }}<br/>
-{{ url('api\_query\_bishops', {diocese: 'Trier', year: '1450', format: 'csv'})|raw }}<br/>
-{{ url('api\_query\_bishops', {someid: 'WIAG-Pers-EPISCGatz-3302-001', format: 'csv'})|raw }}<br/>
-{{ url('api\_query\_bishops', {someid: 'Q1506604', format: 'csv'})|raw }}<br/>
+{{ url('api\_query\_bishops', {name: 'gondo', format: 'csv'})|replace({'http:' : 'https:'})|raw }}<br/>
+{{ url('api\_query\_bishops', {name: 'Hohenlohe', diocese: 'Bamberg', format: 'csv'})|replace({'http:' : 'https:'})|raw }}<br/>
+{{ url('api\_query\_bishops', {diocese: 'Trier', year: '1450', format: 'csv'})|replace({'http:' : 'https:'})|raw }}<br/>
+{{ url('api\_query\_bishops', {someid: 'WIAG-Pers-EPISCGatz-3302-001', format: 'csv'})|replace({'http:' : 'https:'})|raw }}<br/>
+{{ url('api\_query\_bishops', {someid: 'Q1506604', format: 'csv'})|replace({'http:' : 'https:'})|raw }}<br/>
 
 Siehe [Hinweise zur Anzeige im Browser](#csvinbrowser).
 
@@ -253,9 +253,9 @@ Beispiel:
 Die URL für die Abfrage einer Liste von Bistümern lautet: `{{ wiagbaseurl }}/api/query-dioceses?format=[json|csv]`. Optional kann nach dem Namen des Bistums gesucht werden durch den Parameter `name`: `{{ wiagbaseurl }}/api/query-dioceses?name=[name]&format=[json|csv]`.
 
 Beispiel:<br/>
-{{ url('api\_query\_dioceses', {format: 'json'}) }}<br/>
-{{ url('api\_query\_dioceses', {format: 'csv'}) }}<br/>
-{{ url('api\_query\_dioceses', {name: 'burg', format: 'json'})|raw }}
+{{ url('api\_query\_dioceses', {format: 'json'})|replace({'http:' : 'https:'}) }}<br/>
+{{ url('api\_query\_dioceses', {format: 'csv'})|replace({'http:' : 'https:'}) }}<br/>
+{{ url('api\_query\_dioceses', {name: 'burg', format: 'json'})|replace({'http:' : 'https:'})|raw }}
 
 #### Struktur
 Das JSON-Dokument enthält ein Element `dioeses`, mit den Kindern `count` (Anzahl der Datensätze) und `list` (Liste der Datensätze).
