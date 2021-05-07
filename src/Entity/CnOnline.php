@@ -174,7 +174,13 @@ class CnOnline {
     }
 
     public function getOfficesGs() {
-        return $this->offices_gs;
+        if (!is_null($this->offices_gs)) {
+            return $this->offices_gs;
+        } elseif (!is_null($this->canon_gs)) {
+            return $this->canon_gs->getOffices();
+        } else {
+            return null;
+        }
     }
 
     public function setOfficesGs($officesgs) {
@@ -202,7 +208,13 @@ class CnOnline {
     }
 
     public function getReferencesGs() {
-        return $this->references_gs;
+        if (!is_null($this->references_gs)) {
+            return $this->references_gs;
+        } elseif (!is_null($this->canon_gs)) {
+            return $this->canon_gs->getReferences();
+        } else {
+            return null;
+        }
     }
 
     public function setReferencesGs($referencesgs) {

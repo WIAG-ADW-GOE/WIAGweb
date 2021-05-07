@@ -49,6 +49,16 @@ class CnNamelookup
      */
     private $sortkey;
 
+    /**
+     * @ORM\Column(type="string", length=127, nullable=true)
+     */
+    private $gn_fn;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $gn_prefix_fn;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -114,6 +124,30 @@ class CnNamelookup
     public function setSortkey(?string $sortkey): self
     {
         $this->sortkey = $sortkey;
+
+        return $this;
+    }
+
+    public function getGnFn(): ?string
+    {
+        return $this->gn_fn;
+    }
+
+    public function setGnFn(?string $gn_fn): self
+    {
+        $this->gn_fn = $gn_fn;
+
+        return $this;
+    }
+
+    public function getGnPrefixFn(): ?string
+    {
+        return $this->gn_prefix_fn;
+    }
+
+    public function setGnPrefixFn(?string $gn_prefix_fn): self
+    {
+        $this->gn_prefix_fn = $gn_prefix_fn;
 
         return $this;
     }

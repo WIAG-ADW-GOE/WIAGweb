@@ -73,7 +73,7 @@ class IDController extends AbstractController {
      */
     public function redirectID(string $id, Request $request) {
         $format = $request->query->get('format');
-        if (!is_null($format))
+        if (!is_null($format) && $format != 'html')
             return $this->redirectToRoute('wiag_id_data', ['id' => $id, 'format' => $format], 303);
         else {
             // $format = $request->getPreferredFormat();

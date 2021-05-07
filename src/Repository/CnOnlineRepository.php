@@ -149,10 +149,12 @@ class CnOnlineRepository extends ServiceEntityRepository {
         # names
         if($formmodel->name) {
             $qb->join('co.namelookup', 'nlt')
-               ->andWhere("CONCAT(nlt.givenname, ' ', nlt.prefixName, ' ', nlt.familyname) LIKE :qname".
-                           " OR CONCAT(nlt.givenname, ' ', nlt.familyname)LIKE :qname".
-                           " OR nlt.givenname LIKE :qname".
-                           " OR nlt.familyname LIKE :qname")
+               // ->andWhere("CONCAT(nlt.givenname, ' ', nlt.prefixName, ' ', nlt.familyname) LIKE :qname".
+               //             " OR CONCAT(nlt.givenname, ' ', nlt.familyname)LIKE :qname".
+               //             " OR nlt.givenname LIKE :qname".
+               //             " OR nlt.familyname LIKE :qname")
+               ->andWhere("nlt.givenname LIKE :qname OR nlt.familyname LIKE :qname".
+                          " OR nlt.gn_fn LIKE :qname OR nlt.gn_prefix_fn LIKE :qname")
                ->setParameter('qname', '%'.$formmodel->name.'%');
         }
 
@@ -359,25 +361,15 @@ class CnOnlineRepository extends ServiceEntityRepository {
         // this looks not very elegant, but it is simple and each step is easy to control
         $em = $this->getEntityManager();
         if (!is_null($online->getIdDh())) {
-            $canon = $em->getRepository(Canon::class)->findOneById($online->getIdDh());
+            $canon = $em->getRepository(Canon::class)->findOneWithOffices($online->getIdDh());
             $online->setCanonDh($canon);
-
-            # TODO get office data with findOneWithOffices
-            $officesdh = $em->getRepository(CnOffice::class)->findByIdCanonAndSort($online->getIdDh());
-            $online->setOfficesDh($officesdh);
-
-            $refsrepodh = $em->getRepository(CnCanonReference::class);
-            $refsdh = $refsrepodh->findByIdCanon($online->getIdDh());
-            $online->setReferencesDh($refsdh);
             # add GS data
             if (!is_null($online->getIdGs())) {
-                # TODO is is not neccessary to load canon data, only offices and references
-                $canongs = $em->getRepository(CanonGS::class)->findOneById($online->getIdGs());
-                $online->setCanonGs($canongs);
                 $this->fillGSOfficesAndReferences($online);
             }
             # add WIAG bishop data
             if (!is_null($online->getIdEp())) {
+                # we need the full bishop object here, because of external references
                 $personrepo = $em->getRepository(Person::class);
                 $episc = $personrepo->findOneWithOffices($online->getIdEp());
                 $online->setBishop($episc);
@@ -385,12 +377,11 @@ class CnOnlineRepository extends ServiceEntityRepository {
         }
         # GS only
         elseif (!is_null($online->getIdGs())) {
-            $canon = $em->getRepository(CanonGS::class)->findOneById($online->getIdGs());
+            $canon = $em->getRepository(CanonGS::class)->findOneWithOffices($online->getIdGs());
             $online->setCanonGs($canon);
-            # TODO get office data with findOneWithOffices
-            $this->fillGSOfficesAndReferences($online);
             # add WIAG bishop data
             if (!is_null($online->getIdEp())) {
+                # we need the full bishop object here, because of external references
                 $personrepo = $em->getRepository(Person::class);
                 $episc = $personrepo->findOneWithOffices($online->getIdEp());
                 $online->setBishop($episc);

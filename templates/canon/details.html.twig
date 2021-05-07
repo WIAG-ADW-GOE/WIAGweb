@@ -159,8 +159,8 @@
 		    <span class="card-header"><strong>Amtsangaben aus Referenzwerken</strong></span>
 		    <dl class="card-body row mb-0 pb-0">
 			{# offices and references#}
-			{{ _self.sectionoffices(person.officesdh, urlgsmonasteries, dioceserepository) }}
-			{{ _self.sectionreferences(person.referencesdh, false, url_gs_bios) }}
+			{{ _self.sectionoffices(person.canondh.offices, urlgsmonasteries, dioceserepository) }}
+			{{ _self.sectionreferences(person.canondh.references, false, url_gs_bios) }}
 		    </dl>
 		</div>
 	    {% endif %}
