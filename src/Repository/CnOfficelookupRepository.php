@@ -74,9 +74,24 @@ class CnOfficelookupRepository extends ServiceEntityRepository
                    ->setMaxResults($limit);
         $query = $qb->getQuery();
 
-        # dd($query->getDQL());
+        $suggestions = $query->getResult();
 
-        return $query->getResult();       
+        $nloc = count($suggestions);
+        if ($nloc < $limit) {
+            $limit_at = $limit - $nloc;
+            $qb_at = $this->createQueryBuilder('olt')
+                          ->select('DISTINCT olt.archdeacon_territory AS suggestion')
+                          ->andWhere('olt.archdeacon_territory LIKE :place')
+                          ->setParameter('place', '%'.$place.'%')
+                          ->setMaxResults($limit_at);
+            $query_at = $qb_at->getQuery();
+            $suggestions_at = $query_at->getResult();
+            $suggestions = array_merge($suggestions, $suggestions_at);
+        }            
+
+        # dd($suggestions);
+
+        return $suggestions;       
     }
 
     /* AJAX callback */
