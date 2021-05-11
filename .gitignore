@@ -20,3 +20,6 @@
 *~
 ###< emacs temporary files
 
+###> use this only for test purposes
+/config/secrets/prod/prod.DATABASE_PASSWORD.*
+###<

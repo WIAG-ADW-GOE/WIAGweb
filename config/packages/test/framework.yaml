@@ -19,5 +19,5 @@ framework:
         log: true
 
     assets:
-      base_path: 'public'
+      base_path: ''
         
