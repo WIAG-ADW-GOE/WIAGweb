@@ -360,7 +360,7 @@ class PersonRepository extends ServiceEntityRepository {
         $em = $this->getEntityManager();
 
         $id_dh = $person->getIdDh();
-        
+
         if (!is_null($id_dh)) {
             $officesdh = $em->getRepository(CnOffice::class)
                             ->findByIdCanonAndSort($id_dh);
@@ -371,7 +371,7 @@ class PersonRepository extends ServiceEntityRepository {
         }
 
         $id_gs = $person->getIdGs();
-        
+
         if (!is_null($id_gs)) {
             $officesgs = $em->getRepository(CnOfficeGS::class)
                             ->findByIdCanonAndSort($id_gs);
