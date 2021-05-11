@@ -193,9 +193,10 @@
 	    {% endif %}
 	    {# external identifiers and other identifiers (canondh holds a copy of bishop data if available#}
 	    {% if person.iddh %}{% set canon = person.canondh %}
+            {% elseif person.idep %}{% set canon = person.bishop %}		
 	    {% else %}{% set canon = person.canongs %}
 	    {% endif %}
-	    {% if canon.hasExternalIdentifier %}
+	    {% if canon.hasExternalIdentifier or canon.hasOtherIdentifier %}
 		<div class="card mx-2">
 		    <span class="card-header"><strong>Externe Identifier</strong></span>
 		    <div class="card-body">
