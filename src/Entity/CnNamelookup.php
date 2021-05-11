@@ -44,10 +44,6 @@ class CnNamelookup
      */
     private $familyname;
 
-    /**
-     * @ORM\Column(type="string", length=127, nullable=true)
-     */
-    private $sortkey;
 
     /**
      * @ORM\Column(type="string", length=127, nullable=true)
@@ -112,18 +108,6 @@ class CnNamelookup
     public function setFamilyname(?string $familyname): self
     {
         $this->familyname = $familyname;
-
-        return $this;
-    }
-
-    public function getSortkey(): ?string
-    {
-        return $this->sortkey;
-    }
-
-    public function setSortkey(?string $sortkey): self
-    {
-        $this->sortkey = $sortkey;
 
         return $this;
     }

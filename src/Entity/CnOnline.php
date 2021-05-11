@@ -23,12 +23,6 @@ class CnOnline {
     private $officelookup;
 
     /**
-     * @ORM\OneToOne(targetEntity="CnOfficeSortkey")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id_online")
-     */
-    private $officesortkey;
-
-    /**
      * @ORM\OneToOne(targetEntity="CnEra")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_online")
      */

@@ -37,7 +37,7 @@ class CnCanonReference
     private $idCanon;
 
     /**
-     * @ORM\Column(type="string", length=63)
+     * @ORM\Column(type="integer")
      */
     private $idReference;
 

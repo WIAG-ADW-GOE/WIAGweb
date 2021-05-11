@@ -6,9 +6,9 @@ use App\Repository\CnReferenceRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=CnReferenceRepository::class)
+ * @ORM\Entity(repositoryClass=CnReferenceGSRepository::class)
  */
-class CnReference
+class CnReferenceGS
 {
 
     /**

@@ -17,12 +17,6 @@ class CnOffice
     private $canon;
 
     /**
-     * @ORM\OneToOne(targetEntity="CnOfficedate", mappedBy="office")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id_office")
-     */
-    private $numdate;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Monastery", inversedBy="office")
      * @ORM\JoinColumn(nullable=true, name="id_monastery", referencedColumnName="wiagid")
      */
@@ -134,10 +128,6 @@ class CnOffice
      * @ORM\Column(type="integer", nullable=true)
      */
     private $numdate_end;
-
-    public function getNumdate() {
-        return $this->numdate;
-    }
 
     public function getMonasterylocationstr()
     {

@@ -18,7 +18,7 @@ class CnCanonReferenceGS
     private $canon;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CnReference")
+     * @ORM\ManyToOne(targetEntity="CnReferenceGS")
      * @ORM\JoinColumn(name="id_reference", referencedColumnName="id")
      */
     private $reference;
@@ -36,7 +36,7 @@ class CnCanonReferenceGS
     private $idCanon;
 
     /**
-     * @ORM\Column(type="string", length=63)
+     * @ORM\Column(type="integer")
      */
     private $idReference;
 
