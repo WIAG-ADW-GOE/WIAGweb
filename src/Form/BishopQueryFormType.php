@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
@@ -121,7 +122,10 @@ class BishopQueryFormType extends AbstractType
                 'attr' => [
                     'class' => 'btn btn-light btn-sm',
                 ]
-            ]);
+            ])
+            ->add('stateFctDioc', HiddenType::class)
+            ->add('stateFctOfc', HiddenType::class);
+
 
         if($bishopquery && !$bishopquery->isEmpty()) {
             $this->createFacetPlaces($builder, $bishopquery);

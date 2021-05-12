@@ -14,6 +14,8 @@ class BishopQueryFormModel {
     public $someid;
     public $facetPlaces;
     public $facetOffices;
+    public $stateFctDioc;
+    public $stateFctOfc;
 
     public function __construct($n = null,
                                 $p = null,
@@ -21,7 +23,9 @@ class BishopQueryFormModel {
                                 $y = null,
                                 $id = null,
                                 $fpl = array(),
-                                $fof = array()) {
+                                $fof = array(),
+                                $stateFctDioc = "0",
+                                $stateFctOfc = "0") {
         $this->name = $n;
         $this->place = $p;
         $this->office = $o;
@@ -29,6 +33,9 @@ class BishopQueryFormModel {
         $this->someid = $id;
         $this->facetPlaces = $fpl;
         $this->facetOffices = $fof;
+        $this->stateFctDioc = $stateFctDioc;
+        $this->stateFctOfc = $stateFctOfc;
+
     }
 
     public function isEmpty() {
@@ -51,6 +58,9 @@ class BishopQueryFormModel {
         $this->office = $a['office'];
         $this->year = $a['year'];
         $this->someid = $a['someid'];
+        $this->stateFctDioc = $a['stateFctDioc'];
+        $this->stateFctOfc = $a['stateFctOfc'];
+
 
         if (array_key_exists('facetOffices', $a)) {
             $facetOffices = array();
@@ -89,6 +99,8 @@ class BishopQueryFormModel {
         if($this->office) $qelts['office'] = $this->office;
         if($this->year) $qelts['year'] = $this->year;
         if($this->someid) $qelts['someid'] = $this->someid;
+        if($this->stateFctDioc) $qelts['stateFctDioc'] = $this->stateFctDioc;
+        if($this->stateFctOfc) $qelts['stateFctOfc'] = $this->stateFctOfc;
 
         return $qelts;
     }
