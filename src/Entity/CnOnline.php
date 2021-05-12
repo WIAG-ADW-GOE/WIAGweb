@@ -37,7 +37,7 @@ class CnOnline {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="string", length=63)
+     * @ORM\Column(type="integer")
      */
     private $id;
 
@@ -97,6 +97,11 @@ class CnOnline {
      * @ORM\Column(type="integer", nullable=true)
      */
     private $domstift_start;
+
+    /**
+     * @ORM\Column(type="string", length=63)
+     */
+    private $wiagid;
 
     public function getId(): ?string
     {
@@ -279,6 +284,18 @@ class CnOnline {
     public function setDomstiftStart(?int $domstift_start): self
     {
         $this->domstift_start = $domstift_start;
+
+        return $this;
+    }
+
+    public function getWiagid(): ?string
+    {
+        return $this->wiagid;
+    }
+
+    public function setWiagid(string $wiagid): self
+    {
+        $this->wiagid = $wiagid;
 
         return $this;
     }

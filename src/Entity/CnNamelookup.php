@@ -25,7 +25,7 @@ class CnNamelookup
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=63)
+     * @ORM\Column(type="integer")
      */
     private $id_online;
 
