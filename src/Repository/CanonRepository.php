@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\Canon;
 use App\Entity\CnOffice;
 use App\Entity\Monastery;
-use App\Form\Model\CanonFormModel;
+use App\Form\Model\CanonEditSearchFormModel;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -133,33 +133,111 @@ class CanonRepository extends ServiceEntityRepository {
         return $result;
     }
 
-    /**
-     * add conditions set by facets
-     */
-    public function addFacets($querydata, $qb) {
-        if($querydata->facetLocations) {
-            $locations = array_column($querydata->facetLocations, 'id');
-            $qb->join('canon.offices', 'ocfctl')
-               ->andWhere('ocfctl.location IN (:locations)')
-               ->setParameter('locations', $locations);
-        }
-        if($querydata->facetMonasteries) {
-            $ids_monastery = array_column($querydata->facetMonasteries, 'id');
-            // $facetMonasteries = array_map(function($a) {return 'Domstift '.$a;}, $facetMonasteries);
-            $qb->join('canon.offices', 'ocfctp')
-               ->join('ocfctp.monastery', 'mfctp')
-               ->andWhere('mfctp.wiagid IN (:places)')
-               ->setParameter('places', $ids_monastery);
-        }
-        if($querydata->facetOffices) {
-            $facetOffices = array_column($querydata->facetOffices, 'name');
-            $qb->join('canon.offices', 'ocfctoc')
-               ->andWhere("ocfctoc.officeName IN (:offices)")
-               ->setParameter('offices', $facetOffices);
+    public function countByEditQueryObject(CanonEditSearchFormModel $formmodel) {
+        // if($formmodel->isEmpty()) return 0;
+        $qb = $this->createQueryBuilder('c')
+                   ->select('COUNT(DISTINCT c.id)');
+
+        $this->addQueryConditions($qb, $formmodel);
+
+        $query = $qb->getQuery();
+
+        $ncount = $query->getOneOrNullResult();
+        return $ncount;
+    }
+
+    public function findByEditQueryObject(CanonEditSearchFormModel $formmodel, $limit = 0, $offset = 0) {
+
+        // join with tables that are needed for sorting anyway
+        $qb = $this->createQueryBuilder('c');
+
+        $this->addQueryConditions($qb, $formmodel);
+
+
+        if($limit > 0) {
+            $qb->setMaxResults($limit);
+            $qb->setFirstResult($offset);
         }
 
+        // dump($qb->getDQL());
+        // $this->addSortParameter($qb, $formmodel);
+
+        $query = $qb->getQuery();
+        // dd($query->getResult());
+        $persons = new Paginator($query, true);
+
+        return $persons;
+    }
+
+    private function addQueryConditions(QueryBuilder $qb, CanonEditSearchFormModel $formmodel): QueryBuilder {
+
+        // conditions are independent from each other
+        // e.g. search for a 'Kanoniker' who had also an office in 'Mainz' says not that the
+        // person was 'Kononiker' in 'Mainz';
+
+        # identifier
+        if($formmodel->someid) {
+            # dump($formmodel->someid);
+            
+            $qb->andWhere('c.id = :someid'.
+                          ' OR c.gsnId = :someid'.
+                          ' OR c.viafId = :someid'.
+                          ' OR c.gndId = :someid')
+               ->setParameter(':someid', $formmodel->someid);
+        }
+
+        # year
+        if($formmodel->year) {
+            $qb->andWhere('c.numdate_start - :mgnyear < :qyear AND :qyear < c.numdate_end + :mgnyear')
+               ->setParameter(':mgnyear', self::MARGINYEAR)
+               ->setParameter(':qyear', $formmodel->year);
+        }
+
+        # monastery
+        if($formmodel->monastery) {
+            $qb->join('c.officelookup', 'olt_monastery')
+               ->join('olt_monastery.monastery', 'monastery')
+               ->join('monastery.domstift', 'query_domstift')
+               ->andWhere('monastery.monastery_name LIKE :monastery')
+               ->setParameter('monastery', '%'.$formmodel->monastery.'%');
+        }
+
+        # office title
+        if($formmodel->office) {
+            $qb->join('c.officelookup', 'olt_office')
+               ->andWhere('olt_office.office_name LIKE :office')
+               ->setParameter('office', '%'.$formmodel->office.'%');
+        }
+
+        # office place
+        if($formmodel->place) {
+            $qb->join('c.officelookup', 'olt_place')
+               ->andWhere('olt_place.location_name LIKE :place OR olt_place.archdeacon_territory LIKE :place')
+               ->setParameter('place', '%'.$formmodel->place.'%');
+        }
+
+        # names
+        if($formmodel->name) {
+            $qb->andWhere("CONCAT(c.givenname, ' ', c.prefixName, ' ', c.familyname) LIKE :qname".
+                          " OR CONCAT(c.givenname, ' ', c.familyname)LIKE :qname".
+                          " OR c.givenname LIKE :qname".
+                          " OR c.familyname LIKE :qname")
+               ->andWhere("c.givenname LIKE :qname OR c.familyname LIKE :qname".
+                          " OR c.gn_fn LIKE :qname OR c.gn_prefix_fn LIKE :qname")
+               ->setParameter('qname', '%'.$formmodel->name.'%');
+        }
+
+
+        // for each individual person sort offices by start date in the template
         return $qb;
     }
 
+    public function findStatus() {
+        $qb = $this->createQueryBuilder('c')
+                   ->select('DISTINCT c.status')
+                   ->andWhere('c.status IS NOT NULL');
+
+        return $qb->getQuery()->getResult();        
+    }
 
 }
