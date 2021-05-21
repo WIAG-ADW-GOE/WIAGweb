@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
 {% endblock %}
 {% block javascripts %}
+    <script src="{{ asset('js/popper.min.js') }}"></script>
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
     <script src="{{ asset('js/canon.js') }}"></script>
