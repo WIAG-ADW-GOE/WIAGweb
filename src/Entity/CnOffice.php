@@ -30,7 +30,7 @@ class CnOffice
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="string", length=31)
+     * @ORM\Column(type="integer")
      */
     private $id;
 
@@ -55,7 +55,7 @@ class CnOffice
     private $dateEnd;
 
     /**
-     * @ORM\Column(type="string", length=63)
+     * @ORM\Column(type="integer")
      */
     private $idCanon;
 
