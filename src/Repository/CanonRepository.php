@@ -133,7 +133,7 @@ class CanonRepository extends ServiceEntityRepository {
         return $result;
     }
 
-    public function countByEditQueryObject(CanonEditSearchFormModel $formmodel) {
+    public function countByQueryObject(CanonEditSearchFormModel $formmodel) {
         // if($formmodel->isEmpty()) return 0;
         $qb = $this->createQueryBuilder('c')
                    ->select('COUNT(DISTINCT c.id)');
@@ -146,7 +146,7 @@ class CanonRepository extends ServiceEntityRepository {
         return $ncount;
     }
 
-    public function findByEditQueryObject(CanonEditSearchFormModel $formmodel, $limit = 0, $offset = 0) {
+    public function findByQueryObject(CanonEditSearchFormModel $formmodel, $limit = 0, $offset = 0) {
 
         // join with tables that are needed for sorting anyway
         $qb = $this->createQueryBuilder('c');
@@ -178,7 +178,7 @@ class CanonRepository extends ServiceEntityRepository {
         # identifier
         if($formmodel->someid) {
             # dump($formmodel->someid);
-            
+
             $qb->andWhere('c.id = :someid'.
                           ' OR c.gsnId = :someid'.
                           ' OR c.viafId = :someid'.
@@ -188,14 +188,14 @@ class CanonRepository extends ServiceEntityRepository {
 
         # year
         if($formmodel->year) {
-            $qb->andWhere('c.numdate_start - :mgnyear < :qyear AND :qyear < c.numdate_end + :mgnyear')
+            $qb->andWhere('c.dateHistFirst - :mgnyear < :qyear AND :qyear < c.dateHistLast + :mgnyear')
                ->setParameter(':mgnyear', self::MARGINYEAR)
                ->setParameter(':qyear', $formmodel->year);
         }
 
         # monastery
         if($formmodel->monastery) {
-            $qb->join('c.officelookup', 'olt_monastery')
+            $qb->join('c.offices', 'olt_monastery')
                ->join('olt_monastery.monastery', 'monastery')
                ->join('monastery.domstift', 'query_domstift')
                ->andWhere('monastery.monastery_name LIKE :monastery')
@@ -204,15 +204,15 @@ class CanonRepository extends ServiceEntityRepository {
 
         # office title
         if($formmodel->office) {
-            $qb->join('c.officelookup', 'olt_office')
-               ->andWhere('olt_office.office_name LIKE :office')
+            $qb->join('c.offices', 'olt_office')
+               ->andWhere('olt_office.officeName LIKE :office')
                ->setParameter('office', '%'.$formmodel->office.'%');
         }
 
         # office place
         if($formmodel->place) {
-            $qb->join('c.officelookup', 'olt_place')
-               ->andWhere('olt_place.location_name LIKE :place OR olt_place.archdeacon_territory LIKE :place')
+            $qb->join('c.offices', 'olt_place')
+               ->andWhere('olt_place.location_show LIKE :place OR olt_place.archdeacon_territory LIKE :place')
                ->setParameter('place', '%'.$formmodel->place.'%');
         }
 
@@ -222,11 +222,14 @@ class CanonRepository extends ServiceEntityRepository {
                           " OR CONCAT(c.givenname, ' ', c.familyname)LIKE :qname".
                           " OR c.givenname LIKE :qname".
                           " OR c.familyname LIKE :qname")
-               ->andWhere("c.givenname LIKE :qname OR c.familyname LIKE :qname".
-                          " OR c.gn_fn LIKE :qname OR c.gn_prefix_fn LIKE :qname")
                ->setParameter('qname', '%'.$formmodel->name.'%');
         }
 
+        # filter by status
+        if($formmodel->filterStatus) {
+            $qb->andWhere("c.status in (:filter)")
+               ->setParameter('filter', $formmodel->filterStatus);
+        }
 
         // for each individual person sort offices by start date in the template
         return $qb;
@@ -237,7 +240,7 @@ class CanonRepository extends ServiceEntityRepository {
                    ->select('DISTINCT c.status')
                    ->andWhere('c.status IS NOT NULL');
 
-        return $qb->getQuery()->getResult();        
+        return $qb->getQuery()->getResult();
     }
 
 }

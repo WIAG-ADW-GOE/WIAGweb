@@ -22,6 +22,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * @IsGranted("ROLE_DATA_ADMIN")
+ */
 class CanonEditController extends AbstractController {
     /**
      * Parameters
@@ -48,8 +51,14 @@ class CanonEditController extends AbstractController {
 
             $querydata = $form->getData();
 
+            $singleoffset = $request->request->get('singleoffset');
+            if(!is_null($singleoffset)) {
+                return $this->getCanonInQuery($form, $singleoffset);
+            }
+
+
             // get the number of results (without page limit restriction)
-            $count = $repository->countByEditQueryObject($querydata)[1];
+            $count = $repository->countByQueryObject($querydata)[1];
 
             // return HTML
 
@@ -60,11 +69,12 @@ class CanonEditController extends AbstractController {
 
             $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
 
-            $persons = $repository->findByEditQueryObject($querydata, self::LIST_LIMIT, $offset);
+            $persons = $repository->findByQueryObject($querydata, self::LIST_LIMIT, $offset);
+            $filterStatusOn = !is_null($querydata->filterStatus) && count($querydata->filterStatus) > 0;
 
-
-            return $this->render('canon/listeditform.html.twig', [
+            return $this->render('canon_edit/list.html.twig', [
                 'query_form' => $form->createView(),
+                'filterStatusOn' => $filterStatusOn,
                 'count' => $count,
                 'limit' => self::LIST_LIMIT,
                 'offset' => $offset,
@@ -73,11 +83,46 @@ class CanonEditController extends AbstractController {
 
         } else {
             // show empty form only
-            return $this->render('canon/launchlisteditform.html.twig', [
+            return $this->render('canon_edit/launch_query.html.twig', [
                 'query_form' => $form->createView(),
+                'filterStatusOn' => false,
             ]);
         }
     }
+
+    public function getCanonInQuery($form, $offset) {
+
+        $queryformdata = $form->getData();
+
+        $personRepository = $this->getDoctrine()
+                                 ->getRepository(Canon::class);
+        $hassuccessor = false;
+        if($offset == 0) {
+            $persons = $personRepository->findByQueryObject($queryformdata, 2, $offset);
+            $iterator = $persons->getIterator();
+            if(count($iterator) == 2) $hassuccessor = true;
+
+        } else {
+            $persons = $personRepository->findByQueryObject($queryformdata, 3, $offset - 1);
+            $iterator = $persons->getIterator();
+            if(count($iterator) == 3) $hassuccessor = true;
+            $iterator->next();
+        }
+        $person = $iterator->current();
+
+        $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
+
+        return $this->render('canon_edit/details.html.twig', [
+            'query_form' => $form->createView(),
+            'person' => $person,
+            'wiagidlong' => $person->getId(),
+            'offset' => $offset,
+            'hassuccessor' => $hassuccessor,
+            'dioceserepository' => $dioceseRepository,
+        ]);
+
+    }
+
 
     /**
      * AJAX callback

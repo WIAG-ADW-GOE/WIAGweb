@@ -117,7 +117,7 @@ class CnOffice
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
      */
-    private $archdeaconTerritory;
+    private $archdeacon_territory;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
