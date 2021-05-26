@@ -42,12 +42,12 @@ class CnOnline {
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $id_dh;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $id_gs;
 

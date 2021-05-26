@@ -30,7 +30,7 @@ class CnOffice
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="string", length=31)
+     * @ORM\Column(type="integer")
      */
     private $id;
 
@@ -55,7 +55,7 @@ class CnOffice
     private $dateEnd;
 
     /**
-     * @ORM\Column(type="string", length=63)
+     * @ORM\Column(type="integer")
      */
     private $idCanon;
 
@@ -117,7 +117,7 @@ class CnOffice
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
      */
-    private $archdeaconTerritory;
+    private $archdeacon_territory;
 
     /**
      * @ORM\Column(type="integer", nullable=true)

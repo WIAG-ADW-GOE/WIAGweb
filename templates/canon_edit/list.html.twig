@@ -1,11 +1,12 @@
 {# query_bishop/listresult.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
+{% block stylesheets %}    
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
 {% endblock %}
 {% block javascripts %}
+    <script src="{{ asset('js/popper.min.js') }}"></script>
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
     <script src="{{ asset('js/canon.js') }}"></script>
@@ -25,9 +26,9 @@
     {{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('canons_edit')} }) }}
 	<div class="container-fluid mt-3">
 	    <div class="row ml-2 col-12">
-		{{ include('canon/_title.html.twig') }}
+		{{ include('canon_edit/_title.html.twig') }}
 	    </div>
-	    {{ include('canon/_edit_form_elements.html.twig') }}
+	    {{ include('canon_edit/_form_elements.html.twig') }}
 	    <div class="row ml-2 mt-3 col-12">
 		Treffer:
 		{% if count == 0 %}
@@ -50,15 +51,34 @@
 				    <tr>
 					<th scope="col">Name</th>
 					<th scope="col">Ämter</th>
+					<th scape="col">Status</th>
 				    </tr>
 				</thead>
 				<tbody>
 				    {% for person in persons %}
-					{% if person.iddh %}
-					    {{ macro.canonrow(person.canondh, true, person.idgs, person.idep, person.canondh.offices, offset + loop.index0) }}
-					{% elseif person.idgs %}
-					    {{ macro.canonrow(person.canongs, false, true, person.idep, person.canongs.offices, offset + loop.index0) }}
-					{% endif %}
+					<tr>
+					    <td><button type="submit" form="q_form" class="btn btn-link text-sm-left p-0" name="singleoffset" value="{{ offset }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
+						{% if not person.datebirth and not person.datedeath %}
+						{% elseif person.datebirth and not person.datedeath %}
+						    <p class="ml-3">* {{ person.datebirth }}</p>
+						{% elseif not person.datebirth and person.datedeath %}
+						    <p class="ml-3">&dagger; {{ person.datedeath }}</p>
+						{% else %}
+						    <p class="ml-3">* {{ person.datebirth }} <span class="ml-2">&dagger; {{ person.datedeath }}</span></p>
+						{% endif %}
+					    </td>
+					    <td>
+						{% for o in person.offices%}
+						    <small>{{ o.officename }}
+							{% if o.locationshow %}({{ o.locationshow }}){% endif %}
+							{% if o.datestart and not o.dateend %}{{ o.datestart }}
+							{% elseif not o.datestart and o.dateend %}{{ o.dateend }}
+							{% elseif o.datestart and o.dateend %}{{ o.datestart }}-{{ o.dateend }}{% endif %}
+						    </small><br/>
+						{% endfor %}
+					    </td>
+					    <td><small>{{ person.status }}</small></td>
+					</tr>
 				    {% endfor %}
 				    <tr>
 					<td>{{ fb_elements }}</td>

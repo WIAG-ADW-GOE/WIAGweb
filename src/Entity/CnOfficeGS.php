@@ -58,7 +58,7 @@ class CnOfficeGS
     private $dateEnd;
 
     /**
-     * @ORM\Column(type="string", length=63)
+     * @ORM\Column(type="integer")
      */
     private $idCanon;
 

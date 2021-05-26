@@ -62,7 +62,7 @@ class Canon
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="string", length=63)
+     * @ORM\Column(type="integer")
      */
     private $id;
 

@@ -114,11 +114,9 @@ class CanonEditSearchFormType extends AbstractType
                            ->findStatus();
         $choices = array();
         foreach ($astatus as $status) {
-            $choices[] = [$status['status'] => false];
+            $value = $status['status'];
+            $choices[$value] = $value;
         }
-
-        dump($choices);
-
 
         if ($choices) {
             $builder->add('filterStatus', ChoiceType::class, [
@@ -130,8 +128,6 @@ class CanonEditSearchFormType extends AbstractType
                 // 'choice_value' => ChoiceList::value($this, 'value'),
             ]);
         }
-
-        dump($builder);
 
         return $builder;
     }

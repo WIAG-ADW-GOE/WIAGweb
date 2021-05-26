@@ -38,7 +38,14 @@
 				<a class="dropdown-item" href="{{ path('wiag_contact') }}">Kontakt</a>
 			    </div>
 			</div></li>
-
+			{% if is_granted('ROLE_DATA_ADMIN') %}
+			    <li class="nav-item active btn-group m-1"><div class="dropdown">
+				<button class="btn btn-light bg-white font-weight-bold" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Redaktion</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+				    <a class="dropdown-item" href="{{ path('canons_edit') }}">Domherren des Alten Reiches</a>
+				</div>
+			    </div></li>
+			{% endif %}
 			<li class="nav-item active btn-group m-1"><div class="dropdown">
 			    <button class="btn btn-light font-weight-bold bg-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Datensammlungen</button>
 			    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">

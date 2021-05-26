@@ -1,3 +1,4 @@
+{# canon_edit/launch_query.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block stylesheets %}
@@ -5,6 +6,7 @@
     <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
 {% endblock %}
 {% block javascripts %}
+    <script src="{{ asset('js/popper.min.js') }}"></script>
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
     <script src="{{ asset('js/canon.js') }}"></script>
@@ -13,10 +15,10 @@
 {% block body %}
     <div class="container-fluid mt-3">
 	<div class="row ml-2 col-12">
-	    {{ include('canon/_title.html.twig') }}
+	    {{ include('canon_edit/_title.html.twig') }}
 	</div>
 	{{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('canons_edit')}}) }}
-	    {{ include('canon/_edit_form_elements.html.twig') }}
+	    {{ include('canon_edit/_form_elements.html.twig') }}
 	{{ form_end(query_form) }}
     </div>
 {% endblock %}
