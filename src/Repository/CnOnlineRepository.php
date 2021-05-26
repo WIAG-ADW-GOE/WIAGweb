@@ -239,7 +239,6 @@ class CnOnlineRepository extends ServiceEntityRepository {
         case 'specific_domstift':
             $qb->addOrderBy('olt_monastery.numdate_start', 'ASC')
                ->addOrderBy('olt_monastery.numdate_end', 'ASC')
-               ->join('co.era', 'era_sort')
                ->addOrderBy('era_sort.eraStart')
                ->addOrderBy('era_sort.eraEnd')
                ->addOrderBy('co.familyname', 'ASC')
