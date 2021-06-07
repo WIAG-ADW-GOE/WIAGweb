@@ -181,8 +181,11 @@ class CnCanonReferenceGS
         if (is_null($s)) {
             return array();
         }
-        $cs = explode(',', $s);
-        $cs = array_map('trim', $cs);
+
+        $cs = array();
+        preg_match_all("~<b>.*?</b>|[0-9f\.–-]+~", $s, $cs);
+        $cs = array_map('trim', $cs[0]);
+
 
         $cpages = [];
         $matches = [];

@@ -109,7 +109,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
         # identifier
         if($formmodel->someid) {
             # dump($formmodel->someid);
-            
+
             $qb->leftJoin('co.idlookup', 'ilt')
                ->andWhere('ilt.authority_id = :someid OR co.wiagid = :someid OR co.id_dh = :someid')
                ->setParameter(':someid', $formmodel->someid);
@@ -299,7 +299,8 @@ class CnOnlineRepository extends ServiceEntityRepository {
 
         $this->addQueryConditions($qb, $canonquery);
 
-        $qb->groupBy('domstift.name');
+        $qb->groupBy('domstift.gs_id, domstift.name');
+        $qb->orderBy('domstift.name');
 
         $query = $qb->getQuery();
         $result = $query->getResult();
