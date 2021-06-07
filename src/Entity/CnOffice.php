@@ -17,7 +17,7 @@ class CnOffice
     private $canon;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Monastery", inversedBy="office")
+     * @ORM\OneToOne(targetEntity="Monastery")
      * @ORM\JoinColumn(nullable=true, name="id_monastery", referencedColumnName="wiagid")
      */
     private $monastery;
@@ -129,6 +129,16 @@ class CnOffice
      */
     private $numdate_end;
 
+    public function setCanon(Canon $canon): self {
+        $this->canon = $canon;
+        return $this;
+    }
+
+    public function setMonastery(Monastery $monastery): self {
+        $this->monastery = $monastery;
+        return $this;
+    }
+
     public function getMonasterylocationstr()
     {
         return $this->monasterylocationstr;
@@ -199,12 +209,12 @@ class CnOffice
         return $this;
     }
 
-    public function getIdCanon(): ?string
+    public function getIdCanon(): ?int
     {
         return $this->idCanon;
     }
 
-    public function setIdCanon(string $idCanon): self
+    public function setIdCanon(int $idCanon): self
     {
         $this->idCanon = $idCanon;
 
@@ -345,12 +355,12 @@ class CnOffice
 
     public function getArchdeaconTerritory(): ?string
     {
-        return $this->archdeaconTerritory;
+        return $this->archdeacon_territory;
     }
 
-    public function setArchdeaconTerritory(?string $archdeaconTerritory): self
+    public function setArchdeaconTerritory(?string $archdeacon_territory): self
     {
-        $this->archdeaconTerritory = $archdeaconTerritory;
+        $this->archdeacon_territory = $archdeacon_territory;
 
         return $this;
     }

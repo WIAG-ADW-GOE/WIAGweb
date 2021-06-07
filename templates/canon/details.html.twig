@@ -40,7 +40,7 @@
 			    {% endif %}
 			</li>
 			{% if office.archdeaconterritory %}
-			    <li class="list-inline-item comment"> Archidiakonat {{ office.archdeaconterritory }} </li>
+			<li class="list-inline-item comment"> Archidiakonat {{ office.archdeaconterritory }} </li>
 			{% endif %}
 			{% if office.comment %}
 			    <li class="list-inline-item comment"> ({{ office.comment }}) </li>
@@ -99,10 +99,14 @@
 		{{ include('canon/_title.html.twig') }}
 	    </div>
 	    <div class="row mx-2 mt-2 mb-1">
-		{% if person.iddh %}{% set canon=person.canondh %}{% else %}{% set canon=person.canongs %}{% endif %}
+		{% if person.iddh %}
+		    {% set canon=person.canondh %}
+		{% else %}
+		    {% set canon=person.canongs %}
+		{% endif %}
 		<div class="col-8"><h2>{{ canon.displayname[:200] }}</h2></div>
 		<div class="col-4 text-right text-nowrap">
-		    <button type="button" class="btn to-clipboard" title="{{ protocol }}:{{ url('id', {id: person.id}, schemeRelative=true) }}" >{{ person.wiagid }} <img src="{{ asset('images/link45deg.svg') }}" width="18"></button>
+		    <button type="button" class="btn to-clipboard" title="{{ protocol }}:{{ url('id', {id: person.wiagid}, schemeRelative=true) }}" >{{ person.wiagid }} <img src="{{ asset('images/link45deg.svg') }}" width="18"></button>
 		</div>
 	    </div>
 	    {% if canon.flagnamevariant %}

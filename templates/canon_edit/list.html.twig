@@ -10,6 +10,7 @@
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
     <script src="{{ asset('js/canon.js') }}"></script>
+    {# <script src="https://kit.fontawesome.com/511c49b8e2.js" crossorigin="anonymous"></script> #}
 {% endblock %}
 
 {% import "canon/macro.html.twig" as macro  %}
@@ -23,12 +24,12 @@
     {% endif %}
     {% endset %}
 
-    {{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('canons_edit')} }) }}
+    {{ form_start(query_form, {'attr': {'id':'q_form'} }) }}
 	<div class="container-fluid mt-3">
 	    <div class="row ml-2 col-12">
 		{{ include('canon_edit/_title.html.twig') }}
 	    </div>
-	    {{ include('canon_edit/_form_elements.html.twig') }}
+	    {{ include('canon_edit/_searchform_elements.html.twig') }}
 	    <div class="row ml-2 mt-3 col-12">
 		Treffer:
 		{% if count == 0 %}
@@ -51,13 +52,13 @@
 				    <tr>
 					<th scope="col">Name</th>
 					<th scope="col">Ämter</th>
-					<th scape="col">Status</th>
+					<th scope="col">Status</th>
 				    </tr>
 				</thead>
 				<tbody>
 				    {% for person in persons %}
 					<tr>
-					    <td><button type="submit" form="q_form" class="btn btn-link text-sm-left p-0" name="singleoffset" value="{{ offset }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
+					    <td><a href={{ path('canon_edit', {'id':person.id }) }}>{{ person.displayname }}</a>
 						{% if not person.datebirth and not person.datedeath %}
 						{% elseif person.datebirth and not person.datedeath %}
 						    <p class="ml-3">* {{ person.datebirth }}</p>

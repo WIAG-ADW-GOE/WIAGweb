@@ -1,0 +1,27 @@
+<p><strong>Ämter</strong></p>
+<div class="table-responsive">
+    <table class="table">
+	<thead class="thead-light">
+	    <tr>
+		<th scope="col">Id</th>
+		<th scope="col">Name</th>
+		<th scope="col">Domstift</th>
+		<th scope="col">Beginn</th>
+		<th scope="col">Ende</th>
+		<th scope="col">Bistum</th>
+	    </tr>
+	</thead>
+	<tbody>
+	    {% for office in canon.offices %}
+		<tr>
+		    <td><a href="{{ path('canon_edit_office', {'id':canon.id, 'idoffice':office.id}) }}">{{ office.id }}</a></td>
+		    <td>{{ office.officename }}</td>
+		    <td>{% if office.monastery %}{{ office.monastery.monasteryname }}{% endif %}</td>
+		    <td>{{ office.datestart }}</td>
+		    <td>{{ office.dateend }}</td>
+		    <td>{{ office.diocese }}
+		</tr>
+	    {% endfor %}
+	</tbody>
+    </table>
+</div>

@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+
+{% block body %}
+    <div class="container-fluid mt-3 mb-2">
+	<div class="row mx-2 col-12">
+	    <span class="topic-title mb-3">Bearbeite Domherren Ämter</span>
+	</div>
+	<div class="row mx-2 mt-2 mb-1">
+	    <div class="col-8"><h2>{{ canon.displayname[:200] }}</h2></div>
+	    <div class="col-4 text-right text-nowrap">
+	    </div>
+	</div>
+	{% if canon.flagnamevariant %}
+	    <div class="row mx-2 col-12">
+		{% if canon.givennamevariant is defined and canon.givennamevariant != '' %}
+		    <span class="comment">{{ canon.givennamevariant }}</span>
+		    {% if canon.familynamevariant is defined and canon.familynamevariant != '' %}
+			<span class="comment">; {{ canon.familynamevariant }}</span>
+		    {% endif %}
+		    {% if canon.commentname is defined and canon.commentname != '' %}
+			<span class="comment">; {{ canon.commentname }}</span>
+		    {% endif %}
+		{% elseif canon.familynamevariant is defined and canon.familynamevariant != '' %}
+		    <span class="comment">{{ canon.familynamevariant }}</span>
+		    {% if canon.commentname is defined and canon.commentname != '' %}
+			<span class="comment">; {{ canon.commentname }}</span>
+		    {% endif %}
+		{% endif %}
+	    </div>
+	{% endif %}
+
+	{% if not canon.datebirth and not canon.datedeath %}
+	{% else %}
+	    <div class="row mx-2 col-12 mt-2 mb-1">
+		{% if canon.datebirth and not canon.datedeath %}
+		    <span class="wiag-large">* {{ canon.datebirth }}</span>
+		{% elseif not canon.datebirth and canon.datedeath %}
+		    <span class="wiag-large">&dagger; {{ canon.datedeath }}</span>
+		{% else %}
+		    <span class="wiag-large">* {{ canon.datebirth }} <span class="pl-3">&dagger; {{ canon.datedeath }}</span></span>
+		{% endif %}
+	    </div>
+	{% endif %}
+	<div class="row col-12 mx-2 mt-3">
+	    {{ include('canon_edit/_table_offices.html.twig') }}
+	</div>
+	{{ form_start(form, {'attr': {'id':'new_office_form'} } ) }}
+	    {{ include('canon_edit/_office_form_elements.html.twig') }}
+	{{ form_end(form) }}
+
+    </div>
+{% endblock %}

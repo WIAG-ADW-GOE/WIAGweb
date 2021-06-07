@@ -100,7 +100,7 @@ class Monastery {
      * @ORM\OneToMany(targetEntity="Office", mappedBy="monastery")
      * @ORM\JoinColumn(name="wiagid", referencedColumnName="id_monastery")
      */
-    private $office;
+    // private $office;
 
     /**
      * @ORM\OneToMany(targetEntity=MonasteryLocation::class, mappedBy="monastery")

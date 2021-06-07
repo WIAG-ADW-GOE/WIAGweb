@@ -91,12 +91,12 @@
     {% else %}
 	{% if query_form is defined %}
 	    {{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('query_canons'), 'hidden': 'hidden'} }) }}
-		{{ include('canon/_form_elements.html.twig') }}
+		{{ include('canon_edit/_form_elements.html.twig') }}
 	    {{ form_end(query_form) }}
 	{% endif %}
 	<div class="container-fluid mt-3 mb-2">
 	    <div class="row mx-2 col-12">
-		{{ include('canon/_title.html.twig') }}
+		{{ include('canon_edit/_title.html.twig') }}
 	    </div>
 	    <div class="row mx-2 mt-2 mb-1">
 		<div class="col-8"><h2>{{ person.displayname[:200] }}</h2></div>

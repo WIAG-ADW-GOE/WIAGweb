@@ -1,25 +1,28 @@
 <?php
 namespace App\Controller;
 
-use App\Form\CanonEditSearchFormType;
-use App\Form\Model\CanonEditSearchFormModel;
 use App\Entity\CnOnline;
 use App\Entity\Canon;
+use App\Entity\CnOffice;
 use App\Entity\CnNamelookup;
 use App\Entity\CnOfficelookup;
 use App\Repository\CanonRepository;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
 use App\Entity\Diocese;
-use App\Service\CanonData;
-use App\Service\CanonLinkedData;
+use App\Form\CanonEditFormType;
+use App\Form\CanonEditSearchFormType;
+use App\Form\CnOfficeEditFormType;
+use App\Form\Model\CanonEditSearchFormModel;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -33,14 +36,14 @@ class CanonEditController extends AbstractController {
     const HINT_LIST_LIMIT = 12;
 
     /**
-     * @Route("/domherren/edit", name="canons_edit")
+     * @Route("/domherren/editlist", name="canon_editlist")
      */
     public function launch_query(Request $request) {
 
         $querydata = new CanonEditSearchFormModel;
 
         $form = $this->createForm(CanonEditSearchFormType::class, $querydata);
-        
+
         $form->handlerequest($request);
 
 
@@ -123,6 +126,149 @@ class CanonEditController extends AbstractController {
 
     }
 
+    /**
+     * @Route("/domherren/new", name="canon_new")
+     * @IsGranted("ROLE_DATA_ADMIN")
+     */
+    public function new(EntityManagerInterface $em, Request $request) {
+        $form = $this->createForm(CanonEditFormType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $canon = $form->getData();
+
+            $em->persist($canon);
+            $em->flush();
+
+            // $this->addFlash('success', 'Domherr angelegt!');
+            // TODO
+            // update GS info if present
+
+            $id = $canon->getId();
+            return $this->redirectToRoute('canon_edit', [
+                'id' => $id,
+            ]);
+        }
+
+        return $this->render('canon_edit/new.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/domherren/edit/{id}", name="canon_edit")
+     * @IsGranted("ROLE_DATA_ADMIN")
+     */
+    public function edit(Canon $canon, EntityManagerInterface $em, Request $request) {
+        $form = $this->createForm(CanonEditFormType::class, $canon);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $em->persist($canon);
+            $em->flush();
+
+            // TODO
+            // update GS info if present
+
+            return $this->redirectToRoute('canon_edit', [
+                'id' => $canon->getId(),
+            ]);
+        }
+
+        return $this->render('canon_edit/edit.html.twig', [
+            'form' => $form->createView(),
+            'canon' => $canon,
+        ]);
+    }
+
+
+    /** @Route("/domherren/new-office/{id}", name="canon_new_office")
+     * @IsGranted("ROLE_DATA_ADMIN")
+     */
+    public function new_office(Canon $canon, EntityManagerInterface $em, Request $request) {
+        $form = $this->createForm(CnOfficeEditFormType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $office = $form->getData();
+
+            $id = $canon->getId();
+            $office->setCanon($canon);
+            $monastery = $this->getMonastery($form->get('domstift')->getData());
+            if (!is_null($monastery)) {
+                $office->setMonastery($monastery);
+            }
+            // dd($office->getIdCanon());
+            $em->persist($office);
+            $em->flush();
+
+            return $this->redirectToRoute('canon_new_office', [
+                'id' => $id,
+            ]);
+        }
+
+        return $this->render('canon_edit/new_office.html.twig', [
+            'form' => $form->createView(),
+            'canon' => $canon,
+        ]);
+    }
+
+    /**
+     * @Route("/domherren/edit-office/{id}/{idoffice}", name="canon_edit_office")
+     * @ParamConverter("canon", options={"id": "id"})
+     * @ParamConverter("office", options={"id": "idoffice"})
+     * @IsGranted("ROLE_DATA_ADMIN")
+     */
+    public function edit_office(Canon $canon, CnOffice $office, EntityManagerInterface $em, Request $request) {
+        $form = $this->createForm(CnOfficeEditFormType::class, $office);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $monastery = $this->getMonastery($form->get('domstift')->getData());
+            if (!is_null($monastery)) {
+                $office->setMonastery($monastery);
+            }
+            // dd($office->getIdCanon());
+            $em->persist($office);
+            $em->flush();
+
+            return $this->redirectToRoute('canon_new_office', [
+                'id' => $canon->getId(),
+            ]);
+        }
+
+        return $this->render('canon_edit/new_office.html.twig', [
+            'form' => $form->createView(),
+            'canon' => $canon,
+        ]);
+    }
+
+    /**
+     * AJAX callback
+     * @Route("domherren/autocomplete/monastery", name="suggest_monastery_name")
+     */
+    public function suggestmonasterynames(Request $request) {
+        $suggestions = $this->getDoctrine()
+                            ->getRepository(Monastery::class)
+                            ->suggestPlace($request->query->get('query'),
+                                           self::HINT_LIST_LIMIT);
+
+        return $this->json([
+            'names' => $suggestions,
+        ]);
+    }
+
+    public function getMonastery($id_domstift) {
+        $monastery = null;
+        if (!is_null($id_domstift) && $id_domstift != "") {
+            $repository = $this->getDoctrine()->getRepository(Monastery::class);
+            $monastery = $repository->find($id_domstift);
+        }
+        return $monastery;
+    }
 
     /**
      * AJAX callback
@@ -199,6 +345,8 @@ class CanonEditController extends AbstractController {
             'offices' => $offices,
         ]);
     }
+
+
 
 
 }
