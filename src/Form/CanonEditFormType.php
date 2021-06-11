@@ -144,7 +144,7 @@ class CanonEditFormType extends AbstractType {
                     'size' => 40,
                 ],
             ])
-            -> add('wikipedia_url', null, [
+            -> add('wikipedia_url', TextType::class, [
                 'label' => 'Wikipedia URL',
                 'required' => false,
             ])

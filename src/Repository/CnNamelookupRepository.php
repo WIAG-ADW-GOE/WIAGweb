@@ -48,6 +48,9 @@ class CnNamelookupRepository extends ServiceEntityRepository
     }
     */
 
+    /**
+     * AJAX callback
+     */
     public function suggestName($name, $limit = 40): array {
         $qb = $this->createQueryBuilder('cl')
                    ->select("DISTINCT CASE WHEN cl.prefixName <> '' AND cl.familyname <> ''".
@@ -56,10 +59,8 @@ class CnNamelookupRepository extends ServiceEntityRepository
                             " THEN CONCAT(cl.givenname, ' ', cl.familyname)".
                             " ELSE cl.givenname END".
                             " AS suggestion")
-                   ->andWhere("CONCAT(cl.givenname, ' ', cl.prefixName, ' ', cl.familyname) LIKE :qname".
-                              " OR CONCAT(cl.givenname, ' ', cl.familyname)LIKE :qname".
-                              " OR cl.givenname LIKE :qname".
-                              " OR cl.familyname LIKE :qname")
+                   ->andWhere("cl.givenname LIKE :qname OR cl.familyname LIKE :qname".
+                              " OR cl.gn_fn LIKE :qname OR cl.gn_prefix_fn LIKE :qname")
                    ->setParameter('qname', '%'.$name.'%')
                    ->setMaxResults($limit);
 

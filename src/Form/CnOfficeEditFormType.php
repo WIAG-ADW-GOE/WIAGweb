@@ -79,12 +79,13 @@ class CnOfficeEditFormType extends AbstractType {
                 ],
             ])
             -> add('monastery', TextType::class, [
-                'label' => 'Domstift',
+                'label' => 'Domstift/Kloster',
                 'required' => false,
                 'mapped' => false,
                 'attr' => [
                     'class' => 'js-autocomplete',
-                    'data-autocomplete-url' => $this->router->generate('suggest_monastery_names'),
+                    'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_monastery'),
+                    'size' => 40,
                 ],
             ])
             -> add('archdeacon_territory', null, [

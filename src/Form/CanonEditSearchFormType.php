@@ -50,8 +50,8 @@ class CanonEditSearchFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Vor- oder Nachname',
-                    // 'class' => 'js-name-autocomplete',
-                    // 'data-autocomplete-url' => $this->router->generate('canon_autocomplete_name'),
+                    'class' => 'js-name-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_name'),
                     'size' => '30',
                 ],
             ])
@@ -60,8 +60,8 @@ class CanonEditSearchFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Domstift',
-                    // 'class' => 'js-monastery-autocomplete',
-                    // 'data-autocomplete-url' => $this->router->generate('canon_autocomplete_monastery'),
+                    'class' => 'js-domstift-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_domstift'),
                     'size' => '8',
                 ],
             ])
@@ -70,8 +70,8 @@ class CanonEditSearchFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Amtsbezeichnung',
-                    // 'class' => 'js-office-autocomplete',
-                    // 'data-autocomplete-url' => $this->router->generate('canon_autocomplete_office'),
+                    'class' => 'js-office-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_office'),
                     'size' => '18',
                 ],
             ])
@@ -80,8 +80,8 @@ class CanonEditSearchFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Ort',
-                    // 'class' => 'js-place-autocomplete',
-                    // 'data-autocomplete-url' => $this->router->generate('canon_autocomplete_place'),
+                    'class' => 'js-place-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_place'),
                     'size' => '12',
                 ],
             ])

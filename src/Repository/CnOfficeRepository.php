@@ -49,55 +49,55 @@ class CnOfficeRepository extends ServiceEntityRepository
     */
 
     // 2021-04-07 obsolete: use CnOffice.location instead
-    public function setMonasteryLocation(CnOffice $oc) {
+    // public function setMonasteryLocation(CnOffice $oc) {
 
-        if($oc->getIdMonastery()) {
-            // DQL
-            $em = $this->getEntityManager();
+    //     if($oc->getIdMonastery()) {
+    //         // DQL
+    //         $em = $this->getEntityManager();
 
-            $query = $em->createQuery("SELECT loc.location_name, loc.location_begin_tpq, loc.location_end_tpq ".
-                                      "FROM App\Entity\MonasteryLocation loc ".
-                                      "WHERE loc.wiagid_monastery = :idMonastery ".
-                                      "AND loc.location_name IS NOT NULL")
-                        ->setParameter('idMonastery', $oc->getIdMonastery());
+    //         $query = $em->createQuery("SELECT loc.location_name, loc.location_begin_tpq, loc.location_end_tpq ".
+    //                                   "FROM App\Entity\MonasteryLocation loc ".
+    //                                   "WHERE loc.wiagid_monastery = :idMonastery ".
+    //                                   "AND loc.location_name IS NOT NULL")
+    //                     ->setParameter('idMonastery', $oc->getIdMonastery());
 
-            $qrplaces = $query->getResult();
+    //         $qrplaces = $query->getResult();
 
-            $qrplaces_count = count($qrplaces);
+    //         $qrplaces_count = count($qrplaces);
 
 
-            $places = "";
-            if($qrplaces_count == 1) {
-                $places = $qrplaces[0]['location_name'];
-            } elseif($qrplaces_count > 1) {
-                $locations_s = $this->checkMonasteryLocationDates($qrplaces, $oc);
-                $places = $this->selectandjoin($locations_s, 'location_name');
-            } else {
-                $qrplaces = $this->findMonasteryLocationByPlaceId($oc);
-                $locations_s = $this->checkMonasteryLocationDates($qrplaces, $oc);
-                $places = $this->selectandjoin($locations_s, 'place_name');
-            }
+    //         $places = "";
+    //         if($qrplaces_count == 1) {
+    //             $places = $qrplaces[0]['location_name'];
+    //         } elseif($qrplaces_count > 1) {
+    //             $locations_s = $this->checkMonasteryLocationDates($qrplaces, $oc);
+    //             $places = $this->selectandjoin($locations_s, 'location_name');
+    //         } else {
+    //             $qrplaces = $this->findMonasteryLocationByPlaceId($oc);
+    //             $locations_s = $this->checkMonasteryLocationDates($qrplaces, $oc);
+    //             $places = $this->selectandjoin($locations_s, 'place_name');
+    //         }
 
-            $oc->setMonasterylocationstr($places);
-        }
-    }
+    //         $oc->setMonasterylocationstr($places);
+    //     }
+    // }
 
-    // 2021-04-07 obsolete: use CnOffice.location instead
-    public function checkMonasteryLocationDates($locations, CnOffice $oc) {
-        $locations_s = array();
-        foreach($locations as $el) {
-            $l_begin = intval($el['location_begin_tpq']);
-            $oc_begin = intval($oc->getDateStart());
-            $oc_end = intval($oc->getDateEnd());
-            if($l_begin && $oc_end && $l_begin > $oc_end)
-                continue;
-            $l_end = $el['location_end_tpq'];
-            if($l_end && $oc_begin && $l_end < $oc_begin)
-                continue;
-            $locations_s[] = $el;
-        }
-        return $locations_s;
-    }
+    // // 2021-04-07 obsolete: use CnOffice.location instead
+    // public function checkMonasteryLocationDates($locations, CnOffice $oc) {
+    //     $locations_s = array();
+    //     foreach($locations as $el) {
+    //         $l_begin = intval($el['location_begin_tpq']);
+    //         $oc_begin = intval($oc->getDateStart());
+    //         $oc_end = intval($oc->getDateEnd());
+    //         if($l_begin && $oc_end && $l_begin > $oc_end)
+    //             continue;
+    //         $l_end = $el['location_end_tpq'];
+    //         if($l_end && $oc_begin && $l_end < $oc_begin)
+    //             continue;
+    //         $locations_s[] = $el;
+    //     }
+    //     return $locations_s;
+    // }
 
 
     public function selectandjoin(array $a, string $field) {
@@ -109,33 +109,33 @@ class CnOfficeRepository extends ServiceEntityRepository
         return implode(", ", $as);
     }
 
-    // 2021-04-07 obsolete: use CnOffice.location instead
-    public function findMonasteryLocationByPlaceId(CnOffice $oc) {
-        // $sql = "SELECT place.place_name as place_name, ".
-        //      "loc.location_begin_tpq, loc.location_end_tpq ".
-        //      "FROM App\Entity\CnOffice oc ".
-        //      "INNER JOIN App\Entity\MonasteryLocation loc ".
-        //      "WITH loc.wiagid_monastery = oc.idMonastery ".
-        //      "INNER JOIN App\Entity\Place place ".
-        //      "WITH place.id_places = loc.place_id ".
-        //      "WHERE oc.id = :ocid ";
+    // // 2021-04-07 obsolete: use CnOffice.location instead
+    // public function findMonasteryLocationByPlaceId(CnOffice $oc) {
+    //     // $sql = "SELECT place.place_name as place_name, ".
+    //     //      "loc.location_begin_tpq, loc.location_end_tpq ".
+    //     //      "FROM App\Entity\CnOffice oc ".
+    //     //      "INNER JOIN App\Entity\MonasteryLocation loc ".
+    //     //      "WITH loc.wiagid_monastery = oc.idMonastery ".
+    //     //      "INNER JOIN App\Entity\Place place ".
+    //     //      "WITH place.id_places = loc.place_id ".
+    //     //      "WHERE oc.id = :ocid ";
 
-        $sql = "SELECT place.place_name as place_name, ".
-             "loc.location_begin_tpq, loc.location_end_tpq ".
-             "FROM App\Entity\MonasteryLocation loc ".
-             "INNER JOIN App\Entity\Place place ".
-             "WITH place.id_places = loc.place_id ".
-             "WHERE loc.wiagid_monastery = :idMonastery ";
+    //     $sql = "SELECT place.place_name as place_name, ".
+    //          "loc.location_begin_tpq, loc.location_end_tpq ".
+    //          "FROM App\Entity\MonasteryLocation loc ".
+    //          "INNER JOIN App\Entity\Place place ".
+    //          "WITH place.id_places = loc.place_id ".
+    //          "WHERE loc.wiagid_monastery = :idMonastery ";
 
 
-        $em = $this->getEntityManager();
-        $query = $em->createQuery($sql)
-                    ->setParameter('idMonastery', $oc->getIdMonastery());
+    //     $em = $this->getEntityManager();
+    //     $query = $em->createQuery($sql)
+    //                 ->setParameter('idMonastery', $oc->getIdMonastery());
 
-        $qrplaces = $query->getResult();
+    //     $qrplaces = $query->getResult();
 
-        return $qrplaces;
-    }
+    //     return $qrplaces;
+    // }
 
     public function findByIdCanonAndSort($id_canon) {
         $qb = $this->createQueryBuilder('o')
@@ -150,5 +150,50 @@ class CnOfficeRepository extends ServiceEntityRepository
 
         return $query->getResult();
     }
+
+        /* AJAX callback */
+    public function suggestPlace($place, $limit = 100): array {
+        $qb = $this->createQueryBuilder('olt')
+                   ->select('DISTINCT olt.location_show AS suggestion')
+                   ->andWhere('olt.location_show LIKE :place')
+                   ->setParameter('place', '%'.$place.'%')
+                   ->setMaxResults($limit);
+        $query = $qb->getQuery();
+
+        $suggestions = $query->getResult();
+
+        $nloc = count($suggestions);
+        if ($nloc < $limit) {
+            $limit_at = $limit - $nloc;
+            $qb_at = $this->createQueryBuilder('olt')
+                          ->select('DISTINCT olt.archdeacon_territory AS suggestion')
+                          ->andWhere('olt.archdeacon_territory LIKE :place')
+                          ->setParameter('place', '%'.$place.'%')
+                          ->setMaxResults($limit_at);
+            $query_at = $qb_at->getQuery();
+            $suggestions_at = $query_at->getResult();
+            $suggestions = array_merge($suggestions, $suggestions_at);
+        }            
+
+        # dd($suggestions);
+
+        return $suggestions;       
+    }
+
+    /* AJAX callback */
+    public function suggestOffice($office, $limit = 100): array {
+        $qb = $this->createQueryBuilder('olt')
+                   ->select('DISTINCT olt.officeName AS suggestion')
+                   ->andWhere('olt.officeName LIKE :title')
+                   ->setParameter('title', '%'.$office.'%')
+                   ->setMaxResults($limit);
+
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+
+    }
+
+    
 
 }

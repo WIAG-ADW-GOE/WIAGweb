@@ -18,7 +18,7 @@ class CnOfficeGS
     private $canon;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Monastery", inversedBy="office")
+     * @ORM\OneToOne(targetEntity="Monastery")
      * @ORM\JoinColumn(nullable=true, name="id_monastery", referencedColumnName="wiagid")
      */
     private $monastery;

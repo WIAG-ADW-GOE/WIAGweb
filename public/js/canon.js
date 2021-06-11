@@ -36,7 +36,7 @@ $(document).ready(function() {
 	// window.alert('suggest place');
     });
 
-    $('.js-monastery-autocomplete').each(function() {
+    $('.js-domstift-autocomplete').each(function() {
 	var autocompleteUrl = $(this).data('autocomplete-url');
 	$(this).autocomplete({hint: false}, [
 	    {
@@ -208,5 +208,18 @@ $(document).ready(function() {
 	navigator.clipboard.writeText(clipboardText);
     });
 
+    // edit form
+    $( 'canon_edit_form :input' ).on( 'change', function() {
+	console.log('Feld für Domherren geändert');
+    });
+
+    var edit_safe = $( '#cn-edit-save' );
+    if( typeof edit_safe[0] !== 'undefined' ) {
+	edit_safe[0].disabled = true;
+    }
+
+    $( '[id^=canon_edit_form]' ).on( "input", function(event) {
+	edit_safe[0].disabled = false;
+    });
 
 });

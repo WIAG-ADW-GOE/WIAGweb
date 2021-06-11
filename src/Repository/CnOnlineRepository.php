@@ -109,7 +109,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
         # identifier
         if($formmodel->someid) {
             # dump($formmodel->someid);
-            
+
             $qb->leftJoin('co.idlookup', 'ilt')
                ->andWhere('ilt.authority_id = :someid OR co.wiagid = :someid OR co.id_dh = :someid')
                ->setParameter(':someid', $formmodel->someid);
@@ -149,10 +149,6 @@ class CnOnlineRepository extends ServiceEntityRepository {
         # names
         if($formmodel->name) {
             $qb->join('co.namelookup', 'nlt')
-               // ->andWhere("CONCAT(nlt.givenname, ' ', nlt.prefixName, ' ', nlt.familyname) LIKE :qname".
-               //             " OR CONCAT(nlt.givenname, ' ', nlt.familyname)LIKE :qname".
-               //             " OR nlt.givenname LIKE :qname".
-               //             " OR nlt.familyname LIKE :qname")
                ->andWhere("nlt.givenname LIKE :qname OR nlt.familyname LIKE :qname".
                           " OR nlt.gn_fn LIKE :qname OR nlt.gn_prefix_fn LIKE :qname")
                ->setParameter('qname', '%'.$formmodel->name.'%');

@@ -387,7 +387,7 @@ class Canon
         return $this->wikipediaUrl;
     }
 
-    public function setWikipedia(?string $wikipediaUrl): self
+    public function setWikipediaUrl(?string $wikipediaUrl): self
     {
         $this->wikipediaUrl = $wikipediaUrl;
         return $this;

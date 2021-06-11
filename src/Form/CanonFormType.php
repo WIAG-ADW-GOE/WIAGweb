@@ -68,8 +68,8 @@ class CanonFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Domstift',
-                    'class' => 'js-monastery-autocomplete',
-                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_monastery'),
+                    'class' => 'js-domstift-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_domstift'),
                     'size' => '8',
                 ],
             ])

@@ -216,7 +216,6 @@ class CanonController extends AbstractController {
         dd($canon);
     }
 
-
     /**
      * AJAX callback
      * @Route("domherren-wd/autocomplete/name", name="canon_autocomplete_name")
@@ -234,7 +233,7 @@ class CanonController extends AbstractController {
 
     /**
      * AJAX callback
-     * @Route("domherren-wd/autocomplete/monastery", name="canon_autocomplete_monastery")
+     * @Route("domherren-wd/autocomplete/monastery", name="canon_autocomplete_domstift")
      */
     public function autocompletemonastery(Request $request) {
         $query = trim($request->query->get('query'));
@@ -248,7 +247,7 @@ class CanonController extends AbstractController {
 
         $monasteries = $this->getDoctrine()
                             ->getRepository(Monastery::class)
-                            ->suggestPlace($query, self::HINT_LIST_LIMIT);
+                            ->suggestDomstift($query, self::HINT_LIST_LIMIT);
         return $this->json([
             'monasteries' => $monasteries,
         ]);

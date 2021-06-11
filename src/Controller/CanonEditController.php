@@ -196,7 +196,7 @@ class CanonEditController extends AbstractController {
 
             $id = $canon->getId();
             $office->setCanon($canon);
-            $monastery = $this->getMonastery($form->get('domstift')->getData());
+            $monastery = $this->getMonastery($form->get('monastery')->getData());
             if (!is_null($monastery)) {
                 $office->setMonastery($monastery);
             }
@@ -209,7 +209,7 @@ class CanonEditController extends AbstractController {
             ]);
         }
 
-        return $this->render('canon_edit/new_office.html.twig', [
+        return $this->render('cn_office_edit/new.html.twig', [
             'form' => $form->createView(),
             'canon' => $canon,
         ]);
@@ -248,35 +248,11 @@ class CanonEditController extends AbstractController {
 
     /**
      * AJAX callback
-     * @Route("domherren/autocomplete/monastery", name="suggest_monastery_name")
+     * @Route("domherren/edit/autocomplete/name", name="canon_edit_autocomplete_name")
      */
-    public function suggestmonasterynames(Request $request) {
+    public function autocompletename(Request $request) {
         $suggestions = $this->getDoctrine()
-                            ->getRepository(Monastery::class)
-                            ->suggestPlace($request->query->get('query'),
-                                           self::HINT_LIST_LIMIT);
-
-        return $this->json([
-            'names' => $suggestions,
-        ]);
-    }
-
-    public function getMonastery($id_domstift) {
-        $monastery = null;
-        if (!is_null($id_domstift) && $id_domstift != "") {
-            $repository = $this->getDoctrine()->getRepository(Monastery::class);
-            $monastery = $repository->find($id_domstift);
-        }
-        return $monastery;
-    }
-
-    /**
-     * AJAX callback
-     * @Route("domherren-wd/autocomplete/name", name="canon_autocomplete_name")
-     */
-    public function autocompletenames(Request $request) {
-        $suggestions = $this->getDoctrine()
-                            ->getRepository(CnNamelookup::class)
+                            ->getRepository(Canon::class)
                             ->suggestName($request->query->get('query'),
                                           self::HINT_LIST_LIMIT);
 
@@ -285,9 +261,32 @@ class CanonEditController extends AbstractController {
         ]);
     }
 
+
     /**
      * AJAX callback
-     * @Route("domherren-wd/autocomplete/monastery", name="canon_autocomplete_monastery")
+     * @Route("domherren/edit/autocomplete/domstift", name="canon_edit_autocomplete_domstift")
+     */
+    public function autocompletedomstift(Request $request) {
+        $query = trim($request->query->get('query'));
+        # strip 'bistum' or 'erzbistum'
+        foreach(['Stift', 'Domstift'] as $bs) {
+            if(!is_null($query) && str_starts_with($query, $bs)) {
+                $query = trim(str_replace($bs, "", $query));
+                break;
+            }
+        }
+
+        $monasteries = $this->getDoctrine()
+                            ->getRepository(Monastery::class)
+                            ->suggestDomstift($query, self::HINT_LIST_LIMIT);
+        return $this->json([
+            'monasteries' => $monasteries,
+        ]);
+    }
+
+    /**
+     * AJAX callback
+     * @Route("domherren/edit/autocomplete/monastery", name="canon_edit_autocomplete_monastery")
      */
     public function autocompletemonastery(Request $request) {
         $query = trim($request->query->get('query'));
@@ -301,20 +300,28 @@ class CanonEditController extends AbstractController {
 
         $monasteries = $this->getDoctrine()
                             ->getRepository(Monastery::class)
-                            ->suggestPlace($query, self::HINT_LIST_LIMIT);
+                            ->suggestMonastery($query, self::HINT_LIST_LIMIT);
         return $this->json([
             'monasteries' => $monasteries,
         ]);
     }
 
 
+    public function getMonastery($monastery_name) {
+        $monastery = null;
+        if (!is_null($monastery_name) && $monastery_name != "") {
+            $repository = $this->getDoctrine()->getRepository(Monastery::class);
+            $monastery = $repository->findMonasteryName($monastery_name);
+        }
+        return $monastery;
+    }
+
     /**
      * AJAX callback
-     * @Route("domherren-wd/autocomplete/place", name="canon_autocomplete_place")
+     * @Route("domherren/edit/autocomplete/place", name="canon_edit_autocomplete_place")
      */
     public function autocompleteplace(Request $request) {
         $query = trim($request->query->get('query'));
-        # strip 'bistum' or 'erzbistum'
         foreach(['Stift', 'Domstift'] as $bs) {
             if(!is_null($query) && str_starts_with($query, $bs)) {
                 $query = trim(str_replace($bs, "", $query));
@@ -323,21 +330,20 @@ class CanonEditController extends AbstractController {
         }
 
         $places = $this->getDoctrine()
-                       ->getRepository(CnOfficelookup::class)
+                       ->getRepository(CnOffice::class)
                        ->suggestPlace($query, self::HINT_LIST_LIMIT);
         return $this->json([
             'places' => $places,
         ]);
     }
 
-
     /**
      * AJAX callback
-     * @Route("domherren-wd/autocomplete/office", name="canon_autocomplete_office")
+     * @Route("domherren/edit/autocomplete/office", name="canon_edit_autocomplete_office")
      */
-    public function autocompleteoffices(Request $request) {
+    public function autocompleteoffice(Request $request) {
         $offices = $this->getDoctrine()
-                        ->getRepository(CnOfficelookup::class)
+                        ->getRepository(CnOffice::class)
                         ->suggestOffice($request->query->get('query'),
                                         self::HINT_LIST_LIMIT);
 
