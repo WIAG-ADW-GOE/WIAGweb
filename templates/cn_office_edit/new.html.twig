@@ -2,6 +2,9 @@
 
 {% block javascripts %}
     {{ parent() }}
+    {# this is required for canon.js, even if it is not necessary for this page #}
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
+    <script src="{{ asset('js/canon.js') }}"></script>
 {% endblock %}
 
 
@@ -50,7 +53,7 @@
 	    {{ include('canon_edit/_table_offices.html.twig') }}
 	</div>
 	{{ form_start(form, {'attr': {'id':'new_office_form'} } ) }}
-	    {{ include('canon_edit/_office_form_elements.html.twig') }}
+	    {{ include('cn_office_edit/_form_elements.html.twig') }}
 	{{ form_end(form) }}
 
     </div>

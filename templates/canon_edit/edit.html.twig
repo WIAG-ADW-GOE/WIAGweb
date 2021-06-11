@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block javascripts %}
-    {{ parent() }}
+    {{ parent() }}    
     {# this is required for canon.js, even if it is not necessary for this page #}
-    {# 2021-05-27 ? <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script> #}
-    {# 2021-05-27 ? <script src="{{ asset('js/canon.js') }}"></script> #}
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
+    <script src="{{ asset('js/canon.js') }}"></script>
 {% endblock %}
 
 
@@ -24,8 +24,8 @@
 	    {{ include('canon_edit/_table_offices.html.twig') }}
 	</div>
 	<div class="row mx-2 mt-1">
-	    <div class="col-12 text-right">
-		<a href="{{ path('canon_new_office', {'id':canon.id}) }}" class="btn btn-secondary btn-sm" role="button">Bearbeiten</a>
+	    <div class="col-12">
+		<a href="{{ path('canon_new_office', {'id':canon.id}) }}" class="btn btn-secondary btn-sm" role="button">Neues Amt</a>
 	    </div>
 	</div>
     </div>
