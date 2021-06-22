@@ -72,5 +72,21 @@ class CanonGSRepository extends ServiceEntityRepository {
         return $canon;
     }
 
+    /* AJAX callback */
+    public function suggestGsn($input, $limit = 200): array {
+        $qb = $this->createQueryBuilder('c')
+                   ->select('DISTINCT c.gsnId AS suggestion')
+                   ->andWhere(' c.gsnId LIKE :input')
+                   ->setParameter('input', '%'.$input.'%')
+                   ->setMaxResults($limit);
+        $query = $qb->getQuery();
+
+        # dd($query->getDQL());
+
+        return $query->getResult();
+
+    }
+
+
 
 }

@@ -16,6 +16,14 @@ class Person {
     const WIAGID_POSTFIX = '-001';
 
     /**
+     * add prefix and suffix
+     */
+    static public function decorateId($id): ?string {
+        $id_5 = str_pad($id, 5, '0', STR_PAD_LEFT);
+        return self::WIAGID_PREFIX.$id_5.self::WIAGID_POSTFIX;
+    }
+
+    /**
      * remove prefix and suffix, return null if $id does not match
      */
     static public function extractDbId($id): ?string {
@@ -456,11 +464,8 @@ class Person {
         return $this;
     }
 
-
-    public function getWiagidLong(): ?string
-    {
-        $id_padded = str_pad($this->wiagid, 5, '0', STR_PAD_LEFT);
-        return self::WIAGID_PREFIX.$id_padded.self::WIAGID_POSTFIX;
+    public function getWiagidLong(): ?string {
+        return $this->decorateId($this->wiagid);
     }
 
     public function getWiagEpiscId(): ?string {

@@ -1,12 +1,16 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
+{% endblock %}
+
 {% block javascripts %}
     {{ parent() }}
     {# this is required for canon.js, even if it is not necessary for this page #}
     <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
     <script src="{{ asset('js/canon.js') }}"></script>
 {% endblock %}
-
 
 {% block body %}
     <div class="container-fluid mt-3 mb-2">
@@ -52,9 +56,32 @@
 	<div class="row col-12 mx-2 mt-3">
 	    {{ include('canon_edit/_table_offices.html.twig') }}
 	</div>
-	{{ form_start(form, {'attr': {'id':'new_office_form'} } ) }}
-	    {{ include('cn_office_edit/_form_elements.html.twig') }}
-	{{ form_end(form) }}
+	{{ form_start(form) }}
+	    <div class="row mx-2 col-12">
+		{{ form_errors(form) }}
+	    </div>
+	    <div class="row mx-2 col-12">
+		{{ form_row(form.office_name) }}
+		<span class="ml-2">{{ form_row(form.date_start) }}{{ form_errors(form.date_start) }}</span>
+		<span class="ml-2">{{ form_row(form.date_end) }}</span>
+	    </div>
+	    <div class="row mx-2 col-12">
+		{{ form_row(form.comment) }}
+	    </div>
+	    <div class="row mx-2 col-12">
+		{{ form_row(form.diocese) }}
+		<span class="ml-2">{{ form_row(form.form_monastery_name) }}</span>
+		<span class="ml-2">{{ form_row(form.archdeacon_territory) }}</span>
+	    </div>
+	    <div class="row mx-2 col-12">
+		<div class="form-group text-right">
+		    <button type="submit" class="btn btn-secondary btn-sm">Speichern</button>
+		</div>
+		<div class="form-group text-right">
+		    <a href="{{ path('canon_edit', {id: canon.id}) }}" class="btn btn-secondary btn-sm ml-2" role="button">Domherr</a>
+		</div>
 
+	    </div>
+	{{ form_end(form) }}
     </div>
 {% endblock %}

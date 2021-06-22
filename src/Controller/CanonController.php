@@ -227,7 +227,7 @@ class CanonController extends AbstractController {
                                           self::HINT_LIST_LIMIT);
 
         return $this->json([
-            'names' => $suggestions,
+            'choices' => $suggestions,
         ]);
     }
 

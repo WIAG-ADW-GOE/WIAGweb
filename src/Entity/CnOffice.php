@@ -2,14 +2,16 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CnOfficeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CnOfficeRepository::class)
  */
-class CnOffice
-{
+class CnOffice {
+
     /**
      * @ORM\ManyToOne(targetEntity="Canon", inversedBy="offices")
      * @ORM\JoinColumn(name="id_canon", referencedColumnName="id")
@@ -41,11 +43,13 @@ class CnOffice
 
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
+     * @Assert\NotBlank(message="Bitte Feld 'Amtsart' befüllen.")
      */
     private $officeName;
 
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
+     * @Assert\LessThan(2021, message="Die Amtszeit muss in der Vergangenheit beginnen.")
      */
     private $dateStart;
 
@@ -128,6 +132,16 @@ class CnOffice
      * @ORM\Column(type="integer", nullable=true)
      */
     private $numdate_end;
+
+    /**
+     * monastery name in edit form
+     */
+    private $form_monastery_name;
+
+    /**
+     * number of monastries for $form_monastery_name
+     */
+    private $n_monasteries;
 
     public function setCanon(Canon $canon): self {
         $this->canon = $canon;
@@ -382,10 +396,43 @@ class CnOffice
         return $this->numdate_end;
     }
 
+
     public function setNumdateEnd(?int $numdate_end): self
     {
         $this->numdate_end = $numdate_end;
 
         return $this;
     }
+
+    public function getFormMonasteryName(): ?string {
+        return $this->form_monastery_name;
+    }
+
+    public function setFormMonasteryName($name): self {
+        $this->form_monastery_name = $name;
+        return $this;
+    }
+
+    public function getNMonasteries(): ?int {
+        return $this->n_monasteries;
+    }
+
+    public function setNMonasteries(?int $n): self {
+        $this->n_monasteries = $n;
+        return $this;
+    }
+
+    /**
+     * @Assert\IsTrue(message="Kloster gibt es nicht oder es ist nicht eindeutig")
+     */
+    public function isValidMonastery() {
+        $n = $this->n_monasteries;
+
+        if (is_null($n) || $n == 1) {
+            return true;
+        }
+
+        return false;
+    }
+
 }

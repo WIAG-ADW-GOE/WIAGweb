@@ -44,7 +44,7 @@ class CnOnline {
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $id_dh;
+    private $idDh;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -110,12 +110,12 @@ class CnOnline {
 
     public function getIdDh(): ?string
     {
-        return $this->id_dh;
+        return $this->idDh;
     }
 
-    public function setIdDh(?string $id_dh): self
+    public function setIdDh(?string $idDh): self
     {
-        $this->id_dh = $id_dh;
+        $this->idDh = $idDh;
 
         return $this;
     }

@@ -1,6 +1,12 @@
 'use strict';
 $(document).ready(function() {
-    $('.js-name-autocomplete').each(function() {
+    /**
+     * autocompletion
+     * In most of the cases, we can use a general function.
+     * Use `autocompleteUrl` to generate a specific list of completions
+     */
+
+    $('.js-autocomplete').each(function() {
 	var autocompleteUrl = $(this).data('autocomplete-url');
 	$(this).autocomplete({hint: false}, [
 	    {
@@ -8,7 +14,7 @@ $(document).ready(function() {
 		    $.ajax({
 			url: autocompleteUrl+'?query='+query
 		    }).then(function(data) {
-			cb(data.names);
+			cb(data.choices);
 		    });
 		},
 		displayKey: 'suggestion',

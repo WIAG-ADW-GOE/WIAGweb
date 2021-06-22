@@ -183,12 +183,12 @@ class CanonGS
     private $commentPerson;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $dateHistFirst;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $dateHistLast;
 
@@ -529,24 +529,24 @@ class CanonGS
         return $this;
     }
 
-    public function getDateHistFirst(): ?string
+    public function getDateHistFirst(): ?integer
     {
         return $this->dateHistFirst;
     }
 
-    public function setDateHistFirst(?string $dateHistFirst): self
+    public function setDateHistFirst(?integer $dateHistFirst): self
     {
         $this->dateHistFirst = $dateHistFirst;
 
         return $this;
     }
 
-    public function getDateHistLast(): ?string
+    public function getDateHistLast(): ?integer
     {
         return $this->dateHistLast;
     }
 
-    public function setDateHistLast(?string $dateHistLast): self
+    public function setDateHistLast(?integer $dateHistLast): self
     {
         $this->dateHistLast = $dateHistLast;
 

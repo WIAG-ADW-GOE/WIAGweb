@@ -53,7 +53,7 @@ class CnOfficeEditFormType extends AbstractType {
                 'label' => 'Beginn',
                 'required' => false,
                 'attr' => [
-                    'size' => 7,
+                    'size' => 30,
                 ],
 
             ])
@@ -61,7 +61,7 @@ class CnOfficeEditFormType extends AbstractType {
                 'label' => 'Ende',
                 'required' => false,
                 'attr' => [
-                    'size' => 7,
+                    'size' => 30,
                 ],
             ])
             ->add('comment', null, [
@@ -71,30 +71,34 @@ class CnOfficeEditFormType extends AbstractType {
                     'size' => 40,
                 ],
             ])
-            -> add('diocese', null, [
+            ->add('diocese', null, [
                 'label' => 'Bistum',
                 'required' => false,
                 'attr' => [
                     'size' => 30,
                 ],
             ])
-            -> add('monastery', TextType::class, [
+            // use EntityType::class as an alternative (see symfonycast)
+            // drawback: there are 4558 monasteries
+            ->add('form_monastery_name', TextType::class, [
                 'label' => 'Domstift/Kloster',
                 'required' => false,
-                'mapped' => false,
+                'mapped' => true,
                 'attr' => [
                     'class' => 'js-autocomplete',
                     'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_monastery'),
                     'size' => 40,
                 ],
             ])
-            -> add('archdeacon_territory', null, [
+            ->add('n_monasteries', HiddenType::class)
+            ->add('archdeacon_territory', null, [
                 'label' => 'Archidiakonat',
                 'required' => false,
                 'attr' => [
                     'size' => 30,
                 ],
-            ]);
+            ])
+            ->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'findMonastery'));
 
         return $builder;
     }
@@ -108,6 +112,22 @@ class CnOfficeEditFormType extends AbstractType {
         }
         return $choices;
     }
-    
+
+    public function findMonastery(FormEvent $event) {
+        $office = $event->getData();
+        $monastery_name = $office['form_monastery_name'];
+        $n = null;
+        if ($monastery_name == "") {
+            $n = null;
+        } else {
+            $qcount = $this->em->getRepository(Monastery::Class)
+                               ->countByName($monastery_name);
+            $n = $qcount['n'];
+        }
+
+        $office['n_monasteries'] = $n;
+        $event->setData($office);
+    }
+
 
 }

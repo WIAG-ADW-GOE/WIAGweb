@@ -50,7 +50,7 @@ class CanonEditSearchFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Vor- oder Nachname',
-                    'class' => 'js-name-autocomplete',
+                    'class' => 'js-autocomplete',
                     'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_name'),
                     'size' => '30',
                 ],

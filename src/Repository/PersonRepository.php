@@ -383,5 +383,19 @@ class PersonRepository extends ServiceEntityRepository {
 
     }
 
+    /* AJAX callback */
+    public function suggestId($input, $limit = 200): array {
+        $qb = $this->createQueryBuilder('p')
+                   ->select('p.wiagid AS suggestion')
+                   ->andWhere('p.wiagid LIKE :input')
+                   ->setParameter('input', '%'.$input.'%')
+                   ->setMaxResults($limit);
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+
+    }
+
+
 
 }

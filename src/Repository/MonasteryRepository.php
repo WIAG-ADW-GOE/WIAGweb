@@ -79,7 +79,22 @@ class MonasteryRepository extends ServiceEntityRepository
 
     }
 
+    public function countByName($name) {
+        $qb = $this->createQueryBuilder('m')
+                   ->select('COUNT(DISTINCT m.id_monastery) AS n')
+                   ->andWhere('m.monastery_name LIKE :name')
+                   ->setParameter('name', '%'.$name.'%');
+        $query = $qb->getQuery();
+        return $query->getSingleResult();
+    }
 
+    public function findOneByName($name) {
+        $qb = $this->createQueryBuilder('m')
+                   ->andWhere('m.monastery_name LIKE :name')
+                   ->setParameter('name', '%'.$name.'%');
+        $query = $qb->getQuery();
+        return $query->getOneOrNullResult();
+    }
 
 
 }

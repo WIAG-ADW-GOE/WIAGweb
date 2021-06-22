@@ -1,13 +1,16 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
+{% endblock %}
+
 {% block javascripts %}
-    {{ parent() }}    
+    {{ parent() }}
     {# this is required for canon.js, even if it is not necessary for this page #}
     <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
     <script src="{{ asset('js/canon.js') }}"></script>
 {% endblock %}
-
-
 
 {% block body %}
     {# person is passed as an object #}

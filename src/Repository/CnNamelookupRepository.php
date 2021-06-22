@@ -48,6 +48,15 @@ class CnNamelookupRepository extends ServiceEntityRepository
     }
     */
 
+    public function deleteByIdOnline($idonline) {
+        $qb = $this->createQueryBuilder('nl')
+                   ->delete()
+                   ->andWhere('nl.id_online = :idonline')
+                   ->setParameter('idonline', $idonline);
+        $query = $qb->getQuery();
+        $query->getResult();
+    }
+
     /**
      * AJAX callback
      */

@@ -147,11 +147,18 @@ class CanonEditFormType extends AbstractType {
             -> add('wikipedia_url', TextType::class, [
                 'label' => 'Wikipedia URL',
                 'required' => false,
-            ])
+                'attr' => [
+                    'size' => 50,
+                ],
 
+            ])
             -> add('gsn_id', null, [
                 'label' => 'GS-Nummer',
                 'required' => false,
+                'attr' => [
+                    'class' => 'js-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_gsn'),
+                ],
             ])
             -> add('gnd_id', null, [
                 'label' => 'GND ID',
@@ -168,6 +175,11 @@ class CanonEditFormType extends AbstractType {
             -> add('wiag_episc_id', null, [
                 'label' => 'WIAG Bischof ID',
                 'required' => false,
+                'attr' => [
+                    'class' => 'js-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_episcid'),
+                    'size' => 36,
+                ],
             ]);
 
         return $builder;

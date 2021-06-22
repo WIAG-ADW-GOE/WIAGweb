@@ -151,7 +151,22 @@ class CnOfficeRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-        /* AJAX callback */
+    /**
+     * find domstift for cn_online
+     */
+    public function findFirstDomstift($id_canon) {
+        $qb = $this->createQueryBuilder('o')
+                   ->select('d.name, min(o.numdate_start) as numdate_start')
+                   ->join('\App\Entity\Domstift', 'd', 'WITH', 'o.idMonastery = d.gs_id')
+                   ->andWhere('o.idCanon = :idCanon')
+                   ->setParameter('idCanon', $id_canon);
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+
+    }
+
+    /* AJAX callback */
     public function suggestPlace($place, $limit = 100): array {
         $qb = $this->createQueryBuilder('olt')
                    ->select('DISTINCT olt.location_show AS suggestion')
@@ -173,11 +188,11 @@ class CnOfficeRepository extends ServiceEntityRepository
             $query_at = $qb_at->getQuery();
             $suggestions_at = $query_at->getResult();
             $suggestions = array_merge($suggestions, $suggestions_at);
-        }            
+        }
 
         # dd($suggestions);
 
-        return $suggestions;       
+        return $suggestions;
     }
 
     /* AJAX callback */
@@ -194,6 +209,6 @@ class CnOfficeRepository extends ServiceEntityRepository
 
     }
 
-    
+
 
 }

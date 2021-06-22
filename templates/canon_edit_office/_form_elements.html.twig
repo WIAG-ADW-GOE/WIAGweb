@@ -1,6 +1,6 @@
 <div class="row mx-2 col-12">
     {{ form_row(form.office_name) }}
-    <span class="ml-2">{{ form_row(form.date_start) }}</span>
+    <span class="ml-2">{{ form_row(form.date_start) }}{{ form_errors(form.date_start) }}</span>
     <span class="ml-2">{{ form_row(form.date_end) }}</span>
 </div>
 <div class="row mx-2 col-12">
@@ -8,7 +8,7 @@
 </div>
 <div class="row mx-2 col-12">
     {{ form_row(form.diocese) }}
-    <span class="ml-2">{{ form_row(form.monastery) }}</span>
+    <span class="ml-2">{{ form_row(form.form_monastery_name) }}</span>
     <span class="ml-2">{{ form_row(form.archdeacon_territory) }}</span>
 </div>
 <div class="row mx-2 col-12">

@@ -30,6 +30,11 @@ class CnEra {
         return $this->canon;
     }
 
+    public function setIdOnline($idonline): self {
+        $this->idOnline = $idonline;
+        return $this;
+    }
+
     public function getIdOnline(): ?string
     {
         return $this->idOnline;

@@ -1,7 +1,8 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\CnOnline;
+use App\Entity\Person;
+use App\Entity\CanonGS;
 use App\Entity\Canon;
 use App\Entity\CnOffice;
 use App\Entity\CnNamelookup;
@@ -14,6 +15,8 @@ use App\Form\CanonEditFormType;
 use App\Form\CanonEditSearchFormType;
 use App\Form\CnOfficeEditFormType;
 use App\Form\Model\CanonEditSearchFormModel;
+use App\Service\ParseDates;
+use App\Service\CnUpdateLookup;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -130,13 +133,21 @@ class CanonEditController extends AbstractController {
      * @Route("/domherren/new", name="canon_new")
      * @IsGranted("ROLE_DATA_ADMIN")
      */
-    public function new(EntityManagerInterface $em, Request $request) {
+    public function new(EntityManagerInterface $em,
+                        Request $request,
+                        CnUpdateLookup $update) {
         $form = $this->createForm(CanonEditFormType::class);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
             $canon = $form->getData();
+            $status = $canon->getStatus();
+            if ($status == 'online') {
+                $this->setOnline($canon, $update);
+            } else {
+                $this->unsetOnline($canon, $update);
+            }
 
             $em->persist($canon);
             $em->flush();
@@ -160,17 +171,25 @@ class CanonEditController extends AbstractController {
      * @Route("/domherren/edit/{id}", name="canon_edit")
      * @IsGranted("ROLE_DATA_ADMIN")
      */
-    public function edit(Canon $canon, EntityManagerInterface $em, Request $request) {
+    public function edit(Canon $canon,
+                         EntityManagerInterface $em,
+                         Request $request,
+                         CnUpdateLookup $update) {
         $form = $this->createForm(CanonEditFormType::class, $canon);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $status = $canon->getStatus();
+            if ($status == 'online') {
+                $this->setOnline($canon, $update);
+            } else {
+                $this->unsetOnline($canon, $update);
+            }
+
+
             $em->persist($canon);
             $em->flush();
-
-            // TODO
-            // update GS info if present
 
             return $this->redirectToRoute('canon_edit', [
                 'id' => $canon->getId(),
@@ -187,19 +206,26 @@ class CanonEditController extends AbstractController {
     /** @Route("/domherren/new-office/{id}", name="canon_new_office")
      * @IsGranted("ROLE_DATA_ADMIN")
      */
-    public function new_office(Canon $canon, EntityManagerInterface $em, Request $request) {
+    public function new_office(Canon $canon,
+                               EntityManagerInterface $em,
+                               Request $request,
+                               ParseDates $pd) {
         $form = $this->createForm(CnOfficeEditFormType::class);
+
+        # dump($canon);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $office = $form->getData();
 
-            $id = $canon->getId();
+            $numdatestart = $pd->parse($office->getDateStart(), 'lower');
+            $office->setNumdateStart($numdatestart);
+            $numdateend = $pd->parse($office->getDateEnd(), 'upper');
+            $office->setNumdateEnd($numdateend);
             $office->setCanon($canon);
-            $monastery = $this->getMonastery($form->get('monastery')->getData());
-            if (!is_null($monastery)) {
-                $office->setMonastery($monastery);
-            }
+            $this->setMonastery($office);
+
+            $id = $canon->getId();
             // dd($office->getIdCanon());
             $em->persist($office);
             $em->flush();
@@ -209,7 +235,7 @@ class CanonEditController extends AbstractController {
             ]);
         }
 
-        return $this->render('cn_office_edit/new.html.twig', [
+        return $this->render('canon_edit_office/new.html.twig', [
             'form' => $form->createView(),
             'canon' => $canon,
         ]);
@@ -221,29 +247,77 @@ class CanonEditController extends AbstractController {
      * @ParamConverter("office", options={"id": "idoffice"})
      * @IsGranted("ROLE_DATA_ADMIN")
      */
-    public function edit_office(Canon $canon, CnOffice $office, EntityManagerInterface $em, Request $request) {
+    public function edit_office(Canon $canon,
+                                CnOffice $office,
+                                EntityManagerInterface $em,
+                                Request $request,
+                                ParseDates $pd) {
+
+        if (!is_null($office->getMonastery())) {
+            $office->setFormMonasteryName($office->getMonastery()->getMonasteryName());
+        }
         $form = $this->createForm(CnOfficeEditFormType::class, $office);
+
+        dump($canon);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $monastery = $this->getMonastery($form->get('domstift')->getData());
-            if (!is_null($monastery)) {
-                $office->setMonastery($monastery);
-            }
+            $numdatestart = $pd->parse($office->getDateStart(), 'lower');
+            $office->setNumdateStart($numdatestart);
+            $numdateend = $pd->parse($office->getDateEnd(), 'upper');
+            $office->setNumdateEnd($numdateend);
+
+            $id = $canon->getId();
+            $office->setCanon($canon);
+            $this->setMonastery($office);
+
             // dd($office->getIdCanon());
             $em->persist($office);
             $em->flush();
 
             return $this->redirectToRoute('canon_new_office', [
-                'id' => $canon->getId(),
+                'id' => $id,
             ]);
         }
 
-        return $this->render('canon_edit/new_office.html.twig', [
+        return $this->render('canon_edit_office/new.html.twig', [
             'form' => $form->createView(),
             'canon' => $canon,
+            'id_edit_office' => $office->getId(),
         ]);
+    }
+
+    public function setMonastery($office) {
+        $monastery_name = $office->getFormMonasteryName();
+        if (!is_null($monastery_name) && $monastery_name != "") {
+            $repository = $this->getDoctrine()->getRepository(Monastery::class);
+            $monastery = $repository->findOneByName($monastery_name);
+            $office->setMonastery($monastery);
+        }
+        return $office;
+    }
+
+    public function setOnline($canon, CnUpdateLookup $update) {
+
+        # fill/update
+        # canon.date_hist_first
+        # canon.date_hist_last
+        # cn_office.location_show ()
+        # cn_namelookup
+        # cn_era
+        # cn_officelookup
+        # cn_idlookup
+
+        $update->datesHist($canon);
+        $co = $update->online($canon);
+        $idonline = $co->getId();
+        $update->era($idonline, $canon);
+        $update->namelookup($co, $canon);
+    }
+
+    public function unsetOnline($canon, CnUpdateLookup $update) {
+
     }
 
     /**
@@ -251,16 +325,15 @@ class CanonEditController extends AbstractController {
      * @Route("domherren/edit/autocomplete/name", name="canon_edit_autocomplete_name")
      */
     public function autocompletename(Request $request) {
-        $suggestions = $this->getDoctrine()
-                            ->getRepository(Canon::class)
-                            ->suggestName($request->query->get('query'),
-                                          self::HINT_LIST_LIMIT);
+        $qresult = $this->getDoctrine()
+                        ->getRepository(Canon::class)
+                        ->suggestName($request->query->get('query'),
+                                      self::HINT_LIST_LIMIT);
 
         return $this->json([
-            'names' => $suggestions,
+            'choices' => $qresult,
         ]);
     }
-
 
     /**
      * AJAX callback
@@ -302,18 +375,34 @@ class CanonEditController extends AbstractController {
                             ->getRepository(Monastery::class)
                             ->suggestMonastery($query, self::HINT_LIST_LIMIT);
         return $this->json([
-            'monasteries' => $monasteries,
+            'choices' => $monasteries,
         ]);
     }
 
+    /**
+     * AJAX callback
+     * @Route("domherren/edit/autocomplete/episcid", name="canon_edit_autocomplete_episcid")
+     */
+    public function autocompleteepiscid(Request $request) {
+        $query = $request->query->get('query');
+        $id = Person::extractDbId($query);
+        $id = $id ?? $query;
 
-    public function getMonastery($monastery_name) {
-        $monastery = null;
-        if (!is_null($monastery_name) && $monastery_name != "") {
-            $repository = $this->getDoctrine()->getRepository(Monastery::class);
-            $monastery = $repository->findMonasteryName($monastery_name);
+
+        $suggestions = $this->getDoctrine()
+                        ->getRepository(Person::class)
+                        ->suggestId($id, self::HINT_LIST_LIMIT);
+
+        foreach ($suggestions as $k => $v) {
+            $vv = $v['suggestion'];
+            $suggestions[$k] = [
+                'suggestion' => Person::decorateId($vv),
+            ];
         }
-        return $monastery;
+
+        return $this->json([
+            'choices' => $suggestions,
+        ]);
     }
 
     /**
@@ -352,7 +441,19 @@ class CanonEditController extends AbstractController {
         ]);
     }
 
+    /**
+     * AJAX callback
+     * @Route("domherren/edit/autocomplete/gsn", name="canon_edit_autocomplete_gsn")
+     */
+    public function autocompletegsn(Request $request) {
+        $qresult = $this->getDoctrine()
+                        ->getRepository(CanonGS::class)
+                        ->suggestGsn($request->query->get('query'),
+                                     self::HINT_LIST_LIMIT);
 
-
+        return $this->json([
+            'choices' => $qresult,
+        ]);
+    }
 
 }

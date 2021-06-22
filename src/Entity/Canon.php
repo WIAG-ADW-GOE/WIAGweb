@@ -24,6 +24,11 @@ class Canon
         return 'dh';
     }
 
+    static public function decorateId($id) {
+        $id_5 = str_pad($id, 5, '0', STR_PAD_LEFT);
+        return self::WIAGID_PREFIX.$id_5.self::WIAGID_POSTFIX;
+    }
+
     static public function extractDbId($id): ?string {
         $db_id = [];
         # at the moment we do not take care about multiple IDs for one person
@@ -167,12 +172,12 @@ class Canon
     private $commentPerson;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $dateHistFirst;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $dateHistLast;
 
@@ -251,8 +256,7 @@ class Canon
 
     public function getWiagidLong(): ?string
     {
-        $id_padded = str_pad($this->id, 5, '0', STR_PAD_LEFT);
-        return self::WIAGID_PREFIX.$id_padded.self::WIAGID_POSTFIX;
+        return $this->decorateId($this->id);
     }
 
     public static function isIdCanon(string $id) {
@@ -513,24 +517,24 @@ class Canon
         return $this;
     }
 
-    public function getDateHistFirst(): ?string
+    public function getDateHistFirst(): ?int
     {
         return $this->dateHistFirst;
     }
 
-    public function setDateHistFirst(?string $dateHistFirst): self
+    public function setDateHistFirst(?int $dateHistFirst): self
     {
         $this->dateHistFirst = $dateHistFirst;
 
         return $this;
     }
 
-    public function getDateHistLast(): ?string
+    public function getDateHistLast(): ?int
     {
         return $this->dateHistLast;
     }
 
-    public function setDateHistLast(?string $dateHistLast): self
+    public function setDateHistLast(?int $dateHistLast): self
     {
         $this->dateHistLast = $dateHistLast;
 
@@ -713,6 +717,20 @@ class Canon
         $this->wikipediaUrl = $person->getWikipediaurl();
 
         return $this;
+    }
+
+    public function updateDatesHist(CnOffice $office) {
+        $o_start = $office->getNumDateStart();
+        if (!is_null($o_start) &&
+            ($o_start < $this->dateHistFirst || is_null($this->dateHistFirst))) {
+            $this->date_hist_first = $o_start;
+        }
+
+        $o_end = $office->getNumDateEnd();
+        if (!is_null($o_end) &&
+            ($o_end > $this->dateHistLast || is_null($this->dateHistLast))) {
+            $this->date_hist_last = $o_end;
+        }
     }
 
 

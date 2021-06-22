@@ -50,6 +50,11 @@ class CnNamelookup
      */
     private $gn_fn;
 
+    public function setCnOnline(CnOnline $co): self {
+        $this->cnonline = $co;
+        return $this;
+    }
+
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -93,7 +98,7 @@ class CnNamelookup
         return $this->prefixName;
     }
 
-    public function setPrefixName(string $prefixName): self
+    public function setPrefixName(?string $prefixName): self
     {
         $this->prefixName = $prefixName;
 

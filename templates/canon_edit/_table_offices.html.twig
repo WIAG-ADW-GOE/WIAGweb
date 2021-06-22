@@ -13,6 +13,7 @@
 	</thead>
 	<tbody>
 	    {% for office in canon.offices %}
+		{% if not id_edit_office is defined or id_edit_office != office.id %}
 		<tr>
 		    <td><a href="{{ path('canon_edit_office', {'id':canon.id, 'idoffice':office.id}) }}">{{ office.id }}</a></td>
 		    <td>{{ office.officename }}</td>
@@ -21,6 +22,7 @@
 		    <td>{{ office.dateend }}</td>
 		    <td>{{ office.diocese }}
 		</tr>
+		{% endif %}
 	    {% endfor %}
 	</tbody>
     </table>

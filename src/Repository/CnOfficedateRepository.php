@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method CnOfficedate|null findOneBy(array $criteria, array $orderBy = null)
  * @method CnOfficedate[]    findAll()
  * @method CnOfficedate[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * obsolete? 2021-06-18
  */
 class CnOfficedateRepository extends ServiceEntityRepository
 {

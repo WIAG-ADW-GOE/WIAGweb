@@ -27,7 +27,7 @@ class Monastery {
         } else {
             return $name;
         }
-    }
+    }   
 
     /**
      * @ORM\OneToOne(targetEntity="Domstift")
@@ -112,7 +112,6 @@ class Monastery {
     {
         $this->locations = new ArrayCollection();
     }
-
 
     public function getIdMonastery(): ?int
     {
