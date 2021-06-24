@@ -179,11 +179,12 @@ class CanonRepository extends ServiceEntityRepository {
         if($formmodel->someid) {
             # dump($formmodel->someid);
 
-            $qb->andWhere('c.id = :someid'.
-                          ' OR c.gsnId = :someid'.
-                          ' OR c.viafId = :someid'.
-                          ' OR c.gndId = :someid')
-               ->setParameter(':someid', $formmodel->someid);
+            $qb->andWhere('c.id like :someid'.
+                          ' OR c.gsnId like :someid'.
+                          ' OR c.viafId like :someid'.
+                          ' OR c.gndId like :someid'.
+                          ' OR c.wiag_episc_id like :someid')
+               ->setParameter('someid', '%'.$formmodel->someid.'%');
         }
 
         # year
@@ -218,11 +219,25 @@ class CanonRepository extends ServiceEntityRepository {
 
         # names
         if($formmodel->name) {
-            $qb->andWhere("CONCAT(c.givenname, ' ', c.prefixName, ' ', c.familyname) LIKE :qname".
-                          " OR CONCAT(c.givenname, ' ', c.familyname)LIKE :qname".
-                          " OR c.givenname LIKE :qname".
-                          " OR c.familyname LIKE :qname")
-               ->setParameter('qname', '%'.$formmodel->name.'%');
+            $qname = $formmodel->name;
+            $cname = explode(' ', $qname);
+            if (count($cname) != 2) {
+                $qb->andWhere("CONCAT(c.givenname, ' ', c.prefixName, ' ', c.familyname) LIKE :qname".
+                              " OR CONCAT(c.givenname, ' ', c.familyname)LIKE :qname".
+                              " OR c.givenname LIKE :qname".
+                              " OR c.familyname LIKE :qname")
+                   ->setParameter('qname', '%'.$qname.'%');
+            } else {
+                $namestart = $cname[0];
+                $nameend = $cname[1];
+                $qb->andWhere("c.givenname LIKE :qname OR c.familyname LIKE :qname".
+                              " OR CONCAT(c.givenname, ' ', c.familyname) LIKE :qname".
+                              " OR CONCAT(c.givenname, ' ', c.prefixName, ' ', c.familyname) LIKE :qname".
+                              " OR (c.givenname LIKE :namestart AND c.familyname LIKE :nameend)")
+                   ->setParameter('qname', '%'.$qname.'%')
+                   ->setParameter('namestart', '%'.$namestart.'%')
+                   ->setParameter('nameend', '%'.$nameend.'%');
+            }
         }
 
         # filter by status
@@ -248,18 +263,35 @@ class CanonRepository extends ServiceEntityRepository {
      * suggest name for the edit search form
      */
     public function suggestName($name, $limit = 40): array {
-        $qb = $this->createQueryBuilder('cl')
-                   ->select("DISTINCT CASE WHEN cl.prefixName <> '' AND cl.familyname <> ''".
-                            " THEN CONCAT(cl.givenname, ' ', cl.prefixName, ' ', cl.familyname)".
-                            " WHEN cl.familyname <> ''".
-                            " THEN CONCAT(cl.givenname, ' ', cl.familyname)".
-                            " ELSE cl.givenname END".
-                            " AS suggestion")
-                   ->andWhere("cl.givenname LIKE :qname OR cl.familyname LIKE :qname".
-                              " OR CONCAT(cl.givenname, ' ', cl.familyname) LIKE :qname".
-                              " OR CONCAT(cl.givenname, ' ', cl.prefixName, ' ', cl.familyname) LIKE :qname")
-                   ->setParameter('qname', '%'.$name.'%')
-                   ->setMaxResults($limit);
+        $select = "DISTINCT CASE WHEN cl.prefixName <> '' AND cl.familyname <> ''".
+                " THEN CONCAT(cl.givenname, ' ', cl.prefixName, ' ', cl.familyname)".
+                " WHEN cl.familyname <> ''".
+                " THEN CONCAT(cl.givenname, ' ', cl.familyname)".
+                " ELSE cl.givenname END".
+                " AS suggestion";
+        $qb = $this->createQueryBuilder('cl');
+        // split `name` in order to make the search a bit more flexible
+        $cname = explode(' ', $name);
+        if (count($cname) != 2) {
+            $qb->select($select)
+               ->andWhere("cl.givenname LIKE :qname OR cl.familyname LIKE :qname".
+                          " OR CONCAT(cl.givenname, ' ', cl.familyname) LIKE :qname".
+                          " OR CONCAT(cl.givenname, ' ', cl.prefixName, ' ', cl.familyname) LIKE :qname")
+               ->setParameter('qname', '%'.$name.'%')
+               ->setMaxResults($limit);
+        } else {
+            $namestart = $cname[0];
+            $nameend = $cname[1];
+            $qb->select($select)
+               ->andWhere("cl.givenname LIKE :qname OR cl.familyname LIKE :qname".
+                          " OR CONCAT(cl.givenname, ' ', cl.familyname) LIKE :qname".
+                          " OR CONCAT(cl.givenname, ' ', cl.prefixName, ' ', cl.familyname) LIKE :qname".
+                          " OR (cl.givenname LIKE :namestart AND cl.familyname LIKE :nameend)")
+               ->setParameter('qname', '%'.$name.'%')
+               ->setParameter('namestart', '%'.$namestart.'%')
+               ->setParameter('nameend', '%'.$nameend.'%')
+               ->setMaxResults($limit);
+        }
 
         $suggestions = $qb->getQuery()->getResult();
 

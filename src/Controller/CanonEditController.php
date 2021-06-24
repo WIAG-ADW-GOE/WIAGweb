@@ -17,6 +17,7 @@ use App\Form\CnOfficeEditFormType;
 use App\Form\Model\CanonEditSearchFormModel;
 use App\Service\ParseDates;
 use App\Service\CnUpdateLookup;
+use App\Service\CnOfficeService;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -144,8 +145,9 @@ class CanonEditController extends AbstractController {
             $canon = $form->getData();
             $status = $canon->getStatus();
             if ($status == 'online') {
-                $this->setOnline($canon, $update);
+                $update->setOnline($canon);
             } else {
+                # TODO
                 $this->unsetOnline($canon, $update);
             }
 
@@ -182,8 +184,9 @@ class CanonEditController extends AbstractController {
 
             $status = $canon->getStatus();
             if ($status == 'online') {
-                $this->setOnline($canon, $update);
+                $update->setOnline($canon);
             } else {
+                # TODO
                 $this->unsetOnline($canon, $update);
             }
 
@@ -208,8 +211,9 @@ class CanonEditController extends AbstractController {
      */
     public function new_office(Canon $canon,
                                EntityManagerInterface $em,
-                               Request $request,
-                               ParseDates $pd) {
+                               ParseDates $pd,
+                               CnOfficeService $os,
+                               Request $request) {
         $form = $this->createForm(CnOfficeEditFormType::class);
 
         # dump($canon);
@@ -223,11 +227,19 @@ class CanonEditController extends AbstractController {
             $numdateend = $pd->parse($office->getDateEnd(), 'upper');
             $office->setNumdateEnd($numdateend);
             $office->setCanon($canon);
-            $this->setMonastery($office);
+            $os->fillMonastery($office, $office->getFormMonasteryName());
+            $os->fillLocationShow($office);
 
             $id = $canon->getId();
-            // dd($office->getIdCanon());
+
             $em->persist($office);
+
+            if ($office->getComment() == "create brother") {
+                $ob = new CnOffice();
+                $ob->setOfficeName("B1");
+                $os->fillMonastery($ob, "Franziskanerkloster Zerbst");
+                $em->persist($ob);
+            }
             $em->flush();
 
             return $this->redirectToRoute('canon_new_office', [
@@ -250,15 +262,14 @@ class CanonEditController extends AbstractController {
     public function edit_office(Canon $canon,
                                 CnOffice $office,
                                 EntityManagerInterface $em,
-                                Request $request,
-                                ParseDates $pd) {
+                                ParseDates $pd,
+                                CnOfficeService $os,
+                                Request $request) {
 
         if (!is_null($office->getMonastery())) {
             $office->setFormMonasteryName($office->getMonastery()->getMonasteryName());
         }
         $form = $this->createForm(CnOfficeEditFormType::class, $office);
-
-        dump($canon);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -270,9 +281,9 @@ class CanonEditController extends AbstractController {
 
             $id = $canon->getId();
             $office->setCanon($canon);
-            $this->setMonastery($office);
+            $os->fillMonastery($office, $office->getFormMonasteryName());
+            $os->fillLocationShow($office);
 
-            // dd($office->getIdCanon());
             $em->persist($office);
             $em->flush();
 
@@ -281,6 +292,7 @@ class CanonEditController extends AbstractController {
             ]);
         }
 
+        // pass `id_edit_office` to skip it in the table of offices
         return $this->render('canon_edit_office/new.html.twig', [
             'form' => $form->createView(),
             'canon' => $canon,
@@ -288,33 +300,6 @@ class CanonEditController extends AbstractController {
         ]);
     }
 
-    public function setMonastery($office) {
-        $monastery_name = $office->getFormMonasteryName();
-        if (!is_null($monastery_name) && $monastery_name != "") {
-            $repository = $this->getDoctrine()->getRepository(Monastery::class);
-            $monastery = $repository->findOneByName($monastery_name);
-            $office->setMonastery($monastery);
-        }
-        return $office;
-    }
-
-    public function setOnline($canon, CnUpdateLookup $update) {
-
-        # fill/update
-        # canon.date_hist_first
-        # canon.date_hist_last
-        # cn_office.location_show ()
-        # cn_namelookup
-        # cn_era
-        # cn_officelookup
-        # cn_idlookup
-
-        $update->datesHist($canon);
-        $co = $update->online($canon);
-        $idonline = $co->getId();
-        $update->era($idonline, $canon);
-        $update->namelookup($co, $canon);
-    }
 
     public function unsetOnline($canon, CnUpdateLookup $update) {
 
@@ -363,13 +348,6 @@ class CanonEditController extends AbstractController {
      */
     public function autocompletemonastery(Request $request) {
         $query = trim($request->query->get('query'));
-        # strip 'bistum' or 'erzbistum'
-        foreach(['Stift', 'Domstift'] as $bs) {
-            if(!is_null($query) && str_starts_with($query, $bs)) {
-                $query = trim(str_replace($bs, "", $query));
-                break;
-            }
-        }
 
         $monasteries = $this->getDoctrine()
                             ->getRepository(Monastery::class)

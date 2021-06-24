@@ -118,11 +118,11 @@ class OfficeRepository extends ServiceEntityRepository
             //                           "WHERE oc.wiagid = :ocid ".
             //                           "AND loc.location_name IS NOT NULL")
             //             ->setParameter('ocid', $oc->getWiagid());
-            
-            $query = $em->createQuery("SELECT loc.location_name, loc.location_begin_tpq, loc.location_end_tpq ".
+
+            $query = $em->createQuery("SELECT loc.locationName, loc.location_begin_tpq, loc.location_end_tpq ".
                                       "FROM App\Entity\MonasteryLocation loc ".
-                                      "WHERE loc.wiagid_monastery = :idMonastery ".
-                                      "AND loc.location_name IS NOT NULL")
+                                      "WHERE loc.wiagidMonastery = :idMonastery ".
+                                      "AND loc.locationName IS NOT NULL")
                         ->setParameter('idMonastery', $oc->getIdMonastery());
 
 
@@ -133,10 +133,10 @@ class OfficeRepository extends ServiceEntityRepository
 
             $places = "";
             if($qrplaces_count == 1) {
-                $places = $qrplaces[0]['location_name'];
+                $places = $qrplaces[0]['locationName'];
             } elseif($qrplaces_count > 1) {
                 $locations_s = $this->checkMonasteryLocationDates($qrplaces, $oc);
-                $places = $this->selectandjoin($locations_s, 'location_name');
+                $places = $this->selectandjoin($locations_s, 'locationName');
             } else {
                 $qrplaces = $this->findMonasteryLocationByPlaceId($oc);
                 $locations_s = $this->checkMonasteryLocationDates($qrplaces, $oc);
@@ -174,17 +174,17 @@ class OfficeRepository extends ServiceEntityRepository
     }
 
     public function findMonasteryLocationByPlaceId(Office $oc) {
-        $sql = "SELECT place.place_name as place_name, ".
+        $dql = "SELECT place.place_name as place_name, ".
              "loc.location_begin_tpq, loc.location_end_tpq ".
              "FROM App\Entity\Office oc ".
              "INNER JOIN App\Entity\MonasteryLocation loc ".
-             "WITH loc.wiagid_monastery = oc.id_monastery ".
+             "WITH loc.wiagidMonastery = oc.id_monastery ".
              "INNER JOIN App\Entity\Place place ".
              "WITH place.id_places = loc.place_id ".
              "WHERE oc.wiagid = :ocid ";
 
         $em = $this->getEntityManager();
-        $query = $em->createQuery($sql)
+        $query = $em->createQuery($dql)
                     ->setParameter('ocid', $oc->getWiagid());
 
         $qrplaces = $query->getResult();

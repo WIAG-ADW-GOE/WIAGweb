@@ -47,4 +47,13 @@ class CnIdlookupRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function deleteByIdOnline($id_online) {
+        $this->createQueryBuilder('ilt')
+             ->delete()
+             ->andWhere('ilt.idOnline = :id_online')
+             ->setParameter('id_online', $id_online)
+             ->getQuery()
+             ->getResult();
+    }
 }

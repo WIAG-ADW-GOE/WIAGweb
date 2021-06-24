@@ -68,8 +68,8 @@ class CnOfficelookupRepository extends ServiceEntityRepository
     /* AJAX callback */
     public function suggestPlace($place, $limit = 100): array {
         $qb = $this->createQueryBuilder('olt')
-                   ->select('DISTINCT olt.location_name AS suggestion')
-                   ->andWhere('olt.location_name LIKE :place')
+                   ->select('DISTINCT olt.locationName AS suggestion')
+                   ->andWhere('olt.locationName LIKE :place')
                    ->setParameter('place', '%'.$place.'%')
                    ->setMaxResults($limit);
         $query = $qb->getQuery();
@@ -80,25 +80,34 @@ class CnOfficelookupRepository extends ServiceEntityRepository
         if ($nloc < $limit) {
             $limit_at = $limit - $nloc;
             $qb_at = $this->createQueryBuilder('olt')
-                          ->select('DISTINCT olt.archdeacon_territory AS suggestion')
-                          ->andWhere('olt.archdeacon_territory LIKE :place')
+                          ->select('DISTINCT olt.archdeaconTerritory AS suggestion')
+                          ->andWhere('olt.archdeaconTerritory LIKE :place')
                           ->setParameter('place', '%'.$place.'%')
                           ->setMaxResults($limit_at);
             $query_at = $qb_at->getQuery();
             $suggestions_at = $query_at->getResult();
             $suggestions = array_merge($suggestions, $suggestions_at);
-        }            
+        }
 
         # dd($suggestions);
 
-        return $suggestions;       
+        return $suggestions;
+    }
+
+    public function deleteByIdOnline($id_online) {
+        $this->createQueryBuilder('olt')
+             ->delete()
+             ->andWhere('olt.idOnline = :id_online')
+             ->setParameter('id_online', $id_online)
+             ->getQuery()
+             ->getResult();
     }
 
     /* AJAX callback */
     public function suggestOffice($office, $limit = 100): array {
         $qb = $this->createQueryBuilder('olt')
-                   ->select('DISTINCT olt.office_name AS suggestion')
-                   ->andWhere('olt.office_name LIKE :title')
+                   ->select('DISTINCT olt.officeName AS suggestion')
+                   ->andWhere('olt.officeName LIKE :title')
                    ->setParameter('title', '%'.$office.'%')
                    ->setMaxResults($limit);
 
@@ -108,6 +117,4 @@ class CnOfficelookupRepository extends ServiceEntityRepository
 
     }
 
-
-    
 }

@@ -11,13 +11,13 @@ use Doctrine\ORM\Mapping as ORM;
 class CnOnline {
 
     /**
-     * @ORM\OneToMany(targetEntity="CnNamelookup", mappedBy="cnonline")
+     * @ORM\OneToMany(targetEntity="CnNamelookup", mappedBy="cnOnline")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_online")
      */
     private $namelookup;
 
     /**
-     * @ORM\OneToMany(targetEntity="CnOfficelookup", mappedBy="cnonline")
+     * @ORM\OneToMany(targetEntity="CnOfficelookup", mappedBy="cnOnline")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_online")
      */
     private $officelookup;
@@ -29,7 +29,7 @@ class CnOnline {
     private $era;
 
     /**
-     * @ORM\OneToMany(targetEntity="CnIdlookup", mappedBy="cnonline")
+     * @ORM\OneToMany(targetEntity="CnIdlookup", mappedBy="cnOnline")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_online")
      */
     private $idlookup;
@@ -44,7 +44,7 @@ class CnOnline {
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $idDh;
+    private $id_dh;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -110,12 +110,12 @@ class CnOnline {
 
     public function getIdDh(): ?string
     {
-        return $this->idDh;
+        return $this->id_dh;
     }
 
-    public function setIdDh(?string $idDh): self
+    public function setIdDh(?string $id): self
     {
-        $this->idDh = $idDh;
+        $this->id_dh = $id;
 
         return $this;
     }

@@ -190,7 +190,7 @@ class CanonFormType extends AbstractType
         $choices = array();
 
         foreach($places as $place) {
-            $choices[] = new PlaceCount($place['location_name'], $place['location_name'], $place['n']);
+            $choices[] = new PlaceCount($place['locationName'], $place['locationName'], $place['n']);
         }
 
         // add selected fields with frequency 0
@@ -303,7 +303,7 @@ class CanonFormType extends AbstractType
 
         $choices = array();
         foreach($offices as $office) {
-            $choices[] = new OfficeCount($office['office_name'], $office['n']);
+            $choices[] = new OfficeCount($office['officeName'], $office['n']);
         }
 
         // add selected fields with frequency 0

@@ -15,8 +15,13 @@ class CnIdlookup
      * @ORM\ManyToOne(targetEntity="CnOnline", inversedBy="idlookup")
      * @ORM\JoinColumn(name="id_online", referencedColumnName="id")
      */
-    private $cnonline;
-    
+    private $cnOnline;
+
+    public function setCnOnline(CnOnline $co): self {
+        $this->cnOnline = $co;
+        return $this;
+    }
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -27,12 +32,12 @@ class CnIdlookup
     /**
      * @ORM\Column(type="string", length=31)
      */
-    private $id_online;
+    private $idOnline;
 
     /**
      * @ORM\Column(type="string", length=63)
      */
-    private $authority_id;
+    private $authorityId;
 
     public function getId(): ?int
     {
@@ -41,24 +46,24 @@ class CnIdlookup
 
     public function getIdOnline(): ?string
     {
-        return $this->id_online;
+        return $this->idOnline;
     }
 
-    public function setIdOnline(string $id_online): self
+    public function setIdOnline(string $id): self
     {
-        $this->id_online = $id_online;
+        $this->idOnline = $id;
 
         return $this;
     }
 
     public function getAuthorityId(): ?string
     {
-        return $this->authority_id;
+        return $this->authorityId;
     }
 
-    public function setAuthorityId(string $authority_id): self
+    public function setAuthorityId(string $id): self
     {
-        $this->authority_id = $authority_id;
+        $this->authorityId = $id;
 
         return $this;
     }

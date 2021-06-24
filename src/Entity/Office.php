@@ -87,11 +87,10 @@ class Office
     private $id_monastery;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Monastery", inversedBy="office")
+     * @ORM\OneToOne(targetEntity="Monastery")
      * @ORM\JoinColumn(nullable=true, name="id_monastery", referencedColumnName="wiagid")
      */
     private $monastery;
-
 
     /**
      * if an office is at a monastery we lookup it's place(s) (see OfficeRepository)

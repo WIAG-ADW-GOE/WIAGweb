@@ -170,7 +170,7 @@ class CnOffice {
         return $this->monastery;
     }
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }

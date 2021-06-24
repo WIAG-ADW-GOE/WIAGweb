@@ -557,7 +557,7 @@ class Canon
         return self::WIAGID_EPISC_PREFIX.$id_padded.self::WIAGID_EPISC_POSTFIX;
     }
 
-    public function setWiagEpiscId(?int $wiagEpiscId): self
+    public function setWiagEpiscId(?string $wiagEpiscId): self
     {
         $this->wiagEpiscId = $wiagEpiscId;
 

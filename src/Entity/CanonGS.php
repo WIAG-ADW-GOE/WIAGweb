@@ -529,24 +529,24 @@ class CanonGS
         return $this;
     }
 
-    public function getDateHistFirst(): ?integer
+    public function getDateHistFirst(): ?int
     {
         return $this->dateHistFirst;
     }
 
-    public function setDateHistFirst(?integer $dateHistFirst): self
+    public function setDateHistFirst(?int $dateHistFirst): self
     {
         $this->dateHistFirst = $dateHistFirst;
 
         return $this;
     }
 
-    public function getDateHistLast(): ?integer
+    public function getDateHistLast(): ?int
     {
         return $this->dateHistLast;
     }
 
-    public function setDateHistLast(?integer $dateHistLast): self
+    public function setDateHistLast(?int $dateHistLast): self
     {
         $this->dateHistLast = $dateHistLast;
 

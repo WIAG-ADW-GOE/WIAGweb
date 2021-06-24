@@ -2,6 +2,7 @@
 namespace App\Form;
 
 use App\Entity\Canon;
+use App\Entity\Person;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
@@ -184,6 +185,5 @@ class CanonEditFormType extends AbstractType {
 
         return $builder;
     }
-
 
 }
