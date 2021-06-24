@@ -11,7 +11,7 @@
     <div class="input-group">
 	<div class="input-group-prepend">
 	    {{ form_widget(query_form.searchHTML) }}
-	    <a href="{{ path('canon_editlist') }}" class="ml-1"><button class="btn btn-secondary btn-light btn-sm" type="button">Neue Suche</button></a>	    
+	    <a href="{{ path('canon_editlist') }}" class="ml-1 btn btn-secondary btn-light btn-sm" role="button">Neue Suche</a>
 	    <button class="btn {% if filterStatusOn %}btn-warning{% else %}btn-secondary btn-light{% endif %} btn-sm dropdown-toggle ml-1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Filter Status</button>
 	    <div class="dropdown-menu">
 		{% for opt in query_form.filterStatus%}
@@ -21,6 +21,7 @@
 		    </div>
 		{% endfor %}
 	    </div>
+	    <a href="{{ path('canon_new') }}" class="ml-2 btn btn-success btn-sm" role="button">Neuer Domherr</a>
 	</div>
     </div>
 </div>

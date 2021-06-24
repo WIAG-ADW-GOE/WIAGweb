@@ -13,6 +13,7 @@
 {% endblock %}
 
 {% block body %}
+    {# use this form for a new office and update of an existing office #}
     <div class="container-fluid mt-3 mb-2">
 	<div class="row mx-2 col-12">
 	    <span class="topic-title mb-3">Bearbeite Domherren Ämter</span>
@@ -56,6 +57,7 @@
 	<div class="row col-12 mx-2 mt-3">
 	    {{ include('canon_edit/_table_offices.html.twig') }}
 	</div>
+
 	{{ form_start(form) }}
 	    <div class="row mx-2 col-12">
 		{{ form_errors(form) }}
@@ -75,7 +77,7 @@
 	    </div>
 	    <div class="row mx-2 col-12">
 		<div class="form-group text-right">
-		    <button type="submit" class="btn btn-secondary btn-sm">Speichern</button>
+		    <button id="cn-office-edit-save" type="submit" class="btn btn-warning btn-sm">Speichern</button>
 		</div>
 		<div class="form-group text-right">
 		    <a href="{{ path('canon_edit', {id: canon.id}) }}" class="btn btn-secondary btn-sm ml-2" role="button">Domherr</a>

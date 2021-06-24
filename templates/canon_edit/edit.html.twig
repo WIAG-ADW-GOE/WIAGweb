@@ -19,6 +19,9 @@
 	    {{ include('canon_edit/_title.html.twig') }}
 	</div>
 	{# { form_start(form, {'attr': {'id':'new_form', 'action':path('canon_new')}}) } #}
+	<div class="row mx-2 col-12 text-right text-nowrap">
+	    <p>ID: {{ canon.id }} — WIAG ID: {{ canon.wiagidlong }}</p>
+	</div>
 	{{ form_start(form, {'attr': {'id':'new_form'} } ) }}
 	    {{ include('canon_edit/_form_elements.html.twig') }}
 	{{ form_end(form) }}
@@ -28,7 +31,7 @@
 	</div>
 	<div class="row mx-2 mt-1">
 	    <div class="col-12">
-		<a href="{{ path('canon_new_office', {'id':canon.id}) }}" class="btn btn-secondary btn-sm" role="button">Neues Amt</a>
+		<a href="{{ path('canon_new_office', {'id':canon.id}) }}" class="btn btn-success btn-sm" role="button">Neues Amt</a>
 	    </div>
 	</div>
     </div>
