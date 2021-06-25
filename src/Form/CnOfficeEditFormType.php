@@ -98,6 +98,19 @@ class CnOfficeEditFormType extends AbstractType {
                     'size' => 30,
                 ],
             ])
+            ->add('btn_save', SubmitType::class, [
+                'label' => 'Speichern',
+                'attr' => [
+                    'class' => 'btn btn-warning btn-sm'
+                ]
+            ])
+            ->add('btn_delete', SubmitType::class, [
+                'label' => 'Löschen',
+                'attr' => [
+                    'class' => 'btn btn-danger btn-sm'
+                ]
+            ])
+
             ->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'findMonastery'));
 
         return $builder;

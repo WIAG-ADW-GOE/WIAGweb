@@ -5,6 +5,7 @@ use App\Entity\Person;
 use App\Entity\CanonGS;
 use App\Entity\Canon;
 use App\Entity\CnOffice;
+use App\Entity\CnOnline;
 use App\Entity\CnNamelookup;
 use App\Entity\CnOfficelookup;
 use App\Repository\CanonRepository;
@@ -58,6 +59,10 @@ class CanonEditController extends AbstractController {
 
             $querydata = $form->getData();
 
+            # 2021-06-24
+            # This is not in use at the moment.
+            # The user gets the edit form, if she clicks on the link for a canon.
+            # Keep it, in case another workflow becomes more attractive.
             $singleoffset = $request->request->get('singleoffset');
             if(!is_null($singleoffset)) {
                 return $this->getCanonInQuery($form, $singleoffset);
@@ -146,10 +151,8 @@ class CanonEditController extends AbstractController {
             $status = $canon->getStatus();
             if ($status == 'online') {
                 $update->setOnline($canon);
-            } else {
-                # TODO
-                $this->unsetOnline($canon, $update);
             }
+            // the else case is not interesting for a new canon
 
             $em->persist($canon);
             $em->flush();
@@ -187,7 +190,7 @@ class CanonEditController extends AbstractController {
                 $update->setOnline($canon);
             } else {
                 # TODO
-                $this->unsetOnline($canon, $update);
+                $update->unsetOnline($canon);
             }
 
 
@@ -211,8 +214,8 @@ class CanonEditController extends AbstractController {
      */
     public function new_office(Canon $canon,
                                EntityManagerInterface $em,
-                               ParseDates $pd,
                                CnOfficeService $os,
+                               CnUpdateLookup $updateLookup,
                                Request $request) {
         $form = $this->createForm(CnOfficeEditFormType::class);
 
@@ -222,32 +225,30 @@ class CanonEditController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             $office = $form->getData();
 
-            $numdatestart = $pd->parse($office->getDateStart(), 'lower');
-            $office->setNumdateStart($numdatestart);
-            $numdateend = $pd->parse($office->getDateEnd(), 'upper');
-            $office->setNumdateEnd($numdateend);
-            $office->setCanon($canon);
+            $os->fillNumdates($office);
             $os->fillMonastery($office, $office->getFormMonasteryName());
             $os->fillLocationShow($office);
 
-            $id = $canon->getId();
-
+            $office->setCanon($canon);
             $em->persist($office);
-
-            if ($office->getComment() == "create brother") {
-                $ob = new CnOffice();
-                $ob->setOfficeName("B1");
-                $os->fillMonastery($ob, "Franziskanerkloster Zerbst");
-                $em->persist($ob);
-            }
             $em->flush();
 
+            $id_dh = $canon->getId();
+            $status = $canon->getStatus();
+            // update office lookup table
+            if ($status == 'online') {
+                $co = $this->getDoctrine()
+                           ->getRepository(CnOnline::class)
+                           ->findOneByIdDh($id_dh);
+                $updateLookup->officelookup($co, $canon);
+            }
+
             return $this->redirectToRoute('canon_new_office', [
-                'id' => $id,
+                'id' => $id_dh,
             ]);
         }
 
-        return $this->render('canon_edit_office/new.html.twig', [
+        return $this->render('canon_edit/office.html.twig', [
             'form' => $form->createView(),
             'canon' => $canon,
         ]);
@@ -262,7 +263,7 @@ class CanonEditController extends AbstractController {
     public function edit_office(Canon $canon,
                                 CnOffice $office,
                                 EntityManagerInterface $em,
-                                ParseDates $pd,
+                                CnUpdateLookup $updateLookup,
                                 CnOfficeService $os,
                                 Request $request) {
 
@@ -274,26 +275,36 @@ class CanonEditController extends AbstractController {
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $numdatestart = $pd->parse($office->getDateStart(), 'lower');
-            $office->setNumdateStart($numdatestart);
-            $numdateend = $pd->parse($office->getDateEnd(), 'upper');
-            $office->setNumdateEnd($numdateend);
+            $btn = $form->getClickedButton()->getName();
+            if ($btn == 'btn_delete') {
+                $em->remove($office);
+                $em->flush();
+            } else {
 
-            $id = $canon->getId();
-            $office->setCanon($canon);
-            $os->fillMonastery($office, $office->getFormMonasteryName());
-            $os->fillLocationShow($office);
+                $os->fillNumdates($office);
+                $os->fillMonastery($office, $office->getFormMonasteryName());
+                $os->fillLocationShow($office);
 
-            $em->persist($office);
-            $em->flush();
+                $em->persist($office);
+                $em->flush();
+            }
+
+            // update office lookup table
+            $id_dh = $canon->getId();
+            if ($canon->getStatus() == 'online') {
+                $co = $this->getDoctrine()
+                       ->getRepository(CnOnline::class)
+                       ->findOneByIdDh($id_dh);
+                $updateLookup->officelookup($co, $canon);
+            }
 
             return $this->redirectToRoute('canon_new_office', [
-                'id' => $id,
+                'id' => $id_dh,
             ]);
         }
 
         // pass `id_edit_office` to skip it in the table of offices
-        return $this->render('canon_edit_office/new.html.twig', [
+        return $this->render('canon_edit/office.html.twig', [
             'form' => $form->createView(),
             'canon' => $canon,
             'id_edit_office' => $office->getId(),

@@ -31,17 +31,8 @@ class CnUpdateLookup {
      * update/fill lookup tables for `canon`
      */
     public function setOnline($canon) {
-
-        # fill/update
-        # canon.date_hist_first
-        # canon.date_hist_last
-        # cn_office.location_show ()
-        # cn_namelookup
-        # cn_era
-        # cn_officelookup
-        # cn_idlookup
-
         $this->datesHist($canon);
+
         $co = $this->online($canon);
         $idonline = $co->getId();
         $this->era($idonline, $canon);
@@ -50,6 +41,27 @@ class CnUpdateLookup {
         $this->idlookup($co, $canon);
     }
 
+    /**
+     * clear lookup tables for `canon`
+     */
+    public function unsetOnline($canon) {
+        $id_dh = $canon->getId();
+        $co = $this->em->getRepository(CnOnline::class)
+                       ->findOneByIdDh($id_dh);
+
+        if (!is_null($co)) {
+            $id_online = $co->getId();
+            $this->em->getRepository(CnIdlookup::class)
+                     ->deleteByIdOnline($id_online);
+            $this->em->getRepository(CnOfficelookup::class)
+                     ->deleteByIdOnline($id_online);
+            $this->em->getRepository(CnNameLookup::class)
+                     ->deleteByIdOnline($co->getId());
+            $this->em->getRepository(CnEra::class)
+                     ->deleteByIdOnline($id_online);
+            $this->em->remove($co);
+        }
+    }
 
     /**
      * Scan offices and set date_hist_first and date_hist_last
@@ -82,18 +94,18 @@ class CnUpdateLookup {
      * fill/update cn_online
      */
     public function online(Canon $canon) {
-        $iddh = $canon->getId();
+        $id_dh = $canon->getId();
         $co = $this->em->getRepository(CnOnline::class)
-                       ->findOneByIdDh($iddh);
+                       ->findOneByIdDh($id_dh);
 
         if (is_null($co)) {
             $co = new CnOnline;
-            $co->setIdDh($iddh);
+            $co->setIdDh($id_dh);
         }
         $this->fillOnline($co, $canon);
 
         $datadomstift = $this->em->getRepository(CnOffice::class)
-                             ->findFirstDomstift($iddh);
+                             ->findFirstDomstift($id_dh);
         if (!is_null($datadomstift)) {
             $co->setDomstift($datadomstift[0]['name']);
             $co->setDomstiftStart($datadomstift[0]['numdate_start']);
@@ -118,20 +130,11 @@ class CnUpdateLookup {
                 $idgs = $cngs->getId();
             }
         }
-        $co->setIdGs($idgs);
-        $idep = $canon->getWiagEpiscId();
-        $co->setIdEp($idep);
-        $wiagid = null;
-        // wiagid is based on $co.id_gs, $co.id_dh, $co.id_ep with increasing preference.
-        // here id_gs is null, so use id_ep if present and id_dh otherwise
-        if (!is_null($idep)) {
-            $wiagid = Person::decorateId($idep);
-        } else {
-            $wiagid = $canon->getWiagIdLong();
-        }
-        $co->setWiagid($wiagid);
-        $co->setGivenname($canon->getGivenname());
-        $co->setFamilyname($canon->getFamilyname());
+        $co->setIdGs($idgs)
+           ->setIdEp($canon->getWiagEpiscId())
+           ->setWiagid($canon->getWiagIdLong())
+           ->setGivenname($canon->getGivenname())
+           ->setFamilyname($canon->getFamilyname());
 
         return $co;
     }
@@ -162,7 +165,7 @@ class CnUpdateLookup {
      * fill/update cn_namelookup
      */
     public function namelookup(CnOnline $co, Canon $canon) {
-        $nl = $this->em->getRepository(CnNameLookup::class)
+        $this->em->getRepository(CnNameLookup::class)
                        ->deleteByIdOnline($co->getId());
 
         $gn = $canon->getGivenname();
@@ -246,8 +249,8 @@ class CnUpdateLookup {
      */
     public function officelookup(CnOnline $co, Canon $canon) {
         $id_online = $co->getId();
-        $rep = $this->em->getRepository(CnOfficelookup::class)
-                        ->deleteByIdOnline($id_online);
+        $this->em->getRepository(CnOfficelookup::class)
+                 ->deleteByIdOnline($id_online);
 
         $offices = $canon->getOffices();
 
@@ -284,8 +287,7 @@ class CnUpdateLookup {
         $rep = $this->em->getRepository(CnIdlookup::class)
                         ->deleteByIdOnline($id_online);
 
-        $episcid = $canon->getWiagEpiscId();
-        $wiagid = $episcid ?? $canon->getWiagIdLong();
+        $wiagid = $canon->getWiagIdLong();
         $idl_wiagid = new CnIdlookup();
         $idl_wiagid->setCnOnline($co)
                    ->setAuthorityId($wiagid);

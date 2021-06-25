@@ -238,6 +238,11 @@ class Canon
         return $this->offices;
     }
 
+    public function addOffice($office) {
+        $this->offices[] = $office;
+        dd($this->offices);
+    }
+
     public function getReferences() {
         return $this->references;
     }
@@ -254,9 +259,12 @@ class Canon
         return $this->id;
     }
 
-    public function getWiagidLong(): ?string
-    {
-        return $this->decorateId($this->id);
+    /**
+     * The WIAG ID is `wiagEpiscId` or it is based on `id`
+     */
+    public function getWiagidLong(): ?string {
+        $wiagid = $this->wiagEpiscId ?? $this->decorateId($this->id);
+        return $wiagid;
     }
 
     public static function isIdCanon(string $id) {

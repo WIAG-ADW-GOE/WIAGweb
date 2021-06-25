@@ -214,18 +214,25 @@ $(document).ready(function() {
 	navigator.clipboard.writeText(clipboardText);
     });
 
-    // edit form
-    $( 'canon_edit_form :input' ).on( 'change', function() {
-	console.log('Feld für Domherren geändert');
-    });
-
+    // activate save button in edit form
     var edit_safe = $( '#cn-edit-save' );
-    if( typeof edit_safe[0] !== 'undefined' ) {
+    if( edit_safe.length != 0 ) {
 	edit_safe[0].disabled = true;
     }
 
     $( '[id^=canon_edit_form]' ).on( "input", function(event) {
 	edit_safe[0].disabled = false;
     });
+
+    // activate save button in edit form
+    var edit_office_safe = $( '#cn_office_edit_form_btn_save' );
+    if( edit_office_safe.length != 0 ) {
+	edit_office_safe[0].disabled = true;
+    }
+
+    $( '[id^=cn_office_edit_form]' ).on( "input", function(event) {
+	edit_office_safe[0].disabled = false;
+    });
+
 
 });

@@ -25,6 +25,14 @@ class CnOfficeService {
         $this->em = $em;
     }
 
+    public function fillNumdates(CnOffice $office) {
+        $pd = $this->parsedates;
+        $numdatestart = $pd->parse($office->getDateStart(), 'lower');
+        $office->setNumdateStart($numdatestart);
+        $numdateend = $pd->parse($office->getDateEnd(), 'upper');
+        $office->setNumdateEnd($numdateend);
+    }
+
     public function fillLocationShow(CnOffice $office): ?string {
         $office->setLocationShow(null);
 

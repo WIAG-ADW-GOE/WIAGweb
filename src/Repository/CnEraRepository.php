@@ -47,4 +47,15 @@ class CnEraRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function deleteByIdOnline($id_online) {
+        $this->createQueryBuilder('e')
+             ->delete()
+             ->andWhere('e.idOnline = :id_online')
+             ->setParameter('id_online', $id_online)
+             ->getQuery()
+             ->getResult();
+    }
+
+
 }

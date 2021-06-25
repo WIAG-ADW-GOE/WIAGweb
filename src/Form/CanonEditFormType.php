@@ -120,6 +120,7 @@ class CanonEditFormType extends AbstractType {
                     'merged_hersche' => 'merged_hersche',
                     'zurückgestellt' => 'zurückgestellt',
                     'Dublette' => 'Dublette',
+                    'deleted' => 'deleted',
                     'fertig' => 'fertig',
                     'online' => 'online',
                 ]
