@@ -423,6 +423,22 @@ class CnOffice {
     }
 
     /**
+     * return sorting value based on dates
+     */
+    public function numdateSort(): int {
+        $s = 0;
+        $datestart = $this->numdate_start;
+        $dateend = $this->numdate_end;
+        if (!is_null($datestart)) {
+            $s += $datestart * 10000;
+        }
+        if (!is_null($dateend)) {
+            $s += $dateend;
+        }
+        return $s;
+    }
+
+    /**
      * @Assert\IsTrue(message="Kloster gibt es nicht oder es ist nicht eindeutig")
      */
     public function isValidMonastery() {

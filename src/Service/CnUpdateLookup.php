@@ -11,6 +11,9 @@ use App\Entity\CnNamelookup;
 use App\Entity\CnOfficelookup;
 use App\Entity\Monastery;
 use App\Entity\CnIdlookup;
+use App\Entity\CnReference;
+use App\Entity\CnCanonReference;
+use App\Entity\Domstift;
 
 use App\Entity\Person;
 use App\Service\ParseDates;
@@ -31,13 +34,49 @@ class CnUpdateLookup {
      * update/fill lookup tables for `canon`
      */
     public function setOnline($canon) {
-        $this->datesHist($canon);
+        // cleanup tables; set tables for canon from GS (see canon lookup table).
+        $this->unsetOnline($canon);
 
-        $co = $this->online($canon);
+        $gsn_id = $canon->getGsnId();
+        $canon_gs = null;
+        $id_gs = null;
+        if (!is_null($gsn_id)) {
+            $canon_gs = $this->em->getRepository(CanonGS::class)
+                                ->findOneByGsnId($gsn_id);
+            $id_gs = $canon_gs->getId();
+        }
+        $co = null;
+        // check if there is an entry from GS
+        if (!is_null($id_gs)) {
+            // There should be an entry in the canon lookup table
+            $co = $this->em->getRepository(CnOnline::class)
+                           ->findOneByIdGs($id_gs);
+            if (is_null($co)) {
+                // This should not happen
+                // TODO log this situation
+            }
+        }
+
+        // no entry from GS or data mismatch
+        if (is_null($co)) {
+            $era = new CnEra();
+            $co = new CnOnline();
+            $co->setEra($era);
+        }
+        $co->setIdDh($canon->getId());
+
+        // era
+        // if there is a canon from GS, then it's data are already stored
+        // in $co->era.
+        $this->era($co->getEra(), $canon);
+        // online
+        $this->online($co, $canon);
         $idonline = $co->getId();
-        $this->era($idonline, $canon);
-        $this->namelookup($co, $canon);
+        // office
         $this->officelookup($co, $canon);
+        // name
+        $this->namelookup($co, $canon);
+        // id
         $this->idlookup($co, $canon);
     }
 
@@ -45,26 +84,67 @@ class CnUpdateLookup {
      * clear lookup tables for `canon`
      */
     public function unsetOnline($canon) {
+        // clear everything for $canon
+        // restore tables for $canon from GS
+
         $id_dh = $canon->getId();
+
         $co = $this->em->getRepository(CnOnline::class)
                        ->findOneByIdDh($id_dh);
 
+        // it is possible that $canon never was online
         if (!is_null($co)) {
             $id_online = $co->getId();
+            $id_gs = $co->getIdGs();
+            $co->setIdDh(null);
+
+            // id
             $this->em->getRepository(CnIdlookup::class)
                      ->deleteByIdOnline($id_online);
+            // name
+            $this->em->getRepository(CnNameLookup::class)
+                     ->deleteByIdOnline($id_online);
+            // office
             $this->em->getRepository(CnOfficelookup::class)
                      ->deleteByIdOnline($id_online);
-            $this->em->getRepository(CnNameLookup::class)
-                     ->deleteByIdOnline($co->getId());
-            $this->em->getRepository(CnEra::class)
-                     ->deleteByIdOnline($id_online);
-            $this->em->remove($co);
+            // era
+            $this->clearEra($co->getEra());
+
+            // restore entries for canon from GS
+            $canon_gs = null;
+            if (!is_null($id_gs)) {
+                $canon_gs = $this->em->getRepository(CanonGS::class)
+                                     ->findOneById($id_gs);
+            }
+            if (!is_null($canon_gs)) {
+                $this->online($co, $canon_gs);
+                $this->officelookup($co, $canon_gs);
+                $this->era($co->getEra(), $canon_gs);
+                $this->idlookup($co, $canon_gs);
+                $this->namelookup($co, $canon_gs);
+
+            } else {
+                // online
+                $this->em->remove($co->getEra());
+                $this->em->remove($co);
+                $this->em->flush();
+            }
         }
     }
 
     /**
+     * set numeric values
+     */
+    public function setNumdates(Canon $canon) {
+        $pd = $this->parsedates;
+        $canon->setNumdateBirth($pd->parse($canon->getDateBirth(), 'lower'));
+        $canon->setNumdateDeath($pd->parse($canon->getDateDeath(), 'upper'));
+    }
+
+
+    /**
      * Scan offices and set date_hist_first and date_hist_last
+     * obsolete 2021-06-29
      */
     public function datesHist(Canon $canon) {
         $datefirst = $this->parsedates->parse($canon->getDateBirth(), 'lower');
@@ -91,25 +171,13 @@ class CnUpdateLookup {
     }
 
     /**
-     * fill/update cn_online
+     * fill/update canon lookup table
      */
-    public function online(Canon $canon) {
-        $id_dh = $canon->getId();
-        $co = $this->em->getRepository(CnOnline::class)
-                       ->findOneByIdDh($id_dh);
-
-        if (is_null($co)) {
-            $co = new CnOnline;
-            $co->setIdDh($id_dh);
-        }
-        $this->fillOnline($co, $canon);
-
-        $datadomstift = $this->em->getRepository(CnOffice::class)
-                             ->findFirstDomstift($id_dh);
-        if (!is_null($datadomstift)) {
-            $co->setDomstift($datadomstift[0]['name']);
-            $co->setDomstiftStart($datadomstift[0]['numdate_start']);
-        }
+    public function online($co, $canon) {
+        $co->setIdEp($canon->getWiagEpiscId())
+           ->setWiagid($canon->getWiagIdLong())
+           ->setGivenname($canon->getGivenname())
+           ->setFamilyname($canon->getFamilyname());
 
         $this->em->persist($co);
         $this->em->flush();
@@ -117,43 +185,67 @@ class CnUpdateLookup {
         return $co;
     }
 
-    /**
-     * aux
-     */
-    public function fillOnline(CnOnline $co, Canon $canon) {
-        $gsn = $canon->getGsnId();
-        $idgs = null;
-        if (!is_null($gsn)) {
-            $cngs = $this->em->getRepository(CanonGS::class)
-                             ->findOneByGsnId($gsn);
-            if (!is_null($cngs)) {
-                $idgs = $cngs->getId();
-            }
-        }
-        $co->setIdGs($idgs)
-           ->setIdEp($canon->getWiagEpiscId())
-           ->setWiagid($canon->getWiagIdLong())
-           ->setGivenname($canon->getGivenname())
-           ->setFamilyname($canon->getFamilyname());
-
-        return $co;
+    public function clearEra(CnEra $era) {
+        $era->setEraStart(null)
+            ->setEraEnd(null)
+            ->setDomstift(null)
+            ->setDomstiftStart(null);
+        return $era;
     }
 
     /**
-     * fill/update cn_era
+     * fill/update era lookup table
      */
-    public function era($idonline, $canon) {
-        $era = $this->em->getRepository(CnEra::class)
-                        ->findOneByIdOnline($idonline);
-
-        if (is_null($era)) {
-            $era = new CnEra();
-            $era->setIdOnline($idonline);
+    public function era(CnEra $era, $canon) {
+        $era_start = $era->getEraStart();
+        $date_first = $canon->getNumDateBirth();
+        if (!is_null($date_first)
+            && (is_null($era_start) || $era_start > $date_first)) {
+            $era_start = $date_first;
         }
 
-        $era->setEraStart($canon->getDateHistFirst());
-        $era->setEraEnd($canon->getDateHistLast());
+        $era_end = $era->getEraEnd();
+        $date_last = $canon->getNumDateDeath();
+        if (!is_null($date_last)
+            && (is_null($era_end) || $era_end < $date_last)) {
+            $era_end = $date_last;
+        }
 
+        // offices
+        $era_domstift = $era->getDomstift();
+        $era_domstift_start = $era->getDomstiftStart();
+        foreach ($canon->getOffices() as $o) {
+            $date_start = $o->getNumdateStart();
+            if (!is_null($date_start)
+                && (is_null($era_start) || $era_start > $date_start)) {
+                $era_start = $date_start;
+            }
+
+            $date_end = $o->getNumdateEnd();
+            if (!is_null($date_end)
+                && (is_null($era_end) || $era_end < $date_end)) {
+                $era_end = $date_end;
+            }
+
+            $monastery = $o->getMonastery();
+            $domstift = null;
+            $n_ds = 0;
+            if (!is_null($monastery)) {
+                $n_ds = $this->em->getRepository(Domstift::class)
+                                 ->countByGsId($monastery->getWiagId());
+            }
+            if ($n_ds > 0) {
+                if (is_null($era_domstift_start) || $era_domstift_start > $date_start) {
+                    $era_domstift = $monastery->getMonasteryName();
+                    $era_domstift_start = $date_start;
+                }
+            }
+        }
+
+        $era->setEraStart($era_start);
+        $era->setEraEnd($era_end);
+        $era->setDomstift($era_domstift);
+        $era->setDomstiftStart($era_domstift_start);
 
         $this->em->persist($era);
         $this->em->flush();
@@ -164,10 +256,7 @@ class CnUpdateLookup {
     /**
      * fill/update cn_namelookup
      */
-    public function namelookup(CnOnline $co, Canon $canon) {
-        $this->em->getRepository(CnNameLookup::class)
-                       ->deleteByIdOnline($co->getId());
-
+    public function namelookup(CnOnline $co, $canon) {
         $gn = $canon->getGivenname();
         $prefix = $canon->getPrefixName();
         $fn = $canon->getFamilyname();
@@ -247,15 +336,13 @@ class CnUpdateLookup {
     /**
      * fill/update cn_officelookup
      */
-    public function officelookup(CnOnline $co, Canon $canon) {
-        $id_online = $co->getId();
-        $this->em->getRepository(CnOfficelookup::class)
-                 ->deleteByIdOnline($id_online);
+    public function officelookup(CnOnline $co, $canon) {
 
         $offices = $canon->getOffices();
 
         foreach($offices as $o) {
             $olt = new CnOfficelookup();
+
             $olt->setId($o->getId())
                 ->setCnOnline($co)
                 ->setOfficeName($o->getOfficeName())
@@ -269,23 +356,17 @@ class CnUpdateLookup {
                 ->setNumdateEnd($o->getNumDateEnd());
             $this->em->persist($olt);
 
-            $oltmonastery = $olt->getMonastery();
-            # dump($oltmonastery);
         }
         if (!is_null($offices) && count($offices) > 0) {
             $this->em->flush();
         }
-        # dd($co);
-
     }
+
 
     /**
      * fill/update cn_idlookup
      */
-    public function idlookup(CnOnline $co, Canon $canon) {
-        $id_online = $co->getId();
-        $rep = $this->em->getRepository(CnIdlookup::class)
-                        ->deleteByIdOnline($id_online);
+    public function idlookup(CnOnline $co, $canon) {
 
         $wiagid = $canon->getWiagIdLong();
         $idl_wiagid = new CnIdlookup();
@@ -330,6 +411,31 @@ class CnUpdateLookup {
 
     }
 
+    /**
+     * fill/update references
+     */
+    public function canonreference(Canon $canon) {
+        # TODO manage merged canons
+        $references = $canon->getReferences();
+        foreach ($references as $refi) {
+            $this->em->remove($refi);
+        }
+        $this->em->flush();
+
+        $refobj = $this->em->getRepository(CnReference::class)
+                           ->find($canon->getIdReference());
+
+        if (!is_null($refobj)) {
+            $ref = new CnCanonReference();
+            $ref->setCanon($canon);
+            $ref->setReference($refobj);
+            $ref->setPageReference($canon->getPageReference());
+            $ref->setIdInReference($canon->getIdInReference());
+
+            $this->em->persist($ref);
+            $this->em->flush();
+        }
+    }
 
 
 };

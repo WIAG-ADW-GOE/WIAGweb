@@ -7,11 +7,12 @@ use App\Entity\CnReference;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class CanonReferenceController extends AbstractController {
 
     /**
-     * @Route("/canon-reference/{id}", name="canon_reference");
+     * @Route("/canon-reference/id/{id}", name="canon_reference");
      */
     public function detailsByShort($id) {
 
@@ -27,7 +28,7 @@ class CanonReferenceController extends AbstractController {
     }
 
     /**
-     * @Route("/canon-references", name="canon_reference_list");
+     * @Route("/canon-reference/list", name="canon_reference_list");
      */
     public function list() {
 
@@ -38,6 +39,31 @@ class CanonReferenceController extends AbstractController {
         return $this->render("canon_reference/list.html.twig", [
             'references' => $references,
         ]);
+    }
+
+    /**
+     * @Route("/canon-reference/edit", name="canon_reference_editlist");
+     */
+    public function editlist() {
+        $references = $this->getDoctrine()
+                           ->getRepository(CnReference::class)
+                           ->findAll();
+
+        return $this->render("canon_reference/list.html.twig", [
+            'references' => $references,
+            'link_path' => 'canon_reference_edit',
+        ]);
+    }
+
+    /**
+     * @Route("/canon-reference/edit/{id}", name="canon_reference_edit");
+     */
+    public function edit(CnReference $reference) {
+
+        return $this->render("canon_reference/edit.html.twig", [
+            'reference' => $reference
+        ]);
+
     }
 
 }

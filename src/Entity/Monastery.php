@@ -107,6 +107,10 @@ class Monastery {
         $this->locations = new ArrayCollection();
     }
 
+    public function getDomstift(): ?Domstift {
+        return $this->domstift;
+    }
+
     public function getIdMonastery(): ?int
     {
         return $this->id_monastery;

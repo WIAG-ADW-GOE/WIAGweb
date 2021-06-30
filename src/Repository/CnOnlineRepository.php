@@ -123,7 +123,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
                ->setParameter(':qyear', $formmodel->year);
         }
 
-        # monastery
+        # domstift
         if($formmodel->monastery) {
             $qb->join('co.officelookup', 'olt_monastery')
                ->join('olt_monastery.monastery', 'monastery')
@@ -258,8 +258,9 @@ class CnOnlineRepository extends ServiceEntityRepository {
                ->addOrderBy('co.id');
             break;
         case 'domstift':
-            $qb->addOrderBy('co.domstift', 'ASC')
-               ->addOrderBy('co.domstift_start', 'ASC')
+            $qb->join('co.era', 'era_ds')
+               ->addOrderBy('era_ds.domstift', 'ASC')
+               ->addOrderBy('era_ds.domstift_start', 'ASC')
                ->addOrderBy('co.familyname', 'ASC')
                ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('co.id');
@@ -289,7 +290,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
      */
     public function findOfficePlaces(CanonFormModel $canonquery) {
         $qb = $this->createQueryBuilder('co')
-                   ->select('DISTINCT domstift.gs_id as id, domstift.name as name, COUNT(DISTINCT(co.id)) as n')
+                   ->select('DISTINCT domstift.gsId as id, domstift.name as name, COUNT(DISTINCT(co.id)) as n')
                    ->join('co.officelookup', 'oltmonastery')
                    ->join('oltmonastery.monastery', 'oltdomstift')
                    ->join('oltdomstift.domstift', 'domstift');
@@ -416,6 +417,17 @@ class CnOnlineRepository extends ServiceEntityRepository {
             ->getOneOrNullResult()
         ;
     }
+
+    // do not follow the naming convention here (idGs instead of id_gs)
+    public function findOneByIdGs($value): ?CnOnline {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.id_gs = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
 
 
 }

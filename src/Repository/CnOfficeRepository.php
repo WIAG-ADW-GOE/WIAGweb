@@ -151,20 +151,6 @@ class CnOfficeRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    /**
-     * find domstift for cn_online
-     */
-    public function findFirstDomstift($id_canon) {
-        $qb = $this->createQueryBuilder('o')
-                   ->select('d.name, min(o.numdate_start) as numdate_start')
-                   ->join('\App\Entity\Domstift', 'd', 'WITH', 'o.idMonastery = d.gs_id')
-                   ->andWhere('o.idCanon = :idCanon')
-                   ->setParameter('idCanon', $id_canon);
-        $query = $qb->getQuery();
-
-        return $query->getResult();
-
-    }
 
     /* AJAX callback */
     public function suggestPlace($place, $limit = 100): array {

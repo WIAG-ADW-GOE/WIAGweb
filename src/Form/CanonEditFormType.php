@@ -45,14 +45,14 @@ class CanonEditFormType extends AbstractType {
             ->add('givenname', null, [
                 'label' => 'Vorname',
                 'attr' => [
-                    'size' => 35,
+                    'size' => 40,
                 ],
             ])
             ->add('familyname', null, [
                 'label' => 'Familienname',
                 'required' => false,
                 'attr' => [
-                    'size' => 35,
+                    'size' => 45,
                 ],
             ])
             ->add('prefix_name', null, [
@@ -160,19 +160,23 @@ class CanonEditFormType extends AbstractType {
                 'attr' => [
                     'class' => 'js-autocomplete',
                     'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_gsn'),
+                    'size' => 15,
                 ],
             ])
             -> add('gnd_id', null, [
                 'label' => 'GND ID',
                 'required' => false,
+                'attr' => ['size' => 8],
             ])
             -> add('viaf_id', null, [
                 'label' => 'VIAF ID',
                 'required' => false,
+                'attr' => ['size' => 12],
             ])
             -> add('wikidata_id', null, [
                 'label' => 'Wikidata ID',
                 'required' => false,
+                'attr' => ['size' => 12],
             ])
             -> add('wiag_episc_id', null, [
                 'label' => 'WIAG Bischof ID',
@@ -180,9 +184,34 @@ class CanonEditFormType extends AbstractType {
                 'attr' => [
                     'class' => 'js-autocomplete',
                     'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_episcid'),
-                    'size' => 36,
+                    'size' => 20,
                 ],
-            ]);
+            ])
+            ->add('mergedInto', TextType::class, [
+                'label' => 'verweist auf',
+                'required' => false,
+                'attr' => ['size' => 12],
+            ])
+            ->add('form_reference_name', TextType::class, [
+                'label' => 'Referenzwerk',
+                'required' => true,
+                'attr' => [
+                    'class' => 'js-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_reference'),
+                    'size' => 50],
+            ])
+            ->add('pageReference', null, [
+                'label' => 'Seite',
+                'required' => false,
+                'attr' => ['size' => 8],
+            ])
+            ->add('idInReference', null, [
+                'label' => 'ID/Nr.',
+                'required' => false,
+                'attr' => ['size' => 15],
+            ])
+
+            ;
 
         return $builder;
     }

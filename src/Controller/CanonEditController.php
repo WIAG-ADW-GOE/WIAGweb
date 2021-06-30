@@ -5,6 +5,7 @@ use App\Entity\Person;
 use App\Entity\CanonGS;
 use App\Entity\Canon;
 use App\Entity\CnOffice;
+use App\Entity\CnReference;
 use App\Entity\CnOnline;
 use App\Entity\CnNamelookup;
 use App\Entity\CnOfficelookup;
@@ -148,18 +149,28 @@ class CanonEditController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
 
             $canon = $form->getData();
-            $status = $canon->getStatus();
-            if ($status == 'online') {
-                $update->setOnline($canon);
+            $shorttitle = $canon->getFormReferenceName();
+            if (!is_null($shorttitle)) {
+                $id_ref = $this->getDoctrine()
+                               ->getRepository(CnReference::class)
+                               ->findIdByShorttitle($shorttitle);
+                if (!is_null($id_ref)) {
+                    $canon->setIdReference($id_ref['id']);
+                }
             }
-            // the else case is not interesting for a new canon
+            // the else case is not relevant for a new canon
+
+            $update->setNumdates($canon);
+            $update->canonreference($canon);
 
             $em->persist($canon);
             $em->flush();
 
-            // $this->addFlash('success', 'Domherr angelegt!');
-            // TODO
-            // update GS info if present
+            $status = $canon->getStatus();
+            if ($status == 'online') {
+                $update->setOnline($canon);
+            }
+
 
             $id = $canon->getId();
             return $this->redirectToRoute('canon_edit', [
@@ -180,19 +191,40 @@ class CanonEditController extends AbstractController {
                          EntityManagerInterface $em,
                          Request $request,
                          CnUpdateLookup $update) {
+        $if_ref = $canon->getIdReference();
+        if (!is_null($canon->getIdReference())) {
+            $st = $this->getDoctrine()
+                       ->getRepository(CnReference::class)
+                       ->findShorttitleById($if_ref);
+            if (!is_null($st)) {
+                $canon->setFormReferenceName($st['shorttitle']);
+            }
+        }
+
         $form = $this->createForm(CanonEditFormType::class, $canon);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $shorttitle = $canon->getFormReferenceName();
+            if (!is_null($shorttitle)) {
+                $id_ref = $this->getDoctrine()
+                               ->getRepository(CnReference::class)
+                               ->findIdByShorttitle($shorttitle);
+                if (!is_null($id_ref)) {
+                    $canon->setIdReference($id_ref['id']);
+                }
+            }
+
+            $update->setNumdates($canon);
+            $update->canonreference($canon);
+
             $status = $canon->getStatus();
             if ($status == 'online') {
                 $update->setOnline($canon);
             } else {
-                # TODO
                 $update->unsetOnline($canon);
             }
-
 
             $em->persist($canon);
             $em->flush();
@@ -241,6 +273,8 @@ class CanonEditController extends AbstractController {
                            ->getRepository(CnOnline::class)
                            ->findOneByIdDh($id_dh);
                 $updateLookup->officelookup($co, $canon);
+                $updateLookup->era($co, $canon);
+                $updateLookup->domstift($co);
             }
 
             return $this->redirectToRoute('canon_new_office', [
@@ -289,13 +323,18 @@ class CanonEditController extends AbstractController {
                 $em->flush();
             }
 
-            // update office lookup table
+            // update date hist for $canon
+            $updateLookup->dateHist($canon);
+
+            // update office lookup table and canon lookup table
             $id_dh = $canon->getId();
             if ($canon->getStatus() == 'online') {
                 $co = $this->getDoctrine()
                        ->getRepository(CnOnline::class)
                        ->findOneByIdDh($id_dh);
                 $updateLookup->officelookup($co, $canon);
+                $updateLookup->era($co, $canon);
+                $updateLookup->domstift($co);
             }
 
             return $this->redirectToRoute('canon_new_office', [
@@ -444,5 +483,21 @@ class CanonEditController extends AbstractController {
             'choices' => $qresult,
         ]);
     }
+
+    /**
+     * AJAX callback
+     * @Route("domherren/edit/autocomplete/reference", name="canon_edit_autocomplete_reference")
+     */
+    public function autocompletereference(Request $request) {
+        $qresult = $this->getDoctrine()
+                        ->getRepository(CnReference::class)
+                        ->suggestShorttitle($request->query->get('query'),
+                                            self::HINT_LIST_LIMIT);
+
+        return $this->json([
+            'choices' => $qresult,
+        ]);
+    }
+
 
 }

@@ -50,6 +50,7 @@
 			    <table class="table">
 				<thead class="thead-light">
 				    <tr>
+					<th scope="col">Id</th>
 					<th scope="col">Name</th>
 					<th scope="col">Ämter</th>
 					<th scope="col">Status</th>
@@ -57,7 +58,7 @@
 				</thead>
 				<tbody>
 				    {% for person in persons %}
-					<tr>
+					<tr><td>{{ person.id }}</td>
 					    <td><a href={{ path('canon_edit', {'id':person.id }) }}>{{ person.displayname }}</a>
 						{% if not person.datebirth and not person.datedeath %}
 						{% elseif person.datebirth and not person.datedeath %}
@@ -82,7 +83,7 @@
 					</tr>
 				    {% endfor %}
 				    <tr>
-					<td>{{ fb_elements }}</td>
+					<td colspan="2">{{ fb_elements }}</td>
 					<td></td>
 				    </tr>
 				</tbody>

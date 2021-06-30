@@ -47,4 +47,39 @@ class CnReferenceRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findShorttitleById($id) {
+        return $this->createQueryBuilder('c')
+                    ->select('c.shorttitle')
+                    ->andWhere('c.id = :id')
+                    ->setParameter('id', $id)
+                    ->getQuery()
+                    ->getOneOrNullResult();
+
+    }
+
+    public function findIdByShorttitle($st) {
+        return $this->createQueryBuilder('c')
+                    ->select('c.id')
+                    ->andWhere('c.shorttitle = :st')
+                    ->setParameter('st', $st)
+                    ->getQuery()
+                    ->getOneOrNullResult();
+    }
+
+
+    /* AJAX callback */
+    public function suggestShorttitle($input, $limit = 200): array {
+        $qb = $this->createQueryBuilder('c')
+                   ->select('DISTINCT c.shorttitle AS suggestion')
+                   ->andWhere(' c.shorttitle LIKE :input')
+                   ->setParameter('input', '%'.$input.'%')
+                   ->setMaxResults($limit);
+        $query = $qb->getQuery();
+
+        # dd($query->getDQL());
+
+        return $query->getResult();
+    }
+
 }

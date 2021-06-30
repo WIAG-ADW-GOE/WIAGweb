@@ -112,6 +112,16 @@ class Canon
     private $dateBirth;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $numdateDeath;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $numdateBirth;
+
+    /**
      * @ORM\Column(type="string", length=127, nullable=true)
      */
     private $religiousOrder;
@@ -220,6 +230,8 @@ class Canon
      * @ORM\Column(type="string", length=63, nullable=true)
      */
     private $status;
+
+    private $form_reference_name;
 
     public function __construct() {
         $this->officeSortkeys = new ArrayCollection();
@@ -378,6 +390,30 @@ class Canon
     public function setDateBirth(?string $dateBirth): self
     {
         $this->dateBirth = $dateBirth;
+
+        return $this;
+    }
+
+    public function getNumdateDeath(): ?int
+    {
+        return $this->numdateDeath;
+    }
+
+    public function setNumdateDeath(?int $dateDeath): self
+    {
+        $this->numdateDeath = $dateDeath;
+
+        return $this;
+    }
+
+    public function getNumdateBirth(): ?int
+    {
+        return $this->numdateBirth;
+    }
+
+    public function setNumdateBirth(?int $dateBirth): self
+    {
+        $this->numdateBirth = $dateBirth;
 
         return $this;
     }
@@ -696,6 +732,16 @@ class Canon
 
         return $this;
     }
+
+    public function getFormReferenceName(): ?string {
+        return $this->form_reference_name;
+    }
+
+    public function setFormReferenceName($name): self {
+        $this->form_reference_name = $name;
+        return $this;
+    }
+
 
     public static function isWiagidLong($wiagidlong) {
         // do something reasonable as soon as the WIAG ID format is defined

@@ -12,9 +12,10 @@ class CnEra {
 
     /**
      * @ORM\Id
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $idOnline;
+    private $id;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -26,18 +27,19 @@ class CnEra {
      */
     private $eraEnd;
 
-    public function getCanon() {
-        return $this->canon;
-    }
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $domstift;
 
-    public function setIdOnline($idonline): self {
-        $this->idOnline = $idonline;
-        return $this;
-    }
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $domstift_start;
 
-    public function getIdOnline(): ?string
+    public function getId(): int
     {
-        return $this->idOnline;
+        return $this->id;
     }
 
     public function getEraStart(): ?int
@@ -60,6 +62,30 @@ class CnEra {
     public function setEraEnd(?int $eraEnd): self
     {
         $this->eraEnd = $eraEnd;
+
+        return $this;
+    }
+
+    public function getDomstift(): ?string
+    {
+        return $this->domstift;
+    }
+
+    public function setDomstift(?string $domstift): self
+    {
+        $this->domstift = $domstift;
+
+        return $this;
+    }
+
+    public function getDomstiftStart(): ?int
+    {
+        return $this->domstift_start;
+    }
+
+    public function setDomstiftStart(?int $domstift_start): self
+    {
+        $this->domstift_start = $domstift_start;
 
         return $this;
     }

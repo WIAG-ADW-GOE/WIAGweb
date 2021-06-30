@@ -1,15 +1,24 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container-fluid">
-	<h2 class="row my-3 mx-2 col-12">Referenzwerke</h2>
-	{% for reference in references|sort((a, b) => a.sort <=> b.sort) %}
-	    <dl class="row mx-2">
-		<dt class="col-sm-3">{{ reference.shorttitle }}</dt>
-		<dd class="col">
-		    {% include('reference/_details.html.twig') %}
-		</dd>
-	    </dl>
-	{% endfor %}
+    <div class="container-fluid mt-3">
+	<div class="row mx-2 col-12">
+	    <span class="topic-title mb-3">Bearbeite Referenzwerke für Domherren des Alten Reiches</span>
+	</div>
+	<div class="row mx-2 col-12">
+	    <div class="table-responsive">
+		<table class="table">
+		    <tbody>
+			{% for reference in references|sort((a, b) => a.id <=> b.id) %}
+			    <tr>
+				<td><a href="{{ path(link_path, {'id': reference.id}) }}">{{ reference.id }}</a></td>
+				<td>{{ reference.shorttitle }}</td>
+				<td>{{ reference.title }}</td>
+			    </tr>
+			{% endfor %}
+		    </tbody>
+		</table>
+	    </div>
+	</div>
     </div>
 {% endblock %}

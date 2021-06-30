@@ -123,6 +123,16 @@ class CanonGS
     private $dateBirth;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $numdateDeath;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $numdateBirth;
+
+    /**
      * @ORM\Column(type="string", length=127, nullable=true)
      */
     private $religiousOrder;
@@ -382,6 +392,30 @@ class CanonGS
     public function setDateBirth(?string $dateBirth): self
     {
         $this->dateBirth = $dateBirth;
+
+        return $this;
+    }
+
+        public function getNumdateDeath(): ?int
+    {
+        return $this->numdateDeath;
+    }
+
+    public function setNumdateDeath(?int $dateDeath): self
+    {
+        $this->numdateDeath = $dateDeath;
+
+        return $this;
+    }
+
+    public function getNumdateBirth(): ?int
+    {
+        return $this->numdateBirth;
+    }
+
+    public function setNumdateBirth(?int $dateBirth): self
+    {
+        $this->numdateBirth = $dateBirth;
 
         return $this;
     }

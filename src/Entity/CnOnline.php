@@ -24,7 +24,7 @@ class CnOnline {
 
     /**
      * @ORM\OneToOne(targetEntity="CnEra")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id_online")
+     * @ORM\JoinColumn(name="id_era", referencedColumnName="id")
      */
     private $era;
 
@@ -56,6 +56,10 @@ class CnOnline {
      */
     private $id_ep;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $id_era;
 
     /* fill these properties, for the list view or the detail view */
 
@@ -87,16 +91,6 @@ class CnOnline {
      * @ORM\Column(type="string", length=127, nullable=true)
      */
     private $familyname;
-
-    /**
-     * @ORM\Column(type="string", length=63, nullable=true)
-     */
-    private $domstift;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $domstift_start;
 
     /**
      * @ORM\Column(type="string", length=63)
@@ -144,6 +138,17 @@ class CnOnline {
         return $this;
     }
 
+    public function getEra(): ?CnEra
+    {
+        return $this->era;
+    }
+
+    public function setEra(?CnEra $era): self
+    {
+        $this->era = $era;
+
+        return $this;
+    }
 
     public function getCanonDh() {
         return $this->canon_dh;
@@ -260,30 +265,6 @@ class CnOnline {
     public function setFamilyname(?string $familyname): self
     {
         $this->familyname = $familyname;
-
-        return $this;
-    }
-
-    public function getDomstift(): ?string
-    {
-        return $this->domstift;
-    }
-
-    public function setDomstift(?string $domstift): self
-    {
-        $this->domstift = $domstift;
-
-        return $this;
-    }
-
-    public function getDomstiftStart(): ?int
-    {
-        return $this->domstift_start;
-    }
-
-    public function setDomstiftStart(?int $domstift_start): self
-    {
-        $this->domstift_start = $domstift_start;
 
         return $this;
     }

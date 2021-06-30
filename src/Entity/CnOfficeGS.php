@@ -76,7 +76,7 @@ class CnOfficeGS
      * @ORM\Column(type="string", length=63, nullable=true)
      */
     private $dominion;
-    
+
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
      */
@@ -126,10 +126,6 @@ class CnOfficeGS
      * @ORM\Column(type="integer", nullable=true)
      */
     private $numdate_end;
-
-    public function getNumdateStart() {
-        return $this->numdate->getDateStart();
-    }
 
     public function getMonasterylocationstr()
     {
@@ -345,6 +341,12 @@ class CnOfficeGS
         return $this;
     }
 
+
+    public function getNumdateStart(): ?int
+    {
+        return $this->numdate_start;
+    }
+
     public function setNumdateStart(?int $numdate_start): self
     {
         $this->numdate_start = $numdate_start;
@@ -364,5 +366,5 @@ class CnOfficeGS
         return $this;
     }
 
-    
+
 }

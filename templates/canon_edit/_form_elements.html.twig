@@ -4,7 +4,6 @@
     <span class="ml-2">{{ form_row(form.familyname) }}</span>
     <span class="ml-2">{{ form_row(form.date_birth) }}</span>
     <span class="ml-2">{{ form_row(form.date_death) }}</span>
-    <span class="ml-2">{{ form_row(form.status) }}</span>
 </div>
 <div class="row mx-2 col-12">
     {{ form_row(form.givenname_variant) }}
@@ -26,7 +25,15 @@
 </div>
 <div class="row mx-2 col-12">
     {{ form_row(form.wikipedia_url) }}
+    <span class="ml-3">{{ form_row(form.form_reference_name) }}</span>
+    <span class="ml-2">{{ form_row(form.pageReference) }}</span>
+    <span class="ml-2">{{ form_row(form.idInReference) }}</span>
 </div>
+<div class="row mx-2 col-12">
+    <span>{{ form_row(form.mergedInto) }}</span>
+    <span class="ml-2">{{ form_row(form.status) }}</span>
+</div>
+
 
 
 <div class="row mx-2 col-12">

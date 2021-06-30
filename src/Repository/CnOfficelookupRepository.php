@@ -94,14 +94,51 @@ class CnOfficelookupRepository extends ServiceEntityRepository
         return $suggestions;
     }
 
-    public function deleteByIdOnline($id_online) {
+    // obsolete 2021-06-28
+    // public function deleteByIdOnline($id_online) {
+    //     $this->createQueryBuilder('olt')
+    //          ->delete()
+    //          ->andWhere('olt.idOnline = :id_online')
+    //          ->setParameter('id_online', $id_online)
+    //          ->getQuery()
+    //          ->getResult();
+    // }
+
+    public function deleteByIds($ids) {
         $this->createQueryBuilder('olt')
              ->delete()
-             ->andWhere('olt.idOnline = :id_online')
-             ->setParameter('id_online', $id_online)
+             ->andWhere('olt.id in (:ids)')
+             ->setParameter('ids', $ids)
              ->getQuery()
              ->getResult();
     }
+
+    public function deleteByIdOnline($id_online) {
+        $qb = $this->createQueryBuilder('olt')
+                   ->delete()
+                   ->andWhere('olt.idOnline = :id_online')
+                   ->setParameter('id_online', $id_online);
+        $query = $qb->getQuery();
+        $query->getResult();
+    }
+
+
+
+    /**
+     * find domstift for cn_online
+     */
+    public function findFirstDomstift($id_online) {
+        $qb = $this->createQueryBuilder('o')
+                   ->select('d.name, min(o.numdateStart) as numdate_start')
+                   ->join('\App\Entity\Domstift', 'd', 'WITH', 'o.idMonastery = d.gs_id')
+                   ->andWhere('o.idOnline = :id_online')
+                   ->setParameter('id_online', $id_online);
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+
+    }
+
 
     /* AJAX callback */
     public function suggestOffice($office, $limit = 100): array {
