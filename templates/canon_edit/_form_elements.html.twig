@@ -31,6 +31,14 @@
 </div>
 <div class="row mx-2 col-12">
     <span>{{ form_row(form.mergedInto) }}</span>
+    <div class="d-flex align-items-center ml-2">
+	{% if canon.mergedinto is defined and canon.mergedinto != "" %}
+	    <a href="{{ path('canon_edit', {'id':canon.mergedinto}) }}">
+		<span style="font-size: large"><i class="bi bi-arrow-right-circle"></i></span></a>
+	{% else %}
+		<span style="font-size: large"><i class="bi bi-arrow-right-circle"></i></span></a>
+	{% endif %}
+    </div>
     <span class="ml-2">{{ form_row(form.status) }}</span>
 </div>
 

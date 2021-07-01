@@ -20,8 +20,18 @@
 	    {{ include('canon_edit/_title.html.twig') }}
 	</div>
 	{# { form_start(form, {'attr': {'id':'new_form', 'action':path('canon_new')}}) } #}
-	<div class="row mx-2 col-12 text-right text-nowrap">
-	    <p>ID: {{ canon.id }} — WIAG ID: {{ canon.wiagidlong }}</p>
+	<div class="row mx-2 mb-2">
+	    <div class="col-7">
+		ID: {{ canon.id }} — WIAG ID: {{ canon.wiagidlong }}
+	    </div>
+	    <div class="col-5">
+		{% if cmerged is defined and cmerged|length > 0 %}
+		    Umfasst:
+		    {% for mid in cmerged %}
+			<a href="{{ path('canon_edit', {'id':mid }) }}">{{ mid }}</a>{% if not loop.last %}, {% endif %}
+		    {% endfor %}
+		{% endif %}
+	    </div>
 	</div>
 	{{ form_start(form, {'attr': {'id':'new_form'} } ) }}
 	    {{ include('canon_edit/_form_elements.html.twig') }}

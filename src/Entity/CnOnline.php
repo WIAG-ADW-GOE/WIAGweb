@@ -24,7 +24,7 @@ class CnOnline {
 
     /**
      * @ORM\OneToOne(targetEntity="CnEra")
-     * @ORM\JoinColumn(name="id_era", referencedColumnName="id")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id_online")
      */
     private $era;
 
@@ -55,11 +55,6 @@ class CnOnline {
      * @ORM\Column(type="string", length=63, nullable=true)
      */
     private $id_ep;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $id_era;
 
     /* fill these properties, for the list view or the detail view */
 

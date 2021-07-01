@@ -20,7 +20,7 @@ use App\Service\ParseDates;
 use Doctrine\ORM\EntityManagerInterface;
 
 
-class CnUpdateLookup {
+class CanonService {
     private $parsedates;
     private $em;
 
@@ -58,26 +58,32 @@ class CnUpdateLookup {
         }
 
         // no entry from GS or data mismatch
+        $era = null;
         if (is_null($co)) {
             $era = new CnEra();
             $co = new CnOnline();
-            $co->setEra($era);
+        } else {
+            $era = $co->getEra();
         }
         $co->setIdDh($canon->getId());
 
-        // era
-        // if there is a canon from GS, then it's data are already stored
-        // in $co->era.
-        $this->era($co->getEra(), $canon);
         // online
         $this->online($co, $canon);
         $idonline = $co->getId();
+        if (is_null($era->getIdOnline())) {
+            $era->setIdOnline($idonline);
+        }
+        // era
+        // if there is a canon from GS, then it's data are already stored
+        // in $co->era.
+        $this->era($era, $canon);
         // office
         $this->officelookup($co, $canon);
         // name
         $this->namelookup($co, $canon);
         // id
         $this->idlookup($co, $canon);
+        #dd($co);
     }
 
     /**
@@ -124,7 +130,7 @@ class CnUpdateLookup {
                 $this->namelookup($co, $canon_gs);
 
             } else {
-                // online
+                // canon was online
                 $this->em->remove($co->getEra());
                 $this->em->remove($co);
                 $this->em->flush();
@@ -216,6 +222,7 @@ class CnUpdateLookup {
         $era_domstift_start = $era->getDomstiftStart();
         foreach ($canon->getOffices() as $o) {
             $date_start = $o->getNumdateStart();
+            #dump($date_start);
             if (!is_null($date_start)
                 && (is_null($era_start) || $era_start > $date_start)) {
                 $era_start = $date_start;
@@ -249,6 +256,7 @@ class CnUpdateLookup {
 
         $this->em->persist($era);
         $this->em->flush();
+        #dump($era);
 
         return($era);
     }
@@ -435,6 +443,28 @@ class CnUpdateLookup {
             $this->em->persist($ref);
             $this->em->flush();
         }
+    }
+
+    /**
+     * collect ids of canons that are merged to $canon
+     */
+    public function collectMerged($cmerged, $id) {
+        $children = $this->em->getRepository(Canon::class)
+                             ->findMerged($id);
+        if (count($children) > 0) {
+            $children_ids = array_column($children, 'id');
+            // avoid circles
+            $children_ids = array_filter($children_ids,
+                                         function($e) use ($id) {
+                                             return $e != $id;
+                                         });
+            foreach ($children_ids as $cid) {
+                $cil = $this->collectMerged($cmerged, $cid);
+                $cmerged = array_merge($cmerged, $cil);
+            }
+            $cmerged = array_merge($cmerged, $children_ids);
+        }
+        return $cmerged;
     }
 
 

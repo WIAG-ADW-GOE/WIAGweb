@@ -12,10 +12,9 @@ class CnEra {
 
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private $idOnline;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -37,9 +36,16 @@ class CnEra {
      */
     private $domstift_start;
 
-    public function getId(): int
+    public function getIdOnline(): ?int
     {
-        return $this->id;
+        return $this->idOnline;
+    }
+
+    public function setIdOnline(?int $id): self
+    {
+        $this->idOnline = $id;
+
+        return $this;
     }
 
     public function getEraStart(): ?int

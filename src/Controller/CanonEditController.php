@@ -18,7 +18,7 @@ use App\Form\CanonEditSearchFormType;
 use App\Form\CnOfficeEditFormType;
 use App\Form\Model\CanonEditSearchFormModel;
 use App\Service\ParseDates;
-use App\Service\CnUpdateLookup;
+use App\Service\CanonService;
 use App\Service\CnOfficeService;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -142,7 +142,7 @@ class CanonEditController extends AbstractController {
      */
     public function new(EntityManagerInterface $em,
                         Request $request,
-                        CnUpdateLookup $update) {
+                        CanonService $update) {
         $form = $this->createForm(CanonEditFormType::class);
 
         $form->handleRequest($request);
@@ -190,7 +190,7 @@ class CanonEditController extends AbstractController {
     public function edit(Canon $canon,
                          EntityManagerInterface $em,
                          Request $request,
-                         CnUpdateLookup $update) {
+                         CanonService $cs) {
         $if_ref = $canon->getIdReference();
         if (!is_null($canon->getIdReference())) {
             $st = $this->getDoctrine()
@@ -216,27 +216,32 @@ class CanonEditController extends AbstractController {
                 }
             }
 
-            $update->setNumdates($canon);
-            $update->canonreference($canon);
+            $cs->setNumdates($canon);
+            $cs->canonreference($canon);
 
             $status = $canon->getStatus();
             if ($status == 'online') {
-                $update->setOnline($canon);
+                $cs->setOnline($canon);
             } else {
-                $update->unsetOnline($canon);
+                $cs->unsetOnline($canon);
             }
 
             $em->persist($canon);
             $em->flush();
+
 
             return $this->redirectToRoute('canon_edit', [
                 'id' => $canon->getId(),
             ]);
         }
 
+        $cmerged = array();
+        $cmerged = $cs->collectMerged($cmerged, $canon->getId());
+
         return $this->render('canon_edit/edit.html.twig', [
             'form' => $form->createView(),
             'canon' => $canon,
+            'cmerged' => $cmerged,
         ]);
     }
 
@@ -247,7 +252,7 @@ class CanonEditController extends AbstractController {
     public function new_office(Canon $canon,
                                EntityManagerInterface $em,
                                CnOfficeService $os,
-                               CnUpdateLookup $updateLookup,
+                               CanonService $updateLookup,
                                Request $request) {
         $form = $this->createForm(CnOfficeEditFormType::class);
 
@@ -269,12 +274,7 @@ class CanonEditController extends AbstractController {
             $status = $canon->getStatus();
             // update office lookup table
             if ($status == 'online') {
-                $co = $this->getDoctrine()
-                           ->getRepository(CnOnline::class)
-                           ->findOneByIdDh($id_dh);
-                $updateLookup->officelookup($co, $canon);
-                $updateLookup->era($co, $canon);
-                $updateLookup->domstift($co);
+                $updateLookup->setOnline($canon);
             }
 
             return $this->redirectToRoute('canon_new_office', [
@@ -297,7 +297,7 @@ class CanonEditController extends AbstractController {
     public function edit_office(Canon $canon,
                                 CnOffice $office,
                                 EntityManagerInterface $em,
-                                CnUpdateLookup $updateLookup,
+                                CanonService $updateLookup,
                                 CnOfficeService $os,
                                 Request $request) {
 
@@ -323,20 +323,14 @@ class CanonEditController extends AbstractController {
                 $em->flush();
             }
 
-            // update date hist for $canon
-            $updateLookup->dateHist($canon);
-
-            // update office lookup table and canon lookup table
-            $id_dh = $canon->getId();
+            // update tables
+            // it seems that we do to much here, but this is reliable for all cases
+            // (era is extended/shrinked, canon from GS has to be handled ..)
             if ($canon->getStatus() == 'online') {
-                $co = $this->getDoctrine()
-                       ->getRepository(CnOnline::class)
-                       ->findOneByIdDh($id_dh);
-                $updateLookup->officelookup($co, $canon);
-                $updateLookup->era($co, $canon);
-                $updateLookup->domstift($co);
+                $updateLookup->setOnline($canon);
             }
 
+            $id_dh = $canon->getId();
             return $this->redirectToRoute('canon_new_office', [
                 'id' => $id_dh,
             ]);
@@ -348,11 +342,6 @@ class CanonEditController extends AbstractController {
             'canon' => $canon,
             'id_edit_office' => $office->getId(),
         ]);
-    }
-
-
-    public function unsetOnline($canon, CnUpdateLookup $update) {
-
     }
 
     /**

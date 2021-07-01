@@ -183,7 +183,7 @@ class CanonRepository extends ServiceEntityRepository {
                           ' OR c.gsnId like :someid'.
                           ' OR c.viafId like :someid'.
                           ' OR c.gndId like :someid'.
-                          ' OR c.wiag_episc_id like :someid')
+                          ' OR c.wiagEpiscId like :someid')
                ->setParameter('someid', '%'.$formmodel->someid.'%');
         }
 
@@ -256,6 +256,16 @@ class CanonRepository extends ServiceEntityRepository {
                    ->andWhere('c.status IS NOT NULL');
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function findMerged($id) {
+        $qb = $this->createQueryBuilder('c')
+                   ->select('DISTINCT c.id')
+                   ->andWhere('c.mergedInto = :id')
+                   ->setParameter('id', $id);
+        $query = $qb->getQuery();
+
+        return $query->getResult();
     }
 
     /**

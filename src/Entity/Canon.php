@@ -787,5 +787,4 @@ class Canon
         }
     }
 
-
 }
