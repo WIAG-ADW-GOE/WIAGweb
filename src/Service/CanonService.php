@@ -423,19 +423,68 @@ class CanonService {
      * fill/update references
      */
     public function canonreference(Canon $canon) {
-        # TODO manage merged canons
-        $references = $canon->getReferences();
-        foreach ($references as $refi) {
-            $this->em->remove($refi);
+        $root = $this->findRoot($canon);
+        if (!is_null($root) and $root !== $canon) {
+            $this->canonreference($root);
         }
-        $this->em->flush();
 
+        // clear references
+        $references = $canon->getReferences();
+        if (!is_null($references)) {
+            foreach ($references as $refi) {
+                $this->em->remove($refi);
+            }
+            $this->em->flush();
+        }
+
+        $status = $canon->getStatus();
+        if ($status != 'merged') {
+            $this->makeCanonreference($canon, $canon);
+
+            $cmerged = array();
+            $cmerged = $this->collectMerged($cmerged, $canon->getId());
+
+            $canon_repository = $this->em->getRepository(Canon::class);
+            foreach($cmerged as $mid) {
+                $canon_merged = $canon_repository->findOneById($mid);
+                if (!is_null($canon_merged)) {
+                    $this->makeCanonreference($canon_merged, $canon);
+                }
+            }
+        }
+    }
+
+    /**
+     * find root element withing a merging tree
+     */
+    public function findRoot(Canon $canon) {
+        if (is_null($canon)) {
+            return null;
+        }
+        $merged_into = $canon->getMergedInto();
+
+        if (is_null($merged_into)) {
+            return $canon;
+        }
+        $cmi = $this->em->getRepository(Canon::class)
+                        ->findOneById($merged_into);
+        if (is_null($cmi)) {
+            return $canon;
+        }
+        return $this->findRoot($cmi);
+    }
+
+    /**
+     * aux
+     */
+    public function makeCanonreference($canon, $canon_ref) {
         $refobj = $this->em->getRepository(CnReference::class)
                            ->find($canon->getIdReference());
 
         if (!is_null($refobj)) {
             $ref = new CnCanonReference();
-            $ref->setCanon($canon);
+            $ref->setCanon($canon_ref);
+            $ref->setIdCanonOrig($canon->getId());
             $ref->setReference($refobj);
             $ref->setPageReference($canon->getPageReference());
             $ref->setIdInReference($canon->getIdInReference());

@@ -15,9 +15,6 @@ use App\Service\DioceseData;
 use App\Service\DioceseLinkedData;
 use App\Service\CanonData;
 use App\Service\CanonLinkedData;
-// use App\Service\CanonGSData;
-// use App\Service\CanonGSLinkedData;
-
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -212,7 +209,7 @@ class IDController extends AbstractController {
         $repo = $this->getDoctrine()
                      ->getRepository(CnOnline::class);
 
-        $cnonline = $repo->findOneById($id);
+        $cnonline = $repo->findOneByWiagid($id);
         if (!$cnonline) {
             throw $this->createNotFoundException('Domherr wurde nicht gefunden');
         } else {

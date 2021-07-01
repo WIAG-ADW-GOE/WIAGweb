@@ -32,7 +32,7 @@ class Canon
     static public function extractDbId($id): ?string {
         $db_id = [];
         # at the moment we do not take care about multiple IDs for one person
-        $id_prefix = Canon::WIAGID_PREFIX;
+        $id_prefix = self::WIAGID_PREFIX;
         $rgs = "/{$id_prefix}((gs)?[0-9]+)-[0-9]{3}/";
         preg_match($rgs, $id, $db_id);
         if (count($db_id) > 1) {

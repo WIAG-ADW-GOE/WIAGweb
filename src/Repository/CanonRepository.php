@@ -262,7 +262,9 @@ class CanonRepository extends ServiceEntityRepository {
         $qb = $this->createQueryBuilder('c')
                    ->select('DISTINCT c.id')
                    ->andWhere('c.mergedInto = :id')
-                   ->setParameter('id', $id);
+                   ->andWhere('c.status = :merged')
+                   ->setParameter('id', $id)
+                   ->setParameter('merged', 'merged');
         $query = $qb->getQuery();
 
         return $query->getResult();
@@ -307,5 +309,21 @@ class CanonRepository extends ServiceEntityRepository {
 
         return $suggestions;
     }
+
+    /* AJAX callback */
+    public function suggestMerged($input, $limit = 200): array {
+        // it is not neccessary that the merge destination is online
+        $qb = $this->createQueryBuilder('c')
+                   ->select('DISTINCT c.id AS suggestion')
+                   ->andWhere('c.id LIKE :input')
+                   ->setParameter('input', '%'.$input.'%')
+                   ->setMaxResults($limit);
+        $query = $qb->getQuery();
+
+        # dd($query->getDQL());
+
+        return $query->getResult();
+    }
+
 
 }

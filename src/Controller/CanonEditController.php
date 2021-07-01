@@ -161,10 +161,11 @@ class CanonEditController extends AbstractController {
             // the else case is not relevant for a new canon
 
             $update->setNumdates($canon);
-            $update->canonreference($canon);
 
             $em->persist($canon);
             $em->flush();
+
+            $update->canonreference($canon);
 
             $status = $canon->getStatus();
             if ($status == 'online') {
@@ -217,6 +218,10 @@ class CanonEditController extends AbstractController {
             }
 
             $cs->setNumdates($canon);
+
+            $em->persist($canon);
+            $em->flush();
+
             $cs->canonreference($canon);
 
             $status = $canon->getStatus();
@@ -225,10 +230,6 @@ class CanonEditController extends AbstractController {
             } else {
                 $cs->unsetOnline($canon);
             }
-
-            $em->persist($canon);
-            $em->flush();
-
 
             return $this->redirectToRoute('canon_edit', [
                 'id' => $canon->getId(),
@@ -487,6 +488,22 @@ class CanonEditController extends AbstractController {
             'choices' => $qresult,
         ]);
     }
+
+    /**
+     * AJAX callback
+     * @Route("domherren/edit/autocomplete/merged", name="canon_edit_autocomplete_merged")
+     */
+    public function autocompletemerged(Request $request) {
+        $qresult = $this->getDoctrine()
+                        ->getRepository(Canon::class)
+                        ->suggestMerged($request->query->get('query'),
+                                        self::HINT_LIST_LIMIT);
+
+        return $this->json([
+            'choices' => $qresult,
+        ]);
+    }
+
 
 
 }

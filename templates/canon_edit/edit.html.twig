@@ -22,7 +22,11 @@
 	{# { form_start(form, {'attr': {'id':'new_form', 'action':path('canon_new')}}) } #}
 	<div class="row mx-2 mb-2">
 	    <div class="col-7">
-		ID: {{ canon.id }} — WIAG ID: {{ canon.wiagidlong }}
+		{% if canon.status == 'online' %}
+		    ID: {{ canon.id }} — WIAG ID: <a href="{{ path('id', {'id':canon.wiagidlong}) }}" target="_blank" rel="noopener">{{ canon.wiagidlong }}</a>
+		{% else %}
+		    ID: {{ canon.id }} — WIAG ID: {{ canon.wiagidlong }}
+		{% endif %}
 	    </div>
 	    <div class="col-5">
 		{% if cmerged is defined and cmerged|length > 0 %}

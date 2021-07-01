@@ -190,7 +190,11 @@ class CanonEditFormType extends AbstractType {
             ->add('mergedInto', TextType::class, [
                 'label' => 'verweist auf',
                 'required' => false,
-                'attr' => ['size' => 12],
+                'attr' => [
+                    'class' => 'js-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_merged'),
+                    'size' => 12,
+                ],
             ])
             ->add('form_reference_name', TextType::class, [
                 'label' => 'Referenzwerk',

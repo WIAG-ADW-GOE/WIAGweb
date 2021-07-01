@@ -40,6 +40,11 @@ class CnCanonReference
     /**
      * @ORM\Column(type="integer")
      */
+    private $idCanonOrig;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
     private $idReference;
 
     /**
@@ -82,14 +87,26 @@ class CnCanonReference
         return $this->id;
     }
 
-    public function getIdCanon(): ?string
+    public function getIdCanon(): ?int
     {
         return $this->idCanon;
     }
 
-    public function setIdCanon(string $idCanon): self
+    public function setIdCanon(int $idCanon): self
     {
         $this->idCanon = $idCanon;
+
+        return $this;
+    }
+
+    public function getIdCanonOrig(): ?int
+    {
+        return $this->idCanonOrig;
+    }
+
+    public function setIdCanonOrig(int $idCanon): self
+    {
+        $this->idCanonOrig = $idCanon;
 
         return $this;
     }

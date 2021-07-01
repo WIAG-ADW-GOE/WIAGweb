@@ -428,6 +428,4 @@ class CnOnlineRepository extends ServiceEntityRepository {
         ;
     }
 
-
-
 }
