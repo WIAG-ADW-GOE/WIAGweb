@@ -168,7 +168,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
         if($querydata->facetLocations) {
             $locations = array_column($querydata->facetLocations, 'id');
             $qb->join('co.officelookup', 'ocfctl')
-               ->andWhere('ocfctl.location_name IN (:locations)')
+               ->andWhere('ocfctl.locationName IN (:locations)')
                ->setParameter('locations', $locations);
         }
         if($querydata->facetMonasteries) {
@@ -182,7 +182,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
         if($querydata->facetOffices) {
             $facetOffices = array_column($querydata->facetOffices, 'name');
             $qb->join('co.officelookup', 'ocfctoc')
-               ->andWhere("ocfctoc.office_name IN (:offices)")
+               ->andWhere("ocfctoc.officeName IN (:offices)")
                ->setParameter('offices', $facetOffices);
         }
 
@@ -224,7 +224,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
         case 'specific_domstift_id':
             // strange enough it is more efficient to add officelookup a second time for sorting
             $qb->join('co.officelookup', 'olt_sort')
-               ->andWhere('olt_sort.id_monastery = :monastery')
+               ->andWhere('olt_sort.idMonastery = :monastery')
                ->setParameter('monastery', $monastery)
                ->addOrderBy('olt_sort.numdateStart', 'ASC')
                ->addOrderBy('olt_sort.numdateEnd', 'ASC')
