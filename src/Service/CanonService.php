@@ -21,6 +21,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 
 class CanonService {
+    const MAX_MERGE_DEPTH = 16;
+
     private $parsedates;
     private $em;
 
@@ -423,7 +425,8 @@ class CanonService {
      * fill/update references
      */
     public function canonreference(Canon $canon) {
-        $root = $this->findRoot($canon);
+        $cycle = 1;
+        $root = $this->findRoot($canon, $cycle);
         if (!is_null($root) and $root !== $canon) {
             $this->canonreference($root);
         }
@@ -442,11 +445,12 @@ class CanonService {
             $this->makeCanonreference($canon, $canon);
 
             $cmerged = array();
-            $cmerged = $this->collectMerged($cmerged, $canon->getId());
+            $cycle = 1;
+            $cmerged = $this->collectMerged($cmerged, $canon->getId(), $cycle);
 
             $canon_repository = $this->em->getRepository(Canon::class);
-            foreach($cmerged as $mid) {
-                $canon_merged = $canon_repository->findOneById($mid);
+            foreach($cmerged as $cn_i) {
+                $canon_merged = $canon_repository->findOneById($cn_i->getId());
                 if (!is_null($canon_merged)) {
                     $this->makeCanonreference($canon_merged, $canon);
                 }
@@ -457,7 +461,12 @@ class CanonService {
     /**
      * find root element withing a merging tree
      */
-    public function findRoot(Canon $canon) {
+    public function findRoot(Canon $canon, $cycle) {
+        // avoid endless recursion
+        if ($cycle > self::MAX_MERGE_DEPTH) {
+            return $canon;
+        }
+
         if (is_null($canon)) {
             return null;
         }
@@ -471,7 +480,7 @@ class CanonService {
         if (is_null($cmi)) {
             return $canon;
         }
-        return $this->findRoot($cmi);
+        return $this->findRoot($cmi, $cycle + 1);
     }
 
     /**
@@ -497,21 +506,19 @@ class CanonService {
     /**
      * collect ids of canons that are merged to $canon
      */
-    public function collectMerged($cmerged, $id) {
+    public function collectMerged($cmerged, $id, $cycle) {
+        if ($cycle > self::MAX_MERGE_DEPTH) {
+            return($cmerged);
+        }
         $children = $this->em->getRepository(Canon::class)
                              ->findMerged($id);
         if (count($children) > 0) {
-            $children_ids = array_column($children, 'id');
-            // avoid circles
-            $children_ids = array_filter($children_ids,
-                                         function($e) use ($id) {
-                                             return $e != $id;
-                                         });
-            foreach ($children_ids as $cid) {
-                $cil = $this->collectMerged($cmerged, $cid);
-                $cmerged = array_merge($cmerged, $cil);
+            // D $children_ids = array_column($children, 'id');
+            foreach ($children as $cn_i) {
+                $cn_il = $this->collectMerged($cmerged, $cn_i->getId(), $cycle + 1);
+                $cmerged = array_merge($cmerged, $cn_il);
             }
-            $cmerged = array_merge($cmerged, $children_ids);
+            $cmerged = array_merge($cmerged, $children);
         }
         return $cmerged;
     }

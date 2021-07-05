@@ -236,13 +236,9 @@ class CanonEditController extends AbstractController {
             ]);
         }
 
-        $cmerged = array();
-        $cmerged = $cs->collectMerged($cmerged, $canon->getId());
-
         return $this->render('canon_edit/edit.html.twig', [
             'form' => $form->createView(),
             'canon' => $canon,
-            'cmerged' => $cmerged,
         ]);
     }
 

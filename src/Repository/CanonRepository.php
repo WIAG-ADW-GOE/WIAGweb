@@ -260,7 +260,7 @@ class CanonRepository extends ServiceEntityRepository {
 
     public function findMerged($id) {
         $qb = $this->createQueryBuilder('c')
-                   ->select('DISTINCT c.id')
+                   ->select('DISTINCT c')
                    ->andWhere('c.mergedInto = :id')
                    ->andWhere('c.status = :merged')
                    ->setParameter('id', $id)

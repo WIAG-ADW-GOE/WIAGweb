@@ -28,20 +28,39 @@
 		    ID: {{ canon.id }} — WIAG ID: {{ canon.wiagidlong }}
 		{% endif %}
 	    </div>
-	    <div class="col-5">
-		{% if cmerged is defined and cmerged|length > 0 %}
-		    Umfasst:
-		    {% for mid in cmerged %}
-			<a href="{{ path('canon_edit', {'id':mid }) }}">{{ mid }}</a>{% if not loop.last %}, {% endif %}
-		    {% endfor %}
-		{% endif %}
-	    </div>
 	</div>
 	{{ form_start(form, {'attr': {'id':'new_form'} } ) }}
 	    {{ include('canon_edit/_form_elements.html.twig') }}
 	{{ form_end(form) }}
+	{# merged into this #}
+	{% set references = canon.references %}
+	{% if references is defined and references|length > 1 %}
+	    <div class="row col-12 mx-2 mt-2">
+		<p><strong>weitere Referenzen</strong></p>
+		<div class="table-responsive">
+		    <table class="table">
+			<thead class="thead-light">
+			    <tr>
+				<th scope="col">Id Domherr</th>
+				<th scope="col">Referenz</th>
+			    </tr>
+			</thead>
+			<tbody>
+			    {% for cnref in references|filter(r => r.idcanonorig != canon.id) %}
+				<tr>
+				    <td><a href="{{ path('canon_edit', {'id':cnref.idcanonorig}) }}">{{ cnref.idcanonorig }}</a></td>
+				{% set refid=cnref.idinreference %}
+				    <td>{{ cnref.reference.title }} {% if cnref.pagereference %} , S. {{ cnref.pagereference }} {% if refid %} , ID/Nr. {{ refid }} {% endif %} {% else %} {% if refid %} , ID/Nr. {{ refid }} {% endif %} {% endif %}
+				    </td>
+				</tr>
+			    {% endfor %}
+		    </table>
+		</div>
+	</div>
+	{% endif %}
+
 	{# offices #}
-	<div class="row col-12 mx-2 mt-3">
+	<div class="row col-12 mx-2">
 	    {{ include('canon_edit/_table_offices.html.twig', {edit_mode: false}) }}
 	</div>
 	<div class="row mx-2 mt-1">
