@@ -189,7 +189,7 @@ $(document).ready(function() {
     input_text.each(function() {
 	$(this)[0].addEventListener('change', function(event) {
 	    fpx.each(function() {
-		console.log('remove checked');
+		// console.log('remove checked');
 		$(this)[0].removeAttribute('checked');
 	    });
 	    input_statefctloc[0].setAttribute('value', '0');
@@ -220,18 +220,30 @@ $(document).ready(function() {
 	edit_safe[0].disabled = true;
     }
 
-    $( '[id^=canon_edit_form]' ).on( "input", function(event) {
+    $( '[id^=canon_edit_form]' ).on( "input", function( event ) {
 	edit_safe[0].disabled = false;
     });
 
-    // activate save button in edit form
+    // activate save button in office edit form
     var edit_office_safe = $( '#cn_office_edit_form_btn_save' );
     if( edit_office_safe.length != 0 ) {
 	edit_office_safe[0].disabled = true;
     }
 
-    $( '[id^=cn_office_edit_form]' ).on( "input", function(event) {
+    $( '[id^=cn_office_edit_form]' ).on( "input", function( event ) {
 	edit_office_safe[0].disabled = false;
+    });
+
+    // hide result list to avoid click on invalidated links/buttons
+    var list_result = $( '#list-result' );
+    var count_result = $ ('#count-result' );
+    $( '[id^=canon_form]' ).on( "input", function( event ) {
+	if (list_result.length > 0) {
+	    list_result[0].style.visibility = "hidden";
+	}
+	if (count_result.length > 0) {
+	    count_result[0].style.visibility = "hidden";
+	}
     });
 
 

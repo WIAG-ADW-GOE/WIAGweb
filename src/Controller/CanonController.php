@@ -124,7 +124,7 @@ class CanonController extends AbstractController {
                 $repository->fillListData($p);
             }
 
-            return $this->render('canon/listformresult.html.twig', [
+            return $this->render('canon/listresult.html.twig', [
                 'query_form' => $form->createView(),
                 'count' => $count,
                 'limit' => self::LIST_LIMIT,
