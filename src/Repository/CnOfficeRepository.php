@@ -195,6 +195,20 @@ class CnOfficeRepository extends ServiceEntityRepository
 
     }
 
+    /* AJAX callback */
+    public function suggestDiocese($input, $limit = 100): array {
+        $qb = $this->createQueryBuilder('o')
+                   ->select('DISTINCT o.diocese AS suggestion')
+                   ->andWhere('o.diocese LIKE :input')
+                   ->setParameter('input', '%'.$input.'%')
+                   ->setMaxResults($limit);
+
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+
+    }
+
 
 
 }

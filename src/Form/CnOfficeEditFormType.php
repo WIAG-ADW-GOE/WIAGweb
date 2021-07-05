@@ -75,6 +75,8 @@ class CnOfficeEditFormType extends AbstractType {
                 'label' => 'Bistum',
                 'required' => false,
                 'attr' => [
+                    'class' => 'js-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_diocese'),
                     'size' => 30,
                 ],
             ])

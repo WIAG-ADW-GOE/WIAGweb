@@ -500,6 +500,21 @@ class CanonEditController extends AbstractController {
         ]);
     }
 
+    /**
+     * AJAX callback
+     * @Route("domherren/edit/autocomplete/diocese", name="canon_edit_autocomplete_diocese")
+     */
+    public function autocompletediocese(Request $request) {
+        $qresult = $this->getDoctrine()
+                        ->getRepository(CnOffice::class)
+                        ->suggestDiocese($request->query->get('query'),
+                                         self::HINT_LIST_LIMIT);
+
+        return $this->json([
+            'choices' => $qresult,
+        ]);
+    }
+
 
 
 }
