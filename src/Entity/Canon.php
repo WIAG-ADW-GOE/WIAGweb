@@ -4,14 +4,17 @@ namespace App\Entity;
 
 use App\Entity\Person;
 use App\Repository\CanonRepository;
+use App\Validator\MergeTarget;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Table(name="cn_canon")
  * @ORM\Entity(repositoryClass=CanonRepository::class)
+ * @UniqueEntity(fields={"gsnId"}, message="Der Domherr ist schon verknüpft")
  */
 class Canon
 {
@@ -203,6 +206,7 @@ class Canon
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @MergeTarget()
      */
     private $mergedInto;
 

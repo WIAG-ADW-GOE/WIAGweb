@@ -1,4 +1,6 @@
 <div class="row mx-2 col-12">
+    {{ form_errors(form) }}
+</div><div class="row mx-2 col-12">
     {{ form_row(form.givenname) }}
     <span class="ml-2">{{ form_row(form.prefix_name) }}</span>
     <span class="ml-2">{{ form_row(form.familyname) }}</span>

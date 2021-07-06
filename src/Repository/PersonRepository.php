@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Person;
 use App\Entity\Office;
+use App\Entity\CnOnline;
 use App\Entity\CnOffice;
 use App\Entity\CnOfficeGS;
 use App\Entity\CnCanonReference;
@@ -354,12 +355,18 @@ class PersonRepository extends ServiceEntityRepository {
 
     /**
      * get data from canon database and GS
-     * We cannot delegate this to the ORM, becaucse id_dh and id_gs are no primary keys
      */
     public function fillCnData(Person $person) {
         $em = $this->getEntityManager();
 
-        $id_dh = $person->getIdDh();
+        $co = $em->getRepository(CnOnline::class)
+                 ->findOneByIdEp($person->getWiagid());
+
+        if (is_null($co)) {
+            return null;
+        }
+
+        $id_dh = $co->getIdDh();
 
         if (!is_null($id_dh)) {
             $officesdh = $em->getRepository(CnOffice::class)
@@ -370,7 +377,7 @@ class PersonRepository extends ServiceEntityRepository {
             $person->setReferencesDh($referencesdh);
         }
 
-        $id_gs = $person->getIdGs();
+        $id_gs = $co->getIdGs();
 
         if (!is_null($id_gs)) {
             $officesgs = $em->getRepository(CnOfficeGS::class)

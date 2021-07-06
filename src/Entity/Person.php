@@ -176,16 +176,6 @@ class Person {
     private $reference;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
-     */
-    private $id_dh;
-
-    /**
-     * @ORM\Column(type="string", length=63, nullable=true)
-     */
-    private $id_gs;
-
-    /**
      * canon offices (Domherren-Datenbank)
      */
     private $officesdh;
@@ -638,28 +628,5 @@ class Person {
         return $this;
     }
 
-    public function getIdDh(): ?string
-    {
-        return $this->id_dh;
-    }
-
-    public function setIdDh(?string $id_dh): self
-    {
-        $this->id_dh = $id_dh;
-
-        return $this;
-    }
-
-    public function getIdGs(): ?string
-    {
-        return $this->id_gs;
-    }
-
-    public function setIdGs(?string $id_gs): self
-    {
-        $this->id_gs = $id_gs;
-
-        return $this;
-    }
 
 }

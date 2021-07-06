@@ -411,21 +411,29 @@ class CnOnlineRepository extends ServiceEntityRepository {
     // do not follow the naming convention here (idDh instead of id_dh)
     public function findOneByIdDh($value): ?CnOnline {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.id_dh = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+                    ->andWhere('c.id_dh = :val')
+                    ->setParameter('val', $value)
+                    ->getQuery()
+                    ->getOneOrNullResult();
     }
 
     // do not follow the naming convention here (idGs instead of id_gs)
     public function findOneByIdGs($value): ?CnOnline {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.id_gs = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+                    ->andWhere('c.id_gs = :val')
+                    ->setParameter('val', $value)
+                    ->getQuery()
+                    ->getOneOrNullResult();
     }
+
+    // do not follow the naming convention here (idEp instead of id_gs)
+    public function findOneByIdEp($value): ?CnOnline {
+        return $this->createQueryBuilder('c')
+                    ->andWhere('c.id_ep = :val')
+                    ->setParameter('val', $value)
+                    ->getQuery()
+                    ->getOneOrNullResult();
+    }
+
 
 }
