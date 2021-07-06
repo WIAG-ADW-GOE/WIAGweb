@@ -180,7 +180,7 @@ class OfficeRepository extends ServiceEntityRepository
              "INNER JOIN App\Entity\MonasteryLocation loc ".
              "WITH loc.wiagidMonastery = oc.id_monastery ".
              "INNER JOIN App\Entity\Place place ".
-             "WITH place.id_places = loc.place_id ".
+             "WITH place.idPlaces = loc.place_id ".
              "WHERE oc.wiagid = :ocid ";
 
         $em = $this->getEntityManager();

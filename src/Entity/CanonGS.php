@@ -50,31 +50,6 @@ class CanonGS
      */
     private $references;
 
-
-    /**
-     * @ORM\OneToOne(targetEntity="CnEra", mappedBy="canon")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
-     */
-    // private $era;
-
-    /**
-     * @ORM\OneToMany(targetEntity="CnOffice", mappedBy="canon")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
-     */
-    // private $offices;
-
-    /**
-     * @ORM\OneToMany(targetEntity=CnOfficeSortkey::class, mappedBy="canon")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
-     */
-    // private $officeSortkeys;
-
-    /**
-     * @ORM\OneToMany(targetEntity="CnCanonReference", mappedBy="canon")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
-     */
-    // private $references;
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
