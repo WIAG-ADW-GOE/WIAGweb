@@ -147,6 +147,7 @@ class CanonEditController extends AbstractController {
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $canon = $form->getData();
 
             $update->setNumdates($canon);
 
