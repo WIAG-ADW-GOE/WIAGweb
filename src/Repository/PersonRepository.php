@@ -394,8 +394,10 @@ class PersonRepository extends ServiceEntityRepository {
     public function suggestId($input, $limit = 200): array {
         $qb = $this->createQueryBuilder('p')
                    ->select('p.wiagid AS suggestion')
-                   ->andWhere('p.wiagid LIKE :input')
+                   ->andWhere('CONCAT (:prefix, p.wiagid, :postfix) LIKE :input')
                    ->setParameter('input', '%'.$input.'%')
+                   ->setParameter('prefix', Person::WIAGID_PREFIX)
+                   ->setParameter('postfix', Person::WIAGID_POSTFIX)
                    ->setMaxResults($limit);
         $query = $qb->getQuery();
 

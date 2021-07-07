@@ -368,10 +368,7 @@ class CanonEditController extends AbstractController {
      * @Route("domherren/edit/autocomplete/episcid", name="canon_edit_autocomplete_episcid")
      */
     public function autocompleteepiscid(Request $request) {
-        $query = $request->query->get('query');
-        $id = Person::extractDbId($query);
-        $id = $id ?? $query;
-
+        $id = $request->query->get('query');
 
         $suggestions = $this->getDoctrine()
                         ->getRepository(Person::class)

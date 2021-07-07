@@ -6,6 +6,7 @@ use App\Entity\Person;
 use App\Repository\CanonRepository;
 use App\Validator\MergeTarget;
 use App\Validator\CanonGSN;
+use App\Validator\CanonWiagEpisc;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -198,6 +199,7 @@ class Canon
 
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
+     * @CanonWiagEpisc()
      */
     private $wiagEpiscId;
 
