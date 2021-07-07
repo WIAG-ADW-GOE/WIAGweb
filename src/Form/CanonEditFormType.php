@@ -163,7 +163,7 @@ class CanonEditFormType extends AbstractType {
                 ],
 
             ])
-            -> add('gsn_id', TextType::class, [
+            -> add('gsn_id', null, [
                 'label' => 'GS-Nummer',
                 'required' => false,
                 'attr' => [
@@ -196,7 +196,7 @@ class CanonEditFormType extends AbstractType {
                     'size' => 20,
                 ],
             ])
-            ->add('mergedInto', TextType::class, [
+            ->add('mergedInto', null, [
                 'label' => 'verweist auf',
                 'required' => false,
                 'attr' => [
