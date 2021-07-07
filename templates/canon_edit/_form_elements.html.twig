@@ -1,0 +1,54 @@
+<div class="row mx-2 col-12">
+    {{ form_errors(form) }}
+</div><div class="row mx-2 col-12">
+    {{ form_row(form.givenname) }}
+    <span class="ml-2">{{ form_row(form.prefix_name) }}</span>
+    <span class="ml-2">{{ form_row(form.familyname) }}</span>
+    <span class="ml-2">{{ form_row(form.date_birth) }}</span>
+    <span class="ml-2">{{ form_row(form.date_death) }}</span>
+</div>
+<div class="row mx-2 col-12">
+    {{ form_row(form.givenname_variant) }}
+    <span class="ml-2">{{ form_row(form.familyname_variant) }}</span>
+    <span class="ml-2">{{ form_row(form.religious_order) }}</span>
+    <span class="ml-2">{{ form_row(form.academic_title) }}</span>
+</div>
+<div class="row mx-2 col-12">
+    {{ form_row(form.comment_name) }}
+    <span class="ml-2">{{ form_row(form.comment_person) }}</span>
+    <span class="ml-2">{{ form_row(form.annotation_ed) }}</span>
+</div>
+<div class="row mx-2 col-12">
+    <span>{{ form_row(form.gsn_id) }}</span>
+    <span class="ml-2">{{ form_row(form.gnd_id) }}</span>
+    <span class="ml-2">{{ form_row(form.viaf_id) }}</span>
+    <span class="ml-2">{{ form_row(form.wikidata_id) }}</span>
+    <span class="ml-2">{{ form_row(form.wiag_episc_id) }}</span>
+</div>
+<div class="row mx-2 col-12">
+    {{ form_row(form.wikipedia_url) }}
+    <span class="ml-3">{{ form_row(form.idReference) }}</span>
+    <span class="ml-2">{{ form_row(form.pageReference) }}</span>
+    <span class="ml-2">{{ form_row(form.idInReference) }}</span>
+</div>
+<div class="row mx-2 col-12">
+    <span>{{ form_row(form.mergedInto) }}</span>
+    <div class="d-flex align-items-center ml-2">
+	{% if canon.mergedinto is defined and canon.mergedinto != "" %}
+	    <a href="{{ path('canon_edit', {'id':canon.mergedinto}) }}">
+		<span style="font-size: large"><i class="bi bi-arrow-right-circle"></i></span></a>
+	{% else %}
+		<span style="font-size: large"><i class="bi bi-arrow-right-circle"></i></span>
+	{% endif %}
+    </div>
+    <span class="ml-2">{{ form_row(form.status) }}</span>
+</div>
+
+
+
+<div class="row mx-2 col-12">
+    <div class="form-group">
+	<button id ="cn-edit-save" type="submit" class="btn btn-warning btn-sm">Speichern</button>
+	<a href="{{ path('canon_editlist') }}" class="btn btn-secondary btn-sm ml-2" role="button">Neue Suche</a>
+    </div>
+</div>

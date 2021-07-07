@@ -1,0 +1,29 @@
+{# {{ form_start(query_form, {'attr': {'id':'q_form'}}) }} #}
+<div class="row ml-2 col-12">
+    {{  form_row(query_form.name) }}
+    <span class="ml-2">{{ form_row(query_form.monastery) }}</span>
+    <span class="ml-2">{{ form_row(query_form.office) }}</span>
+    <span class="ml-2">{{ form_row(query_form.place) }}</span>
+    <span class="ml-2">{{ form_row(query_form.year) }}</span>
+    <span class="ml-2">{{ form_row(query_form.someid) }}</span>
+</div>
+<div class="row ml-2 col-12">
+    <div class="input-group">
+	<div class="input-group-prepend">
+	    {{ form_widget(query_form.searchHTML) }}
+	    <a href="{{ path('canon_editlist') }}" class="ml-1 btn btn-secondary btn-light btn-sm" role="button">Neue Suche</a>
+	    <button class="btn {% if filterStatusOn %}btn-warning{% else %}btn-secondary btn-light{% endif %} btn-sm dropdown-toggle ml-1" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Filter Status</button>
+	    <div class="dropdown-menu">
+		{% for opt in query_form.filterStatus%}
+		    {# <div class="form-group small"> #}
+		    <div class="dropdown-item form-group p-1 m-0">
+			{{ form_widget(opt) }}
+		    </div>
+		{% endfor %}
+	    </div>
+	    <a href="{{ path('canon_new') }}" class="ml-2 btn btn-success btn-sm" role="button">Neuer Domherr</a>
+	</div>
+    </div>
+</div>
+
+{# {{ form_end(query_form) }} #}

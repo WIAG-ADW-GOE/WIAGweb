@@ -2,14 +2,16 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CnOfficeRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CnOfficeRepository::class)
  */
-class CnOffice
-{
+class CnOffice {
+
     /**
      * @ORM\ManyToOne(targetEntity="Canon", inversedBy="offices")
      * @ORM\JoinColumn(name="id_canon", referencedColumnName="id")
@@ -17,7 +19,7 @@ class CnOffice
     private $canon;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Monastery", inversedBy="office")
+     * @ORM\OneToOne(targetEntity="Monastery")
      * @ORM\JoinColumn(nullable=true, name="id_monastery", referencedColumnName="wiagid")
      */
     private $monastery;
@@ -30,7 +32,7 @@ class CnOffice
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="string", length=31)
+     * @ORM\Column(type="integer")
      */
     private $id;
 
@@ -41,11 +43,13 @@ class CnOffice
 
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
+     * @Assert\NotBlank(message="Bitte Feld 'Amtsart' befüllen.")
      */
     private $officeName;
 
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
+     * @Assert\LessThan(2021, message="Die Amtszeit muss in der Vergangenheit beginnen.")
      */
     private $dateStart;
 
@@ -55,7 +59,7 @@ class CnOffice
     private $dateEnd;
 
     /**
-     * @ORM\Column(type="string", length=63)
+     * @ORM\Column(type="integer")
      */
     private $idCanon;
 
@@ -117,7 +121,7 @@ class CnOffice
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
      */
-    private $archdeaconTerritory;
+    private $archdeacon_territory;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -128,6 +132,26 @@ class CnOffice
      * @ORM\Column(type="integer", nullable=true)
      */
     private $numdate_end;
+
+    /**
+     * monastery name in edit form
+     */
+    private $form_monastery_name;
+
+    /**
+     * number of monastries for $form_monastery_name
+     */
+    private $n_monasteries;
+
+    public function setCanon(Canon $canon): self {
+        $this->canon = $canon;
+        return $this;
+    }
+
+    public function setMonastery(Monastery $monastery): self {
+        $this->monastery = $monastery;
+        return $this;
+    }
 
     public function getMonasterylocationstr()
     {
@@ -146,7 +170,7 @@ class CnOffice
         return $this->monastery;
     }
 
-    public function getId(): ?string
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -199,12 +223,12 @@ class CnOffice
         return $this;
     }
 
-    public function getIdCanon(): ?string
+    public function getIdCanon(): ?int
     {
         return $this->idCanon;
     }
 
-    public function setIdCanon(string $idCanon): self
+    public function setIdCanon(int $idCanon): self
     {
         $this->idCanon = $idCanon;
 
@@ -345,12 +369,12 @@ class CnOffice
 
     public function getArchdeaconTerritory(): ?string
     {
-        return $this->archdeaconTerritory;
+        return $this->archdeacon_territory;
     }
 
-    public function setArchdeaconTerritory(?string $archdeaconTerritory): self
+    public function setArchdeaconTerritory(?string $archdeacon_territory): self
     {
-        $this->archdeaconTerritory = $archdeaconTerritory;
+        $this->archdeacon_territory = $archdeacon_territory;
 
         return $this;
     }
@@ -372,10 +396,59 @@ class CnOffice
         return $this->numdate_end;
     }
 
+
     public function setNumdateEnd(?int $numdate_end): self
     {
         $this->numdate_end = $numdate_end;
 
         return $this;
     }
+
+    public function getFormMonasteryName(): ?string {
+        return $this->form_monastery_name;
+    }
+
+    public function setFormMonasteryName($name): self {
+        $this->form_monastery_name = $name;
+        return $this;
+    }
+
+    public function getNMonasteries(): ?int {
+        return $this->n_monasteries;
+    }
+
+    public function setNMonasteries(?int $n): self {
+        $this->n_monasteries = $n;
+        return $this;
+    }
+
+    /**
+     * return sorting value based on dates
+     */
+    public function numdateSort(): int {
+        $s = 0;
+        $datestart = $this->numdate_start;
+        $dateend = $this->numdate_end;
+        if (!is_null($datestart)) {
+            $s += $datestart * 10000;
+        }
+        if (!is_null($dateend)) {
+            $s += $dateend;
+        }
+        return $s;
+    }
+
+    /**
+     * @Assert\IsTrue(message="Kloster gibt es nicht oder es ist nicht eindeutig")
+     */
+    public function isValidMonastery() {
+        $n = $this->n_monasteries;
+
+        if (is_null($n) || $n == 1) {
+            return true;
+        }
+
+        return false;
+    }
+
 }

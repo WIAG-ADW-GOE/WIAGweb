@@ -124,11 +124,7 @@ class CanonController extends AbstractController {
                 $repository->fillListData($p);
             }
 
-
-            // combination of POST_SET_DATA and POST_SUBMIT
-            // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
-
-            return $this->render('canon/listformresult.html.twig', [
+            return $this->render('canon/listresult.html.twig', [
                 'query_form' => $form->createView(),
                 'count' => $count,
                 'limit' => self::LIST_LIMIT,
@@ -185,7 +181,6 @@ class CanonController extends AbstractController {
     }
 
 
-
     /**
      * @Route("/query-test/{id}")
      */
@@ -216,7 +211,6 @@ class CanonController extends AbstractController {
         dd($canon);
     }
 
-
     /**
      * AJAX callback
      * @Route("domherren-wd/autocomplete/name", name="canon_autocomplete_name")
@@ -228,13 +222,13 @@ class CanonController extends AbstractController {
                                           self::HINT_LIST_LIMIT);
 
         return $this->json([
-            'names' => $suggestions,
+            'choices' => $suggestions,
         ]);
     }
 
     /**
      * AJAX callback
-     * @Route("domherren-wd/autocomplete/monastery", name="canon_autocomplete_monastery")
+     * @Route("domherren-wd/autocomplete/monastery", name="canon_autocomplete_domstift")
      */
     public function autocompletemonastery(Request $request) {
         $query = trim($request->query->get('query'));
@@ -248,7 +242,7 @@ class CanonController extends AbstractController {
 
         $monasteries = $this->getDoctrine()
                             ->getRepository(Monastery::class)
-                            ->suggestPlace($query, self::HINT_LIST_LIMIT);
+                            ->suggestDomstift($query, self::HINT_LIST_LIMIT);
         return $this->json([
             'monasteries' => $monasteries,
         ]);

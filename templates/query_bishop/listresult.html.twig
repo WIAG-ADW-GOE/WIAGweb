@@ -26,7 +26,7 @@
 		{{ include('query_bishop/_title.html.twig') }}
 	    </div>
 	    {{ include('query_bishop/_form_elements.html.twig') }}
-	    <div class="row ml-2 mt-3 col-12">
+	    <div id="count-result" class="row ml-2 mt-3 col-12">
 		Treffer:
 		{% if count == 0 %}
 		    keine
@@ -40,7 +40,7 @@
 	</div>
 	{% if count > 0 or query_form.facetPlaces is defined or query_form.facetOffices is defined%}
 	    <div class="container-fluid">
-		<div class="row mt-2 mx-2 mb-2">
+		<div id="list-result" class="row mt-2 mx-2 mb-2">
 		    <div class="col-9">
 			<div class="table-responsive">
 			    <table class="table">

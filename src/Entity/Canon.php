@@ -4,14 +4,20 @@ namespace App\Entity;
 
 use App\Entity\Person;
 use App\Repository\CanonRepository;
+use App\Validator\MergeTarget;
+use App\Validator\CanonGSN;
+use App\Validator\CanonWiagEpisc;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Table(name="cn_canon")
  * @ORM\Entity(repositoryClass=CanonRepository::class)
+ * @UniqueEntity(fields={"gsnId"}, message="Die GS-Nummer wird schon verwendet.")
  */
 class Canon
 {
@@ -24,10 +30,15 @@ class Canon
         return 'dh';
     }
 
+    static public function decorateId($id) {
+        $id_5 = str_pad($id, 5, '0', STR_PAD_LEFT);
+        return self::WIAGID_PREFIX.$id_5.self::WIAGID_POSTFIX;
+    }
+
     static public function extractDbId($id): ?string {
         $db_id = [];
         # at the moment we do not take care about multiple IDs for one person
-        $id_prefix = Canon::WIAGID_PREFIX;
+        $id_prefix = self::WIAGID_PREFIX;
         $rgs = "/{$id_prefix}((gs)?[0-9]+)-[0-9]{3}/";
         preg_match($rgs, $id, $db_id);
         if (count($db_id) > 1) {
@@ -62,7 +73,7 @@ class Canon
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="string", length=63)
+     * @ORM\Column(type="integer")
      */
     private $id;
 
@@ -105,6 +116,16 @@ class Canon
      * @ORM\Column(type="string", length=63, nullable=true)
      */
     private $dateBirth;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $numdateDeath;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $numdateBirth;
 
     /**
      * @ORM\Column(type="string", length=127, nullable=true)
@@ -167,17 +188,18 @@ class Canon
     private $commentPerson;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $dateHistFirst;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $dateHistLast;
 
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
+     * @CanonWiagEpisc()
      */
     private $wiagEpiscId;
 
@@ -188,11 +210,14 @@ class Canon
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Assert\Positive(message="Gib eine Zahl ein")
+     * @MergeTarget()
      */
     private $mergedInto;
 
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
+     * @CanonGSN()
      */
     private $gsnId;
 
@@ -216,6 +241,9 @@ class Canon
      */
     private $status;
 
+    // 2021-07-07 obsolete: use ChoiceType in the form for references
+    private $form_reference_name;
+
     public function __construct() {
         $this->officeSortkeys = new ArrayCollection();
     }
@@ -231,6 +259,11 @@ class Canon
 
     public function getOffices() {
         return $this->offices;
+    }
+
+    public function addOffice($office) {
+        $this->offices[] = $office;
+        dd($this->offices);
     }
 
     public function getReferences() {
@@ -249,10 +282,12 @@ class Canon
         return $this->id;
     }
 
-    public function getWiagidLong(): ?string
-    {
-        $id_padded = str_pad($this->id, 5, '0', STR_PAD_LEFT);
-        return self::WIAGID_PREFIX.$id_padded.self::WIAGID_POSTFIX;
+    /**
+     * The WIAG ID is `wiagEpiscId` or it is based on `id`
+     */
+    public function getWiagidLong(): ?string {
+        $wiagid = $this->wiagEpiscId ?? $this->decorateId($this->id);
+        return $wiagid;
     }
 
     public static function isIdCanon(string $id) {
@@ -370,6 +405,30 @@ class Canon
         return $this;
     }
 
+    public function getNumdateDeath(): ?int
+    {
+        return $this->numdateDeath;
+    }
+
+    public function setNumdateDeath(?int $dateDeath): self
+    {
+        $this->numdateDeath = $dateDeath;
+
+        return $this;
+    }
+
+    public function getNumdateBirth(): ?int
+    {
+        return $this->numdateBirth;
+    }
+
+    public function setNumdateBirth(?int $dateBirth): self
+    {
+        $this->numdateBirth = $dateBirth;
+
+        return $this;
+    }
+
     public function getReligiousOrder(): ?string
     {
         return $this->religiousOrder;
@@ -387,7 +446,7 @@ class Canon
         return $this->wikipediaUrl;
     }
 
-    public function setWikipedia(?string $wikipediaUrl): self
+    public function setWikipediaUrl(?string $wikipediaUrl): self
     {
         $this->wikipediaUrl = $wikipediaUrl;
         return $this;
@@ -513,24 +572,24 @@ class Canon
         return $this;
     }
 
-    public function getDateHistFirst(): ?string
+    public function getDateHistFirst(): ?int
     {
         return $this->dateHistFirst;
     }
 
-    public function setDateHistFirst(?string $dateHistFirst): self
+    public function setDateHistFirst(?int $dateHistFirst): self
     {
         $this->dateHistFirst = $dateHistFirst;
 
         return $this;
     }
 
-    public function getDateHistLast(): ?string
+    public function getDateHistLast(): ?int
     {
         return $this->dateHistLast;
     }
 
-    public function setDateHistLast(?string $dateHistLast): self
+    public function setDateHistLast(?int $dateHistLast): self
     {
         $this->dateHistLast = $dateHistLast;
 
@@ -553,7 +612,7 @@ class Canon
         return self::WIAGID_EPISC_PREFIX.$id_padded.self::WIAGID_EPISC_POSTFIX;
     }
 
-    public function setWiagEpiscId(?int $wiagEpiscId): self
+    public function setWiagEpiscId(?string $wiagEpiscId): self
     {
         $this->wiagEpiscId = $wiagEpiscId;
 
@@ -685,6 +744,16 @@ class Canon
         return $this;
     }
 
+    public function getFormReferenceName(): ?string {
+        return $this->form_reference_name;
+    }
+
+    public function setFormReferenceName($name): self {
+        $this->form_reference_name = $name;
+        return $this;
+    }
+
+
     public static function isWiagidLong($wiagidlong) {
         // do something reasonable as soon as the WIAG ID format is defined
         return false;
@@ -715,5 +784,18 @@ class Canon
         return $this;
     }
 
+    public function updateDatesHist(CnOffice $office) {
+        $o_start = $office->getNumDateStart();
+        if (!is_null($o_start) &&
+            ($o_start < $this->dateHistFirst || is_null($this->dateHistFirst))) {
+            $this->date_hist_first = $o_start;
+        }
+
+        $o_end = $office->getNumDateEnd();
+        if (!is_null($o_end) &&
+            ($o_end > $this->dateHistLast || is_null($this->dateHistLast))) {
+            $this->date_hist_last = $o_end;
+        }
+    }
 
 }

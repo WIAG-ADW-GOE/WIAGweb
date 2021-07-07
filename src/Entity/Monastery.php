@@ -42,7 +42,7 @@ class Monastery {
 
     /**
      * @ORM\Id
-     * @ORM\Column(type="string", length=63, nullable=false)
+     * @ORM\Column(type="integer", nullable=false)
      */
     private $wiagid;
 
@@ -97,12 +97,6 @@ class Monastery {
     private $founder;
 
     /**
-     * @ORM\OneToMany(targetEntity="Office", mappedBy="monastery")
-     * @ORM\JoinColumn(name="wiagid", referencedColumnName="id_monastery")
-     */
-    private $office;
-
-    /**
      * @ORM\OneToMany(targetEntity=MonasteryLocation::class, mappedBy="monastery")
      * @ORM\JoinColumn(name="wiagid", referencedColumnName="wiagid_monastery")
      */
@@ -113,6 +107,9 @@ class Monastery {
         $this->locations = new ArrayCollection();
     }
 
+    public function getDomstift(): ?Domstift {
+        return $this->domstift;
+    }
 
     public function getIdMonastery(): ?int
     {

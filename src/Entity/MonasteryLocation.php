@@ -21,12 +21,12 @@ class MonasteryLocation
     /**
      * @ORM\Column(type="string", length=63)
      */
-    private $wiagid_monastery;
+    private $wiagidMonastery;
 
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
      */
-    private $location_name;
+    private $locationName;
 
     /**
      * @ORM\ManyToOne(targetEntity=Monastery::class, inversedBy="locations")
@@ -63,24 +63,24 @@ class MonasteryLocation
 
     public function getWiagidMonastery(): ?string
     {
-        return $this->wiagid_monastery;
+        return $this->wiagidMonastery;
     }
 
-    public function setWiagidMonastery(string $wiagid_monastery): self
+    public function setWiagidMonastery(string $wiagid): self
     {
-        $this->wiagid_monastery = $wiagid_monastery;
+        $this->wiagidMonastery = $wiagid;
 
         return $this;
     }
 
     public function getLocationName(): ?string
     {
-        return $this->location_name;
+        return $this->locationName;
     }
 
-    public function setLocationName(?string $location_name): self
+    public function setLocationName(?string $name): self
     {
-        $this->location_name = $location_name;
+        $this->locationName = $name;
 
         return $this;
     }

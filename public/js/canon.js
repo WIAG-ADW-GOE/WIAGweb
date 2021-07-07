@@ -1,6 +1,12 @@
 'use strict';
 $(document).ready(function() {
-    $('.js-name-autocomplete').each(function() {
+    /**
+     * autocompletion
+     * In most of the cases, we can use a general function.
+     * Use `autocompleteUrl` to generate a specific list of completions
+     */
+
+    $('.js-autocomplete').each(function() {
 	var autocompleteUrl = $(this).data('autocomplete-url');
 	$(this).autocomplete({hint: false}, [
 	    {
@@ -8,7 +14,7 @@ $(document).ready(function() {
 		    $.ajax({
 			url: autocompleteUrl+'?query='+query
 		    }).then(function(data) {
-			cb(data.names);
+			cb(data.choices);
 		    });
 		},
 		displayKey: 'suggestion',
@@ -36,7 +42,7 @@ $(document).ready(function() {
 	// window.alert('suggest place');
     });
 
-    $('.js-monastery-autocomplete').each(function() {
+    $('.js-domstift-autocomplete').each(function() {
 	var autocompleteUrl = $(this).data('autocomplete-url');
 	$(this).autocomplete({hint: false}, [
 	    {
@@ -183,7 +189,7 @@ $(document).ready(function() {
     input_text.each(function() {
 	$(this)[0].addEventListener('change', function(event) {
 	    fpx.each(function() {
-		console.log('remove checked');
+		// console.log('remove checked');
 		$(this)[0].removeAttribute('checked');
 	    });
 	    input_statefctloc[0].setAttribute('value', '0');
@@ -206,6 +212,38 @@ $(document).ready(function() {
 	var citationElem = $('#citation');
 	var clipboardText = citationElem.text();
 	navigator.clipboard.writeText(clipboardText);
+    });
+
+    // activate save button in edit form
+    var edit_safe = $( '#cn-edit-save' );
+    if( edit_safe.length != 0 ) {
+	edit_safe[0].disabled = true;
+    }
+
+    $( '[id^=canon_edit_form]' ).on( "input", function( event ) {
+	edit_safe[0].disabled = false;
+    });
+
+    // activate save button in office edit form
+    var edit_office_safe = $( '#cn_office_edit_form_btn_save' );
+    if( edit_office_safe.length != 0 ) {
+	edit_office_safe[0].disabled = true;
+    }
+
+    $( '[id^=cn_office_edit_form]' ).on( "input", function( event ) {
+	edit_office_safe[0].disabled = false;
+    });
+
+    // hide result list to avoid click on invalidated links/buttons
+    var list_result = $( '#list-result' );
+    var count_result = $ ('#count-result' );
+    $( '[id^=canon_form]' ).on( "input", function( event ) {
+	if (list_result.length > 0) {
+	    list_result[0].style.visibility = "hidden";
+	}
+	if (count_result.length > 0) {
+	    count_result[0].style.visibility = "hidden";
+	}
     });
 
 

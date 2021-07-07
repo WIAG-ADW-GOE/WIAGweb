@@ -58,7 +58,7 @@ class CanonFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Vor- oder Nachname',
-                    'class' => 'js-name-autocomplete',
+                    'class' => 'js-autocomplete',
                     'data-autocomplete-url' => $this->router->generate('canon_autocomplete_name'),
                     'size' => '30',
                 ],
@@ -68,8 +68,8 @@ class CanonFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Domstift',
-                    'class' => 'js-monastery-autocomplete',
-                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_monastery'),
+                    'class' => 'js-domstift-autocomplete',
+                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_domstift'),
                     'size' => '8',
                 ],
             ])
@@ -190,7 +190,7 @@ class CanonFormType extends AbstractType
         $choices = array();
 
         foreach($places as $place) {
-            $choices[] = new PlaceCount($place['location_name'], $place['location_name'], $place['n']);
+            $choices[] = new PlaceCount($place['locationName'], $place['locationName'], $place['n']);
         }
 
         // add selected fields with frequency 0
@@ -303,7 +303,7 @@ class CanonFormType extends AbstractType
 
         $choices = array();
         foreach($offices as $office) {
-            $choices[] = new OfficeCount($office['office_name'], $office['n']);
+            $choices[] = new OfficeCount($office['officeName'], $office['n']);
         }
 
         // add selected fields with frequency 0

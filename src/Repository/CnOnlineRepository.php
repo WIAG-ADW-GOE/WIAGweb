@@ -111,8 +111,8 @@ class CnOnlineRepository extends ServiceEntityRepository {
             # dump($formmodel->someid);
 
             $qb->leftJoin('co.idlookup', 'ilt')
-               ->andWhere('ilt.authority_id = :someid OR co.wiagid = :someid OR co.id_dh = :someid')
-               ->setParameter(':someid', $formmodel->someid);
+               ->andWhere('ilt.authorityId LIKE :someid')
+               ->setParameter(':someid', '%'.$formmodel->someid.'%');
         }
 
         # year
@@ -123,7 +123,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
                ->setParameter(':qyear', $formmodel->year);
         }
 
-        # monastery
+        # domstift
         if($formmodel->monastery) {
             $qb->join('co.officelookup', 'olt_monastery')
                ->join('olt_monastery.monastery', 'monastery')
@@ -135,24 +135,20 @@ class CnOnlineRepository extends ServiceEntityRepository {
         # office title
         if($formmodel->office) {
             $qb->join('co.officelookup', 'olt_office')
-               ->andWhere('olt_office.office_name LIKE :office')
+               ->andWhere('olt_office.officeName LIKE :office')
                ->setParameter('office', '%'.$formmodel->office.'%');
         }
 
         # office place
         if($formmodel->place) {
             $qb->join('co.officelookup', 'olt_place')
-               ->andWhere('olt_place.location_name LIKE :place OR olt_place.archdeacon_territory LIKE :place')
+               ->andWhere('olt_place.locationName LIKE :place OR olt_place.archdeaconTerritory LIKE :place')
                ->setParameter('place', '%'.$formmodel->place.'%');
         }
 
         # names
         if($formmodel->name) {
             $qb->join('co.namelookup', 'nlt')
-               // ->andWhere("CONCAT(nlt.givenname, ' ', nlt.prefixName, ' ', nlt.familyname) LIKE :qname".
-               //             " OR CONCAT(nlt.givenname, ' ', nlt.familyname)LIKE :qname".
-               //             " OR nlt.givenname LIKE :qname".
-               //             " OR nlt.familyname LIKE :qname")
                ->andWhere("nlt.givenname LIKE :qname OR nlt.familyname LIKE :qname".
                           " OR nlt.gn_fn LIKE :qname OR nlt.gn_prefix_fn LIKE :qname")
                ->setParameter('qname', '%'.$formmodel->name.'%');
@@ -172,7 +168,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
         if($querydata->facetLocations) {
             $locations = array_column($querydata->facetLocations, 'id');
             $qb->join('co.officelookup', 'ocfctl')
-               ->andWhere('ocfctl.location_name IN (:locations)')
+               ->andWhere('ocfctl.locationName IN (:locations)')
                ->setParameter('locations', $locations);
         }
         if($querydata->facetMonasteries) {
@@ -186,7 +182,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
         if($querydata->facetOffices) {
             $facetOffices = array_column($querydata->facetOffices, 'name');
             $qb->join('co.officelookup', 'ocfctoc')
-               ->andWhere("ocfctoc.office_name IN (:offices)")
+               ->andWhere("ocfctoc.officeName IN (:offices)")
                ->setParameter('offices', $facetOffices);
         }
 
@@ -228,18 +224,18 @@ class CnOnlineRepository extends ServiceEntityRepository {
         case 'specific_domstift_id':
             // strange enough it is more efficient to add officelookup a second time for sorting
             $qb->join('co.officelookup', 'olt_sort')
-               ->andWhere('olt_sort.id_monastery = :monastery')
+               ->andWhere('olt_sort.idMonastery = :monastery')
                ->setParameter('monastery', $monastery)
-               ->addOrderBy('olt_sort.numdate_start', 'ASC')
-               ->addOrderBy('olt_sort.numdate_end', 'ASC')
+               ->addOrderBy('olt_sort.numdateStart', 'ASC')
+               ->addOrderBy('olt_sort.numdateEnd', 'ASC')
                ->addOrderBy('co.familyname', 'ASC')
                ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('co.id');
             break;
         case 'specific_domstift':
-            $qb->addOrderBy('olt_monastery.numdate_start', 'ASC')
-               ->addOrderBy('olt_monastery.numdate_end', 'ASC')
-               ->join('co.era', 'era_sort')
+            $qb->addOrderBy('olt_monastery.numdateStart', 'ASC')
+               ->addOrderBy('olt_monastery.numdateEnd', 'ASC')
+               ->leftJoin('co.era', 'era_sort')
                ->addOrderBy('era_sort.eraStart')
                ->addOrderBy('era_sort.eraEnd')
                ->addOrderBy('co.familyname', 'ASC')
@@ -262,8 +258,9 @@ class CnOnlineRepository extends ServiceEntityRepository {
                ->addOrderBy('co.id');
             break;
         case 'domstift':
-            $qb->addOrderBy('co.domstift', 'ASC')
-               ->addOrderBy('co.domstift_start', 'ASC')
+            $qb->join('co.era', 'era_ds')
+               ->addOrderBy('era_ds.domstift', 'ASC')
+               ->addOrderBy('era_ds.domstift_start', 'ASC')
                ->addOrderBy('co.familyname', 'ASC')
                ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('co.id');
@@ -293,8 +290,9 @@ class CnOnlineRepository extends ServiceEntityRepository {
      */
     public function findOfficePlaces(CanonFormModel $canonquery) {
         $qb = $this->createQueryBuilder('co')
-                   ->select('DISTINCT domstift.gs_id as id, domstift.name as name, COUNT(DISTINCT(co.id)) as n')
-                   ->join('co.officelookup', 'oltdomstift')
+                   ->select('DISTINCT domstift.gsId as id, domstift.name as name, COUNT(DISTINCT(co.id)) as n')
+                   ->join('co.officelookup', 'oltmonastery')
+                   ->join('oltmonastery.monastery', 'oltdomstift')
                    ->join('oltdomstift.domstift', 'domstift');
 
         $this->addQueryConditions($qb, $canonquery);
@@ -314,12 +312,12 @@ class CnOnlineRepository extends ServiceEntityRepository {
     public function findOfficeLocations(CanonFormModel $canonquery) {
         $qb = $this->createQueryBuilder('co')
                    ->join('co.officelookup', 'lfacet')
-                   ->select('DISTINCT lfacet.location_name, lfacet.location_name, COUNT(DISTINCT(co.id)) as n')
-                   ->andWhere('lfacet.location_name IS NOT NULL');
+                   ->select('DISTINCT lfacet.locationName, lfacet.locationName, COUNT(DISTINCT(co.id)) as n')
+                   ->andWhere('lfacet.locationName IS NOT NULL');
 
         $this->addQueryConditions($qb, $canonquery);
 
-        $qb->groupBy('lfacet.location_name');
+        $qb->groupBy('lfacet.locationName');
 
         $query = $qb->getQuery();
         $result = $query->getResult();
@@ -328,13 +326,13 @@ class CnOnlineRepository extends ServiceEntityRepository {
 
     public function findOfficeNames(CanonFormModel $canonquery) {
         $qb = $this->createQueryBuilder('co')
-                   ->select('DISTINCT nfacet.office_name, COUNT(DISTINCT(co.id)) as n')
+                   ->select('DISTINCT nfacet.officeName, COUNT(DISTINCT(co.id)) as n')
                    ->join('co.officelookup', 'nfacet')
-                   ->andWhere('nfacet.office_name is not NULL');
+                   ->andWhere('nfacet.officeName is not NULL');
 
         $this->addQueryConditions($qb, $canonquery);
 
-        $qb->groupBy('nfacet.office_name');
+        $qb->groupBy('nfacet.officeName');
 
         $query = $qb->getQuery();
         $result = $query->getResult();
@@ -410,5 +408,33 @@ class CnOnlineRepository extends ServiceEntityRepository {
         }
         return($episc);
     }
+
+    // do not follow the naming convention here (idDh instead of id_dh)
+    public function findOneByIdDh($value): ?CnOnline {
+        return $this->createQueryBuilder('c')
+                    ->andWhere('c.id_dh = :val')
+                    ->setParameter('val', $value)
+                    ->getQuery()
+                    ->getOneOrNullResult();
+    }
+
+    // do not follow the naming convention here (idGs instead of id_gs)
+    public function findOneByIdGs($value): ?CnOnline {
+        return $this->createQueryBuilder('c')
+                    ->andWhere('c.id_gs = :val')
+                    ->setParameter('val', $value)
+                    ->getQuery()
+                    ->getOneOrNullResult();
+    }
+
+    // do not follow the naming convention here (idEp instead of id_gs)
+    public function findOneByIdEp($value): ?CnOnline {
+        return $this->createQueryBuilder('c')
+                    ->andWhere('c.id_ep = :val')
+                    ->setParameter('val', $value)
+                    ->getQuery()
+                    ->getOneOrNullResult();
+    }
+
 
 }

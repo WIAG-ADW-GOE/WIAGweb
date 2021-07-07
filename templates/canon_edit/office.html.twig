@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# this is required for canon.js, even if it is not necessary for this page #}
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
+    <script src="{{ asset('js/canon.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    {# use this form for a new office and update of an existing office #}
+    <div class="container-fluid mt-3 mb-2">
+	<div class="row mx-2 col-12">
+	    <span class="topic-title mb-3">Bearbeite Domherren Ämter</span>
+	</div>
+	<div class="row mx-2 mt-2 mb-1">
+	    <div class="col-8"><h2>{{ canon.displayname[:200] }}</h2></div>
+	    <div class="col-4 text-right text-nowrap">
+	    </div>
+	</div>
+	{% if canon.flagnamevariant %}
+	    <div class="row mx-2 col-12">
+		{% if canon.givennamevariant is defined and canon.givennamevariant != '' %}
+		    <span class="comment">{{ canon.givennamevariant }}</span>
+		    {% if canon.familynamevariant is defined and canon.familynamevariant != '' %}
+			<span class="comment">; {{ canon.familynamevariant }}</span>
+		    {% endif %}
+		    {% if canon.commentname is defined and canon.commentname != '' %}
+			<span class="comment">; {{ canon.commentname }}</span>
+		    {% endif %}
+		{% elseif canon.familynamevariant is defined and canon.familynamevariant != '' %}
+		    <span class="comment">{{ canon.familynamevariant }}</span>
+		    {% if canon.commentname is defined and canon.commentname != '' %}
+			<span class="comment">; {{ canon.commentname }}</span>
+		    {% endif %}
+		{% endif %}
+	    </div>
+	{% endif %}
+
+	{% if not canon.datebirth and not canon.datedeath %}
+	{% else %}
+	    <div class="row mx-2 col-12 mt-2 mb-1">
+		{% if canon.datebirth and not canon.datedeath %}
+		    <span class="wiag-large">* {{ canon.datebirth }}</span>
+		{% elseif not canon.datebirth and canon.datedeath %}
+		    <span class="wiag-large">&dagger; {{ canon.datedeath }}</span>
+		{% else %}
+		    <span class="wiag-large">* {{ canon.datebirth }} <span class="pl-3">&dagger; {{ canon.datedeath }}</span></span>
+		{% endif %}
+	    </div>
+	{% endif %}
+	<div class="row col-12 mx-2 mt-3">
+	    {{ include('canon_edit/_table_offices.html.twig', {edit_mode: true}) }}
+	</div>
+
+	{{ form_start(form) }}
+	    <div class="row mx-2 col-12">
+		{{ form_errors(form) }}
+	    </div>
+	    <div class="row mx-2 col-12">
+		{{ form_row(form.office_name) }}
+		<span class="ml-2">{{ form_row(form.date_start) }}{{ form_errors(form.date_start) }}</span>
+		<span class="ml-2">{{ form_row(form.date_end) }}</span>
+	    </div>
+	    <div class="row mx-2 col-12">
+		{{ form_row(form.comment) }}
+	    </div>
+	    <div class="row mx-2 col-12">
+		{{ form_row(form.diocese) }}
+		<span class="ml-2">{{ form_row(form.form_monastery_name) }}</span>
+		<span class="ml-2">{{ form_row(form.archdeacon_territory) }}</span>
+	    </div>
+	    <div class="row mx-2 col-12">
+		{{ form_row(form.btn_save) }}
+		{% if id_edit_office is defined %}
+		    <span class="ml-2">{{ form_row(form.btn_delete) }}</span>
+		{% else %}
+		    <span class="ml-2" hidden="hidden">{{ form_row(form.btn_delete) }}</span>
+		{% endif %}
+		<div class="form-group">
+		    <a href="{{ path('canon_edit', {id: canon.id}) }}" class="btn btn-secondary btn-sm ml-2" role="button">Domherr</a>
+		</div>
+	    </div>
+	{{ form_end(form) }}
+    </div>
+{% endblock %}

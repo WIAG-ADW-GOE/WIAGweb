@@ -50,35 +50,10 @@ class CanonGS
      */
     private $references;
 
-
-    /**
-     * @ORM\OneToOne(targetEntity="CnEra", mappedBy="canon")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
-     */
-    // private $era;
-
-    /**
-     * @ORM\OneToMany(targetEntity="CnOffice", mappedBy="canon")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
-     */
-    // private $offices;
-
-    /**
-     * @ORM\OneToMany(targetEntity=CnOfficeSortkey::class, mappedBy="canon")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
-     */
-    // private $officeSortkeys;
-
-    /**
-     * @ORM\OneToMany(targetEntity="CnCanonReference", mappedBy="canon")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
-     */
-    // private $references;
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="string", length=63)
+     * @ORM\Column(type="integer")
      */
     private $id;
 
@@ -121,6 +96,16 @@ class CanonGS
      * @ORM\Column(type="string", length=63, nullable=true)
      */
     private $dateBirth;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $numdateDeath;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $numdateBirth;
 
     /**
      * @ORM\Column(type="string", length=127, nullable=true)
@@ -183,12 +168,12 @@ class CanonGS
     private $commentPerson;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $dateHistFirst;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $dateHistLast;
 
@@ -386,6 +371,30 @@ class CanonGS
         return $this;
     }
 
+        public function getNumdateDeath(): ?int
+    {
+        return $this->numdateDeath;
+    }
+
+    public function setNumdateDeath(?int $dateDeath): self
+    {
+        $this->numdateDeath = $dateDeath;
+
+        return $this;
+    }
+
+    public function getNumdateBirth(): ?int
+    {
+        return $this->numdateBirth;
+    }
+
+    public function setNumdateBirth(?int $dateBirth): self
+    {
+        $this->numdateBirth = $dateBirth;
+
+        return $this;
+    }
+
     public function getReligiousOrder(): ?string
     {
         return $this->religiousOrder;
@@ -529,24 +538,24 @@ class CanonGS
         return $this;
     }
 
-    public function getDateHistFirst(): ?string
+    public function getDateHistFirst(): ?int
     {
         return $this->dateHistFirst;
     }
 
-    public function setDateHistFirst(?string $dateHistFirst): self
+    public function setDateHistFirst(?int $dateHistFirst): self
     {
         $this->dateHistFirst = $dateHistFirst;
 
         return $this;
     }
 
-    public function getDateHistLast(): ?string
+    public function getDateHistLast(): ?int
     {
         return $this->dateHistLast;
     }
 
-    public function setDateHistLast(?string $dateHistLast): self
+    public function setDateHistLast(?int $dateHistLast): self
     {
         $this->dateHistLast = $dateHistLast;
 

@@ -134,7 +134,7 @@ $(document).ready(function() {
     input_text.each(function() {
 	$(this)[0].addEventListener('change', function(event) {
 	    fpx.each(function() {
-		console.log('remove checked');
+		// console.log('remove checked');
 		$(this)[0].removeAttribute('checked');
 	    });
 	    input_statefctdioc[0].setAttribute('value', '0');
@@ -159,5 +159,16 @@ $(document).ready(function() {
 	navigator.clipboard.writeText(clipboardText);
     });
 
+    // hide result list to avoid click on invalidated links/buttons
+    var list_result = $( '#list-result' );
+    var count_result = $ ('#count-result' );
+    $( '[id^=bishop_query_form]' ).on( "input", function( event ) {
+	if (list_result.length > 0) {
+	    list_result[0].style.visibility = "hidden";
+	}
+	if (count_result.length > 0) {
+	    count_result[0].style.visibility = "hidden";
+	}
+    });
 
 });

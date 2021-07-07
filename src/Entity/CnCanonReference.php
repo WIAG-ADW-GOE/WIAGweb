@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CnCanonReferenceRepository;
+use App\Entity\Canon;
+use App\Entity\CnReference;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -16,7 +18,6 @@ class CnCanonReference
      * @ORM\JoinColumn(name="id_canon", referencedColumnName="id")
      */
     private $canon;
-
 
     /**
      * @ORM\ManyToOne(targetEntity="CnReference")
@@ -32,9 +33,14 @@ class CnCanonReference
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=63)
+     * @ORM\Column(type="integer")
      */
     private $idCanon;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $idCanonOrig;
 
     /**
      * @ORM\Column(type="integer")
@@ -66,19 +72,41 @@ class CnCanonReference
      */
     private $status;
 
+    public function setCanon(Canon $canon): self {
+        $this->canon = $canon;
+        return $this;
+    }
+
+    public function setReference(CnReference $ref): self {
+        $this->reference = $ref;
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getIdCanon(): ?string
+    public function getIdCanon(): ?int
     {
         return $this->idCanon;
     }
 
-    public function setIdCanon(string $idCanon): self
+    public function setIdCanon(int $idCanon): self
     {
         $this->idCanon = $idCanon;
+
+        return $this;
+    }
+
+    public function getIdCanonOrig(): ?int
+    {
+        return $this->idCanonOrig;
+    }
+
+    public function setIdCanonOrig(int $idCanon): self
+    {
+        $this->idCanonOrig = $idCanon;
 
         return $this;
     }

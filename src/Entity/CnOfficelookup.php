@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CnOfficelookupRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,149 +15,162 @@ class CnOfficelookup {
      * @ORM\ManyToOne(targetEntity="CnOnline", inversedBy="officelookup")
      * @ORM\JoinColumn(name="id_online", referencedColumnName="id")
      */
-    private $cnonline;
+    private $cnOnline;
+
+    public function setCnOnline(CnOnline $co): self {
+        $this->cnOnline = $co;
+        return $this;
+    }
 
     /**
-     * @ORM\ManyToOne(targetEntity="Monastery", inversedBy="office")
+     * @ORM\OneToOne(targetEntity="Monastery")
      * @ORM\JoinColumn(nullable=true, name="id_monastery", referencedColumnName="wiagid")
      */
     private $monastery;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Domstift")
-     * @ORM\JoinColumn(nullable=true, name="id_monastery", referencedColumnName="gs_id")
-     */
-    private $domstift;
-
 
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
      * @ORM\Column(type="string", length=31)
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=31)
-     */
-    private $id_online;
-
-    /**
-     * @ORM\Column(type="string", length=127, nullable=true)
-     */
-    private $office_name;
-
-    /**
      * @ORM\Column(type="string", length=63, nullable=true)
      */
-    private $location_name;
+    private $officeName;
 
     /**
-     * @ORM\Column(type="string", length=31, nullable=true)
+     * @ORM\Column(type="integer")
      */
-    private $id_monastery;
+    private $idOnline;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $numdate_start;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $numdate_end;
+    private $idMonastery;
 
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
      */
-    private $archdeacon_territory;
+    private $locationName;
 
-    public function getId(): ?int
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $archdeaconTerritory;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $numdateStart;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $numdateEnd;
+
+
+    public function setMonastery(Monastery $monastery): self {
+        $this->monastery = $monastery;
+        return $this;
+    }
+
+    public function getMonastery()
     {
+        return $this->monastery;
+    }
+
+    public function setId(string $id): self {
+        $this->id = $id;
+        return $this;
+    }
+
+    public function getId(): ?string {
         return $this->id;
     }
 
-    public function getIdCanon(): ?string
-    {
-        return $this->id_canon;
+
+    public function getOfficeName(): ?string {
+        return $this->officeName;
     }
 
-    public function setIdCanon(string $id_canon): self
-    {
-        $this->id_canon = $id_canon;
+    public function setOfficeName(?string $officeName): self {
+        $this->officeName = $officeName;
 
         return $this;
     }
 
-    public function getOfficeName(): ?string
-    {
-        return $this->office_name;
+    public function getIdOnline(): ?int {
+        return $this->idOnline;
     }
 
-    public function setOfficeName(?string $office_name): self
-    {
-        $this->office_name = $office_name;
-
-        return $this;
-    }
-
-    public function getLocationName(): ?string
-    {
-        return $this->location_name;
-    }
-
-    public function setLocationName(?string $location_name): self
-    {
-        $this->location_name = $location_name;
+    public function setIdOnline(int $idOnline): self {
+        $this->idOnline = $idOnline;
 
         return $this;
     }
 
     public function getIdMonastery(): ?string
     {
-        return $this->id_monastery;
+        return $this->idMonastery;
     }
 
-    public function setIdMonastery(?string $id_monastery): self
+    public function setIdMonastery(?string $idMonastery): self
     {
-        $this->id_monastery = $id_monastery;
+        $this->idMonastery = $idMonastery;
 
         return $this;
     }
 
-    public function getNumdateStart(): ?int
+
+    public function getLocationName(): ?string
     {
-        return $this->numdate_start;
+        return $this->locationName;
     }
 
-    public function setNumdateStart(?int $numdate_start): self
+    public function setLocationName(?string $location): self
     {
-        $this->numdate_start = $numdate_start;
-
-        return $this;
-    }
-
-    public function getNumdateEnd(): ?int
-    {
-        return $this->numdate_end;
-    }
-
-    public function setNumdateEnd(?int $numdate_end): self
-    {
-        $this->numdate_end = $numdate_end;
+        $this->locationName = $location;
 
         return $this;
     }
 
     public function getArchdeaconTerritory(): ?string
     {
-        return $this->archdeacon_territory;
+        return $this->archdeaconTerritory;
     }
 
-    public function setArchdeaconTerritory(?string $archdeacon_territory): self
+    public function setArchdeaconTerritory(?string $territory): self
     {
-        $this->archdeacon_territory = $archdeacon_territory;
+        $this->archdeaconTerritory = $territory;
 
         return $this;
     }
+
+    public function getNumdateStart(): ?int
+    {
+        return $this->numdateStart;
+    }
+
+    public function setNumdateStart(?int $start): self
+    {
+        $this->numdateStart = $start;
+
+        return $this;
+    }
+
+    public function getNumdateEnd(): ?int
+    {
+        return $this->numdateEnd;
+    }
+
+
+    public function setNumdateEnd(?int $end): self
+    {
+        $this->numdateEnd = $end;
+
+        return $this;
+    }
+
 }

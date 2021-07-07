@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {# this is required for canon.js, even if it is not necessary for this page #}
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
+    <script src="{{ asset('js/canon.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    {# person is passed as an object #}
+    <div class="container-fluid mt-3 mb-2">
+	<div class="row mx-2 col-12">
+	    <span class="topic-title mb-3">Neuer Domherr des Alten Reiches</span>
+	</div>
+	{# { form_start(form, {'attr': {'id':'new_form', 'action':path('canon_new')}}) } #}
+	{{ form_start(form, {'attr': {'id':'new_form'} } ) }}
+	    {{ include('canon_edit/_form_elements.html.twig') }}
+	{{ form_end(form) }}
+    </div>
+{% endblock %}

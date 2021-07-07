@@ -49,7 +49,7 @@ class MonasteryRepository extends ServiceEntityRepository
     */
 
     /* AJAX callback */
-    public function suggestPlace($place, $limit = 200): array {
+    public function suggestDomstift($place, $limit = 200): array {
         $qb = $this->createQueryBuilder('m')
                    ->select('DISTINCT m.monastery_name AS suggestion')
                    ->join('m.domstift', 'domstift')
@@ -64,6 +64,37 @@ class MonasteryRepository extends ServiceEntityRepository
 
     }
 
+    /* AJAX callback */
+    public function suggestMonastery($place, $limit = 200): array {
+        $qb = $this->createQueryBuilder('m')
+                   ->select('DISTINCT m.monastery_name AS suggestion')
+                   ->andWhere('m.monastery_name LIKE :place')
+                   ->setParameter('place', '%'.$place.'%')
+                   ->setMaxResults($limit);
+        $query = $qb->getQuery();
+
+        # dd($query->getDQL());
+
+        return $query->getResult();
+
+    }
+
+    public function countByName($name) {
+        $qb = $this->createQueryBuilder('m')
+                   ->select('COUNT(DISTINCT m.id_monastery) AS n')
+                   ->andWhere('m.monastery_name LIKE :name')
+                   ->setParameter('name', '%'.$name.'%');
+        $query = $qb->getQuery();
+        return $query->getSingleResult();
+    }
+
+    public function findOneByName($name) {
+        $qb = $this->createQueryBuilder('m')
+                   ->andWhere('m.monastery_name LIKE :name')
+                   ->setParameter('name', '%'.$name.'%');
+        $query = $qb->getQuery();
+        return $query->getOneOrNullResult();
+    }
 
 
 }

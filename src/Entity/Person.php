@@ -16,6 +16,14 @@ class Person {
     const WIAGID_POSTFIX = '-001';
 
     /**
+     * add prefix and suffix
+     */
+    static public function decorateId($id): ?string {
+        $id_5 = str_pad($id, 5, '0', STR_PAD_LEFT);
+        return self::WIAGID_PREFIX.$id_5.self::WIAGID_POSTFIX;
+    }
+
+    /**
      * remove prefix and suffix, return null if $id does not match
      */
     static public function extractDbId($id): ?string {
@@ -166,16 +174,6 @@ class Person {
      * @ORM\JoinColumn(name="reference_id", referencedColumnName="id_ref")
      */
     private $reference;
-
-    /**
-     * @ORM\Column(type="string", length=63, nullable=true)
-     */
-    private $id_dh;
-
-    /**
-     * @ORM\Column(type="string", length=63, nullable=true)
-     */
-    private $id_gs;
 
     /**
      * canon offices (Domherren-Datenbank)
@@ -456,11 +454,8 @@ class Person {
         return $this;
     }
 
-
-    public function getWiagidLong(): ?string
-    {
-        $id_padded = str_pad($this->wiagid, 5, '0', STR_PAD_LEFT);
-        return self::WIAGID_PREFIX.$id_padded.self::WIAGID_POSTFIX;
+    public function getWiagidLong(): ?string {
+        return $this->decorateId($this->wiagid);
     }
 
     public function getWiagEpiscId(): ?string {
@@ -633,28 +628,5 @@ class Person {
         return $this;
     }
 
-    public function getIdDh(): ?string
-    {
-        return $this->id_dh;
-    }
-
-    public function setIdDh(?string $id_dh): self
-    {
-        $this->id_dh = $id_dh;
-
-        return $this;
-    }
-
-    public function getIdGs(): ?string
-    {
-        return $this->id_gs;
-    }
-
-    public function setIdGs(?string $id_gs): self
-    {
-        $this->id_gs = $id_gs;
-
-        return $this;
-    }
 
 }

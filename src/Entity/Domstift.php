@@ -25,7 +25,7 @@ class Domstift
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
-    private $gs_id;
+    private $gsId;
 
     public function getId(): ?int
     {
@@ -58,12 +58,12 @@ class Domstift
 
     public function getGsId(): ?int
     {
-        return $this->gs_id;
+        return $this->gsId;
     }
 
-    public function setGsId(int $gs_id): self
+    public function setGsId(int $id): self
     {
-        $this->gs_id = $gs_id;
+        $this->gsId = $Id;
 
         return $this;
     }

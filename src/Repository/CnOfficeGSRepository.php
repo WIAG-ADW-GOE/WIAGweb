@@ -49,55 +49,55 @@ class CnOfficeGSRepository extends ServiceEntityRepository
     */
 
     // 2021-04-07 obsolete: use CnOfficeGS.location instead
-    public function setMonasteryLocation(CnOfficeGS $oc) {
+    // public function setMonasteryLocation(CnOfficeGS $oc) {
 
-        if($oc->getIdMonastery()) {
-            // DQL
-            $em = $this->getEntityManager();
+    //     if($oc->getIdMonastery()) {
+    //         // DQL
+    //         $em = $this->getEntityManager();
 
-            $query = $em->createQuery("SELECT loc.location_name, loc.location_begin_tpq, loc.location_end_tpq ".
-                                      "FROM App\Entity\MonasteryLocation loc ".
-                                      "WHERE loc.wiagid_monastery = :idMonastery ".
-                                      "AND loc.location_name IS NOT NULL")
-                        ->setParameter('idMonastery', $oc->getIdMonastery());
+    //         $query = $em->createQuery("SELECT loc.location_name, loc.location_begin_tpq, loc.location_end_tpq ".
+    //                                   "FROM App\Entity\MonasteryLocation loc ".
+    //                                   "WHERE loc.wiagid_monastery = :idMonastery ".
+    //                                   "AND loc.location_name IS NOT NULL")
+    //                     ->setParameter('idMonastery', $oc->getIdMonastery());
 
-            $qrplaces = $query->getResult();
+    //         $qrplaces = $query->getResult();
 
-            $qrplaces_count = count($qrplaces);
+    //         $qrplaces_count = count($qrplaces);
 
 
-            $places = "";
-            if($qrplaces_count == 1) {
-                $places = $qrplaces[0]['location_name'];
-            } elseif($qrplaces_count > 1) {
-                $locations_s = $this->checkMonasteryLocationDates($qrplaces, $oc);
-                $places = $this->selectandjoin($locations_s, 'location_name');
-            } else {
-                $qrplaces = $this->findMonasteryLocationByPlaceId($oc);
-                $locations_s = $this->checkMonasteryLocationDates($qrplaces, $oc);
-                $places = $this->selectandjoin($locations_s, 'place_name');
-            }
+    //         $places = "";
+    //         if($qrplaces_count == 1) {
+    //             $places = $qrplaces[0]['location_name'];
+    //         } elseif($qrplaces_count > 1) {
+    //             $locations_s = $this->checkMonasteryLocationDates($qrplaces, $oc);
+    //             $places = $this->selectandjoin($locations_s, 'location_name');
+    //         } else {
+    //             $qrplaces = $this->findMonasteryLocationByPlaceId($oc);
+    //             $locations_s = $this->checkMonasteryLocationDates($qrplaces, $oc);
+    //             $places = $this->selectandjoin($locations_s, 'place_name');
+    //         }
 
-            $oc->setMonasterylocationstr($places);
-        }
-    }
+    //         $oc->setMonasterylocationstr($places);
+    //     }
+    // }
 
-    // 2021-04-07 obsolete: use CnOfficeGS.location instead
-    public function checkMonasteryLocationDates($locations, CnOfficeGS $oc) {
-        $locations_s = array();
-        foreach($locations as $el) {
-            $l_begin = intval($el['location_begin_tpq']);
-            $oc_begin = intval($oc->getDateStart());
-            $oc_end = intval($oc->getDateEnd());
-            if($l_begin && $oc_end && $l_begin > $oc_end)
-                continue;
-            $l_end = $el['location_end_tpq'];
-            if($l_end && $oc_begin && $l_end < $oc_begin)
-                continue;
-            $locations_s[] = $el;
-        }
-        return $locations_s;
-    }
+    // // 2021-04-07 obsolete: use CnOfficeGS.location instead
+    // public function checkMonasteryLocationDates($locations, CnOfficeGS $oc) {
+    //     $locations_s = array();
+    //     foreach($locations as $el) {
+    //         $l_begin = intval($el['location_begin_tpq']);
+    //         $oc_begin = intval($oc->getDateStart());
+    //         $oc_end = intval($oc->getDateEnd());
+    //         if($l_begin && $oc_end && $l_begin > $oc_end)
+    //             continue;
+    //         $l_end = $el['location_end_tpq'];
+    //         if($l_end && $oc_begin && $l_end < $oc_begin)
+    //             continue;
+    //         $locations_s[] = $el;
+    //     }
+    //     return $locations_s;
+    // }
 
 
     public function selectandjoin(array $a, string $field) {

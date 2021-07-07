@@ -64,10 +64,7 @@ class CanonApiController extends AbstractController {
             $repository->fillListData($p);
         }
 
-        // combination of POST_SET_DATA and POST_SUBMIT
-        // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
-
-        return $this->render('canon/listformresult.html.twig', [
+        return $this->render('canon/listresult.html.twig', [
             'query_form' => $form->createView(),
             'count' => $count,
             'limit' => self::LIST_LIMIT,

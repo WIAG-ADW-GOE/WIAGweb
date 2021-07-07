@@ -15,7 +15,7 @@ class CnNamelookup
      * @ORM\ManyToOne(targetEntity="CnOnline", inversedBy="namelookup")
      * @ORM\JoinColumn(name="id_online", referencedColumnName="id")
      */
-    private $cnonline;
+    private $cnOnline;
 
     /**
      * @ORM\Id
@@ -49,6 +49,11 @@ class CnNamelookup
      * @ORM\Column(type="string", length=127, nullable=true)
      */
     private $gn_fn;
+
+    public function setCnOnline(CnOnline $co): self {
+        $this->cnOnline = $co;
+        return $this;
+    }
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -93,7 +98,7 @@ class CnNamelookup
         return $this->prefixName;
     }
 
-    public function setPrefixName(string $prefixName): self
+    public function setPrefixName(?string $prefixName): self
     {
         $this->prefixName = $prefixName;
 

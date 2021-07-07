@@ -11,13 +11,13 @@ use Doctrine\ORM\Mapping as ORM;
 class CnOnline {
 
     /**
-     * @ORM\OneToMany(targetEntity="CnNamelookup", mappedBy="cnonline")
+     * @ORM\OneToMany(targetEntity="CnNamelookup", mappedBy="cnOnline")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_online")
      */
     private $namelookup;
 
     /**
-     * @ORM\OneToMany(targetEntity="CnOfficelookup", mappedBy="cnonline")
+     * @ORM\OneToMany(targetEntity="CnOfficelookup", mappedBy="cnOnline")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_online")
      */
     private $officelookup;
@@ -29,7 +29,7 @@ class CnOnline {
     private $era;
 
     /**
-     * @ORM\OneToMany(targetEntity="CnIdlookup", mappedBy="cnonline")
+     * @ORM\OneToMany(targetEntity="CnIdlookup", mappedBy="cnOnline")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_online")
      */
     private $idlookup;
@@ -42,12 +42,12 @@ class CnOnline {
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $id_dh;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $id_gs;
 
@@ -55,7 +55,6 @@ class CnOnline {
      * @ORM\Column(type="string", length=63, nullable=true)
      */
     private $id_ep;
-
 
     /* fill these properties, for the list view or the detail view */
 
@@ -89,16 +88,6 @@ class CnOnline {
     private $familyname;
 
     /**
-     * @ORM\Column(type="string", length=63, nullable=true)
-     */
-    private $domstift;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $domstift_start;
-
-    /**
      * @ORM\Column(type="string", length=63)
      */
     private $wiagid;
@@ -113,9 +102,9 @@ class CnOnline {
         return $this->id_dh;
     }
 
-    public function setIdDh(?string $id_dh): self
+    public function setIdDh(?string $id): self
     {
-        $this->id_dh = $id_dh;
+        $this->id_dh = $id;
 
         return $this;
     }
@@ -144,6 +133,17 @@ class CnOnline {
         return $this;
     }
 
+    public function getEra(): ?CnEra
+    {
+        return $this->era;
+    }
+
+    public function setEra(?CnEra $era): self
+    {
+        $this->era = $era;
+
+        return $this;
+    }
 
     public function getCanonDh() {
         return $this->canon_dh;
@@ -260,30 +260,6 @@ class CnOnline {
     public function setFamilyname(?string $familyname): self
     {
         $this->familyname = $familyname;
-
-        return $this;
-    }
-
-    public function getDomstift(): ?string
-    {
-        return $this->domstift;
-    }
-
-    public function setDomstift(?string $domstift): self
-    {
-        $this->domstift = $domstift;
-
-        return $this;
-    }
-
-    public function getDomstiftStart(): ?int
-    {
-        return $this->domstift_start;
-    }
-
-    public function setDomstiftStart(?int $domstift_start): self
-    {
-        $this->domstift_start = $domstift_start;
 
         return $this;
     }

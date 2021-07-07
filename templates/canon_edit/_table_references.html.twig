@@ -1,0 +1,29 @@
+<p><strong>Referenzwerke</strong></p>
+<div class="table-responsive">
+    <table class="table">
+	<thead class="thead-light">
+	    <tr>
+		<th scope="col">Id</th>
+		<th scope="col">Kurztitel</th>
+		<th scope="col">Seite</th>
+		<th scope="col">Nummer</th>
+		<th scope="col">Ende</th>
+		<th scope="col">Bistum</th>
+	    </tr>
+	</thead>
+	<tbody>
+	    {% for office in canon.offices|sort((a, b) => a.numdatesort <=> b.numdatesort) %}
+		{% if not id_edit_office is defined or id_edit_office != office.id %}
+		    <tr>
+			<td>{% if edit_mode %}<a href="{{ path('canon_edit_office', {'id':canon.id, 'idoffice':office.id}) }}">{{ office.id }}</a>{% else %}{{ office.id }}{% endif %}</td>
+			<td>{{ office.officename }}</td>
+			<td>{% if office.monastery %}{{ office.monastery.monasteryname }}{% endif %}</td>
+			<td>{{ office.datestart }}</td>
+			<td>{{ office.dateend }}</td>
+			<td>{{ office.diocese }}</td>
+		    </tr>
+		{% endif %}
+	    {% endfor %}
+	</tbody>
+    </table>
+</div>

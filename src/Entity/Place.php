@@ -15,7 +15,7 @@ class Place
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
-    private $id_places;
+    private $idPlaces;
 
     /**
      * @ORM\Column(type="string", length=45, nullable=true)
@@ -46,12 +46,12 @@ class Place
 
     public function getIdPlaces(): ?int
     {
-        return $this->id_places;
+        return $this->idPlaces;
     }
 
-    public function setIdPlaces(int $id_places): self
+    public function setIdPlaces(int $id): self
     {
-        $this->id_places = $id_places;
+        $this->idPlaces = $id;
 
         return $this;
     }
