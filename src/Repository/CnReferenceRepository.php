@@ -67,6 +67,14 @@ class CnReferenceRepository extends ServiceEntityRepository
                     ->getOneOrNullResult();
     }
 
+    public function findIdAndShorttitle() {
+        return $this->createQueryBuilder('c')
+                    ->select('c.id')
+                    ->addSelect('c.shorttitle')
+                    ->orderBy('c.id')
+                    ->getQuery()
+                    ->getResult();
+    }
 
     /* AJAX callback */
     public function suggestShorttitle($input, $limit = 200): array {

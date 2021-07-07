@@ -3,6 +3,7 @@ namespace App\Form;
 
 use App\Entity\Canon;
 use App\Entity\Person;
+use App\Entity\CnReference;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
@@ -41,6 +42,14 @@ class CanonEditFormType extends AbstractType {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
+        $refChoicesRaw = $this->em->getRepository(CnReference::class)
+                                  ->findIdAndShorttitle();
+
+        $refChoices = array();
+        foreach ($refChoicesRaw as $c) {
+            $refChoices[$c['shorttitle']] = $c['id'];
+        }
+
         $builder
             ->add('givenname', null, [
                 'label' => 'Vorname',
@@ -196,13 +205,18 @@ class CanonEditFormType extends AbstractType {
                     'size' => 12,
                 ],
             ])
-            ->add('form_reference_name', TextType::class, [
+            // ->add('form_reference_name', TextType::class, [
+            //     'label' => 'Referenzwerk',
+            //     'required' => true,
+            //     'attr' => [
+            //         'class' => 'js-autocomplete',
+            //         'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_reference'),
+            //         'size' => 50],
+            // ])
+            ->add('idReference', ChoiceType::class, [
                 'label' => 'Referenzwerk',
-                'required' => true,
-                'attr' => [
-                    'class' => 'js-autocomplete',
-                    'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_reference'),
-                    'size' => 50],
+                'expanded' => false,
+                'choices' => $refChoices,
             ])
             ->add('pageReference', null, [
                 'label' => 'Seite',

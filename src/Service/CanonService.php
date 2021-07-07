@@ -45,7 +45,7 @@ class CanonService {
         if (!is_null($gsn_id)) {
             $canon_gs = $this->em->getRepository(CanonGS::class)
                                 ->findOneByGsnId($gsn_id);
-            $id_gs = $canon_gs->getId();
+            $id_gs = $canon_gs ? $canon_gs->getId() : null;
         }
         $co = null;
         // check if there is an entry from GS
@@ -487,6 +487,11 @@ class CanonService {
      * aux
      */
     public function makeCanonreference($canon, $canon_ref) {
+        $idReference = $canon->getIdReference();
+        if (is_null($idReference)) {
+            return;
+        }
+
         $refobj = $this->em->getRepository(CnReference::class)
                            ->find($canon->getIdReference());
 
