@@ -2,31 +2,30 @@
 
 namespace App\Validator;
 
-use App\Repository\CanonRepository;
+use App\Repository\CanonGSRepository;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class MergeTargetValidator extends ConstraintValidator
+class CanonGSNValidator extends ConstraintValidator
 {
-    private $canonRepository;
+    private $canonGSRepository;
 
-    public function __construct(CanonRepository $canonRepository) {
-        $this->canonRepository = $canonRepository;
+    public function __construct(CanonGSRepository $canonGSRepository) {
+        $this->canonGSRepository = $canonGSRepository;
     }
 
+    public function validate($value, Constraint $constraint) {
 
-    public function validate($value, Constraint $constraint)
-    {
-        /* @var $constraint \App\Validator\MergeTarget */
+        /* @var $constraint \App\Validator\CanonGSN */
 
         if (null === $value || '' === $value) {
             return;
         }
 
-        $canon = $this->canonRepository->findOneById($value);
+        $qresult = $this->canonGSRepository->suggestGsn($value, 5);
 
-        if(!is_null($canon)) {
+        if (count($qresult) == 1) {
             return;
         }
 
@@ -36,7 +35,7 @@ class MergeTargetValidator extends ConstraintValidator
         //     ->addViolation();
 
         $this->context->buildViolation($constraint->message)
-            ->addViolation();
+                      ->addViolation();
 
     }
 }

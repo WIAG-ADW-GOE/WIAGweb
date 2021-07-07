@@ -317,6 +317,7 @@ class CanonRepository extends ServiceEntityRepository {
                    ->select('DISTINCT c.id AS suggestion')
                    ->andWhere('c.id LIKE :input')
                    ->setParameter('input', '%'.$input.'%')
+                   ->orderBy('c.id')
                    ->setMaxResults($limit);
         $query = $qb->getQuery();
 

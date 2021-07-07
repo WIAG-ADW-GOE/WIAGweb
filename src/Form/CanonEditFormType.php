@@ -163,7 +163,7 @@ class CanonEditFormType extends AbstractType {
                 ],
 
             ])
-            -> add('gsn_id', null, [
+            -> add('gsn_id', TextType::class, [
                 'label' => 'GS-Nummer',
                 'required' => false,
                 'attr' => [
@@ -202,7 +202,7 @@ class CanonEditFormType extends AbstractType {
                 'attr' => [
                     'class' => 'js-autocomplete',
                     'data-autocomplete-url' => $this->router->generate('canon_edit_autocomplete_merged'),
-                    'size' => 12,
+                    'size' => 15,
                 ],
             ])
             // ->add('form_reference_name', TextType::class, [
@@ -227,9 +227,7 @@ class CanonEditFormType extends AbstractType {
                 'label' => 'ID/Nr.',
                 'required' => false,
                 'attr' => ['size' => 15],
-            ])
-
-            ;
+            ]);
 
         return $builder;
     }

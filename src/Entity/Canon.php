@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Entity\Person;
 use App\Repository\CanonRepository;
 use App\Validator\MergeTarget;
+use App\Validator\CanonGSN;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,7 +15,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Table(name="cn_canon")
  * @ORM\Entity(repositoryClass=CanonRepository::class)
- * @UniqueEntity(fields={"gsnId"}, message="Der Domherr ist schon verknüpft")
+ * @UniqueEntity(fields={"gsnId"}, message="Die GS-Nummer wird schon verwendet.")
  */
 class Canon
 {
@@ -212,6 +213,7 @@ class Canon
 
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
+     * @CanonGSN()
      */
     private $gsnId;
 
@@ -235,6 +237,7 @@ class Canon
      */
     private $status;
 
+    // 2021-07-07 obsolete: use ChoiceType in the form for references
     private $form_reference_name;
 
     public function __construct() {

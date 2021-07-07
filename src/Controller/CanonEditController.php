@@ -148,18 +148,6 @@ class CanonEditController extends AbstractController {
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // $canon = $form->getData();
-            // $shorttitle = $canon->getFormReferenceName();
-            // if (!is_null($shorttitle)) {
-            //     $id_ref = $this->getDoctrine()
-            //                    ->getRepository(CnReference::class)
-            //                    ->findIdByShorttitle($shorttitle);
-            //     if (!is_null($id_ref)) {
-            //         $canon->setIdReference($id_ref['id']);
-            //     }
-            // }
-            // the else case is not relevant for a new canon
-
             $update->setNumdates($canon);
 
             $em->persist($canon);
@@ -192,30 +180,11 @@ class CanonEditController extends AbstractController {
                          EntityManagerInterface $em,
                          Request $request,
                          CanonService $cs) {
-        // $if_ref = $canon->getIdReference();
-        // if (!is_null($canon->getIdReference())) {
-        //     $st = $this->getDoctrine()
-        //                ->getRepository(CnReference::class)
-        //                ->findShorttitleById($if_ref);
-        //     if (!is_null($st)) {
-        //         $canon->setFormReferenceName($st['shorttitle']);
-        //     }
-        // }
 
         $form = $this->createForm(CanonEditFormType::class, $canon);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
-            // $shorttitle = $canon->getFormReferenceName();
-            // if (!is_null($shorttitle)) {
-            //     $id_ref = $this->getDoctrine()
-            //                    ->getRepository(CnReference::class)
-            //                    ->findIdByShorttitle($shorttitle);
-            //     if (!is_null($id_ref)) {
-            //         $canon->setIdReference($id_ref['id']);
-            //     }
-            // }
 
             $cs->setNumdates($canon);
 
