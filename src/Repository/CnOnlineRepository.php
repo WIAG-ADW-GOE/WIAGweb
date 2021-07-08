@@ -297,8 +297,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
 
         $this->addQueryConditions($qb, $canonquery);
 
-        $qb->groupBy('domstift.gs_id, domstift.name');
-        $qb->orderBy('domstift.name');
+        $qb->groupBy('domstift.name');
 
         $query = $qb->getQuery();
         $result = $query->getResult();
