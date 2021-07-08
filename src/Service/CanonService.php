@@ -416,7 +416,6 @@ class CanonService {
             $this->em->persist($idl_wikidata);
         }
 
-
         $this->em->flush();
 
     }
@@ -425,11 +424,6 @@ class CanonService {
      * fill/update references
      */
     public function canonreference(Canon $canon) {
-        $cycle = 1;
-        $root = $this->findRoot($canon, $cycle);
-        if (!is_null($root) and $root !== $canon) {
-            $this->canonreference($root);
-        }
 
         // clear references
         $references = $canon->getReferences();
@@ -441,8 +435,11 @@ class CanonService {
         }
 
         $status = $canon->getStatus();
+        // recreate own reference
+        $this->makeCanonreference($canon, $canon);
+
+        // find references from canons merged into this one
         if ($status != 'merged') {
-            $this->makeCanonreference($canon, $canon);
 
             $cmerged = array();
             $cycle = 1;
@@ -455,6 +452,14 @@ class CanonService {
                     $this->makeCanonreference($canon_merged, $canon);
                 }
             }
+        }
+
+        // if merged let the root of the merging tree create it's references
+        $cycle = 1;
+        $root = $this->findRoot($canon, $cycle);
+
+        if (!is_null($root) and $root !== $canon) {
+            $this->canonreference($root);
         }
     }
 
