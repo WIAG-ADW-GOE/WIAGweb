@@ -12,6 +12,7 @@ use App\Repository\CnOnlineRepository;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
 use App\Entity\Diocese;
+use App\Service\CanonService;
 use App\Service\CanonData;
 use App\Service\CanonLinkedData;
 
@@ -35,6 +36,7 @@ class CanonController extends AbstractController {
      */
     public function launch_query(Request $request,
                                  CnOnlineRepository $repository,
+                                 CanonService $cs,
                                  CanonData $canonData,
                                  CanonLinkedData $canonLinkedData) {
 
@@ -65,7 +67,7 @@ class CanonController extends AbstractController {
 
             $singleoffset = $request->request->get('singleoffset');
             if(!is_null($singleoffset)) {
-                return $this->getCanonInQuery($form, $singleoffset);
+                return $this->getCanonInQuery($form, $singleoffset, $cs);
             }
 
             // get the number of results (without page limit restriction)
@@ -145,7 +147,7 @@ class CanonController extends AbstractController {
     }
 
 
-    public function getCanonInQuery($form, $offset) {
+    public function getCanonInQuery($form, $offset, CanonService $cs) {
 
         $queryformdata = $form->getData();
 
@@ -169,6 +171,14 @@ class CanonController extends AbstractController {
 
         $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 
+        $canon_dh = $person->getCanonDh();
+        $references = array();
+        if (!is_null($canon_dh)) {
+            $cycle = 1;
+            $references = $cs->collectMerged($references, $canon_dh, $cycle);
+            array_unshift($references, $canon_dh);
+        }
+
         return $this->render('canon/details.html.twig', [
             'query_form' => $form->createView(),
             'person' => $person,
@@ -176,6 +186,7 @@ class CanonController extends AbstractController {
             'offset' => $offset,
             'hassuccessor' => $hassuccessor,
             'dioceserepository' => $dioceseRepository,
+            'references' => $references,
         ]);
 
     }

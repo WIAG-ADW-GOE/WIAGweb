@@ -469,32 +469,19 @@ class CanonService {
     }
 
     /**
-     * 2021-07-08 see collectMerged
+     * we need canon specific data, not only the references
      */
     public function collectReferences($canon) {
-        $cn_id = $canon->getId();
-        $ccn = array();
+        $cmerged = array();
         $cycle = 1;
-        $ccn = $this->collectMerged($ccn, $cn_id, $cycle);
-        array_unshift($ccn, $canon);
+        $cmerged = $this->collectMerged($cmerged, $canon, $cycle);
 
-        $repository = $this->em->getRepository(CnReference::class);
         $cref = array();
-
-        $i = 1;
-        foreach ($ccn as $cni) {
-            $i += 1;
-            $idref = $cni->getIdReference();
-            if (!is_null($idref)) {
-                $ref = $repository->findOneById($idref);
-                if (!is_null($ref)) {
-                    $cref[] = $ref;
-                }
-            }
+        foreach ($cmerged as $merged) {
+            $cref[] = $merged->getReference();
         }
 
         return $cref;
     }
-
 
 };

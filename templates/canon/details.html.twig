@@ -83,6 +83,19 @@
 	</ul>
     </dd>
 {% endmacro %}
+{% macro sectionreferencesdh (references) %}
+    <dt class="col-sm-3">{{ references|length > 1 ? 'Referenzwerke' : 'Referenzwerk' }}</dt>
+    <dd class="col-sm-9">
+	<ul class="{% if references|length == 1 %}list-unstyled{% else %}pl-3{% endif %} small">
+	    {% for ref in references %}
+		{% set refid = ref.idinreference %}
+		{% set refuri %}{% if ref.reference.onlineresource %}{{ ref.reference.onlineresource }}{% else %}{{ path('canon_reference', {'id': ref.reference.id }) }}{% endif %}{% endset %}
+		{% set refdisplaytitle=ref.reference.title %}
+		<li>{{ refdisplaytitle }}{% if ref.pagereference %}, S. {{ ref.pagereference }}{% if refid %}, ID/Nr. {{ refid }}{% endif %}{% else %}{% if refid %}, ID/Nr. {{ refid }}{% endif %}{% endif %}</li>
+	    {% endfor %}
+	</ul>
+    </dd>
+{% endmacro %}
 
 {% block body %}
     {# person is passed as an object #}
@@ -165,7 +178,9 @@
 		    <dl class="card-body row mb-0 pb-0">
 			{# offices and references#}
 			{{ _self.sectionoffices(person.canondh.offices, urlgsmonasteries, dioceserepository) }}
-			{{ _self.sectionreferences(person.canondh.references, false, url_gs_bios) }}
+			{% if references is defined and references|length > 0 %}
+			    {{ _self.sectionreferencesdh(references) }}
+			{% endif %}
 		    </dl>
 		</div>
 	    {% endif %}
@@ -197,7 +212,7 @@
 	    {% endif %}
 	    {# external identifiers and other identifiers (canondh holds a copy of bishop data if available#}
 	    {% if person.iddh %}{% set canon = person.canondh %}
-            {% elseif person.idep %}{% set canon = person.bishop %}		
+            {% elseif person.idep %}{% set canon = person.bishop %}
 	    {% else %}{% set canon = person.canongs %}
 	    {% endif %}
 	    {% if canon.hasExternalIdentifier or canon.hasOtherIdentifier %}
