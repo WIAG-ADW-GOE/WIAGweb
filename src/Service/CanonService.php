@@ -420,50 +420,9 @@ class CanonService {
 
     }
 
-    /**
-     * fill/update references
-     */
-    public function canonreference(Canon $canon) {
-
-        // clear references
-        $references = $canon->getReferences();
-        if (!is_null($references)) {
-            foreach ($references as $refi) {
-                $this->em->remove($refi);
-            }
-            $this->em->flush();
-        }
-
-        $status = $canon->getStatus();
-        // recreate own reference
-        $this->makeCanonreference($canon, $canon);
-
-        // find references from canons merged into this one
-        if ($status != 'merged') {
-
-            $cmerged = array();
-            $cycle = 1;
-            $cmerged = $this->collectMerged($cmerged, $canon->getId(), $cycle);
-
-            $canon_repository = $this->em->getRepository(Canon::class);
-            foreach($cmerged as $cn_i) {
-                $canon_merged = $canon_repository->findOneById($cn_i->getId());
-                if (!is_null($canon_merged)) {
-                    $this->makeCanonreference($canon_merged, $canon);
-                }
-            }
-        }
-
-        // if merged let the root of the merging tree create it's references
-        $cycle = 1;
-        $root = $this->findRoot($canon, $cycle);
-
-        if (!is_null($root) and $root !== $canon) {
-            $this->canonreference($root);
-        }
-    }
 
     /**
+     * 2021-07-08 obsolete see collectMerged
      * find root element withing a merging tree
      */
     public function findRoot(Canon $canon, $cycle) {
@@ -476,62 +435,53 @@ class CanonService {
             return null;
         }
         $merged_into = $canon->getMergedInto();
+        $status = $canon->getStatus();
 
-        if (is_null($merged_into)) {
-            return $canon;
+        if (!is_null($merged_into) and $status == 'merged') {
+            $cmi = $this->em->getRepository(Canon::class)
+                            ->findOneById($merged_into);
+            if (!is_null($cmi)) {
+                return $this->findRoot($cmi, $cycle + 1);
+            }
         }
-        $cmi = $this->em->getRepository(Canon::class)
-                        ->findOneById($merged_into);
-        if (is_null($cmi)) {
-            return $canon;
-        }
-        return $this->findRoot($cmi, $cycle + 1);
+        return $canon;
     }
 
     /**
-     * aux
+     * collect canons that are merged to $canon
      */
-    public function makeCanonreference($canon, $canon_ref) {
-        $idReference = $canon->getIdReference();
-        if (is_null($idReference)) {
-            return;
-        }
-
-        $refobj = $this->em->getRepository(CnReference::class)
-                           ->find($canon->getIdReference());
-
-        if (!is_null($refobj)) {
-            $ref = new CnCanonReference();
-            $ref->setCanon($canon_ref);
-            $ref->setIdCanonOrig($canon->getId());
-            $ref->setReference($refobj);
-            $ref->setPageReference($canon->getPageReference());
-            $ref->setIdInReference($canon->getIdInReference());
-
-            $this->em->persist($ref);
-            $this->em->flush();
-        }
-    }
-
-    /**
-     * collect ids of canons that are merged to $canon
-     */
-    public function collectMerged($cmerged, $id, $cycle) {
+    public function collectMerged($cmerged, $canon, $cycle) {
         if ($cycle > self::MAX_MERGE_DEPTH) {
             return($cmerged);
         }
+
         $children = $this->em->getRepository(Canon::class)
-                             ->findMerged($id);
+                             ->findMerged($canon->getId());
         if (count($children) > 0) {
-            // D $children_ids = array_column($children, 'id');
-            foreach ($children as $cn_i) {
-                $cn_il = $this->collectMerged($cmerged, $cn_i->getId(), $cycle + 1);
-                $cmerged = array_merge($cmerged, $cn_il);
-            }
             $cmerged = array_merge($cmerged, $children);
+            foreach ($children as $cni) {
+                $cempty = array();
+                $cmergedi = $this->collectMerged($cempty, $cni, $cycle + 1);
+                $cmerged = array_merge($cmerged, $cmergedi);
+            }
         }
         return $cmerged;
     }
 
+    /**
+     * we need canon specific data, not only the references
+     */
+    public function collectReferences($canon) {
+        $cmerged = array();
+        $cycle = 1;
+        $cmerged = $this->collectMerged($cmerged, $canon, $cycle);
+
+        $cref = array();
+        foreach ($cmerged as $merged) {
+            $cref[] = $merged->getReference();
+        }
+
+        return $cref;
+    }
 
 };

@@ -154,8 +154,6 @@ class CanonEditController extends AbstractController {
             $em->persist($canon);
             $em->flush();
 
-            $update->canonreference($canon);
-
             $status = $canon->getStatus();
             if ($status == 'online') {
                 $update->setOnline($canon);
@@ -192,7 +190,7 @@ class CanonEditController extends AbstractController {
             $em->persist($canon);
             $em->flush();
 
-            $cs->canonreference($canon);
+            // $cs->canonreference($canon);
 
             $status = $canon->getStatus();
             if ($status == 'online') {
@@ -205,10 +203,14 @@ class CanonEditController extends AbstractController {
                 'id' => $canon->getId(),
             ]);
         }
+        $merged = array();
+        $cycle = 1;
+        $merged = $cs->collectMerged($merged, $canon, $cycle);
 
         return $this->render('canon_edit/edit.html.twig', [
             'form' => $form->createView(),
             'canon' => $canon,
+            'merged' => $merged,
         ]);
     }
 

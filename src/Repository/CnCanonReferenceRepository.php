@@ -51,7 +51,7 @@ class CnCanonReferenceRepository extends ServiceEntityRepository
     public function deleteByIdCanonOrig($id) {
         $qb = $this->createQueryBuilder('cr')
                    ->delete()
-                   ->andWhere('cr.idOrig = :id')
+                   ->andWhere('cr.idCanonOrig = :id')
                    ->setParameter('id', $id);
         $qb->getQuery()->getResult();
     }

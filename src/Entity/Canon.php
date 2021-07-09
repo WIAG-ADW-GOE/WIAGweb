@@ -64,11 +64,24 @@ class Canon
      */
     private $offices;
 
+    // 2021-07-08 replaced by CanonService.collectMerged
     /**
      * @ORM\OneToMany(targetEntity="CnCanonReference", mappedBy="canon")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
      */
     private $references;
+
+    /**
+     * @ORM\OneToOne(targetEntity="CnReference")
+     * @ORM\JoinColumn(name="id_reference", referencedColumnName="id")
+     */
+    private $reference;
+
+    /**
+     * @ORM\OneToOne(targetEntity="CnCanonReference")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id_canon_orig")
+     */
+    // private $myReference;
 
     /**
      * @ORM\Id
@@ -270,6 +283,10 @@ class Canon
         return $this->references;
     }
 
+    public function getReference() {
+        return $this->reference;
+    }
+
     /**
      * @return Collection|OfficeSortkey[]
      */
@@ -308,6 +325,19 @@ class Canon
         $shortId = ltrim($paddedId, "0");
         return $shortId;
     }
+
+    // public function getMyReference()
+    // {
+    //     return $this->myReference;
+    // }
+
+    // public function setMyReference($myReference): self
+    // {
+    //     $this->myReference = $myReference;
+
+    //     return $this;
+    // }
+
 
     public function getItemReference(): ?string
     {

@@ -13,6 +13,7 @@ use App\Service\PersonData;
 use App\Service\PersonLinkedData;
 use App\Service\DioceseData;
 use App\Service\DioceseLinkedData;
+use App\Service\CanonService;
 use App\Service\CanonData;
 use App\Service\CanonLinkedData;
 
@@ -33,6 +34,7 @@ class IDController extends AbstractController {
     private $personLinkedData;
     private $dioceseData;
     private $dioceseLinkedData;
+    private $svccanon;
     private $svccanonData;
     private $svccanonLinkedData;
     //    private $svccanonGsData;
@@ -51,6 +53,7 @@ class IDController extends AbstractController {
                                 PersonLinkedData $personLinkedData,
                                 DioceseData $dioceseData,
                                 DioceseLinkedData $dioceseLinkedData,
+                                CanonService $svccanon,
                                 CanonData $svccanonData,
                                 CanonLinkedData $svccanonLinkedData) {
                                 // CanonGSData $svccanonGsData,
@@ -59,6 +62,7 @@ class IDController extends AbstractController {
         $this->personLinkedData = $personLinkedData;
         $this->dioceseData = $dioceseData;
         $this->dioceseLinkedData = $dioceseLinkedData;
+        $this->svccanon = $svccanon;
         $this->svccanonData = $svccanonData;
         $this->svccanonLinkedData = $svccanonLinkedData;
         // $this->svccanonGsData = $svccanonGsData;
@@ -222,11 +226,21 @@ class IDController extends AbstractController {
         # TODO do we need this here?
         $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 
+        // collect references
+        $canon_dh = $canon->getCanonDh();
+        $references = array();
+        if (!is_null($canon_dh)) {
+            $cycle = 1;
+            $references = $this->svccanon->collectMerged($references, $canon_dh, $cycle);
+            array_unshift($references, $canon_dh);
+        }
+
         return $this->render('canon/details.html.twig', [
             'person' => $canon,
             'wiagidlong' => $canon->getId(),
             'querystr' => null,
             'dioceserepository' => $dioceseRepository,
+            'references' => $references,
         ]);
     }
 
