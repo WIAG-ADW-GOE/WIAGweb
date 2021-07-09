@@ -40,7 +40,7 @@
 			    {% endif %}
 			</li>
 			{% if office.archdeaconterritory %}
-			<li class="list-inline-item comment"> Archidiakonat {{ office.archdeaconterritory }} </li>
+			    <li class="list-inline-item comment"> Archidiakonat {{ office.archdeaconterritory }} </li>
 			{% endif %}
 			{% if office.comment %}
 			    <li class="list-inline-item comment"> ({{ office.comment }}) </li>
@@ -87,7 +87,7 @@
     <dt class="col-sm-3">{{ references|length > 1 ? 'Referenzwerke' : 'Referenzwerk' }}</dt>
     <dd class="col-sm-9">
 	<ul class="{% if references|length == 1 %}list-unstyled{% else %}pl-3{% endif %} small">
-	    {% for ref in references %}
+	    {% for ref in references|sort((a, b) => (a.reference.id <=> b.reference.id)) %}
 		{% set refid = ref.idinreference %}
 		{% set refuri %}{% if ref.reference.onlineresource %}{{ ref.reference.onlineresource }}{% else %}{{ path('canon_reference', {'id': ref.reference.id }) }}{% endif %}{% endset %}
 		{% set refdisplaytitle=ref.reference.title %}
@@ -160,16 +160,16 @@
 		</div>
 	    {% endif %}
 	    {% if canon.religiousorder or canon.academictitle %}
-	    <dl class="row mx-2 mt-3">
-		{% if canon.religiousorder %}
-		    <dt class="col-sm-3">Orden</dt>
-		    <dd class="col-sm-9">{{ canon.religiousorder }}</dd>
-		{% endif %}
-		{% if canon.academictitle %}
-		    <dt class="col-sm-3">Akademischer Titel</dt>
-		    <dd class="col-sm-9">{{ canon.academictitle }}</dd>
-		{% endif %}
-	    </dl>
+		<dl class="row mx-2 mt-3">
+		    {% if canon.religiousorder %}
+			<dt class="col-sm-3">Orden</dt>
+			<dd class="col-sm-9">{{ canon.religiousorder }}</dd>
+		    {% endif %}
+		    {% if canon.academictitle %}
+			<dt class="col-sm-3">Akademischer Titel</dt>
+			<dd class="col-sm-9">{{ canon.academictitle }}</dd>
+		    {% endif %}
+		</dl>
 	    {% endif %}
 	    {# <p>{{ dump(person) }}</p> #}
 	    {% if person.iddh %}
