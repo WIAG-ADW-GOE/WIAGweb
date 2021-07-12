@@ -60,6 +60,7 @@
                                             <li><a href="namespaces/app-repository.html"><abbr title="\App\Repository">Repository</abbr></a></li>
                                             <li><a href="namespaces/app-security.html"><abbr title="\App\Security">Security</abbr></a></li>
                                             <li><a href="namespaces/app-service.html"><abbr title="\App\Service">Service</abbr></a></li>
+                                            <li><a href="namespaces/app-validator.html"><abbr title="\App\Validator">Validator</abbr></a></li>
                                     </ul>
                         </section>
 
@@ -242,6 +243,20 @@
 <dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a href="classes/App-Entity-Person.html#property_officesdh">$officesdh</a>
+    <span>
+                &nbsp;: mixed            </span>
+</dt>
+<dd>canon offices (Domherren-Datenbank)</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a href="classes/App-Entity-Person.html#property_officesgs">$officesgs</a>
+    <span>
+                &nbsp;: mixed            </span>
+</dt>
+<dd>canon offices (Germania Sacra)</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
     <a href="classes/App-Entity-Person.html#property_officeSortkeys">$officeSortkeys</a>
     <span>
                 &nbsp;: mixed            </span>
@@ -275,6 +290,20 @@
                 &nbsp;: mixed            </span>
 </dt>
 <dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a href="classes/App-Entity-Person.html#property_referencesdh">$referencesdh</a>
+    <span>
+                &nbsp;: mixed            </span>
+</dt>
+<dd>canon references (Domherren-Datenbank)</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a href="classes/App-Entity-Person.html#property_referencesgs">$referencesgs</a>
+    <span>
+                &nbsp;: mixed            </span>
+</dt>
+<dd>canon references (Germania Sacra)</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -private">
     <a href="classes/App-Entity-Person.html#property_religious_order">$religious_order</a>
@@ -331,6 +360,20 @@
                         &nbsp;: self    </span>
 </dt>
 <dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Person.html#method_decorateId">decorateId()</a>
+    <span>
+                        &nbsp;: string|null    </span>
+</dt>
+<dd>add prefix and suffix</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Person.html#method_extractDbId">extractDbId()</a>
+    <span>
+                        &nbsp;: string|null    </span>
+</dt>
+<dd>remove prefix and suffix, return null if $id does not match</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Entity-Person.html#method_getAuthorsGatz">getAuthorsGatz()</a>
@@ -431,6 +474,13 @@
 <dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Person.html#method_getGsnid">getGsnid()</a>
+    <span>
+                        &nbsp;: string|null    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Entity-Person.html#method_getNamelookup">getNamelookup()</a>
     <span>
                         &nbsp;: mixed    </span>
@@ -439,6 +489,20 @@
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Entity-Person.html#method_getOffices">getOffices()</a>
+    <span>
+                        &nbsp;: mixed    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Person.html#method_getOfficesDh">getOfficesDh()</a>
+    <span>
+                        &nbsp;: mixed    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Person.html#method_getOfficesGs">getOfficesGs()</a>
     <span>
                         &nbsp;: mixed    </span>
 </dt>
@@ -480,6 +544,20 @@
 <dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Person.html#method_getReferencesDh">getReferencesDh()</a>
+    <span>
+                        &nbsp;: mixed    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Person.html#method_getReferencesGs">getReferencesGs()</a>
+    <span>
+                        &nbsp;: mixed    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Entity-Person.html#method_getReligiousOrder">getReligiousOrder()</a>
     <span>
                         &nbsp;: string|null    </span>
@@ -495,6 +573,20 @@
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Entity-Person.html#method_getViafid">getViafid()</a>
+    <span>
+                        &nbsp;: string|null    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Person.html#method_getWiagEpiscId">getWiagEpiscId()</a>
+    <span>
+                        &nbsp;: string|null    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Person.html#method_getWiagEpiscIdLong">getWiagEpiscIdLong()</a>
     <span>
                         &nbsp;: string|null    </span>
 </dt>
@@ -557,7 +649,7 @@
 <dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/App-Entity-Person.html#method_isWiagidLong">isWiagidLong()</a>
+    <a href="classes/App-Entity-Person.html#method_isIdBishop">isIdBishop()</a>
     <span>
                         &nbsp;: mixed    </span>
 </dt>
@@ -669,6 +761,20 @@
 <dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Person.html#method_setOfficesDh">setOfficesDh()</a>
+    <span>
+                        &nbsp;: mixed    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Person.html#method_setOfficesGs">setOfficesGs()</a>
+    <span>
+                        &nbsp;: mixed    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Entity-Person.html#method_setPagesGatz">setPagesGatz()</a>
     <span>
                         &nbsp;: self    </span>
@@ -693,6 +799,20 @@
     <a href="classes/App-Entity-Person.html#method_setReferenceId">setReferenceId()</a>
     <span>
                         &nbsp;: self    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Person.html#method_setReferencesDh">setReferencesDh()</a>
+    <span>
+                        &nbsp;: mixed    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Person.html#method_setReferencesGs">setReferencesGs()</a>
+    <span>
+                        &nbsp;: mixed    </span>
 </dt>
 <dd></dd>
 
@@ -732,14 +852,7 @@
 <dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/App-Entity-Person.html#method_toArray">toArray()</a>
-    <span>
-                        &nbsp;: mixed    </span>
-</dt>
-<dd>obsolete see Service/CSVData.php Service/JSONData.php</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/App-Entity-Person.html#method_wiagidLongToWiagid">wiagidLongToWiagid()</a>
+    <a href="classes/App-Entity-Person.html#method_shortId">shortId()</a>
     <span>
                         &nbsp;: mixed    </span>
 </dt>
@@ -829,7 +942,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">32</span>
+    <span class="phpdocumentor-element-found-in__line">66</span>
 </aside>
 
     
@@ -875,7 +988,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">108</span>
+    <span class="phpdocumentor-element-found-in__line">142</span>
 </aside>
 
     
@@ -921,7 +1034,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">103</span>
+    <span class="phpdocumentor-element-found-in__line">137</span>
 </aside>
 
     
@@ -967,7 +1080,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">58</span>
+    <span class="phpdocumentor-element-found-in__line">92</span>
 </aside>
 
     
@@ -1013,7 +1126,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">63</span>
+    <span class="phpdocumentor-element-found-in__line">97</span>
 </aside>
 
     
@@ -1059,7 +1172,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">130</span>
+    <span class="phpdocumentor-element-found-in__line">164</span>
 </aside>
 
     
@@ -1114,7 +1227,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">47</span>
+    <span class="phpdocumentor-element-found-in__line">81</span>
 </aside>
 
     
@@ -1160,7 +1273,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">113</span>
+    <span class="phpdocumentor-element-found-in__line">147</span>
 </aside>
 
     
@@ -1206,7 +1319,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">52</span>
+    <span class="phpdocumentor-element-found-in__line">86</span>
 </aside>
 
     
@@ -1252,7 +1365,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">118</span>
+    <span class="phpdocumentor-element-found-in__line">152</span>
 </aside>
 
     
@@ -1298,7 +1411,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">78</span>
+    <span class="phpdocumentor-element-found-in__line">112</span>
 </aside>
 
     
@@ -1344,7 +1457,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">73</span>
+    <span class="phpdocumentor-element-found-in__line">107</span>
 </aside>
 
     
@@ -1390,7 +1503,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">124</span>
+    <span class="phpdocumentor-element-found-in__line">158</span>
 </aside>
 
     
@@ -1445,7 +1558,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">143</span>
+    <span class="phpdocumentor-element-found-in__line">170</span>
 </aside>
 
     
@@ -1491,6 +1604,70 @@
             -private
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="property_officesdh">
+        $officesdh
+        <a href="classes/App-Entity-Person.html#property_officesdh" class="headerlink"><i class="fas fa-link"></i></a>
+        <span class="phpdocumentor-element__modifiers">
+                                </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">181</span>
+</aside>
+
+        <p class="phpdocumentor-summary">canon offices (Domherren-Datenbank)</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">private</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">$officesdh</span>
+    </code>
+
+        <section class="phpdocumentor-description"></section>
+
+    
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="property_officesgs">
+        $officesgs
+        <a href="classes/App-Entity-Person.html#property_officesgs" class="headerlink"><i class="fas fa-link"></i></a>
+        <span class="phpdocumentor-element__modifiers">
+                                </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">191</span>
+</aside>
+
+        <p class="phpdocumentor-summary">canon offices (Germania Sacra)</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">private</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">$officesgs</span>
+    </code>
+
+        <section class="phpdocumentor-description"></section>
+
+    
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="property_officeSortkeys">
         $officeSortkeys
         <a href="classes/App-Entity-Person.html#property_officeSortkeys" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1500,7 +1677,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">149</span>
+    <span class="phpdocumentor-element-found-in__line">45</span>
 </aside>
 
     
@@ -1555,7 +1732,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">37</span>
+    <span class="phpdocumentor-element-found-in__line">71</span>
 </aside>
 
     
@@ -1601,7 +1778,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">42</span>
+    <span class="phpdocumentor-element-found-in__line">76</span>
 </aside>
 
     
@@ -1647,7 +1824,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">136</span>
+    <span class="phpdocumentor-element-found-in__line">176</span>
 </aside>
 
     
@@ -1702,7 +1879,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">98</span>
+    <span class="phpdocumentor-element-found-in__line">132</span>
 </aside>
 
     
@@ -1739,6 +1916,70 @@
             -private
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="property_referencesdh">
+        $referencesdh
+        <a href="classes/App-Entity-Person.html#property_referencesdh" class="headerlink"><i class="fas fa-link"></i></a>
+        <span class="phpdocumentor-element__modifiers">
+                                </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">186</span>
+</aside>
+
+        <p class="phpdocumentor-summary">canon references (Domherren-Datenbank)</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">private</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">$referencesdh</span>
+    </code>
+
+        <section class="phpdocumentor-description"></section>
+
+    
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="property_referencesgs">
+        $referencesgs
+        <a href="classes/App-Entity-Person.html#property_referencesgs" class="headerlink"><i class="fas fa-link"></i></a>
+        <span class="phpdocumentor-element__modifiers">
+                                </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">196</span>
+</aside>
+
+        <p class="phpdocumentor-summary">canon references (Germania Sacra)</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">private</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">$referencesgs</span>
+    </code>
+
+        <section class="phpdocumentor-description"></section>
+
+    
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="property_religious_order">
         $religious_order
         <a href="classes/App-Entity-Person.html#property_religious_order" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1748,7 +1989,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">68</span>
+    <span class="phpdocumentor-element-found-in__line">102</span>
 </aside>
 
     
@@ -1794,7 +2035,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">27</span>
+    <span class="phpdocumentor-element-found-in__line">61</span>
 </aside>
 
     
@@ -1840,7 +2081,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">83</span>
+    <span class="phpdocumentor-element-found-in__line">117</span>
 </aside>
 
     
@@ -1886,7 +2127,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">22</span>
+    <span class="phpdocumentor-element-found-in__line">56</span>
 </aside>
 
     
@@ -1940,7 +2181,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">88</span>
+    <span class="phpdocumentor-element-found-in__line">122</span>
 </aside>
 
     
@@ -1986,7 +2227,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">93</span>
+    <span class="phpdocumentor-element-found-in__line">127</span>
 </aside>
 
     
@@ -2036,7 +2277,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">151</span>
+    <span class="phpdocumentor-element-found-in__line">47</span>
 </aside>
 
     
@@ -2068,7 +2309,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">589</span>
+    <span class="phpdocumentor-element-found-in__line">608</span>
 </aside>
 
     
@@ -2101,6 +2342,94 @@
         class="phpdocumentor-element
             -method
             -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_decorateId">
+        decorateId()
+        <a href="classes/App-Entity-Person.html#method_decorateId" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">21</span>
+</aside>
+
+        <p class="phpdocumentor-summary">add prefix and suffix</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__name">decorateId</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$id</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">string|null</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_extractDbId">
+        extractDbId()
+        <a href="classes/App-Entity-Person.html#method_extractDbId" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">29</span>
+</aside>
+
+        <p class="phpdocumentor-summary">remove prefix and suffix, return null if $id does not match</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__name">extractDbId</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$id</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">string|null</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
                                                         "
 >
     <h4 class="phpdocumentor-element__name" id="method_getAuthorsGatz">
@@ -2110,7 +2439,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">188</span>
+    <span class="phpdocumentor-element-found-in__line">234</span>
 </aside>
 
     
@@ -2142,7 +2471,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">393</span>
+    <span class="phpdocumentor-element-found-in__line">445</span>
 </aside>
 
     
@@ -2174,7 +2503,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">381</span>
+    <span class="phpdocumentor-element-found-in__line">433</span>
 </aside>
 
     
@@ -2206,7 +2535,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">273</span>
+    <span class="phpdocumentor-element-found-in__line">319</span>
 </aside>
 
     
@@ -2238,7 +2567,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">285</span>
+    <span class="phpdocumentor-element-found-in__line">331</span>
 </aside>
 
     
@@ -2270,7 +2599,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">459</span>
+    <span class="phpdocumentor-element-found-in__line">557</span>
 </aside>
 
     
@@ -2302,7 +2631,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">435</span>
+    <span class="phpdocumentor-element-found-in__line">514</span>
 </aside>
 
     
@@ -2334,7 +2663,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">224</span>
+    <span class="phpdocumentor-element-found-in__line">270</span>
 </aside>
 
     
@@ -2366,7 +2695,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">248</span>
+    <span class="phpdocumentor-element-found-in__line">294</span>
 </aside>
 
     
@@ -2398,7 +2727,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">477</span>
+    <span class="phpdocumentor-element-found-in__line">575</span>
 </aside>
 
     
@@ -2430,7 +2759,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">236</span>
+    <span class="phpdocumentor-element-found-in__line">282</span>
 </aside>
 
     
@@ -2462,7 +2791,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">260</span>
+    <span class="phpdocumentor-element-found-in__line">306</span>
 </aside>
 
     
@@ -2494,7 +2823,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">321</span>
+    <span class="phpdocumentor-element-found-in__line">373</span>
 </aside>
 
     
@@ -2526,13 +2855,45 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">309</span>
+    <span class="phpdocumentor-element-found-in__line">355</span>
 </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">getGsid</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
+
+    
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">string|null</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getGsnid">
+        getGsnid()
+        <a href="classes/App-Entity-Person.html#method_getGsnid" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">360</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">getGsnid</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
 
     
     
@@ -2558,7 +2919,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">445</span>
+    <span class="phpdocumentor-element-found-in__line">524</span>
 </aside>
 
     
@@ -2590,13 +2951,77 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">425</span>
+    <span class="phpdocumentor-element-found-in__line">485</span>
 </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">getOffices</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getOfficesDh">
+        getOfficesDh()
+        <a href="classes/App-Entity-Person.html#method_getOfficesDh" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">495</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">getOfficesDh</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getOfficesGs">
+        getOfficesGs()
+        <a href="classes/App-Entity-Person.html#method_getOfficesGs" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">504</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">getOfficesGs</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
     
@@ -2622,7 +3047,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">584</span>
+    <span class="phpdocumentor-element-found-in__line">603</span>
 </aside>
 
     
@@ -2655,7 +3080,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">200</span>
+    <span class="phpdocumentor-element-found-in__line">246</span>
 </aside>
 
     
@@ -2687,7 +3112,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">212</span>
+    <span class="phpdocumentor-element-found-in__line">258</span>
 </aside>
 
     
@@ -2719,7 +3144,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">455</span>
+    <span class="phpdocumentor-element-found-in__line">534</span>
 </aside>
 
     
@@ -2751,7 +3176,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">369</span>
+    <span class="phpdocumentor-element-found-in__line">421</span>
 </aside>
 
     
@@ -2776,6 +3201,70 @@
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_getReferencesDh">
+        getReferencesDh()
+        <a href="classes/App-Entity-Person.html#method_getReferencesDh" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">538</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">getReferencesDh</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getReferencesGs">
+        getReferencesGs()
+        <a href="classes/App-Entity-Person.html#method_getReferencesGs" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">547</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">getReferencesGs</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_getReligiousOrder">
         getReligiousOrder()
         <a href="classes/App-Entity-Person.html#method_getReligiousOrder" class="headerlink"><i class="fas fa-link"></i></a>
@@ -2783,7 +3272,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">297</span>
+    <span class="phpdocumentor-element-found-in__line">343</span>
 </aside>
 
     
@@ -2815,7 +3304,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">176</span>
+    <span class="phpdocumentor-element-found-in__line">222</span>
 </aside>
 
     
@@ -2847,13 +3336,77 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">333</span>
+    <span class="phpdocumentor-element-found-in__line">385</span>
 </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">getViafid</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
+
+    
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">string|null</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getWiagEpiscId">
+        getWiagEpiscId()
+        <a href="classes/App-Entity-Person.html#method_getWiagEpiscId" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">461</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">getWiagEpiscId</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
+
+    
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">string|null</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getWiagEpiscIdLong">
+        getWiagEpiscIdLong()
+        <a href="classes/App-Entity-Person.html#method_getWiagEpiscIdLong" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">465</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">getWiagEpiscIdLong</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
 
     
     
@@ -2879,7 +3432,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">171</span>
+    <span class="phpdocumentor-element-found-in__line">217</span>
 </aside>
 
     
@@ -2911,7 +3464,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">405</span>
+    <span class="phpdocumentor-element-found-in__line">457</span>
 </aside>
 
     
@@ -2943,7 +3496,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">345</span>
+    <span class="phpdocumentor-element-found-in__line">397</span>
 </aside>
 
     
@@ -2975,7 +3528,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">410</span>
+    <span class="phpdocumentor-element-found-in__line">470</span>
 </aside>
 
     
@@ -3007,7 +3560,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">357</span>
+    <span class="phpdocumentor-element-found-in__line">409</span>
 </aside>
 
     
@@ -3039,7 +3592,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">466</span>
+    <span class="phpdocumentor-element-found-in__line">564</span>
 </aside>
 
     
@@ -3071,7 +3624,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">567</span>
+    <span class="phpdocumentor-element-found-in__line">586</span>
 </aside>
 
     
@@ -3103,7 +3656,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">472</span>
+    <span class="phpdocumentor-element-found-in__line">570</span>
 </aside>
 
     
@@ -3128,27 +3681,27 @@
             -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_isWiagidLong">
-        isWiagidLong()
-        <a href="classes/App-Entity-Person.html#method_isWiagidLong" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_isIdBishop">
+        isIdBishop()
+        <a href="classes/App-Entity-Person.html#method_isIdBishop" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">157</span>
+    <span class="phpdocumentor-element-found-in__line">198</span>
 </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__name">isWiagidLong</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$wiagidlong</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+            <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__name">isIdBishop</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$wiagidlong</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                <span class="phpdocumentor-signature__argument__name">$id</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -3177,7 +3730,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">599</span>
+    <span class="phpdocumentor-element-found-in__line">618</span>
 </aside>
 
     
@@ -3219,7 +3772,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">193</span>
+    <span class="phpdocumentor-element-found-in__line">239</span>
 </aside>
 
     
@@ -3261,7 +3814,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">398</span>
+    <span class="phpdocumentor-element-found-in__line">450</span>
 </aside>
 
     
@@ -3303,7 +3856,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">386</span>
+    <span class="phpdocumentor-element-found-in__line">438</span>
 </aside>
 
     
@@ -3345,7 +3898,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">278</span>
+    <span class="phpdocumentor-element-found-in__line">324</span>
 </aside>
 
     
@@ -3387,7 +3940,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">290</span>
+    <span class="phpdocumentor-element-found-in__line">336</span>
 </aside>
 
     
@@ -3429,7 +3982,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">439</span>
+    <span class="phpdocumentor-element-found-in__line">518</span>
 </aside>
 
     
@@ -3471,7 +4024,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">229</span>
+    <span class="phpdocumentor-element-found-in__line">275</span>
 </aside>
 
     
@@ -3513,7 +4066,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">253</span>
+    <span class="phpdocumentor-element-found-in__line">299</span>
 </aside>
 
     
@@ -3555,7 +4108,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">241</span>
+    <span class="phpdocumentor-element-found-in__line">287</span>
 </aside>
 
     
@@ -3597,7 +4150,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">266</span>
+    <span class="phpdocumentor-element-found-in__line">312</span>
 </aside>
 
     
@@ -3639,7 +4192,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">326</span>
+    <span class="phpdocumentor-element-found-in__line">378</span>
 </aside>
 
     
@@ -3681,7 +4234,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">314</span>
+    <span class="phpdocumentor-element-found-in__line">366</span>
 </aside>
 
     
@@ -3723,7 +4276,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">449</span>
+    <span class="phpdocumentor-element-found-in__line">528</span>
 </aside>
 
     
@@ -3765,7 +4318,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">429</span>
+    <span class="phpdocumentor-element-found-in__line">489</span>
 </aside>
 
     
@@ -3800,6 +4353,90 @@
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_setOfficesDh">
+        setOfficesDh()
+        <a href="classes/App-Entity-Person.html#method_setOfficesDh" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">499</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">setOfficesDh</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$officesdh</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$officesdh</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_setOfficesGs">
+        setOfficesGs()
+        <a href="classes/App-Entity-Person.html#method_setOfficesGs" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">508</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">setOfficesGs</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$officesgs</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$officesgs</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_setPagesGatz">
         setPagesGatz()
         <a href="classes/App-Entity-Person.html#method_setPagesGatz" class="headerlink"><i class="fas fa-link"></i></a>
@@ -3807,7 +4444,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">205</span>
+    <span class="phpdocumentor-element-found-in__line">251</span>
 </aside>
 
     
@@ -3849,7 +4486,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">217</span>
+    <span class="phpdocumentor-element-found-in__line">263</span>
 </aside>
 
     
@@ -3891,7 +4528,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">574</span>
+    <span class="phpdocumentor-element-found-in__line">593</span>
 </aside>
 
     
@@ -3933,7 +4570,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">374</span>
+    <span class="phpdocumentor-element-found-in__line">426</span>
 </aside>
 
     
@@ -3968,6 +4605,90 @@
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_setReferencesDh">
+        setReferencesDh()
+        <a href="classes/App-Entity-Person.html#method_setReferencesDh" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">542</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">setReferencesDh</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$referencesdh</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$referencesdh</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_setReferencesGs">
+        setReferencesGs()
+        <a href="classes/App-Entity-Person.html#method_setReferencesGs" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">551</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">setReferencesGs</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$referencesgs</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$referencesgs</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_setReligiousOrder">
         setReligiousOrder()
         <a href="classes/App-Entity-Person.html#method_setReligiousOrder" class="headerlink"><i class="fas fa-link"></i></a>
@@ -3975,7 +4696,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">302</span>
+    <span class="phpdocumentor-element-found-in__line">348</span>
 </aside>
 
     
@@ -4017,7 +4738,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">181</span>
+    <span class="phpdocumentor-element-found-in__line">227</span>
 </aside>
 
     
@@ -4059,7 +4780,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">338</span>
+    <span class="phpdocumentor-element-found-in__line">390</span>
 </aside>
 
     
@@ -4101,7 +4822,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">350</span>
+    <span class="phpdocumentor-element-found-in__line">402</span>
 </aside>
 
     
@@ -4143,7 +4864,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">362</span>
+    <span class="phpdocumentor-element-found-in__line">414</span>
 </aside>
 
     
@@ -4176,63 +4897,29 @@
         class="phpdocumentor-element
             -method
             -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_toArray">
-        toArray()
-        <a href="classes/App-Entity-Person.html#method_toArray" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">491</span>
-</aside>
-
-        <p class="phpdocumentor-summary">obsolete see Service/CSVData.php Service/JSONData.php</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">toArray</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-            <section class="phpdocumentor-description"></section>
-
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_wiagidLongToWiagid">
-        wiagidLongToWiagid()
-        <a href="classes/App-Entity-Person.html#method_wiagidLongToWiagid" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_shortId">
+        shortId()
+        <a href="classes/App-Entity-Person.html#method_shortId" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Person.php"><a href="files/src-entity-person.html"><abbr title="src/Entity/Person.php">Person.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">162</span>
+    <span class="phpdocumentor-element-found-in__line">205</span>
 </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__name">wiagidLongToWiagid</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$wiagidlong</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+            <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__name">shortId</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$wiagidlong</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                <span class="phpdocumentor-signature__argument__name">$id</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
