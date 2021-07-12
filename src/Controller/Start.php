@@ -5,7 +5,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
-
+/**
+ * manage main menu
+ */
 class Start extends AbstractController {
     /**
      * @Route("/", name="wiag_welcome")
@@ -55,7 +57,7 @@ class Start extends AbstractController {
      */
     public function dataService() {
         return $this->render('start/data_service.html.twig');
-    }    
+    }
 
 
 }

@@ -24,14 +24,28 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * query for canons (Domherren)
+ */
 class CanonController extends AbstractController {
-    /**
-     * Parameters
-     */
+
     const LIST_LIMIT = 20;
     const HINT_LIST_LIMIT = 12;
 
     /**
+     * display query form for canons (Domherren)
+     *
+     * Query canons by name, domstift, office, location, year or id (WIAG, GND, Wikidata,
+     * VIAF). The search may be refined with facets for domstift, office, and
+     * location. When the form is submitted return a list of matching entries. Each match
+     * provides a link to details.
+     *
+     * Provide serialized data of the query result via extra buttons.
+     *
+     * @see CanonController::getCanonInQuery()         show details about a canon
+     * @see CanonData                                  provide serialized data for canons
+     * @see CanonLinkedData                            provide serialized data for canons in a linked data vocabulary
+     *
      * @Route("/domherren", name="query_canons")
      */
     public function launch_query(Request $request,
@@ -146,8 +160,16 @@ class CanonController extends AbstractController {
         }
     }
 
-
-    public function getCanonInQuery($form, $offset, CanonService $cs) {
+    /**
+     * display details for a canon in a query result list
+     *
+     * @param object $form                             query form
+     * @param int $offset                              offset of the canon in the query result list
+     * @param CanonService $cs                         dependency injection
+     *
+     * @see CanonService::collectMerged()              collect references from merged canons
+     */
+    public function getCanonInQuery($form, int $offset, CanonService $cs) {
 
         $queryformdata = $form->getData();
 
@@ -189,37 +211,6 @@ class CanonController extends AbstractController {
             'references' => $references,
         ]);
 
-    }
-
-
-    /**
-     * @Route("/query-test/{id}")
-     */
-    public function queryid($id) {
-        $person = $this->getDoctrine()
-                       ->getRepository(Person::class)
-                       ->findOneByWiagid($id);
-        dd($person, self::LIST_LIMIT);
-    }
-
-    /**
-     * @Route("/query-test/apiname/{name}")
-     */
-    public function apiname($name) {
-        $person = $this->getDoctrine()
-                       ->getRepository(Person::class)
-                       ->suggestName($name);
-        dd($person);
-    }
-
-    /**
-     * @Route("/canon-test/{id}")
-     */
-    public function canontest($id) {
-        $canon = $this->getDoctrine()
-                      ->getRepository(Canon::class)
-                      ->find($id);
-        dd($canon);
     }
 
     /**

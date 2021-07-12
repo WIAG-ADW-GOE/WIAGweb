@@ -43,17 +43,17 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\CanonController",
             "name": "CanonController",
-            "summary": "",
+            "summary": "query\u0020for\u0020canons\u0020\u0028Domherren\u0029",
             "url": "classes/App-Controller-CanonController.html"
         },                {
             "fqsen": "\\App\\Controller\\CanonController\u003A\u003Alaunch_query\u0028\u0029",
             "name": "launch_query",
-            "summary": "",
+            "summary": "display\u0020query\u0020form\u0020for\u0020canons\u0020\u0028Domherren\u0029",
             "url": "classes/App-Controller-CanonController.html#method_launch_query"
         },                {
             "fqsen": "\\App\\Controller\\CanonController\u003A\u003AgetCanonInQuery\u0028\u0029",
             "name": "getCanonInQuery",
-            "summary": "",
+            "summary": "display\u0020details\u0020for\u0020a\u0020canon\u0020in\u0020a\u0020query\u0020result\u0020list",
             "url": "classes/App-Controller-CanonController.html#method_getCanonInQuery"
         },                {
             "fqsen": "\\App\\Controller\\CanonController\u003A\u003Aqueryid\u0028\u0029",
@@ -93,7 +93,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\CanonController\u003A\u003ALIST_LIMIT",
             "name": "LIST_LIMIT",
-            "summary": "Parameters",
+            "summary": "",
             "url": "classes/App-Controller-CanonController.html#constant_LIST_LIMIT"
         },                {
             "fqsen": "\\App\\Controller\\CanonController\u003A\u003AHINT_LIST_LIMIT",
@@ -618,7 +618,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\Start",
             "name": "Start",
-            "summary": "",
+            "summary": "manage\u0020main\u0020menu",
             "url": "classes/App-Controller-Start.html"
         },                {
             "fqsen": "\\App\\Controller\\Start\u003A\u003Awelcome\u0028\u0029",
@@ -8098,7 +8098,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Service\\CanonService\u003A\u003AcollectReferences\u0028\u0029",
             "name": "collectReferences",
-            "summary": "we\u0020need\u0020canon\u0020specific\u0020data,\u0020not\u0020only\u0020the\u0020references",
+            "summary": "obsolete\u00202021\u002D07\u002D12\u003A\u0020we\u0020need\u0020canon\u0020specific\u0020data,\u0020not\u0020only\u0020the\u0020references",
             "url": "classes/App-Service-CanonService.html#method_collectReferences"
         },                {
             "fqsen": "\\App\\Service\\CanonService\u003A\u003AMAX_MERGE_DEPTH",

@@ -450,7 +450,7 @@ class CanonService {
     /**
      * collect canons that are merged to $canon
      */
-    public function collectMerged($cmerged, $canon, $cycle) {
+    public function collectMerged(array $cmerged, Canon $canon, int $cycle) {
         if ($cycle > self::MAX_MERGE_DEPTH) {
             return($cmerged);
         }
@@ -469,7 +469,7 @@ class CanonService {
     }
 
     /**
-     * we need canon specific data, not only the references
+     * obsolete 2021-07-12: we need canon specific data, not only the references
      */
     public function collectReferences($canon) {
         $cmerged = array();
