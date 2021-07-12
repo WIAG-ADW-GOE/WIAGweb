@@ -56,21 +56,6 @@ Search.appendIndex(
             "summary": "display\u0020details\u0020for\u0020a\u0020canon\u0020in\u0020a\u0020query\u0020result\u0020list",
             "url": "classes/App-Controller-CanonController.html#method_getCanonInQuery"
         },                {
-            "fqsen": "\\App\\Controller\\CanonController\u003A\u003Aqueryid\u0028\u0029",
-            "name": "queryid",
-            "summary": "",
-            "url": "classes/App-Controller-CanonController.html#method_queryid"
-        },                {
-            "fqsen": "\\App\\Controller\\CanonController\u003A\u003Aapiname\u0028\u0029",
-            "name": "apiname",
-            "summary": "",
-            "url": "classes/App-Controller-CanonController.html#method_apiname"
-        },                {
-            "fqsen": "\\App\\Controller\\CanonController\u003A\u003Acanontest\u0028\u0029",
-            "name": "canontest",
-            "summary": "",
-            "url": "classes/App-Controller-CanonController.html#method_canontest"
-        },                {
             "fqsen": "\\App\\Controller\\CanonController\u003A\u003Aautocompletenames\u0028\u0029",
             "name": "autocompletenames",
             "summary": "AJAX\u0020callback",
@@ -7066,9 +7051,14 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Repository-CanonRepository.html#method_findStatus"
         },                {
+            "fqsen": "\\App\\Repository\\CanonRepository\u003A\u003AcollectMerged\u0028\u0029",
+            "name": "collectMerged",
+            "summary": "collect\u0020merged\u0020canons",
+            "url": "classes/App-Repository-CanonRepository.html#method_collectMerged"
+        },                {
             "fqsen": "\\App\\Repository\\CanonRepository\u003A\u003AfindMerged\u0028\u0029",
             "name": "findMerged",
-            "summary": "",
+            "summary": "find\u0020merged\u0020canons",
             "url": "classes/App-Repository-CanonRepository.html#method_findMerged"
         },                {
             "fqsen": "\\App\\Repository\\CanonRepository\u003A\u003AsuggestName\u0028\u0029",

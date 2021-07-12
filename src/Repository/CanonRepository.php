@@ -20,8 +20,10 @@ use Doctrine\ORM\QueryBuilder;
  * @method Canon[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class CanonRepository extends ServiceEntityRepository {
-    // Allow deviations in the query parameter `year`.
+    // allow deviations in the query parameter `year`.
     const MARGINYEAR = 1;
+    // avoid in infinite recursion
+    const MAX_MERGE_DEPTH = 15;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -258,7 +260,38 @@ class CanonRepository extends ServiceEntityRepository {
         return $qb->getQuery()->getResult();
     }
 
-    public function findMerged($id) {
+    /**
+     * collect merged canons
+     *
+     * @param Canon $canon                       canon in question, not contained in the result
+     *
+     * @return Canon[]                           array of canons
+     */
+    public function collectMerged(array $cmerged, Canon $canon, int $cycle) {
+        if ($cycle > self::MAX_MERGE_DEPTH) {
+            return($cmerged);
+        }
+
+        $children = $this->findMerged($canon->getId());
+        if (count($children) > 0) {
+            $cmerged = array_merge($cmerged, $children);
+            foreach ($children as $cni) {
+                $cempty = array();
+                $cmergedi = $this->collectMerged($cempty, $cni, $cycle + 1);
+                $cmerged = array_merge($cmerged, $cmergedi);
+            }
+        }
+        return $cmerged;
+    }
+
+
+
+    /**
+     * find merged canons
+     *
+     * @param int id                                   id of canon in question
+     */
+    public function findMerged(int $id) {
         $qb = $this->createQueryBuilder('c')
                    ->select('DISTINCT c')
                    ->andWhere('c.mergedInto = :id')

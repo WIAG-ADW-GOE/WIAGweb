@@ -84,6 +84,7 @@
     </dd>
 {% endmacro %}
 {% macro sectionreferencesdh (references) %}
+    {# references are of type canon #}
     <dt class="col-sm-3">{{ references|length > 1 ? 'Referenzwerke' : 'Referenzwerk' }}</dt>
     <dd class="col-sm-9">
 	<ul class="{% if references|length == 1 %}list-unstyled{% else %}pl-3{% endif %} small">

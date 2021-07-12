@@ -82,7 +82,7 @@ class CanonGSRepository extends ServiceEntityRepository {
         return $id_gs;
     }
 
-    /* AJAX callback */
+    /** AJAX callback */
     public function suggestGsn($input, $limit = 200): array {
         $qb = $this->createQueryBuilder('c')
                    ->select('DISTINCT c.gsnId AS suggestion')

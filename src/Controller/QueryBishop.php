@@ -9,6 +9,7 @@ use App\Entity\Office;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
 use App\Entity\Diocese;
+use App\Entity\Canon;
 use App\Entity\CnOffice;
 use App\Entity\CnCanonReference;
 use App\Entity\CnOfficeGS;
@@ -296,7 +297,13 @@ class QueryBishop extends AbstractController {
 
     }
 
-    public function getBishopInQuery($form, $offset) {
+    /**
+     * display details for a bishop in a query result list
+     *
+     * @param object $form                             query form
+     * @param int $offset                              offset of the bishop in a query result list
+     */
+    public function getBishopInQuery(object $form, int $offset) {
 
         $bishopquery = $form->getData();
 
@@ -316,7 +323,17 @@ class QueryBishop extends AbstractController {
         }
         $person = $iterator->current();
 
-        $personRepository->fillCnData($person);
+        // fetch data from domherren database or GS (Personendatenbank)
+        $canon = $personRepository->findCanon($person->getWiagid());
+        $canon_merged = array();
+        if (!is_null($canon)) {
+            $cycle = 1;
+            $canon_merged = $this->getDoctrine()
+                                 ->getRepository(Canon::class)
+                                 ->collectMerged($canon_merged, $canon, $cycle);
+            array_unshift($canon_merged, $canon);
+        }
+        $canon_gs = $personRepository->findCanonGS($person->getWiagid());
 
         $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 
@@ -327,6 +344,9 @@ class QueryBishop extends AbstractController {
             'offset' => $offset,
             'hassuccessor' => $hassuccessor,
             'dioceserepository' => $dioceseRepository,
+            'canon' => $canon,
+            'canon_merged' => $canon_merged,
+            'canon_gs' => $canon_gs,
         ]);
 
     }

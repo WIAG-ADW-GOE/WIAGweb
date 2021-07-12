@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Person;
 use App\Entity\Office;
+use App\Entity\Canon;
+use App\Entity\CanonGS;
 use App\Entity\CnOnline;
 use App\Entity\CnOffice;
 use App\Entity\CnOfficeGS;
@@ -290,32 +292,6 @@ class PersonRepository extends ServiceEntityRepository {
     }
 
     public function addMonasteryLocation(Person $person) {
-        // The QueryBuilder joins to 'monastery' twice!?
-        // $qb = $this->getEntityManager()
-        //            ->createQueryBuilder();
-        // foreach($person->getOffices() as $oc) {
-        //     if($oc->getIdMonastery()) {
-        //         $ocid = $oc->getWiagid();
-        //         $qb->select('place.place_name')
-        //            ->from('App\Entity\Office', 'oc')
-        //            ->join('oc.monastery',  'monastery')
-        //            ->join('monastery.locations', 'locations')
-        //            ->join('locations.place', 'place')
-        //            ->andWhere('oc.wiagid = :ocid')
-        //            ->setParameter('ocid', $ocid);
-
-        //         $query = $qb->getQuery();
-        //         $qrplacenames = $query->getResult();
-        //         $placenames = array_map(
-        //             function($el) {
-        //                 return $el['place_name'];
-        //             },
-        //             $qrplacenames
-        //         );
-        //         $oc->setMonasteryplacestr(implode(', ', $placenames));
-        //     }
-        // }
-
         $em = $this->getEntityManager();
         $officeRepository = $em->getRepository(Office::class);
         foreach($person->getOffices() as $oc) {
@@ -340,27 +316,13 @@ class PersonRepository extends ServiceEntityRepository {
     }
 
     /**
-     * get data from cn_canon_gs
+     * find entry in canon database (Domherrendatenbank)
      */
-    public function fillGSOfficesAndReferences($person) {
-        $em = $this->getEntityManager();
-        $officesgs = $em->getRepository(CnOfficeGS::class)->findByIdCanonAndSort($online->getIdGs());
-        $online->setOfficesGs($officesgs);
-
-        $refsrepogs = $em->getRepository(CnCanonReferenceGS::class);
-        $refsgs = $refsrepogs->findByIdCanon($online->getIdGs());
-        $online->setReferencesGS($refsgs);
-        return $online;
-    }
-
-    /**
-     * get data from canon database and GS
-     */
-    public function fillCnData(Person $person) {
+    public function findCanon(string $wiagid) {
         $em = $this->getEntityManager();
 
         $co = $em->getRepository(CnOnline::class)
-                 ->findOneByIdEp($person->getWiagid());
+                 ->findOneByIdEp($wiagid);
 
         if (is_null($co)) {
             return null;
@@ -368,29 +330,40 @@ class PersonRepository extends ServiceEntityRepository {
 
         $id_dh = $co->getIdDh();
 
-        if (!is_null($id_dh)) {
-            $officesdh = $em->getRepository(CnOffice::class)
-                            ->findByIdCanonAndSort($id_dh);
-            $person->setOfficesDh($officesdh);
-            $referencesdh = $em->getRepository(CnCanonReference::class)
-                               ->findByIdCanon($id_dh);
-            $person->setReferencesDh($referencesdh);
+        if (is_null($id_dh)) {
+            return null;
+        }
+
+        $canon = $em->getRepository(Canon::class)
+                    ->findOneWithOffices($id_dh);
+        return $canon;
+    }
+
+    /**
+     * find entry in GS database (Personendatenbank)
+     */
+    public function findCanonGS(string $wiagid) {
+        $em = $this->getEntityManager();
+
+        $co = $em->getRepository(CnOnline::class)
+                 ->findOneByIdEp($wiagid);
+
+        if (is_null($co)) {
+            return null;
         }
 
         $id_gs = $co->getIdGs();
 
-        if (!is_null($id_gs)) {
-            $officesgs = $em->getRepository(CnOfficeGS::class)
-                            ->findByIdCanonAndSort($id_gs);
-            $person->setOfficesGs($officesgs);
-            $referencesgs = $em->getRepository(CnCanonReferenceGS::class)
-                               ->findByIdCanon($id_gs);
-            $person->setReferencesGs($referencesgs);
+        if (is_null($id_gs)) {
+            return null;
         }
 
+        $canon = $em->getRepository(CanonGS::class)
+                    ->findOneWithOffices($id_gs);
+        return $canon;
     }
 
-    /* AJAX callback */
+    /** AJAX callback */
     public function suggestId($input, $limit = 200): array {
         $qb = $this->createQueryBuilder('p')
                    ->select('p.wiagid AS suggestion')

@@ -175,26 +175,6 @@ class Person {
      */
     private $reference;
 
-    /**
-     * canon offices (Domherren-Datenbank)
-     */
-    private $officesdh;
-
-    /**
-     * canon references (Domherren-Datenbank)
-     */
-    private $referencesdh;
-
-    /**
-     * canon offices (Germania Sacra)
-     */
-    private $officesgs;
-
-    /**
-     * canon references (Germania Sacra)
-     */
-    private $referencesgs;
-
     public static function isIdBishop(string $id) {
         $headlen = strlen(self::WIAGID_PREFIX);
         $head = substr($id, 0, $headlen);
@@ -202,17 +182,17 @@ class Person {
     }
 
     // 2021-04-09 obsolete see extractDbId
-    public static function shortId(?string $id) {
-        if (is_null($id)) return $id;
-        if (strpos($id, self::WIAGID_PREFIX) === false) {
-            return ltrim($id, "0");
-        }
-        $head = strlen(self::WIAGID_PREFIX);
-        $tail = strlen(self::WIAGID_POSTFIX);
-        $paddedId = substr($id, $head, -$tail);
-        $shortId = ltrim($paddedId, "0");
-        return $shortId;
-    }
+    // public static function shortId(?string $id) {
+    //     if (is_null($id)) return $id;
+    //     if (strpos($id, self::WIAGID_PREFIX) === false) {
+    //         return ltrim($id, "0");
+    //     }
+    //     $head = strlen(self::WIAGID_PREFIX);
+    //     $tail = strlen(self::WIAGID_POSTFIX);
+    //     $paddedId = substr($id, $head, -$tail);
+    //     $shortId = ltrim($paddedId, "0");
+    //     return $shortId;
+    // }
 
     public function getWiagid(): ?string
     {
@@ -491,25 +471,6 @@ class Person {
 
         return $this;
     }
-
-    public function getOfficesDh() {
-        return $this->officesdh;
-    }
-
-    public function setOfficesDh($officesdh) {
-        $this->officesdh = $officesdh;
-        return $this;
-    }
-
-    public function getOfficesGs() {
-        return $this->officesgs;
-    }
-
-    public function setOfficesGs($officesgs) {
-        $this->officesgs = $officesgs;
-        return $this;
-    }
-
 
     public function getEra() {
         return $this->era;

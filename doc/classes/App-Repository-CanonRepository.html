@@ -133,6 +133,13 @@
 <dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Repository-CanonRepository.html#method_collectMerged">collectMerged()</a>
+    <span>
+                        &nbsp;: array&lt;string|int, <a href="classes/App-Entity-Canon.html"><abbr title="\App\Entity\Canon">Canon</abbr></a>&gt;    </span>
+</dt>
+<dd>collect merged canons</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Repository-CanonRepository.html#method_countByQueryObject">countByQueryObject()</a>
     <span>
                         &nbsp;: mixed    </span>
@@ -172,7 +179,7 @@
     <span>
                         &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
+<dd>find merged canons</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Repository-CanonRepository.html#method_findOfficeLocations">findOfficeLocations()</a>
@@ -323,6 +330,65 @@ suggest name for the edit search form</dd>
     <span class="phpdocumentor-signature__response_type">mixed</span>
             &mdash;
             <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_collectMerged">
+        collectMerged()
+        <a href="classes/App-Repository-CanonRepository.html#method_collectMerged" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Repository/CanonRepository.php"><a href="files/src-repository-canonrepository.html"><abbr title="src/Repository/CanonRepository.php">CanonRepository.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">266</span>
+</aside>
+
+        <p class="phpdocumentor-summary">collect merged canons</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">collectMerged</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$cmerged</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Entity-Canon.html"><abbr title="\App\Entity\Canon">Canon</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$canon</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$cycle</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/App-Entity-Canon.html"><abbr title="\App\Entity\Canon">Canon</abbr></a>&gt;</span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$cmerged</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$canon</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Entity-Canon.html"><abbr title="\App\Entity\Canon">Canon</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$cycle</span>
+                : <span class="phpdocumentor-signature__argument__return-type">int</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/App-Entity-Canon.html"><abbr title="\App\Entity\Canon">Canon</abbr></a>&gt;</span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>array of canons</p>
+</section>
 
     
 </article>
@@ -591,20 +657,22 @@ suggest name for the edit search form</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Repository/CanonRepository.php"><a href="files/src-repository-canonrepository.html"><abbr title="src/Repository/CanonRepository.php">CanonRepository.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">261</span>
+    <span class="phpdocumentor-element-found-in__line">291</span>
 </aside>
 
-    
+        <p class="phpdocumentor-summary">find merged canons</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">findMerged</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                <span class="phpdocumentor-signature__name">findMerged</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-    
+        <section class="phpdocumentor-description"></section>
+
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$id</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                : <span class="phpdocumentor-signature__argument__return-type">int</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -889,7 +957,7 @@ used for the facet of places</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Repository/CanonRepository.php"><a href="files/src-repository-canonrepository.html"><abbr title="src/Repository/CanonRepository.php">CanonRepository.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">314</span>
+    <span class="phpdocumentor-element-found-in__line">344</span>
 </aside>
 
     
@@ -938,7 +1006,7 @@ used for the facet of places</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Repository/CanonRepository.php"><a href="files/src-repository-canonrepository.html"><abbr title="src/Repository/CanonRepository.php">CanonRepository.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">277</span>
+    <span class="phpdocumentor-element-found-in__line">307</span>
 </aside>
 
         <p class="phpdocumentor-summary">AJAX callback

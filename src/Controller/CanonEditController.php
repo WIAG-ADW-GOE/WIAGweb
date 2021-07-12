@@ -177,8 +177,7 @@ class CanonEditController extends AbstractController {
      */
     public function edit(Canon $canon,
                          EntityManagerInterface $em,
-                         Request $request,
-                         CanonService $cs) {
+                         Request $request) {
 
         $form = $this->createForm(CanonEditFormType::class, $canon);
 
@@ -205,7 +204,9 @@ class CanonEditController extends AbstractController {
         }
         $merged = array();
         $cycle = 1;
-        $merged = $cs->collectMerged($merged, $canon, $cycle);
+        $merged = $this->getDoctrine()
+                       ->getRepository(Canon::class)
+                       ->collectMerged($merged, $canon, $cycle);
 
         return $this->render('canon_edit/edit.html.twig', [
             'form' => $form->createView(),

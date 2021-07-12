@@ -12,7 +12,6 @@ use App\Repository\CnOnlineRepository;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
 use App\Entity\Diocese;
-use App\Service\CanonService;
 use App\Service\CanonData;
 use App\Service\CanonLinkedData;
 
@@ -50,7 +49,6 @@ class CanonController extends AbstractController {
      */
     public function launch_query(Request $request,
                                  CnOnlineRepository $repository,
-                                 CanonService $cs,
                                  CanonData $canonData,
                                  CanonLinkedData $canonLinkedData) {
 
@@ -81,7 +79,7 @@ class CanonController extends AbstractController {
 
             $singleoffset = $request->request->get('singleoffset');
             if(!is_null($singleoffset)) {
-                return $this->getCanonInQuery($form, $singleoffset, $cs);
+                return $this->getCanonInQuery($form, $singleoffset);
             }
 
             // get the number of results (without page limit restriction)
@@ -164,12 +162,9 @@ class CanonController extends AbstractController {
      * display details for a canon in a query result list
      *
      * @param object $form                             query form
-     * @param int $offset                              offset of the canon in the query result list
-     * @param CanonService $cs                         dependency injection
-     *
-     * @see CanonService::collectMerged()              collect references from merged canons
+     * @param int $offset                              offset of the canon in a query result list
      */
-    public function getCanonInQuery($form, int $offset, CanonService $cs) {
+    public function getCanonInQuery($form, int $offset) {
 
         $queryformdata = $form->getData();
 
@@ -197,7 +192,8 @@ class CanonController extends AbstractController {
         $references = array();
         if (!is_null($canon_dh)) {
             $cycle = 1;
-            $references = $cs->collectMerged($references, $canon_dh, $cycle);
+            $references = $this->getDoctrine()->getRepository(Canon::class)
+                               ->collectMerged($references, $canon_dh, $cycle);
             array_unshift($references, $canon_dh);
         }
 

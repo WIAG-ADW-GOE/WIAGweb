@@ -421,67 +421,6 @@ class CanonService {
     }
 
 
-    /**
-     * 2021-07-08 obsolete see collectMerged
-     * find root element withing a merging tree
-     */
-    public function findRoot(Canon $canon, $cycle) {
-        // avoid endless recursion
-        if ($cycle > self::MAX_MERGE_DEPTH) {
-            return $canon;
-        }
 
-        if (is_null($canon)) {
-            return null;
-        }
-        $merged_into = $canon->getMergedInto();
-        $status = $canon->getStatus();
-
-        if (!is_null($merged_into) and $status == 'merged') {
-            $cmi = $this->em->getRepository(Canon::class)
-                            ->findOneById($merged_into);
-            if (!is_null($cmi)) {
-                return $this->findRoot($cmi, $cycle + 1);
-            }
-        }
-        return $canon;
-    }
-
-    /**
-     * collect canons that are merged to $canon
-     */
-    public function collectMerged(array $cmerged, Canon $canon, int $cycle) {
-        if ($cycle > self::MAX_MERGE_DEPTH) {
-            return($cmerged);
-        }
-
-        $children = $this->em->getRepository(Canon::class)
-                             ->findMerged($canon->getId());
-        if (count($children) > 0) {
-            $cmerged = array_merge($cmerged, $children);
-            foreach ($children as $cni) {
-                $cempty = array();
-                $cmergedi = $this->collectMerged($cempty, $cni, $cycle + 1);
-                $cmerged = array_merge($cmerged, $cmergedi);
-            }
-        }
-        return $cmerged;
-    }
-
-    /**
-     * obsolete 2021-07-12: we need canon specific data, not only the references
-     */
-    public function collectReferences($canon) {
-        $cmerged = array();
-        $cycle = 1;
-        $cmerged = $this->collectMerged($cmerged, $canon, $cycle);
-
-        $cref = array();
-        foreach ($cmerged as $merged) {
-            $cref[] = $merged->getReference();
-        }
-
-        return $cref;
-    }
 
 };
