@@ -60,6 +60,7 @@
                                             <li><a href="namespaces/app-repository.html"><abbr title="\App\Repository">Repository</abbr></a></li>
                                             <li><a href="namespaces/app-security.html"><abbr title="\App\Security">Security</abbr></a></li>
                                             <li><a href="namespaces/app-service.html"><abbr title="\App\Service">Service</abbr></a></li>
+                                            <li><a href="namespaces/app-validator.html"><abbr title="\App\Validator">Validator</abbr></a></li>
                                     </ul>
                         </section>
 
@@ -129,6 +130,13 @@
 </h3>
 
 <dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a href="classes/App-Entity-Monastery.html#constant_IDS_DOMSTIFTE">IDS_DOMSTIFTE</a>
+    <span>
+        &nbsp;= [3498, 3492, 701, 343, 60130, 3493, 3496, 783, 675, 739, 832, 3503, 3499, 736, 676, 3488, 3501, 792, 794, 616, 628, 3491, 803, 953, 3495, 226, 3494, 679, 2066, 3489, 3500, 3487, 3490, 3502]                    </span>
+</dt>
+<dd></dd>
+
                 <dt class="phpdocumentor-table-of-contents__entry -property -private">
     <a href="classes/App-Entity-Monastery.html#property_changed_by_user">$changed_by_user</a>
     <span>
@@ -145,6 +153,13 @@
 
             <dt class="phpdocumentor-table-of-contents__entry -property -private">
     <a href="classes/App-Entity-Monastery.html#property_date_created">$date_created</a>
+    <span>
+                &nbsp;: mixed            </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a href="classes/App-Entity-Monastery.html#property_domstift">$domstift</a>
     <span>
                 &nbsp;: mixed            </span>
 </dt>
@@ -187,13 +202,6 @@
 
             <dt class="phpdocumentor-table-of-contents__entry -property -private">
     <a href="classes/App-Entity-Monastery.html#property_monastery_name">$monastery_name</a>
-    <span>
-                &nbsp;: mixed            </span>
-</dt>
-<dd></dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -private">
-    <a href="classes/App-Entity-Monastery.html#property_office">$office</a>
     <span>
                 &nbsp;: mixed            </span>
 </dt>
@@ -259,6 +267,13 @@
     <a href="classes/App-Entity-Monastery.html#method_getDateCreated">getDateCreated()</a>
     <span>
                         &nbsp;: <abbr title="\DateTimeInterface">DateTimeInterface</abbr>|null    </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Monastery.html#method_getDomstift">getDomstift()</a>
+    <span>
+                        &nbsp;: <a href="classes/App-Entity-Domstift.html"><abbr title="\App\Entity\Domstift">Domstift</abbr></a>|null    </span>
 </dt>
 <dd></dd>
 
@@ -423,11 +438,49 @@
 </dt>
 <dd></dd>
 
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/App-Entity-Monastery.html#method_trimDomstift">trimDomstift()</a>
+    <span>
+                        &nbsp;: string|null    </span>
+</dt>
+<dd></dd>
+
         </dl>
 
 
 
         
+    <section class="phpdocumentor-constants">
+        <h3 class="phpdocumentor-elements__header" id="constants">
+            Constants
+            <a href="classes/App-Entity-Monastery.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+        </h3>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_IDS_DOMSTIFTE">
+        IDS_DOMSTIFTE
+        <a href="classes/App-Entity-Monastery.html#constant_IDS_DOMSTIFTE" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">15</span>
+</aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+    <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">IDS_DOMSTIFTE</span>
+    = <span class="phpdocumentor-signature__default-value">[3498, 3492, 701, 343, 60130, 3493, 3496, 783, 675, 739, 832, 3503, 3499, 736, 676, 3488, 3501, 792, 794, 616, 628, 3491, 803, 953, 3495, 226, 3494, 679, 2066, 3489, 3500, 3487, 3490, 3502]</span>
+</code>
+
+
+    
+    
+
+</article>
+            </section>
 
         
     <section class="phpdocumentor-properties">
@@ -451,7 +504,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">69</span>
+    <span class="phpdocumentor-element-found-in__line">92</span>
 </aside>
 
     
@@ -497,7 +550,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">34</span>
+    <span class="phpdocumentor-element-found-in__line">57</span>
 </aside>
 
     
@@ -543,7 +596,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">29</span>
+    <span class="phpdocumentor-element-found-in__line">52</span>
 </aside>
 
     
@@ -580,6 +633,61 @@
             -private
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="property_domstift">
+        $domstift
+        <a href="classes/App-Entity-Monastery.html#property_domstift" class="headerlink"><i class="fas fa-link"></i></a>
+        <span class="phpdocumentor-element__modifiers">
+                                </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">36</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">private</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">$domstift</span>
+    </code>
+
+        <section class="phpdocumentor-description"></section>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">ORM\OneToOne</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>(targetEntity=&quot;Domstift&quot;)</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">ORM\JoinColumn</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>(name=&quot;wiagid&quot;, referencedColumnName=&quot;gs_id&quot;)</p>
+</section>
+
+                                    </dd>
+                        </dl>
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="property_founder">
         $founder
         <a href="classes/App-Entity-Monastery.html#property_founder" class="headerlink"><i class="fas fa-link"></i></a>
@@ -589,7 +697,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">74</span>
+    <span class="phpdocumentor-element-found-in__line">97</span>
 </aside>
 
     
@@ -635,7 +743,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">54</span>
+    <span class="phpdocumentor-element-found-in__line">77</span>
 </aside>
 
     
@@ -681,7 +789,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">18</span>
+    <span class="phpdocumentor-element-found-in__line">41</span>
 </aside>
 
     
@@ -727,7 +835,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">64</span>
+    <span class="phpdocumentor-element-found-in__line">87</span>
 </aside>
 
     
@@ -773,7 +881,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">86</span>
+    <span class="phpdocumentor-element-found-in__line">103</span>
 </aside>
 
     
@@ -828,7 +936,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">44</span>
+    <span class="phpdocumentor-element-found-in__line">67</span>
 </aside>
 
     
@@ -865,61 +973,6 @@
             -private
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="property_office">
-        $office
-        <a href="classes/App-Entity-Monastery.html#property_office" class="headerlink"><i class="fas fa-link"></i></a>
-        <span class="phpdocumentor-element__modifiers">
-                                </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">80</span>
-</aside>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">private</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">$office</span>
-    </code>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">ORM\OneToMany</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                
-                                                 <section class="phpdocumentor-description"><p>(targetEntity=&quot;Office&quot;, mappedBy=&quot;monastery&quot;)</p>
-</section>
-
-                                    </dd>
-                                                <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">ORM\JoinColumn</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                
-                                                 <section class="phpdocumentor-description"><p>(name=&quot;wiagid&quot;, referencedColumnName=&quot;id_monastery&quot;)</p>
-</section>
-
-                                    </dd>
-                        </dl>
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -private
-                                                        "
->
     <h4 class="phpdocumentor-element__name" id="property_patrocinium">
         $patrocinium
         <a href="classes/App-Entity-Monastery.html#property_patrocinium" class="headerlink"><i class="fas fa-link"></i></a>
@@ -929,7 +982,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">49</span>
+    <span class="phpdocumentor-element-found-in__line">72</span>
 </aside>
 
     
@@ -975,7 +1028,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">59</span>
+    <span class="phpdocumentor-element-found-in__line">82</span>
 </aside>
 
     
@@ -1021,7 +1074,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">39</span>
+    <span class="phpdocumentor-element-found-in__line">62</span>
 </aside>
 
     
@@ -1067,7 +1120,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">24</span>
+    <span class="phpdocumentor-element-found-in__line">47</span>
 </aside>
 
     
@@ -1098,7 +1151,7 @@
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                 
-                                                 <section class="phpdocumentor-description"><p>(type=&quot;string&quot;, length=63, nullable=false)</p>
+                                                 <section class="phpdocumentor-description"><p>(type=&quot;integer&quot;, nullable=false)</p>
 </section>
 
                                     </dd>
@@ -1125,7 +1178,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">88</span>
+    <span class="phpdocumentor-element-found-in__line">105</span>
 </aside>
 
     
@@ -1157,7 +1210,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">246</span>
+    <span class="phpdocumentor-element-found-in__line">266</span>
 </aside>
 
     
@@ -1199,7 +1252,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">214</span>
+    <span class="phpdocumentor-element-found-in__line">234</span>
 </aside>
 
     
@@ -1231,7 +1284,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">130</span>
+    <span class="phpdocumentor-element-found-in__line">150</span>
 </aside>
 
     
@@ -1263,7 +1316,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">118</span>
+    <span class="phpdocumentor-element-found-in__line">138</span>
 </aside>
 
     
@@ -1288,6 +1341,38 @@
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_getDomstift">
+        getDomstift()
+        <a href="classes/App-Entity-Monastery.html#method_getDomstift" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">110</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">getDomstift</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/App-Entity-Domstift.html"><abbr title="\App\Entity\Domstift">Domstift</abbr></a>|null</span></code>
+
+    
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type"><a href="classes/App-Entity-Domstift.html"><abbr title="\App\Entity\Domstift">Domstift</abbr></a>|null</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_getFounder">
         getFounder()
         <a href="classes/App-Entity-Monastery.html#method_getFounder" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1295,7 +1380,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">226</span>
+    <span class="phpdocumentor-element-found-in__line">246</span>
 </aside>
 
     
@@ -1327,7 +1412,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">178</span>
+    <span class="phpdocumentor-element-found-in__line">198</span>
 </aside>
 
     
@@ -1359,7 +1444,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">94</span>
+    <span class="phpdocumentor-element-found-in__line">114</span>
 </aside>
 
     
@@ -1391,7 +1476,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">202</span>
+    <span class="phpdocumentor-element-found-in__line">222</span>
 </aside>
 
     
@@ -1423,7 +1508,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">241</span>
+    <span class="phpdocumentor-element-found-in__line">261</span>
 </aside>
 
     
@@ -1456,7 +1541,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">154</span>
+    <span class="phpdocumentor-element-found-in__line">174</span>
 </aside>
 
     
@@ -1488,7 +1573,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">166</span>
+    <span class="phpdocumentor-element-found-in__line">186</span>
 </aside>
 
     
@@ -1520,7 +1605,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">190</span>
+    <span class="phpdocumentor-element-found-in__line">210</span>
 </aside>
 
     
@@ -1552,7 +1637,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">142</span>
+    <span class="phpdocumentor-element-found-in__line">162</span>
 </aside>
 
     
@@ -1584,7 +1669,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">106</span>
+    <span class="phpdocumentor-element-found-in__line">126</span>
 </aside>
 
     
@@ -1616,7 +1701,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">256</span>
+    <span class="phpdocumentor-element-found-in__line">276</span>
 </aside>
 
     
@@ -1658,7 +1743,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">219</span>
+    <span class="phpdocumentor-element-found-in__line">239</span>
 </aside>
 
     
@@ -1700,7 +1785,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">135</span>
+    <span class="phpdocumentor-element-found-in__line">155</span>
 </aside>
 
     
@@ -1742,7 +1827,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">123</span>
+    <span class="phpdocumentor-element-found-in__line">143</span>
 </aside>
 
     
@@ -1784,7 +1869,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">231</span>
+    <span class="phpdocumentor-element-found-in__line">251</span>
 </aside>
 
     
@@ -1826,7 +1911,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">183</span>
+    <span class="phpdocumentor-element-found-in__line">203</span>
 </aside>
 
     
@@ -1868,7 +1953,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">99</span>
+    <span class="phpdocumentor-element-found-in__line">119</span>
 </aside>
 
     
@@ -1910,7 +1995,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">207</span>
+    <span class="phpdocumentor-element-found-in__line">227</span>
 </aside>
 
     
@@ -1952,7 +2037,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">159</span>
+    <span class="phpdocumentor-element-found-in__line">179</span>
 </aside>
 
     
@@ -1994,7 +2079,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">171</span>
+    <span class="phpdocumentor-element-found-in__line">191</span>
 </aside>
 
     
@@ -2036,7 +2121,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">195</span>
+    <span class="phpdocumentor-element-found-in__line">215</span>
 </aside>
 
     
@@ -2078,7 +2163,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">147</span>
+    <span class="phpdocumentor-element-found-in__line">167</span>
 </aside>
 
     
@@ -2120,7 +2205,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">111</span>
+    <span class="phpdocumentor-element-found-in__line">131</span>
 </aside>
 
     
@@ -2144,6 +2229,48 @@
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">self</span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_trimDomstift">
+        trimDomstift()
+        <a href="classes/App-Entity-Monastery.html#method_trimDomstift" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Entity/Monastery.php"><a href="files/src-entity-monastery.html"><abbr title="src/Entity/Monastery.php">Monastery.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">21</span>
+</aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__name">trimDomstift</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$name</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$name</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">string|null</span>
             &mdash;
             <section class="phpdocumentor-description"></section>
 

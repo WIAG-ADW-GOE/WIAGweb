@@ -60,6 +60,7 @@
                                             <li><a href="namespaces/app-repository.html"><abbr title="\App\Repository">Repository</abbr></a></li>
                                             <li><a href="namespaces/app-security.html"><abbr title="\App\Security">Security</abbr></a></li>
                                             <li><a href="namespaces/app-service.html"><abbr title="\App\Service">Service</abbr></a></li>
+                                            <li><a href="namespaces/app-validator.html"><abbr title="\App\Validator">Validator</abbr></a></li>
                                     </ul>
                         </section>
 
@@ -98,28 +99,12 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/DioceseController.php"><a href="files/src-controller-diocesecontroller.html"><abbr title="src/Controller/DioceseController.php">DioceseController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">27</span>
+    <span class="phpdocumentor-element-found-in__line">23</span>
 </aside>
 
         
-    <section class="phpdocumentor-description"></section>
 
 
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">IsGranted</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                
-                                                 <section class="phpdocumentor-description"><p>(&quot;ROLE_QUERY&quot;)</p>
-</section>
-
-                                    </dd>
-                        </dl>
 
 
 
@@ -200,7 +185,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/DioceseController.php"><a href="files/src-controller-diocesecontroller.html"><abbr title="src/Controller/DioceseController.php">DioceseController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">31</span>
+    <span class="phpdocumentor-element-found-in__line">27</span>
 </aside>
 
         <p class="phpdocumentor-summary">Parameters</p>
@@ -240,13 +225,13 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/DioceseController.php"><a href="files/src-controller-diocesecontroller.html"><abbr title="src/Controller/DioceseController.php">DioceseController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">64</span>
+    <span class="phpdocumentor-element-found-in__line">61</span>
 </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">dioceses</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Symfony\Component\HttpFoundation\Request">Request</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Service-CSVData.html"><abbr title="\App\Service\CSVData">CSVData</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$csvdata</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Service-JSONData.html"><abbr title="\App\Service\JSONData">JSONData</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$jsondata</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Service-RDFData.html"><abbr title="\App\Service\RDFData">RDFData</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$rdfdata</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Service-JSONLDData.html"><abbr title="\App\Service\JSONLDData">JSONLDData</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$jsonlddata</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                <span class="phpdocumentor-signature__name">dioceses</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Symfony\Component\HttpFoundation\Request">Request</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Service-DioceseData.html"><abbr title="\App\Service\DioceseData">DioceseData</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dioceseData</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Service-DioceseLinkedData.html"><abbr title="\App\Service\DioceseLinkedData">DioceseLinkedData</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dioceseLinkedData</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
         <section class="phpdocumentor-description"></section>
 
@@ -260,29 +245,15 @@
                 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$csvdata</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Service-CSVData.html"><abbr title="\App\Service\CSVData">CSVData</abbr></a></span>
+                <span class="phpdocumentor-signature__argument__name">$dioceseData</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Service-DioceseData.html"><abbr title="\App\Service\DioceseData">DioceseData</abbr></a></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$jsondata</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Service-JSONData.html"><abbr title="\App\Service\JSONData">JSONData</abbr></a></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$rdfdata</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Service-RDFData.html"><abbr title="\App\Service\RDFData">RDFData</abbr></a></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$jsonlddata</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Service-JSONLDData.html"><abbr title="\App\Service\JSONLDData">JSONLDData</abbr></a></span>
+                <span class="phpdocumentor-signature__argument__name">$dioceseLinkedData</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Service-DioceseLinkedData.html"><abbr title="\App\Service\DioceseLinkedData">DioceseLinkedData</abbr></a></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -300,7 +271,7 @@
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                 
-                                                 <section class="phpdocumentor-description"><p>(&quot;/query-dioceses&quot;, name=&quot;query_dioceses&quot;)</p>
+                                                 <section class="phpdocumentor-description"><p>(&quot;/bistuemer&quot;, name=&quot;query_dioceses&quot;)</p>
 </section>
 
                                     </dd>
@@ -326,7 +297,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/DioceseController.php"><a href="files/src-controller-diocesecontroller.html"><abbr title="src/Controller/DioceseController.php">DioceseController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">184</span>
+    <span class="phpdocumentor-element-found-in__line">195</span>
 </aside>
 
     
@@ -391,7 +362,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/DioceseController.php"><a href="files/src-controller-diocesecontroller.html"><abbr title="src/Controller/DioceseController.php">DioceseController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">247</span>
+    <span class="phpdocumentor-element-found-in__line">263</span>
 </aside>
 
     
@@ -449,7 +420,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/DioceseController.php"><a href="files/src-controller-diocesecontroller.html"><abbr title="src/Controller/DioceseController.php">DioceseController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">212</span>
+    <span class="phpdocumentor-element-found-in__line">223</span>
 </aside>
 
     
@@ -498,7 +469,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/DioceseController.php"><a href="files/src-controller-diocesecontroller.html"><abbr title="src/Controller/DioceseController.php">DioceseController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">37</span>
+    <span class="phpdocumentor-element-found-in__line">33</span>
 </aside>
 
         <p class="phpdocumentor-summary">list dioceses by initial letter</p>
@@ -557,7 +528,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/DioceseController.php"><a href="files/src-controller-diocesecontroller.html"><abbr title="src/Controller/DioceseController.php">DioceseController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">302</span>
+    <span class="phpdocumentor-element-found-in__line">318</span>
 </aside>
 
     
