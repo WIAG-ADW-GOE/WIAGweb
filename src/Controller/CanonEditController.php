@@ -177,7 +177,8 @@ class CanonEditController extends AbstractController {
      */
     public function edit(Canon $canon,
                          EntityManagerInterface $em,
-                         Request $request) {
+                         Request $request,
+                         CanonService $cs) {
 
         $form = $this->createForm(CanonEditFormType::class, $canon);
 

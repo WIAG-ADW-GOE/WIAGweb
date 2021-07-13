@@ -198,6 +198,7 @@ class CanonEditFormType extends AbstractType {
             ])
             ->add('mergedInto', null, [
                 'label' => 'verweist auf',
+                'error_bubbling' => true,
                 'required' => false,
                 'attr' => [
                     'class' => 'js-autocomplete',
