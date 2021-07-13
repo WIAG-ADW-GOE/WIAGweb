@@ -70,6 +70,8 @@ class IDController extends AbstractController {
     }
 
     /**
+     * decide which format should be delivered
+     *
      * @Route("/id/{id}", name="id")
      */
     public function redirectID(string $id, Request $request) {
@@ -89,10 +91,13 @@ class IDController extends AbstractController {
     }
 
     /**
+     * match id with object type (bishop, canon, diocese), return HTML
+     *
+     * @todo check MIME type; default: HTML
+     *
      * @Route("/doc/{id}", name="wiag_id_html")
      */
     public function routeDoc(string $id, Request $request) {
-        /* TODO check MIME type; default: HTML */
         if (Person::extractDbId($id)) {
             return $this->bishophtmlbyID($id);
         }
@@ -108,6 +113,8 @@ class IDController extends AbstractController {
     }
 
     /**
+     * match id with object type (bishop, canon, diocse); return JSON/CSV
+     *
      * @Route("/data/{id}", name="wiag_id_data")
      */
     public function routeData(string $id, Request $request) {
@@ -125,12 +132,16 @@ class IDController extends AbstractController {
         }
     }
 
+    /**
+     * find bishop by id
+     *
+     * @return Response                 HTML
+     */
     public function bishophtmlbyID(string $id) {
         $repository = $this->getDoctrine()
                            ->getRepository(Person::class);
 
         $person = $repository->findOneWithOffices($id);
-        $repository->fillCnData($person);
 
         if (!$person) {
             throw $this->createNotFoundException('Person wurde nicht gefunden');
@@ -139,19 +150,54 @@ class IDController extends AbstractController {
         return $this->bishophtml($person);
     }
 
+    /**
+     * supplement data for person
+     *
+     * @return Response                 HTML
+     */
     public function bishophtml(?Person $person) {
-
-
         $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
+
+        // fetch data from domherren database or GS (Personendatenbank)
+        $cnonlineRepository = $this->getDoctrine()
+                                   ->getRepository(CnOnline::class);
+        $cnonline = $cnonlineRepository->findOneByIdEp($person->getWiagid());
+        $canon = null;
+        $canon_gs = null;
+        if (!is_null($cnonline)) {
+            $cnonlineRepository->fillData($cnonline);
+            $canon = $cnonline->getCanonDh();
+            $canon_gs = $cnonline->getCanonGs();
+        }
+
+        $canon_merged = array();
+        if (!is_null($canon)) {
+            $cycle = 1;
+            $canon_merged = $this->getDoctrine()
+                                 ->getRepository(Canon::class)
+                                 ->collectMerged($canon_merged, $canon, $cycle);
+            array_unshift($canon_merged, $canon);
+        }
 
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,
             'wiagidlong' => $person->getWiagidLong(),
             'querystr' => null,
             'dioceserepository' => $dioceseRepository,
+            'canon' => $canon,
+            'canon_merged' => $canon_merged,
+            'canon_gs' => $canon_gs,
+
         ]);
     }
 
+    /**
+     * find bishop by id; return serialized data
+     *
+     * @return Response                 HTML
+     *
+     * @todo supplement data from canon database
+     */
     public function bishopdata(string $id, Request $request) {
         $idbase = pathinfo($id, PATHINFO_FILENAME);
 
@@ -208,6 +254,11 @@ class IDController extends AbstractController {
         return $response;
     }
 
+    /**
+     * find canon by id
+     *
+     * @return Response                 HTML
+     */
     public function canonhtmlbyID(string $id) {
 
         $repo = $this->getDoctrine()
@@ -222,17 +273,23 @@ class IDController extends AbstractController {
         }
     }
 
+    /**
+     * supplement references for canon
+     *
+     * @return Response                 HTML
+     */
     public function canonhtml($canon) {
-        # TODO do we need this here?
         $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 
         // collect references
         $canon_dh = $canon->getCanonDh();
-        $references = array();
-        if (!is_null($canon_dh)) {
+        $canon_merged = array();
+        if (!is_null($canon)) {
             $cycle = 1;
-            $references = $this->svccanon->collectMerged($references, $canon_dh, $cycle);
-            array_unshift($references, $canon_dh);
+            $canon_merged = $this->getDoctrine()
+                                 ->getRepository(Canon::class)
+                                 ->collectMerged($canon_merged, $canon_dh, $cycle);
+            array_unshift($canon_merged, $canon_dh);
         }
 
         return $this->render('canon/details.html.twig', [
@@ -240,10 +297,17 @@ class IDController extends AbstractController {
             'wiagidlong' => $canon->getId(),
             'querystr' => null,
             'dioceserepository' => $dioceseRepository,
-            'references' => $references,
+            'references' => $canon_merged,
         ]);
     }
 
+    /**
+     * find canon by id; return serialized data
+     *
+     *
+     * @return Response                 Data
+     * TODO: supplement references
+     */
     public function canondata(string $id, Request $request) {
         $idbase = pathinfo($id, PATHINFO_FILENAME);
 
@@ -315,6 +379,11 @@ class IDController extends AbstractController {
         return $response;
     }
 
+    /**
+     * find diocese by id
+     *
+     * @return Response                 HTML
+     */
     public function diocesehtmlbyID(string $id, Request $request) {
 
         $diocese = $this->getDoctrine()
@@ -328,12 +397,19 @@ class IDController extends AbstractController {
         return $this->diocesehtml($diocese);
     }
 
+    /**
+     * @return Response                 HTML
+     */
     public function diocesehtml($diocese) {
         return $this->render('query_diocese/details.html.twig', [
             'diocese' => $diocese,
         ]);
     }
 
+    /**
+     * find diocese by id
+     * @return Response                 Data
+     */
     public function diocesedata(string $id, Request $request) {
 
         $idbase = pathinfo($id, PATHINFO_FILENAME);

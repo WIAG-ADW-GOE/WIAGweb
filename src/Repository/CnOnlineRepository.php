@@ -338,8 +338,8 @@ class CnOnlineRepository extends ServiceEntityRepository {
         return $result;
     }
 
-    /*
-      Fill the object `online` with data for the list view.
+    /**
+     * Fill object with data for the list view.
      */
     public function fillListData(CnOnline $online) {
         $em = $this->getEntityManager();
@@ -352,9 +352,9 @@ class CnOnlineRepository extends ServiceEntityRepository {
         }
     }
 
-    /*
-      Fill the object `online` with data for the detail view.
-    */
+    /**
+     * Fill object with data for the detail view.
+     */
     public function fillData(CnOnline $online) {
         // this looks not very elegant, but it is simple and each step is easy to control
         $em = $this->getEntityManager();

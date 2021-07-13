@@ -315,54 +315,6 @@ class PersonRepository extends ServiceEntityRepository {
 
     }
 
-    /**
-     * find entry in canon database (Domherrendatenbank)
-     */
-    public function findCanon(string $wiagid) {
-        $em = $this->getEntityManager();
-
-        $co = $em->getRepository(CnOnline::class)
-                 ->findOneByIdEp($wiagid);
-
-        if (is_null($co)) {
-            return null;
-        }
-
-        $id_dh = $co->getIdDh();
-
-        if (is_null($id_dh)) {
-            return null;
-        }
-
-        $canon = $em->getRepository(Canon::class)
-                    ->findOneWithOffices($id_dh);
-        return $canon;
-    }
-
-    /**
-     * find entry in GS database (Personendatenbank)
-     */
-    public function findCanonGS(string $wiagid) {
-        $em = $this->getEntityManager();
-
-        $co = $em->getRepository(CnOnline::class)
-                 ->findOneByIdEp($wiagid);
-
-        if (is_null($co)) {
-            return null;
-        }
-
-        $id_gs = $co->getIdGs();
-
-        if (is_null($id_gs)) {
-            return null;
-        }
-
-        $canon = $em->getRepository(CanonGS::class)
-                    ->findOneWithOffices($id_gs);
-        return $canon;
-    }
-
     /** AJAX callback */
     public function suggestId($input, $limit = 200): array {
         $qb = $this->createQueryBuilder('p')

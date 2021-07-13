@@ -3,17 +3,17 @@ Search.appendIndex(
                 {
             "fqsen": "\\App\\Controller\\BishopApiController",
             "name": "BishopApiController",
-            "summary": "",
+            "summary": "handle\u0020API\u0020requests",
             "url": "classes/App-Controller-BishopApiController.html"
         },                {
             "fqsen": "\\App\\Controller\\BishopApiController\u003A\u003Agetperson\u0028\u0029",
             "name": "getperson",
-            "summary": "",
+            "summary": "2021\u002D07\u002D13\u0020obsolete\u003F",
             "url": "classes/App-Controller-BishopApiController.html#method_getperson"
         },                {
             "fqsen": "\\App\\Controller\\BishopApiController\u003A\u003Aapigetpersons\u0028\u0029",
             "name": "apigetpersons",
-            "summary": "",
+            "summary": "accept\u0020query\u0020request\u0020and\u0020return\u0020serialized\u0020bishop\u0020data\u0020\u0028json\u0020or\u0020csv\u0029",
             "url": "classes/App-Controller-BishopApiController.html#method_apigetpersons"
         },                {
             "fqsen": "\\App\\Controller\\BishopTestsController",
@@ -388,52 +388,52 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003AredirectID\u0028\u0029",
             "name": "redirectID",
-            "summary": "",
+            "summary": "decide\u0020which\u0020format\u0020should\u0020be\u0020delivered",
             "url": "classes/App-Controller-IDController.html#method_redirectID"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003ArouteDoc\u0028\u0029",
             "name": "routeDoc",
-            "summary": "",
+            "summary": "match\u0020id\u0020with\u0020object\u0020type\u0020\u0028bishop,\u0020canon,\u0020diocese\u0029,\u0020return\u0020HTML",
             "url": "classes/App-Controller-IDController.html#method_routeDoc"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003ArouteData\u0028\u0029",
             "name": "routeData",
-            "summary": "",
+            "summary": "match\u0020id\u0020with\u0020object\u0020type\u0020\u0028bishop,\u0020canon,\u0020diocse\u0029\u003B\u0020return\u0020JSON\/CSV",
             "url": "classes/App-Controller-IDController.html#method_routeData"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003AbishophtmlbyID\u0028\u0029",
             "name": "bishophtmlbyID",
-            "summary": "",
+            "summary": "find\u0020bishop\u0020by\u0020id",
             "url": "classes/App-Controller-IDController.html#method_bishophtmlbyID"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003Abishophtml\u0028\u0029",
             "name": "bishophtml",
-            "summary": "",
+            "summary": "supplement\u0020data\u0020for\u0020person",
             "url": "classes/App-Controller-IDController.html#method_bishophtml"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003Abishopdata\u0028\u0029",
             "name": "bishopdata",
-            "summary": "",
+            "summary": "find\u0020bishop\u0020by\u0020id\u003B\u0020return\u0020serialized\u0020data",
             "url": "classes/App-Controller-IDController.html#method_bishopdata"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003AcanonhtmlbyID\u0028\u0029",
             "name": "canonhtmlbyID",
-            "summary": "",
+            "summary": "find\u0020canon\u0020by\u0020id",
             "url": "classes/App-Controller-IDController.html#method_canonhtmlbyID"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003Acanonhtml\u0028\u0029",
             "name": "canonhtml",
-            "summary": "",
+            "summary": "supplement\u0020references\u0020for\u0020canon",
             "url": "classes/App-Controller-IDController.html#method_canonhtml"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003Acanondata\u0028\u0029",
             "name": "canondata",
-            "summary": "",
+            "summary": "find\u0020canon\u0020by\u0020id\u003B\u0020return\u0020serialized\u0020data",
             "url": "classes/App-Controller-IDController.html#method_canondata"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003AdiocesehtmlbyID\u0028\u0029",
             "name": "diocesehtmlbyID",
-            "summary": "",
+            "summary": "find\u0020diocese\u0020by\u0020id",
             "url": "classes/App-Controller-IDController.html#method_diocesehtmlbyID"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003Adiocesehtml\u0028\u0029",
@@ -443,7 +443,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003Adiocesedata\u0028\u0029",
             "name": "diocesedata",
-            "summary": "",
+            "summary": "find\u0020diocese\u0020by\u0020id",
             "url": "classes/App-Controller-IDController.html#method_diocesedata"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003AdetailsByGndId\u0028\u0029",
@@ -501,11 +501,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Controller-QueryBishop.html#method_launch_query"
         },                {
-            "fqsen": "\\App\\Controller\\QueryBishop\u003A\u003AreloadForm\u0028\u0029",
-            "name": "reloadForm",
-            "summary": "obsolete\u003A\u0020use\u0020POST\u0020requests\u0020instead",
-            "url": "classes/App-Controller-QueryBishop.html#method_reloadForm"
-        },                {
             "fqsen": "\\App\\Controller\\QueryBishop\u003A\u003Agetperson\u0028\u0029",
             "name": "getperson",
             "summary": "obsolete\u0020see\u0020IDController.php",
@@ -518,7 +513,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\QueryBishop\u003A\u003AgetBishopInQuery\u0028\u0029",
             "name": "getBishopInQuery",
-            "summary": "",
+            "summary": "display\u0020details\u0020for\u0020a\u0020bishop\u0020in\u0020a\u0020query\u0020result\u0020list",
             "url": "classes/App-Controller-QueryBishop.html#method_getBishopInQuery"
         },                {
             "fqsen": "\\App\\Controller\\QueryBishop\u003A\u003Aqueryid\u0028\u0029",
@@ -5591,11 +5586,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Entity-Person.html#method_isIdBishop"
         },                {
-            "fqsen": "\\App\\Entity\\Person\u003A\u003AshortId\u0028\u0029",
-            "name": "shortId",
-            "summary": "",
-            "url": "classes/App-Entity-Person.html#method_shortId"
-        },                {
             "fqsen": "\\App\\Entity\\Person\u003A\u003AgetWiagid\u0028\u0029",
             "name": "getWiagid",
             "summary": "",
@@ -5826,26 +5816,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Entity-Person.html#method_setOffices"
         },                {
-            "fqsen": "\\App\\Entity\\Person\u003A\u003AgetOfficesDh\u0028\u0029",
-            "name": "getOfficesDh",
-            "summary": "",
-            "url": "classes/App-Entity-Person.html#method_getOfficesDh"
-        },                {
-            "fqsen": "\\App\\Entity\\Person\u003A\u003AsetOfficesDh\u0028\u0029",
-            "name": "setOfficesDh",
-            "summary": "",
-            "url": "classes/App-Entity-Person.html#method_setOfficesDh"
-        },                {
-            "fqsen": "\\App\\Entity\\Person\u003A\u003AgetOfficesGs\u0028\u0029",
-            "name": "getOfficesGs",
-            "summary": "",
-            "url": "classes/App-Entity-Person.html#method_getOfficesGs"
-        },                {
-            "fqsen": "\\App\\Entity\\Person\u003A\u003AsetOfficesGs\u0028\u0029",
-            "name": "setOfficesGs",
-            "summary": "",
-            "url": "classes/App-Entity-Person.html#method_setOfficesGs"
-        },                {
             "fqsen": "\\App\\Entity\\Person\u003A\u003AgetEra\u0028\u0029",
             "name": "getEra",
             "summary": "",
@@ -6070,26 +6040,6 @@ Search.appendIndex(
             "name": "reference",
             "summary": "",
             "url": "classes/App-Entity-Person.html#property_reference"
-        },                {
-            "fqsen": "\\App\\Entity\\Person\u003A\u003A\u0024officesdh",
-            "name": "officesdh",
-            "summary": "canon\u0020offices\u0020\u0028Domherren\u002DDatenbank\u0029",
-            "url": "classes/App-Entity-Person.html#property_officesdh"
-        },                {
-            "fqsen": "\\App\\Entity\\Person\u003A\u003A\u0024referencesdh",
-            "name": "referencesdh",
-            "summary": "canon\u0020references\u0020\u0028Domherren\u002DDatenbank\u0029",
-            "url": "classes/App-Entity-Person.html#property_referencesdh"
-        },                {
-            "fqsen": "\\App\\Entity\\Person\u003A\u003A\u0024officesgs",
-            "name": "officesgs",
-            "summary": "canon\u0020offices\u0020\u0028Germania\u0020Sacra\u0029",
-            "url": "classes/App-Entity-Person.html#property_officesgs"
-        },                {
-            "fqsen": "\\App\\Entity\\Person\u003A\u003A\u0024referencesgs",
-            "name": "referencesgs",
-            "summary": "canon\u0020references\u0020\u0028Germania\u0020Sacra\u0029",
-            "url": "classes/App-Entity-Person.html#property_referencesgs"
         },                {
             "fqsen": "\\App\\Entity\\Place",
             "name": "Place",
@@ -6993,7 +6943,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Repository\\CanonGSRepository\u003A\u003AsuggestGsn\u0028\u0029",
             "name": "suggestGsn",
-            "summary": "",
+            "summary": "AJAX\u0020callback",
             "url": "classes/App-Repository-CanonGSRepository.html#method_suggestGsn"
         },                {
             "fqsen": "\\App\\Repository\\CanonGSRepository\u003A\u003AMARGINYEAR",
@@ -7013,7 +6963,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Repository\\CanonRepository\u003A\u003AfindOneWithOffices\u0028\u0029",
             "name": "findOneWithOffices",
-            "summary": "",
+            "summary": "fetch\u0020canon\u0020and\u0020his\u0020offices",
             "url": "classes/App-Repository-CanonRepository.html#method_findOneWithOffices"
         },                {
             "fqsen": "\\App\\Repository\\CanonRepository\u003A\u003AfindOfficeNames\u0028\u0029",
@@ -7075,6 +7025,11 @@ Search.appendIndex(
             "name": "MARGINYEAR",
             "summary": "",
             "url": "classes/App-Repository-CanonRepository.html#constant_MARGINYEAR"
+        },                {
+            "fqsen": "\\App\\Repository\\CanonRepository\u003A\u003AMAX_MERGE_DEPTH",
+            "name": "MAX_MERGE_DEPTH",
+            "summary": "",
+            "url": "classes/App-Repository-CanonRepository.html#constant_MAX_MERGE_DEPTH"
         },                {
             "fqsen": "\\App\\Repository\\CnCanonReferenceGSRepository",
             "name": "CnCanonReferenceGSRepository",
@@ -7328,12 +7283,12 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Repository\\CnOnlineRepository\u003A\u003AfillListData\u0028\u0029",
             "name": "fillListData",
-            "summary": "",
+            "summary": "Fill\u0020object\u0020with\u0020data\u0020for\u0020the\u0020list\u0020view.",
             "url": "classes/App-Repository-CnOnlineRepository.html#method_fillListData"
         },                {
             "fqsen": "\\App\\Repository\\CnOnlineRepository\u003A\u003AfillData\u0028\u0029",
             "name": "fillData",
-            "summary": "",
+            "summary": "Fill\u0020object\u0020with\u0020data\u0020for\u0020the\u0020detail\u0020view.",
             "url": "classes/App-Repository-CnOnlineRepository.html#method_fillData"
         },                {
             "fqsen": "\\App\\Repository\\CnOnlineRepository\u003A\u003AfillGSOfficesAndReferences\u0028\u0029",
@@ -7701,19 +7656,9 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Repository-PersonRepository.html#method_findAllGnds"
         },                {
-            "fqsen": "\\App\\Repository\\PersonRepository\u003A\u003AfillGSOfficesAndReferences\u0028\u0029",
-            "name": "fillGSOfficesAndReferences",
-            "summary": "get\u0020data\u0020from\u0020cn_canon_gs",
-            "url": "classes/App-Repository-PersonRepository.html#method_fillGSOfficesAndReferences"
-        },                {
-            "fqsen": "\\App\\Repository\\PersonRepository\u003A\u003AfillCnData\u0028\u0029",
-            "name": "fillCnData",
-            "summary": "get\u0020data\u0020from\u0020canon\u0020database\u0020and\u0020GS",
-            "url": "classes/App-Repository-PersonRepository.html#method_fillCnData"
-        },                {
             "fqsen": "\\App\\Repository\\PersonRepository\u003A\u003AsuggestId\u0028\u0029",
             "name": "suggestId",
-            "summary": "",
+            "summary": "AJAX\u0020callback",
             "url": "classes/App-Repository-PersonRepository.html#method_suggestId"
         },                {
             "fqsen": "\\App\\Repository\\PersonRepository\u003A\u003AMARGINYEAR",
@@ -8075,21 +8020,6 @@ Search.appendIndex(
             "name": "idlookup",
             "summary": "fill\/update\u0020cn_idlookup",
             "url": "classes/App-Service-CanonService.html#method_idlookup"
-        },                {
-            "fqsen": "\\App\\Service\\CanonService\u003A\u003AfindRoot\u0028\u0029",
-            "name": "findRoot",
-            "summary": "2021\u002D07\u002D08\u0020obsolete\u0020see\u0020collectMerged\nfind\u0020root\u0020element\u0020withing\u0020a\u0020merging\u0020tree",
-            "url": "classes/App-Service-CanonService.html#method_findRoot"
-        },                {
-            "fqsen": "\\App\\Service\\CanonService\u003A\u003AcollectMerged\u0028\u0029",
-            "name": "collectMerged",
-            "summary": "collect\u0020canons\u0020that\u0020are\u0020merged\u0020to\u0020\u0024canon",
-            "url": "classes/App-Service-CanonService.html#method_collectMerged"
-        },                {
-            "fqsen": "\\App\\Service\\CanonService\u003A\u003AcollectReferences\u0028\u0029",
-            "name": "collectReferences",
-            "summary": "obsolete\u00202021\u002D07\u002D12\u003A\u0020we\u0020need\u0020canon\u0020specific\u0020data,\u0020not\u0020only\u0020the\u0020references",
-            "url": "classes/App-Service-CanonService.html#method_collectReferences"
         },                {
             "fqsen": "\\App\\Service\\CanonService\u003A\u003AMAX_MERGE_DEPTH",
             "name": "MAX_MERGE_DEPTH",

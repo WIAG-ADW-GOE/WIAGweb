@@ -20,11 +20,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 /**
+ * handle API requests
+ *
  * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
  */
 class BishopApiController extends AbstractController {
 
     /**
+     * 2021-07-13 obsolete?
+     *
      * @Route("/api/bishop/{wiagidlong}", name="api_bishop")
      */
     public function getperson($wiagidlong, Request $request, PersonData $persondata) {
@@ -64,22 +68,26 @@ class BishopApiController extends AbstractController {
 
 
     /**
+     * accept query request and return serialized bishop data (json or csv)
+     *
      * @Route("/api/query-bishops", name="api_query_bishops")
      */
     public function apigetpersons(Request $request, PersonData $personData) {
 
-        $format = $request->query->get('format') ?? 'json';
+        $query = $request->query;
+        $format = $query->get('format') ?? 'json';
 
         if(array_search($format, ['json', 'csv']) === false) {
             throw $this->createNotFoundException('Unbekanntes Format: '.$format.'.');
         }
 
 
-        $name = $request->query->get('name');
-        $place = $request->query->get('diocese');
-        $office = $request->query->get('office');
-        $year = $request->query->get('year');
-        $someid = $request->query->get('someid');
+
+        $name = $query->get('name');
+        $place = $query->get('diocese');
+        $office = $query->get('office');
+        $year = $query->get('year');
+        $someid = $query->get('someid');
 
         $dbId = Person::extractDbId($someid) ?? $someid;
 

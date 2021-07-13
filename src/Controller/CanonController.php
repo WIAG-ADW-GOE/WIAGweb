@@ -192,7 +192,8 @@ class CanonController extends AbstractController {
         $references = array();
         if (!is_null($canon_dh)) {
             $cycle = 1;
-            $references = $this->getDoctrine()->getRepository(Canon::class)
+            $references = $this->getDoctrine()
+                               ->getRepository(Canon::class)
                                ->collectMerged($references, $canon_dh, $cycle);
             array_unshift($references, $canon_dh);
         }

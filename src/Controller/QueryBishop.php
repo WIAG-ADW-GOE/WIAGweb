@@ -10,9 +10,7 @@ use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
 use App\Entity\Diocese;
 use App\Entity\Canon;
-use App\Entity\CnOffice;
-use App\Entity\CnCanonReference;
-use App\Entity\CnOfficeGS;
+use App\Entity\CnOnline;
 use App\Entity\CnCanonReferenceGS;
 use App\Repository\PersonRepository;
 use App\Service\PersonData;
@@ -126,10 +124,6 @@ class QueryBishop extends AbstractController {
                 }
             }
 
-
-            // combination of POST_SET_DATA and POST_SUBMIT
-            // $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
-
             return $this->render('query_bishop/listresult.html.twig', [
                 'query_form' => $form->createView(),
                 'count' => $count,
@@ -148,62 +142,6 @@ class QueryBishop extends AbstractController {
                 'facetOfficesState' => $facetOfficesState,
             ]);
         }
-    }
-
-    /**
-     * obsolete: use POST requests instead
-     * @Route("/requery-bishops", name="requery_bishops")
-     */
-    public function reloadForm(Request $request) {
-        $bishopquery = new BishopQueryFormModel();
-        $bishopquery->setByRequest($request);
-        // querystr without offset
-        $querystr = http_build_query($bishopquery->toArray());
-        $form = $this->createForm(BishopQueryFormType::class, $bishopquery);
-
-
-        $someid = $bishopquery->someid;
-
-        if($someid && Person::isWiagidLong($someid)) {
-            $bishopquery->someid = Person::wiagidLongToWiagid($someid);
-        }
-
-        // get the number of results (without page limit restriction)
-        $count = $this->getDoctrine()
-                      ->getRepository(Person::class)
-                      ->countByQueryObject($bishopquery)[1];
-
-        $facetPlacesState = 'show';
-        $facetOfficesState = 'show';
-        $persons = null;
-
-        if($count > 0) {
-            $personRepository = $this->getDoctrine()
-                                     ->getRepository(Person::class);
-            $offset = $request->query->get('offset') ?? 0;
-            # map to pages
-            $offset = floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
-
-            $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset);
-
-            foreach($persons as $p) {
-                if($p->hasMonastery()) {
-                    $personRepository->addMonasteryLocation($p);
-                }
-            }
-        }
-
-        return $this->render('query_bishop/listresult.html.twig', [
-                'query_form' => $form->createView(),
-                'count' => $count,
-                'limit' => self::LIST_LIMIT,
-                'offset' => $offset,
-                'querystr' => $querystr,
-                'persons' => $persons,
-                'facetPlacesState' => $facetPlacesState,
-                'facetOfficesState' => $facetOfficesState,
-            ]);
-
     }
 
 
@@ -324,7 +262,17 @@ class QueryBishop extends AbstractController {
         $person = $iterator->current();
 
         // fetch data from domherren database or GS (Personendatenbank)
-        $canon = $personRepository->findCanon($person->getWiagid());
+        $cnonlineRepository = $this->getDoctrine()
+                                   ->getRepository(CnOnline::class);
+        $cnonline = $cnonlineRepository->findOneByIdEp($person->getWiagid());
+        $canon = null;
+        $canon_gs = null;
+        if (!is_null($cnonline)) {
+            $cnonlineRepository->fillData($cnonline);
+            $canon = $cnonline->getCanonDh();
+            $canon_gs = $cnonline->getCanonGs();
+        }
+
         $canon_merged = array();
         if (!is_null($canon)) {
             $cycle = 1;
@@ -333,7 +281,6 @@ class QueryBishop extends AbstractController {
                                  ->collectMerged($canon_merged, $canon, $cycle);
             array_unshift($canon_merged, $canon);
         }
-        $canon_gs = $personRepository->findCanonGS($person->getWiagid());
 
         $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 
@@ -391,6 +338,15 @@ class QueryBishop extends AbstractController {
                       ->getRepository(Monastery::class)
                       ->findOneByWiagid($id);
         dd($monastery);
+    }
+
+    /**
+     * @IsGranted("ROLE_USER")
+     * @Route("/query-bishops/tests", name="bishop_tests")
+     */
+    public function samplelist() {
+
+        return $this->render('query_bishop/tests.html.twig');
     }
 
 
