@@ -7,7 +7,7 @@
     <script src="{{ asset('js/bishop.js') }}"></script>
 {% endblock %}
 
-{% macro sectionoffices(offices, urlgsmonasteries, dioceserepository) %}
+{% macro sectionoffices(offices, urlgsmonasteries) %}
     <dt class="col-sm-3">Ämter</dt>
     <dd class="col-sm-9">
 	<ul class="list-unstyled">
@@ -16,7 +16,7 @@
 		    <ul class="list-inlined list-unstyled">
 			<li class="list-inline-item"> {{ office.officename }}</li>
 			{% if office.diocese and not office.idmonastery %}
-			    <li class="list-inline-item">{% if dioceserepository.countByDiocese(office.diocese) > 0 %}<a href="{{ path('diocese', {'idorname': office.diocese}) }}">{{ office.diocese }}</a>{% else %}{{ office.diocese }}{% endif %}</li>
+			    <li class="list-inline-item">{% if office.dioceseindb %}<a href="{{ path('diocese', {'idorname': office.diocese}) }}">{{ office.diocese }}</a>{% else %}{{ office.diocese }}{% endif %}</li>
 			{% endif %}
 			{% if office.idmonastery %}
 			    <li class="list-inline-item">
@@ -178,7 +178,7 @@
 					<ul class="list-inlined list-unstyled">
 					    <li class="list-inline-item"> {{ office.officename }}</li>
 					    {% if office.diocese %}
-						<li class="list-inline-item">{% if dioceserepository.countByDiocese(office.diocese) > 0 %}<a href="{{ path('diocese', {'idorname': office.diocese}) }}">{{ office.diocese }}</a>{% else %}{{ office.diocese }}{% endif %}</li>
+						<li class="list-inline-item">{% if office.dioceseindb %}<a href="{{ path('diocese', {'idorname': office.diocese}) }}">{{ office.diocese }}</a>{% else %}{{ office.diocese }}{% endif %}</li>
 					    {% endif %}
 					    {% if office.idmonastery %}
 						<li class="list-inline-item">
@@ -270,7 +270,7 @@
 	    <div class="card mx-2 mb-2 mt-3">
 		<span class="card-header"><strong>Amtsangaben aus Referenzwerken</strong></span>
 		<dl class="card-body row">
-		    {{ _self.sectionoffices(person.offices, urlgsmonasteries, dioceserepository) }}
+		    {{ _self.sectionoffices(person.offices, urlgsmonasteries) }}
 		    {% if person.reference %}
 			<dt class="col-sm-3">Referenzwerk</dt>
 			<dd class="col-sm-9 small"><a href="{{ path('reference', {'id': person.referenceid}) }}">{{ person.reference.shorttitle }}</a>, S. {{ person.pagesgatz }}</dd>
@@ -283,7 +283,7 @@
 		    <dl class="card-body row mb-0 pb-0">
 			{# offices and references#}
 			{# { dump(person.officesdh) } #}
-			{{ _self.sectionoffices(canon.offices, urlgsmonasteries, dioceserepository) }}
+			{{ _self.sectionoffices(canon.offices, urlgsmonasteries) }}
 			{{ _self.sectionreferencesdh(canon_merged, false, url_gs_bios) }}
 		    </dl>
 		</div>
@@ -292,7 +292,7 @@
 		<div class="card mx-2 mb-2">
 		    <span class="card-header"><a href="{{ urlgspersons }}index/gsn/{{ person.gsid }}" target="_blank" rel="noopener"><strong>Amtsangaben aus dem Digitalen Personenregister der Germania Sacra — {{ person.gsid }}</strong></a></span>
 		    <dl class="card-body row mb-0 pb-0">
-			{{ _self.sectionoffices(canon_gs.offices, urlgsmonasteries, dioceserepository) }}
+			{{ _self.sectionoffices(canon_gs.offices, urlgsmonasteries) }}
 			{% if canon_gs.references and canon_gs.references|length > 0 %}
 			    {{ _self.sectionreferences(canon_gs.references, true, url_gs_bios) }}
 			{% endif %}

@@ -127,6 +127,11 @@ class CnOfficeGS
      */
     private $numdate_end;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $dioceseInDb;
+
     public function getMonasterylocationstr()
     {
         return $this->monasterylocationstr;
@@ -362,6 +367,18 @@ class CnOfficeGS
     public function setNumdateEnd(?int $numdate_end): self
     {
         $this->numdate_end = $numdate_end;
+
+        return $this;
+    }
+
+    public function getDioceseInDb(): ?bool
+    {
+        return $this->dioceseInDb;
+    }
+
+    public function setDioceseInDb(?bool $dioceseInDb): self
+    {
+        $this->dioceseInDb = $dioceseInDb;
 
         return $this;
     }

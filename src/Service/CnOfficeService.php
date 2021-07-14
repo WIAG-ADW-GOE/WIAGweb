@@ -8,7 +8,7 @@ use App\Entity\CnOffice;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
 use App\Entity\Place;
-
+use App\Entity\Diocese;
 
 use App\Entity\Person;
 use App\Service\ParseDates;
@@ -123,6 +123,7 @@ class CnOfficeService {
         return true;
     }
 
+
     public function fillMonastery($office, $monastery_name) {
         if (!is_null($monastery_name) && $monastery_name != "") {
             $repository = $this->em->getRepository(Monastery::class);
@@ -130,6 +131,15 @@ class CnOfficeService {
             $office->setMonastery($monastery);
         }
         return $office;
+    }
+
+    public function fillDioceseInDb($office) {
+        $diocese_name = $office->getDiocese();
+        if (!is_null($diocese_name)) {
+            $diocese = $this->em->getRepository(Diocese::class)
+                                      ->findOneByDiocese($diocese_name);
+            $office->setDioceseInDb(!is_null($diocese));
+        }
     }
 
 };

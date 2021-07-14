@@ -11,7 +11,6 @@ use App\Repository\CanonRepository;
 use App\Repository\CnOnlineRepository;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
-use App\Entity\Diocese;
 use App\Service\CanonData;
 use App\Service\CanonLinkedData;
 
@@ -186,8 +185,6 @@ class CanonController extends AbstractController {
 
         $personRepository->fillData($person);
 
-        $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
-
         $canon_dh = $person->getCanonDh();
         $references = array();
         if (!is_null($canon_dh)) {
@@ -204,7 +201,6 @@ class CanonController extends AbstractController {
             'wiagidlong' => $person->getId(),
             'offset' => $offset,
             'hassuccessor' => $hassuccessor,
-            'dioceserepository' => $dioceseRepository,
             'references' => $references,
         ]);
 

@@ -172,15 +172,11 @@ class QueryBishop extends AbstractController {
             $this->createNotFoundException('Person wurde nicht gefunden');
         }
 
-        $dioceseRepository = $this->getDoctrine()
-                                  ->getRepository(Diocese::class);
-
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,
             'wiagidlong' => $wiagidlong,
             'flaglist' => $flaglist,
             'querystr' => null,
-            'dioceserepository' => $dioceseRepository,
         ]);
     }
 
@@ -219,8 +215,6 @@ class QueryBishop extends AbstractController {
                 $nextname = $iterator->current()->getDisplayname();
         }
 
-        $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
-
         return $this->render('query_bishop/details.html.twig', [
             'person' => $person,
             'wiagidlong' => $person->getWiagidlong(),
@@ -230,7 +224,6 @@ class QueryBishop extends AbstractController {
             'nextname' => $nextname,
             'offset' => $offset,
             'hassuccessor' => $hassuccessor,
-            'dioceserepository' => $dioceseRepository,
         ]);
 
     }
@@ -282,15 +275,12 @@ class QueryBishop extends AbstractController {
             array_unshift($canon_merged, $canon);
         }
 
-        $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
-
         return $this->render('query_bishop/details.html.twig', [
             'query_form' => $form->createView(),
             'person' => $person,
             'wiagidlong' => $person->getWiagidlong(),
             'offset' => $offset,
             'hassuccessor' => $hassuccessor,
-            'dioceserepository' => $dioceseRepository,
             'canon' => $canon,
             'canon_merged' => $canon_merged,
             'canon_gs' => $canon_gs,

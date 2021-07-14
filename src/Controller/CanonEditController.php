@@ -9,10 +9,10 @@ use App\Entity\CnReference;
 use App\Entity\CnOnline;
 use App\Entity\CnNamelookup;
 use App\Entity\CnOfficelookup;
+use App\Entity\Diocese;
 use App\Repository\CanonRepository;
 use App\Entity\Monastery;
 use App\Entity\MonasteryLocation;
-use App\Entity\Diocese;
 use App\Form\CanonEditFormType;
 use App\Form\CanonEditSearchFormType;
 use App\Form\CnOfficeEditFormType;
@@ -35,13 +35,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @IsGranted("ROLE_DATA_ADMIN")
  */
 class CanonEditController extends AbstractController {
-    /**
-     * Parameters
-     */
+    /** number of elements in query result list */
     const LIST_LIMIT = 20;
+    /** number of elements in auto completion list */
     const HINT_LIST_LIMIT = 12;
 
     /**
+     * display search form for canons to be edited
+     *
      * @Route("/domherren/editlist", name="canon_editlist")
      */
     public function launch_query(Request $request) {
@@ -103,8 +104,15 @@ class CanonEditController extends AbstractController {
         }
     }
 
+    /**
+     * display details for a canon in a query result list
+     *
+     * This is not in use at the moment.
+     * The user gets the edit form, if she clicks on the link for a canon.
+     * Keep it, in case another workflow becomes more attractive.
+     */
     public function getCanonInQuery($form, $offset) {
-
+        dump($offset);
         $queryformdata = $form->getData();
 
         $personRepository = $this->getDoctrine()
@@ -123,20 +131,19 @@ class CanonEditController extends AbstractController {
         }
         $person = $iterator->current();
 
-        $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
-
         return $this->render('canon_edit/details.html.twig', [
             'query_form' => $form->createView(),
             'person' => $person,
             'wiagidlong' => $person->getId(),
             'offset' => $offset,
             'hassuccessor' => $hassuccessor,
-            'dioceserepository' => $dioceseRepository,
         ]);
 
     }
 
     /**
+     * display input form for a new canon
+     *
      * @Route("/domherren/new", name="canon_new")
      * @IsGranted("ROLE_DATA_ADMIN")
      */
@@ -235,6 +242,7 @@ class CanonEditController extends AbstractController {
 
             $os->fillNumdates($office);
             $os->fillMonastery($office, $office->getFormMonasteryName());
+            $os->fillDioceseInDb($office);
             $os->fillLocationShow($office);
 
             $office->setCanon($canon);
@@ -288,6 +296,7 @@ class CanonEditController extends AbstractController {
 
                 $os->fillNumdates($office);
                 $os->fillMonastery($office, $office->getFormMonasteryName());
+                $os->fillDioceseInDb($office);
                 $os->fillLocationShow($office);
 
                 $em->persist($office);
@@ -477,7 +486,7 @@ class CanonEditController extends AbstractController {
      */
     public function autocompletediocese(Request $request) {
         $qresult = $this->getDoctrine()
-                        ->getRepository(CnOffice::class)
+                        ->getRepository(Diocese::class)
                         ->suggestDiocese($request->query->get('query'),
                                          self::HINT_LIST_LIMIT);
 

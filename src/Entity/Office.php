@@ -108,6 +108,11 @@ class Office
      */
     private $sortkey;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $dioceseInDb;
+
 
     public function getWiagid(): ?string
     {
@@ -337,6 +342,18 @@ class Office
     public function setSortkey(?int $sortkey): self
     {
         $this->sortkey = $sortkey;
+
+        return $this;
+    }
+
+    public function getDioceseInDb(): ?bool
+    {
+        return $this->dioceseInDb;
+    }
+
+    public function setDioceseInDb(?bool $dioceseInDb): self
+    {
+        $this->dioceseInDb = $dioceseInDb;
 
         return $this;
     }

@@ -156,7 +156,6 @@ class IDController extends AbstractController {
      * @return Response                 HTML
      */
     public function bishophtml(?Person $person) {
-        $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 
         // fetch data from domherren database or GS (Personendatenbank)
         $cnonlineRepository = $this->getDoctrine()
@@ -183,11 +182,9 @@ class IDController extends AbstractController {
             'person' => $person,
             'wiagidlong' => $person->getWiagidLong(),
             'querystr' => null,
-            'dioceserepository' => $dioceseRepository,
             'canon' => $canon,
             'canon_merged' => $canon_merged,
             'canon_gs' => $canon_gs,
-
         ]);
     }
 
@@ -279,7 +276,6 @@ class IDController extends AbstractController {
      * @return Response                 HTML
      */
     public function canonhtml($canon) {
-        $dioceseRepository = $this->getDoctrine()->getRepository(Diocese::class);
 
         // collect references
         $canon_dh = $canon->getCanonDh();
@@ -296,7 +292,6 @@ class IDController extends AbstractController {
             'person' => $canon,
             'wiagidlong' => $canon->getId(),
             'querystr' => null,
-            'dioceserepository' => $dioceseRepository,
             'references' => $canon_merged,
         ]);
     }

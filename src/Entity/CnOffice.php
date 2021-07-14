@@ -143,6 +143,11 @@ class CnOffice {
      */
     private $n_monasteries;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $dioceseInDb;
+
     public function setCanon(Canon $canon): self {
         $this->canon = $canon;
         return $this;
@@ -449,6 +454,18 @@ class CnOffice {
         }
 
         return false;
+    }
+
+    public function getDioceseInDb(): ?bool
+    {
+        return $this->dioceseInDb;
+    }
+
+    public function setDioceseInDb(?bool $dioceseInDb): self
+    {
+        $this->dioceseInDb = $dioceseInDb;
+
+        return $this;
     }
 
 }
