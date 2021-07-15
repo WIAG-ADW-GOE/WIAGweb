@@ -11,13 +11,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+/**
+ * AJAX callbacks for bishops
+ */
 class QueryBishopUtility extends AbstractController {
-    
-    // size of autocompletion list
+
+    /** number of items in completion list */
     const HINT_LIST_LIMIT = 12;
 
     /**
      * AJAX callback
+     *
      * @Route("/query-bishops/utility/names", methods="GET", name="query_bishops_utility_names")
      */
     public function getNamesApi(Request $request) {
@@ -33,6 +37,7 @@ class QueryBishopUtility extends AbstractController {
 
     /**
      * AJAX callback
+     *
      *@Route("/query-bishops/utility/places", methods="GET", name="query_bishops_utility_places")
      */
     public function getPlacesApi(Request $request) {
@@ -53,6 +58,7 @@ class QueryBishopUtility extends AbstractController {
 
     /**
      * AJAX callback
+     *
      *@Route("/query-bishops/utility/offices", methods="GET", name="query_bishops_utility_offices")
      */
     public function getOfficeApi(Request $request) {

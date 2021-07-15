@@ -8,9 +8,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * show references for bishops
+ */
 class ReferenceController extends AbstractController {
 
     /**
+     * show list of refereces for bishops
+     *
+     * [2021-07-15; not in navigation menu]
+     *
      * @Route("/reference/{id}", name="reference");
      */
     public function detailsByShort($id) {
@@ -27,6 +34,8 @@ class ReferenceController extends AbstractController {
     }
 
     /**
+     * show details for a reference for bishops
+     *
      * @Route("/references", name="reference_list");
      */
     public function list() {

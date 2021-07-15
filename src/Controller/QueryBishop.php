@@ -29,10 +29,12 @@ use Symfony\Component\Serializer\Encoder\CsvEncoder;
  * query bishops
  */
 class QueryBishop extends AbstractController {
-    /** number of elements in query result list */
+    /** number of items per page */
     const LIST_LIMIT = 20;
 
     /**
+     * display query form for bishops; handle query
+     *
      * @Route("/bischoefe", name="launch_query")
      */
     public function launch_query(Request $request,

@@ -6,9 +6,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+/**
+ * manage login
+ */
 class SecurityController extends AbstractController
 {
     /**
+     * manage login
+     *
      * @Route("/login", name="wiag_login")
      */
     public function login(AuthenticationUtils $authenticationUtils)
@@ -16,7 +21,7 @@ class SecurityController extends AbstractController
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
- 
+
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
@@ -26,11 +31,13 @@ class SecurityController extends AbstractController
         ]);
     }
 
-     /**
+    /**
+     * manage logout
+     *
      * @Route("/logout", name="wiag_logout")
      */
     public function logout() {
         throw new \Exception('Will be intercepted before getting here');
     }
-    
+
 }

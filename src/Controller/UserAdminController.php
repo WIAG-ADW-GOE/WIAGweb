@@ -18,6 +18,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 
 /**
+ * manage users
+ *
  * @IsGranted("ROLE_ADMIN")
  */
 class UserAdminController extends AbstractController {
@@ -29,6 +31,8 @@ class UserAdminController extends AbstractController {
     }
 
     /**
+     * create user credentials
+     *
      * @Route("/admin/add-user", name="admin_add_user")
      */
     public function addUser(Request $request, EntityManagerInterface $entityManager) {
@@ -40,7 +44,7 @@ class UserAdminController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
 
             $user = $form->getData();
-            
+
             $pwd = $user->getPassword();
             $user->setPassword($this->passwordEncoder->encodePassword($user, $pwd));
             $entityManager->persist($user);
@@ -54,6 +58,8 @@ class UserAdminController extends AbstractController {
     }
 
     /**
+     * show message
+     *
      * @Route("/admin/add-user-success", name="admin_add_user_success")
      */
     public function addUserSucces () {
@@ -61,7 +67,5 @@ class UserAdminController extends AbstractController {
             'message' => 'User ist eingetragen',
         ]);
     }
-    
+
 }
-
-

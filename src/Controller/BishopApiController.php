@@ -27,7 +27,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class BishopApiController extends AbstractController {
 
     /**
-     * 2021-07-13 obsolete? see IDController
+     * find bishop by ID; deliver data as JSON or CSV
+     *
+     * 2021-07-15 obsolete
+     *
+     * @see IDController
      *
      * @Route("/api/bishop/{wiagidlong}", name="api_bishop")
      */
@@ -68,7 +72,7 @@ class BishopApiController extends AbstractController {
 
 
     /**
-     * accept query request and return serialized bishop data (json or csv)
+     * accept query request and deliver bishop data as JSON or CSV
      *
      * @Route("/api/query-bishops", name="api_query_bishops")
      */

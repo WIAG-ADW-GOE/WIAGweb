@@ -15,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 class CanonReferenceController extends AbstractController {
 
     /**
-     * display details for a reference
+     * show details for a reference for canons
      *
      * @return Response                 HTML
      *
@@ -35,7 +35,7 @@ class CanonReferenceController extends AbstractController {
     }
 
     /**
-     * display list of references
+     * show list of references
      *
      * @Route("/canon-reference/list", name="canon_reference_list");
      */
@@ -51,7 +51,9 @@ class CanonReferenceController extends AbstractController {
     }
 
     /**
-     * display edit form for a reference (work in progress)
+     * show edit form for a reference for canons
+     *
+     * [work in progress]
      *
      * @todo edit canon references
      *

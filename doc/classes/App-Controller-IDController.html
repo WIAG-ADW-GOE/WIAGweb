@@ -99,12 +99,13 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">31</span>
+    <span class="phpdocumentor-element-found-in__line">33</span>
 </aside>
 
-            <p class="phpdocumentor-summary">provide single page data for bishops, canons, dioceses</p>
+            <p class="phpdocumentor-summary">show details for bishops, canons, dioceses or deliver data as JSON, CSV or XML</p>
 
-    <section class="phpdocumentor-description"></section>
+    <section class="phpdocumentor-description"><p>data export accepts as format parameter one of 'json', 'csv', 'jsonld', 'json-ld', 'rdf'</p>
+</section>
 
 
 
@@ -124,56 +125,56 @@
     <span>
         &nbsp;= [&#039;application/rdf+xml&#039; =&gt; &#039;rdf&#039;, &#039;application/ld+json&#039; =&gt; &#039;jsonld&#039;, &#039;text/csv&#039; =&gt; &#039;csv&#039;, &#039;application/json&#039; =&gt; &#039;json&#039;, &#039;text/html&#039; =&gt; &#039;rdf&#039;]                    </span>
 </dt>
-<dd></dd>
+<dd>suported formats for data export</dd>
 
                 <dt class="phpdocumentor-table-of-contents__entry -property -private">
     <a href="classes/App-Controller-IDController.html#property_dioceseData">$dioceseData</a>
     <span>
                 &nbsp;: mixed            </span>
 </dt>
-<dd></dd>
+<dd>service</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -private">
     <a href="classes/App-Controller-IDController.html#property_dioceseLinkedData">$dioceseLinkedData</a>
     <span>
                 &nbsp;: mixed            </span>
 </dt>
-<dd></dd>
+<dd>service</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -private">
     <a href="classes/App-Controller-IDController.html#property_personData">$personData</a>
     <span>
                 &nbsp;: mixed            </span>
 </dt>
-<dd></dd>
+<dd>service</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -private">
     <a href="classes/App-Controller-IDController.html#property_personLinkedData">$personLinkedData</a>
     <span>
                 &nbsp;: mixed            </span>
 </dt>
-<dd></dd>
+<dd>service</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -private">
     <a href="classes/App-Controller-IDController.html#property_svccanon">$svccanon</a>
     <span>
                 &nbsp;: mixed            </span>
 </dt>
-<dd></dd>
+<dd>service</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -private">
     <a href="classes/App-Controller-IDController.html#property_svccanonData">$svccanonData</a>
     <span>
                 &nbsp;: mixed            </span>
 </dt>
-<dd></dd>
+<dd>service</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -private">
     <a href="classes/App-Controller-IDController.html#property_svccanonLinkedData">$svccanonLinkedData</a>
     <span>
                 &nbsp;: mixed            </span>
 </dt>
-<dd></dd>
+<dd>service</dd>
 
                 <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-IDController.html#method___construct">__construct()</a>
@@ -187,91 +188,91 @@
     <span>
                         &nbsp;: <abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr>    </span>
 </dt>
-<dd>find bishop by id; return serialized data</dd>
+<dd>find bishop by ID; deliver data as JSON, CSV or XML</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-IDController.html#method_bishophtml">bishophtml()</a>
     <span>
                         &nbsp;: <abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr>    </span>
 </dt>
-<dd>supplement data for person</dd>
+<dd>show details for bishop</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-IDController.html#method_bishophtmlbyID">bishophtmlbyID()</a>
     <span>
                         &nbsp;: <abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr>    </span>
 </dt>
-<dd>find bishop by id</dd>
+<dd>find bishop by ID, show details</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-IDController.html#method_canondata">canondata()</a>
     <span>
                         &nbsp;: <abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr>    </span>
 </dt>
-<dd>find canon by id; return serialized data</dd>
+<dd>find canon by ID; deliver data as JSON, CSV or XML</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-IDController.html#method_canonhtml">canonhtml()</a>
     <span>
                         &nbsp;: <abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr>    </span>
 </dt>
-<dd>supplement references for canon</dd>
+<dd>show details for canon</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-IDController.html#method_canonhtmlbyID">canonhtmlbyID()</a>
     <span>
                         &nbsp;: <abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr>    </span>
 </dt>
-<dd>find canon by id</dd>
+<dd>find canon by ID; show details</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-IDController.html#method_detailsByGndId">detailsByGndId()</a>
     <span>
-                        &nbsp;: mixed    </span>
+                        &nbsp;: <abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr>    </span>
 </dt>
-<dd></dd>
+<dd>find item by GND_ID; show details</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-IDController.html#method_diocesedata">diocesedata()</a>
     <span>
                         &nbsp;: <abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr>    </span>
 </dt>
-<dd>find diocese by id</dd>
+<dd>find diocese by ID; deliver data as JSON, CSV or XML</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-IDController.html#method_diocesehtml">diocesehtml()</a>
     <span>
                         &nbsp;: <abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr>    </span>
 </dt>
-<dd></dd>
+<dd>show details for diocese</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-IDController.html#method_diocesehtmlbyID">diocesehtmlbyID()</a>
     <span>
                         &nbsp;: <abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr>    </span>
 </dt>
-<dd>find diocese by id</dd>
+<dd>find diocese by ID; show details</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-IDController.html#method_redirectID">redirectID()</a>
     <span>
                         &nbsp;: mixed    </span>
 </dt>
-<dd>decide which format should be delivered</dd>
+<dd>find item by ID; show details or deliver data as JSON, CSV or XML</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-IDController.html#method_routeData">routeData()</a>
     <span>
                         &nbsp;: mixed    </span>
 </dt>
-<dd>match id with object type (bishop, canon, diocse); return JSON/CSV</dd>
+<dd>match id with object type (bishop, canon, diocse); deliver data as JSON, CSV or XML</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-IDController.html#method_routeDoc">routeDoc()</a>
     <span>
                         &nbsp;: mixed    </span>
 </dt>
-<dd>match id with object type (bishop, canon, diocese), return HTML</dd>
+<dd>match id with object type (bishop, canon, diocese); show details</dd>
 
         </dl>
 
@@ -292,10 +293,11 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">44</span>
+    <span class="phpdocumentor-element-found-in__line">53</span>
 </aside>
 
-    
+        <p class="phpdocumentor-summary">suported formats for data export</p>
+
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
     <span class="phpdocumentor-signature__type">mixed</span>
@@ -304,7 +306,8 @@
 </code>
 
 
-    
+        <section class="phpdocumentor-description"></section>
+
     
 
 </article>
@@ -332,17 +335,19 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">35</span>
+    <span class="phpdocumentor-element-found-in__line">40</span>
 </aside>
 
-    
+        <p class="phpdocumentor-summary">service</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">private</span>
         <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$dioceseData</span>
     </code>
 
-    
+        <section class="phpdocumentor-description"></section>
+
     
 
 </article>
@@ -362,17 +367,19 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">36</span>
+    <span class="phpdocumentor-element-found-in__line">42</span>
 </aside>
 
-    
+        <p class="phpdocumentor-summary">service</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">private</span>
         <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$dioceseLinkedData</span>
     </code>
 
-    
+        <section class="phpdocumentor-description"></section>
+
     
 
 </article>
@@ -392,17 +399,19 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">33</span>
+    <span class="phpdocumentor-element-found-in__line">36</span>
 </aside>
 
-    
+        <p class="phpdocumentor-summary">service</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">private</span>
         <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$personData</span>
     </code>
 
-    
+        <section class="phpdocumentor-description"></section>
+
     
 
 </article>
@@ -422,17 +431,19 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">34</span>
+    <span class="phpdocumentor-element-found-in__line">38</span>
 </aside>
 
-    
+        <p class="phpdocumentor-summary">service</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">private</span>
         <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$personLinkedData</span>
     </code>
 
-    
+        <section class="phpdocumentor-description"></section>
+
     
 
 </article>
@@ -452,17 +463,19 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">37</span>
+    <span class="phpdocumentor-element-found-in__line">44</span>
 </aside>
 
-    
+        <p class="phpdocumentor-summary">service</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">private</span>
         <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$svccanon</span>
     </code>
 
-    
+        <section class="phpdocumentor-description"></section>
+
     
 
 </article>
@@ -482,17 +495,19 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">38</span>
+    <span class="phpdocumentor-element-found-in__line">46</span>
 </aside>
 
-    
+        <p class="phpdocumentor-summary">service</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">private</span>
         <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$svccanonData</span>
     </code>
 
-    
+        <section class="phpdocumentor-description"></section>
+
     
 
 </article>
@@ -512,17 +527,19 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">39</span>
+    <span class="phpdocumentor-element-found-in__line">48</span>
 </aside>
 
-    
+        <p class="phpdocumentor-summary">service</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">private</span>
         <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">$svccanonLinkedData</span>
     </code>
 
-    
+        <section class="phpdocumentor-description"></section>
+
     
 
 </article>
@@ -546,7 +563,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">52</span>
+    <span class="phpdocumentor-element-found-in__line">61</span>
 </aside>
 
     
@@ -630,10 +647,10 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">198</span>
+    <span class="phpdocumentor-element-found-in__line">209</span>
 </aside>
 
-        <p class="phpdocumentor-summary">find bishop by id; return serialized data</p>
+        <p class="phpdocumentor-summary">find bishop by ID; deliver data as JSON, CSV or XML</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -697,10 +714,10 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">158</span>
+    <span class="phpdocumentor-element-found-in__line">169</span>
 </aside>
 
-        <p class="phpdocumentor-summary">supplement data for person</p>
+        <p class="phpdocumentor-summary">show details for bishop</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -742,10 +759,10 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">140</span>
+    <span class="phpdocumentor-element-found-in__line">151</span>
 </aside>
 
-        <p class="phpdocumentor-summary">find bishop by id</p>
+        <p class="phpdocumentor-summary">find bishop by ID, show details</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -787,10 +804,10 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">306</span>
+    <span class="phpdocumentor-element-found-in__line">316</span>
 </aside>
 
-        <p class="phpdocumentor-summary">find canon by id; return serialized data</p>
+        <p class="phpdocumentor-summary">find canon by ID; deliver data as JSON, CSV or XML</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -817,12 +834,26 @@
             </dl>
 
     
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">todo</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>supplement references</p>
+</section>
+
+                                    </dd>
+                        </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type"><abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr></span>
             &mdash;
-            <section class="phpdocumentor-description"><p>Data
-TODO: supplement references</p>
+            <section class="phpdocumentor-description"><p>Data</p>
 </section>
 
     
@@ -840,10 +871,10 @@ TODO: supplement references</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">278</span>
+    <span class="phpdocumentor-element-found-in__line">289</span>
 </aside>
 
-        <p class="phpdocumentor-summary">supplement references for canon</p>
+        <p class="phpdocumentor-summary">show details for canon</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -885,10 +916,10 @@ TODO: supplement references</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">259</span>
+    <span class="phpdocumentor-element-found-in__line">270</span>
 </aside>
 
-        <p class="phpdocumentor-summary">find canon by id</p>
+        <p class="phpdocumentor-summary">find canon by ID; show details</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -930,13 +961,14 @@ TODO: supplement references</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">467</span>
+    <span class="phpdocumentor-element-found-in__line">484</span>
 </aside>
 
-    
+        <p class="phpdocumentor-summary">find item by GND_ID; show details</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">detailsByGndId</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                <span class="phpdocumentor-signature__name">detailsByGndId</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr></span></code>
 
         <section class="phpdocumentor-description"></section>
 
@@ -969,9 +1001,10 @@ TODO: supplement references</p>
                         </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
+    <span class="phpdocumentor-signature__response_type"><abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr></span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
+            <section class="phpdocumentor-description"><p>HTML</p>
+</section>
 
     
 </article>
@@ -988,10 +1021,10 @@ TODO: supplement references</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">408</span>
+    <span class="phpdocumentor-element-found-in__line">421</span>
 </aside>
 
-        <p class="phpdocumentor-summary">find diocese by id</p>
+        <p class="phpdocumentor-summary">find diocese by ID; deliver data as JSON, CSV or XML</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -1040,10 +1073,11 @@ TODO: supplement references</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">398</span>
+    <span class="phpdocumentor-element-found-in__line">410</span>
 </aside>
 
-    
+        <p class="phpdocumentor-summary">show details for diocese</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">diocesehtml</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$diocese</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr></span></code>
@@ -1084,10 +1118,10 @@ TODO: supplement references</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">382</span>
+    <span class="phpdocumentor-element-found-in__line">392</span>
 </aside>
 
-        <p class="phpdocumentor-summary">find diocese by id</p>
+        <p class="phpdocumentor-summary">find diocese by ID; show details</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -1136,16 +1170,17 @@ TODO: supplement references</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">77</span>
+    <span class="phpdocumentor-element-found-in__line">88</span>
 </aside>
 
-        <p class="phpdocumentor-summary">decide which format should be delivered</p>
+        <p class="phpdocumentor-summary">find item by ID; show details or deliver data as JSON, CSV or XML</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">redirectID</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Symfony\Component\HttpFoundation\Request">Request</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
+        <section class="phpdocumentor-description"><p>decide which format should be delivered</p>
+</section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1202,10 +1237,10 @@ TODO: supplement references</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">120</span>
+    <span class="phpdocumentor-element-found-in__line">131</span>
 </aside>
 
-        <p class="phpdocumentor-summary">match id with object type (bishop, canon, diocse); return JSON/CSV</p>
+        <p class="phpdocumentor-summary">match id with object type (bishop, canon, diocse); deliver data as JSON, CSV or XML</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -1268,10 +1303,10 @@ TODO: supplement references</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/IDController.php"><a href="files/src-controller-idcontroller.html"><abbr title="src/Controller/IDController.php">IDController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">100</span>
+    <span class="phpdocumentor-element-found-in__line">111</span>
 </aside>
 
-        <p class="phpdocumentor-summary">match id with object type (bishop, canon, diocese), return HTML</p>
+        <p class="phpdocumentor-summary">match id with object type (bishop, canon, diocese); show details</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>

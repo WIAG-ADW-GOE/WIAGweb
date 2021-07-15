@@ -19,15 +19,18 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-
+/**
+ * query dioceses
+ */
 class DioceseController extends AbstractController {
-    /**
-     * Parameters
-     */
+    /** number of items per page */
     const LIST_LIMIT = 25;
 
     /**
-     * list dioceses by initial letter
+     * list dioceses; select by initial letter
+     *
+     * 2021-07-15 not navigation menu
+     *
      * @Route("/list-dioceses", name="list_dioceses")
      */
     public function listDioceses (Request $request) {
@@ -56,6 +59,10 @@ class DioceseController extends AbstractController {
 
 
     /**
+     * display query form for dioceses; handle query
+     *
+     * only field: name
+     *
      * @Route("/bistuemer", name="query_dioceses")
      */
     public function dioceses (Request $request,
@@ -190,14 +197,17 @@ class DioceseController extends AbstractController {
 
 
     /**
+     * find diocese by id or by name; display details or deliver data as JSON or CSV
+     *
      * @Route("/diocese/{idorname}", name="diocese")
+     * @todo bring up to date
      */
     public function getDiocese($idorname, Request $request) {
 
         $format = $request->query->get('format');
 
         if(!is_null($format)) {
-            return $this->redirectToRoute('diocese_api', [
+            return $this->redirectToRoute('api_diocese', [
                 'wiagid' => $idorname,
                 'format' => $format,
             ]);
@@ -220,7 +230,10 @@ class DioceseController extends AbstractController {
         ]);
     }
 
-    public function getDioceseInQuery($form, $offset) {
+    /**
+     * display details for a diocese in a query result list
+     */
+    public function getDioceseInQuery($form, int $offset) {
 
         # dd($name, $offset);
 
@@ -258,6 +271,10 @@ class DioceseController extends AbstractController {
     }
 
     /**
+     * display details for a diocese in a query result list (query request)
+     *
+     * [not up to date; obsolete?]
+     *
      * @Route("/diocese-in-list/", name="diocese_in_list")
      */
     public function getDioceseInList(Request $request) {
@@ -313,6 +330,10 @@ class DioceseController extends AbstractController {
     }
 
     /**
+     * build form from query request
+     *
+     * 2021-07-15 obsolete; not up to date
+     *
      * @Route("/requery-dioceses", name="requery_dioceses")
      */
     public function reloadForm(Request $request) {

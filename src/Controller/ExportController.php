@@ -19,11 +19,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+/**
+ * manage bulk export and BEACON list
+ */
 class ExportController extends AbstractController {
 
+    /** service */
     private $personData;
+    /** service */
     private $personLinkedData;
+    /** service */
     private $dioceseData;
+    /** service */
     private $dioceseLinkedData;
 
     const FORMAT_MAP = [
@@ -42,6 +49,8 @@ class ExportController extends AbstractController {
     }
 
     /**
+     * display navigation page for bulk export
+     *
      * @Route("/bulk/export", name="bulk_export_dispatch")
      * @IsGranted("ROLE_DATA_ADMIN")
      */
@@ -50,6 +59,8 @@ class ExportController extends AbstractController {
     }
 
     /**
+     * return complete bishop data; format: JSON, CSV, XML
+     *
      * @Route("/bulk/export/bishop/{format}", name="bulk_bishop_export")
      * @IsGranted("ROLE_DATA_ADMIN")
      */
@@ -124,6 +135,8 @@ class ExportController extends AbstractController {
     }
 
     /**
+     * return complete diocese data; format: JSON, CSV, XML
+     *
      * @Route("/bulk/export/diocese/{format}", name="bulk_diocese_export")
      * @IsGranted("ROLE_DATA_ADMIN")
      */
@@ -187,8 +200,9 @@ class ExportController extends AbstractController {
     }
 
     /**
+     * return list of GND numbers for all bishops
+     *
      * @Route("/beacon.txt", name="beacon")
-     * Return list of GND numbers for all bishops
      */
     public function beacon (Request $request) {
         $response = new Response();

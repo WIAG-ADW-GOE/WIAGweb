@@ -26,21 +26,30 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 /**
- * provide single page data for bishops, canons, dioceses
+ * show details for bishops, canons, dioceses or deliver data as JSON, CSV or XML
+ *
+ * data export accepts as format parameter one of 'json', 'csv', 'jsonld', 'json-ld', 'rdf'
  */
 class IDController extends AbstractController {
 
+    /** service */
     private $personData;
+    /** service */
     private $personLinkedData;
+    /** service */
     private $dioceseData;
+    /** service */
     private $dioceseLinkedData;
+    /** service */
     private $svccanon;
+    /** service */
     private $svccanonData;
+    /** service */
     private $svccanonLinkedData;
     //    private $svccanonGsData;
     //    private $svccanonGsLinkedData;
 
-
+    /** suported formats for data export */
     const FORMAT_MAP = [
         'application/rdf+xml' => 'rdf',
         'application/ld+json' => 'jsonld',
@@ -70,6 +79,8 @@ class IDController extends AbstractController {
     }
 
     /**
+     * find item by ID; show details or deliver data as JSON, CSV or XML
+     *
      * decide which format should be delivered
      *
      * @Route("/id/{id}", name="id")
@@ -91,7 +102,7 @@ class IDController extends AbstractController {
     }
 
     /**
-     * match id with object type (bishop, canon, diocese), return HTML
+     * match id with object type (bishop, canon, diocese); show details
      *
      * @todo check MIME type; default: HTML
      *
@@ -113,7 +124,7 @@ class IDController extends AbstractController {
     }
 
     /**
-     * match id with object type (bishop, canon, diocse); return JSON/CSV
+     * match id with object type (bishop, canon, diocse); deliver data as JSON, CSV or XML
      *
      * @Route("/data/{id}", name="wiag_id_data")
      */
@@ -133,7 +144,7 @@ class IDController extends AbstractController {
     }
 
     /**
-     * find bishop by id
+     * find bishop by ID, show details
      *
      * @return Response                 HTML
      */
@@ -151,7 +162,7 @@ class IDController extends AbstractController {
     }
 
     /**
-     * supplement data for person
+     * show details for bishop
      *
      * @return Response                 HTML
      */
@@ -189,7 +200,7 @@ class IDController extends AbstractController {
     }
 
     /**
-     * find bishop by id; return serialized data
+     * find bishop by ID; deliver data as JSON, CSV or XML
      *
      * @return Response                 HTML
      *
@@ -252,7 +263,7 @@ class IDController extends AbstractController {
     }
 
     /**
-     * find canon by id
+     * find canon by ID; show details
      *
      * @return Response                 HTML
      */
@@ -271,7 +282,7 @@ class IDController extends AbstractController {
     }
 
     /**
-     * supplement references for canon
+     * show details for canon
      *
      * @return Response                 HTML
      */
@@ -297,11 +308,10 @@ class IDController extends AbstractController {
     }
 
     /**
-     * find canon by id; return serialized data
-     *
+     * find canon by ID; deliver data as JSON, CSV or XML
      *
      * @return Response                 Data
-     * TODO: supplement references
+     * @todo supplement references
      */
     public function canondata(string $id, Request $request) {
         $idbase = pathinfo($id, PATHINFO_FILENAME);
@@ -375,7 +385,7 @@ class IDController extends AbstractController {
     }
 
     /**
-     * find diocese by id
+     * find diocese by ID; show details
      *
      * @return Response                 HTML
      */
@@ -393,6 +403,8 @@ class IDController extends AbstractController {
     }
 
     /**
+     * show details for diocese
+     *
      * @return Response                 HTML
      */
     public function diocesehtml($diocese) {
@@ -402,7 +414,8 @@ class IDController extends AbstractController {
     }
 
     /**
-     * find diocese by id
+     * find diocese by ID; deliver data as JSON, CSV or XML
+     *
      * @return Response                 Data
      */
     public function diocesedata(string $id, Request $request) {
@@ -462,6 +475,10 @@ class IDController extends AbstractController {
     }
 
     /**
+     * find item by GND_ID; show details
+     *
+     * @return Response                 HTML
+     *
      * @Route("/gnd/{id}", name="gnd_id")
      */
     public function detailsByGndId(string $id) {

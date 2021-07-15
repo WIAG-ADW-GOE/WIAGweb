@@ -19,11 +19,17 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 /**
+ * handle API requests
+ *
  * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
  */
 class DioceseApiController extends AbstractController {
 
     /**
+     * find diocese by ID; display details
+     *
+     * @see IDController::redirectID()
+     *
      * @Route("/api/diocese/{wiagidlong}", name="api_diocese")
      */
     public function getdiocese($wiagidlong, Request $request) {
@@ -65,6 +71,8 @@ class DioceseApiController extends AbstractController {
 
 
     /**
+     * accept query request and deliver diocese data as JSON or CSV
+     *
      * @Route("/api/query-dioceses", name="api_query_dioceses")
      */
     public function apigetdioceses(Request $request) {

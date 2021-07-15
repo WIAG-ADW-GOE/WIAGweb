@@ -11,16 +11,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
+ * AJAX callbacks for dioceses
+ *
  * @IsGranted("ROLE_QUERY")
  */
 class DioceseUtility extends AbstractController {
-    /**
-     * Parameters
-     */
+    /** number of items in autocompletion list */
     const HINT_LIST_LIMIT = 12;
 
     /**
      * AJAX callback
+     *
      *@Route("/query-dioceses/utility/names", methods="GET", name="query_dioceses_utility_names")
      */
     public function getNamesApi(Request $request) {

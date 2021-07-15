@@ -8,12 +8,12 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\BishopApiController\u003A\u003Agetperson\u0028\u0029",
             "name": "getperson",
-            "summary": "2021\u002D07\u002D13\u0020obsolete\u003F\u0020see\u0020IDController",
+            "summary": "find\u0020bishop\u0020by\u0020ID\u003B\u0020deliver\u0020data\u0020as\u0020JSON\u0020or\u0020CSV",
             "url": "classes/App-Controller-BishopApiController.html#method_getperson"
         },                {
             "fqsen": "\\App\\Controller\\BishopApiController\u003A\u003Aapigetpersons\u0028\u0029",
             "name": "apigetpersons",
-            "summary": "accept\u0020query\u0020request\u0020and\u0020return\u0020serialized\u0020bishop\u0020data\u0020\u0028json\u0020or\u0020csv\u0029",
+            "summary": "accept\u0020query\u0020request\u0020and\u0020deliver\u0020data\u0020as\u0020JSON,\u0020CSV",
             "url": "classes/App-Controller-BishopApiController.html#method_apigetpersons"
         },                {
             "fqsen": "\\App\\Controller\\CanonApiController",
@@ -193,97 +193,82 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\CanonReferenceController",
             "name": "CanonReferenceController",
-            "summary": "",
+            "summary": "edit\u0020canon\u0020references",
             "url": "classes/App-Controller-CanonReferenceController.html"
         },                {
             "fqsen": "\\App\\Controller\\CanonReferenceController\u003A\u003AdetailsByShort\u0028\u0029",
             "name": "detailsByShort",
-            "summary": "display\u0020details\u0020for\u0020a\u0020reference",
+            "summary": "show\u0020details\u0020for\u0020a\u0020reference\u0020for\u0020canons",
             "url": "classes/App-Controller-CanonReferenceController.html#method_detailsByShort"
         },                {
             "fqsen": "\\App\\Controller\\CanonReferenceController\u003A\u003Alist\u0028\u0029",
             "name": "list",
-            "summary": "display\u0020list\u0020of\u0020references",
+            "summary": "show\u0020list\u0020of\u0020references",
             "url": "classes/App-Controller-CanonReferenceController.html#method_list"
         },                {
             "fqsen": "\\App\\Controller\\CanonReferenceController\u003A\u003Aedit\u0028\u0029",
             "name": "edit",
-            "summary": "display\u0020edit\u0020form\u0020for\u0020a\u0020reference\u0020\u0028work\u0020in\u0020progress\u0029",
+            "summary": "show\u0020edit\u0020form\u0020for\u0020a\u0020reference\u0020for\u0020canons",
             "url": "classes/App-Controller-CanonReferenceController.html#method_edit"
-        },                {
-            "fqsen": "\\App\\Controller\\CanonUtility",
-            "name": "CanonUtility",
-            "summary": "",
-            "url": "classes/App-Controller-CanonUtility.html"
-        },                {
-            "fqsen": "\\App\\Controller\\CanonUtility\u003A\u003AgetNamesApi\u0028\u0029",
-            "name": "getNamesApi",
-            "summary": "AJAX\u0020callback",
-            "url": "classes/App-Controller-CanonUtility.html#method_getNamesApi"
-        },                {
-            "fqsen": "\\App\\Controller\\CanonUtility\u003A\u003AHINT_LIST_LIMIT",
-            "name": "HINT_LIST_LIMIT",
-            "summary": "Parameters",
-            "url": "classes/App-Controller-CanonUtility.html#constant_HINT_LIST_LIMIT"
         },                {
             "fqsen": "\\App\\Controller\\DioceseApiController",
             "name": "DioceseApiController",
-            "summary": "",
+            "summary": "handle\u0020API\u0020requests",
             "url": "classes/App-Controller-DioceseApiController.html"
         },                {
             "fqsen": "\\App\\Controller\\DioceseApiController\u003A\u003Agetdiocese\u0028\u0029",
             "name": "getdiocese",
-            "summary": "",
+            "summary": "find\u0020diocese\u0020by\u0020ID\u003B\u0020display\u0020details",
             "url": "classes/App-Controller-DioceseApiController.html#method_getdiocese"
         },                {
             "fqsen": "\\App\\Controller\\DioceseApiController\u003A\u003Aapigetdioceses\u0028\u0029",
             "name": "apigetdioceses",
-            "summary": "",
+            "summary": "accept\u0020query\u0020request\u0020and\u0020deliver\u0020diocese\u0020data\u0020as\u0020JSON\u0020or\u0020CSV",
             "url": "classes/App-Controller-DioceseApiController.html#method_apigetdioceses"
         },                {
             "fqsen": "\\App\\Controller\\DioceseController",
             "name": "DioceseController",
-            "summary": "",
+            "summary": "query\u0020dioceses",
             "url": "classes/App-Controller-DioceseController.html"
         },                {
             "fqsen": "\\App\\Controller\\DioceseController\u003A\u003AlistDioceses\u0028\u0029",
             "name": "listDioceses",
-            "summary": "list\u0020dioceses\u0020by\u0020initial\u0020letter",
+            "summary": "list\u0020dioceses\u003B\u0020select\u0020by\u0020initial\u0020letter",
             "url": "classes/App-Controller-DioceseController.html#method_listDioceses"
         },                {
             "fqsen": "\\App\\Controller\\DioceseController\u003A\u003Adioceses\u0028\u0029",
             "name": "dioceses",
-            "summary": "",
+            "summary": "display\u0020query\u0020form\u0020for\u0020dioceses\u003B\u0020handle\u0020query",
             "url": "classes/App-Controller-DioceseController.html#method_dioceses"
         },                {
             "fqsen": "\\App\\Controller\\DioceseController\u003A\u003AgetDiocese\u0028\u0029",
             "name": "getDiocese",
-            "summary": "",
+            "summary": "find\u0020diocese\u0020by\u0020id\u0020or\u0020by\u0020name\u003B\u0020display\u0020details\u0020or\u0020deliver\u0020data\u0020as\u0020JSON\u0020or\u0020CSV",
             "url": "classes/App-Controller-DioceseController.html#method_getDiocese"
         },                {
             "fqsen": "\\App\\Controller\\DioceseController\u003A\u003AgetDioceseInQuery\u0028\u0029",
             "name": "getDioceseInQuery",
-            "summary": "",
+            "summary": "display\u0020details\u0020for\u0020a\u0020diocese\u0020in\u0020a\u0020query\u0020result\u0020list",
             "url": "classes/App-Controller-DioceseController.html#method_getDioceseInQuery"
         },                {
             "fqsen": "\\App\\Controller\\DioceseController\u003A\u003AgetDioceseInList\u0028\u0029",
             "name": "getDioceseInList",
-            "summary": "",
+            "summary": "display\u0020details\u0020for\u0020a\u0020diocese\u0020in\u0020a\u0020query\u0020result\u0020list\u0020\u0028query\u0020request\u0029",
             "url": "classes/App-Controller-DioceseController.html#method_getDioceseInList"
         },                {
             "fqsen": "\\App\\Controller\\DioceseController\u003A\u003AreloadForm\u0028\u0029",
             "name": "reloadForm",
-            "summary": "",
+            "summary": "build\u0020form\u0020from\u0020query\u0020request",
             "url": "classes/App-Controller-DioceseController.html#method_reloadForm"
         },                {
             "fqsen": "\\App\\Controller\\DioceseController\u003A\u003ALIST_LIMIT",
             "name": "LIST_LIMIT",
-            "summary": "Parameters",
+            "summary": "number\u0020of\u0020items\u0020per\u0020page",
             "url": "classes/App-Controller-DioceseController.html#constant_LIST_LIMIT"
         },                {
             "fqsen": "\\App\\Controller\\DioceseUtility",
             "name": "DioceseUtility",
-            "summary": "",
+            "summary": "AJAX\u0020callbacks\u0020for\u0020dioceses",
             "url": "classes/App-Controller-DioceseUtility.html"
         },                {
             "fqsen": "\\App\\Controller\\DioceseUtility\u003A\u003AgetNamesApi\u0028\u0029",
@@ -293,12 +278,12 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\DioceseUtility\u003A\u003AHINT_LIST_LIMIT",
             "name": "HINT_LIST_LIMIT",
-            "summary": "Parameters",
+            "summary": "number\u0020of\u0020items\u0020in\u0020autocompletion\u0020list",
             "url": "classes/App-Controller-DioceseUtility.html#constant_HINT_LIST_LIMIT"
         },                {
             "fqsen": "\\App\\Controller\\ExportController",
             "name": "ExportController",
-            "summary": "",
+            "summary": "manage\u0020bulk\u0020export\u0020and\u0020BEACON\u0020list",
             "url": "classes/App-Controller-ExportController.html"
         },                {
             "fqsen": "\\App\\Controller\\ExportController\u003A\u003A__construct\u0028\u0029",
@@ -308,22 +293,22 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\ExportController\u003A\u003Adispatchexport\u0028\u0029",
             "name": "dispatchexport",
-            "summary": "",
+            "summary": "display\u0020navigation\u0020page\u0020for\u0020bulk\u0020export",
             "url": "classes/App-Controller-ExportController.html#method_dispatchexport"
         },                {
             "fqsen": "\\App\\Controller\\ExportController\u003A\u003ApersonsData\u0028\u0029",
             "name": "personsData",
-            "summary": "",
+            "summary": "return\u0020complete\u0020bishop\u0020data\u003B\u0020format\u003A\u0020JSON,\u0020CSV,\u0020XML",
             "url": "classes/App-Controller-ExportController.html#method_personsData"
         },                {
             "fqsen": "\\App\\Controller\\ExportController\u003A\u003Adiocesesdata\u0028\u0029",
             "name": "diocesesdata",
-            "summary": "",
+            "summary": "return\u0020complete\u0020diocese\u0020data\u003B\u0020format\u003A\u0020JSON,\u0020CSV,\u0020XML",
             "url": "classes/App-Controller-ExportController.html#method_diocesesdata"
         },                {
             "fqsen": "\\App\\Controller\\ExportController\u003A\u003Abeacon\u0028\u0029",
             "name": "beacon",
-            "summary": "",
+            "summary": "return\u0020list\u0020of\u0020GND\u0020numbers\u0020for\u0020all\u0020bishops",
             "url": "classes/App-Controller-ExportController.html#method_beacon"
         },                {
             "fqsen": "\\App\\Controller\\ExportController\u003A\u003AFORMAT_MAP",
@@ -333,27 +318,27 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\ExportController\u003A\u003A\u0024personData",
             "name": "personData",
-            "summary": "",
+            "summary": "service",
             "url": "classes/App-Controller-ExportController.html#property_personData"
         },                {
             "fqsen": "\\App\\Controller\\ExportController\u003A\u003A\u0024personLinkedData",
             "name": "personLinkedData",
-            "summary": "",
+            "summary": "service",
             "url": "classes/App-Controller-ExportController.html#property_personLinkedData"
         },                {
             "fqsen": "\\App\\Controller\\ExportController\u003A\u003A\u0024dioceseData",
             "name": "dioceseData",
-            "summary": "",
+            "summary": "service",
             "url": "classes/App-Controller-ExportController.html#property_dioceseData"
         },                {
             "fqsen": "\\App\\Controller\\ExportController\u003A\u003A\u0024dioceseLinkedData",
             "name": "dioceseLinkedData",
-            "summary": "",
+            "summary": "service",
             "url": "classes/App-Controller-ExportController.html#property_dioceseLinkedData"
         },                {
             "fqsen": "\\App\\Controller\\IDController",
             "name": "IDController",
-            "summary": "provide\u0020single\u0020page\u0020data\u0020for\u0020bishops,\u0020canons,\u0020dioceses",
+            "summary": "show\u0020details\u0020for\u0020bishops,\u0020canons,\u0020dioceses\u0020or\u0020deliver\u0020data\u0020as\u0020JSON,\u0020CSV\u0020or\u0020XML",
             "url": "classes/App-Controller-IDController.html"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003A__construct\u0028\u0029",
@@ -363,107 +348,107 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003AredirectID\u0028\u0029",
             "name": "redirectID",
-            "summary": "decide\u0020which\u0020format\u0020should\u0020be\u0020delivered",
+            "summary": "find\u0020item\u0020by\u0020ID\u003B\u0020show\u0020details\u0020or\u0020deliver\u0020data\u0020as\u0020JSON,\u0020CSV\u0020or\u0020XML",
             "url": "classes/App-Controller-IDController.html#method_redirectID"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003ArouteDoc\u0028\u0029",
             "name": "routeDoc",
-            "summary": "match\u0020id\u0020with\u0020object\u0020type\u0020\u0028bishop,\u0020canon,\u0020diocese\u0029,\u0020return\u0020HTML",
+            "summary": "match\u0020id\u0020with\u0020object\u0020type\u0020\u0028bishop,\u0020canon,\u0020diocese\u0029\u003B\u0020show\u0020details",
             "url": "classes/App-Controller-IDController.html#method_routeDoc"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003ArouteData\u0028\u0029",
             "name": "routeData",
-            "summary": "match\u0020id\u0020with\u0020object\u0020type\u0020\u0028bishop,\u0020canon,\u0020diocse\u0029\u003B\u0020return\u0020JSON\/CSV",
+            "summary": "match\u0020id\u0020with\u0020object\u0020type\u0020\u0028bishop,\u0020canon,\u0020diocse\u0029\u003B\u0020deliver\u0020data\u0020as\u0020JSON,\u0020CSV\u0020or\u0020XML",
             "url": "classes/App-Controller-IDController.html#method_routeData"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003AbishophtmlbyID\u0028\u0029",
             "name": "bishophtmlbyID",
-            "summary": "find\u0020bishop\u0020by\u0020id",
+            "summary": "find\u0020bishop\u0020by\u0020ID,\u0020show\u0020details",
             "url": "classes/App-Controller-IDController.html#method_bishophtmlbyID"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003Abishophtml\u0028\u0029",
             "name": "bishophtml",
-            "summary": "supplement\u0020data\u0020for\u0020person",
+            "summary": "show\u0020details\u0020for\u0020bishop",
             "url": "classes/App-Controller-IDController.html#method_bishophtml"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003Abishopdata\u0028\u0029",
             "name": "bishopdata",
-            "summary": "find\u0020bishop\u0020by\u0020id\u003B\u0020return\u0020serialized\u0020data",
+            "summary": "find\u0020bishop\u0020by\u0020ID\u003B\u0020deliver\u0020data\u0020as\u0020JSON,\u0020CSV\u0020or\u0020XML",
             "url": "classes/App-Controller-IDController.html#method_bishopdata"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003AcanonhtmlbyID\u0028\u0029",
             "name": "canonhtmlbyID",
-            "summary": "find\u0020canon\u0020by\u0020id",
+            "summary": "find\u0020canon\u0020by\u0020ID\u003B\u0020show\u0020details",
             "url": "classes/App-Controller-IDController.html#method_canonhtmlbyID"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003Acanonhtml\u0028\u0029",
             "name": "canonhtml",
-            "summary": "supplement\u0020references\u0020for\u0020canon",
+            "summary": "show\u0020details\u0020for\u0020canon",
             "url": "classes/App-Controller-IDController.html#method_canonhtml"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003Acanondata\u0028\u0029",
             "name": "canondata",
-            "summary": "find\u0020canon\u0020by\u0020id\u003B\u0020return\u0020serialized\u0020data",
+            "summary": "find\u0020canon\u0020by\u0020ID\u003B\u0020deliver\u0020data\u0020as\u0020JSON,\u0020CSV\u0020or\u0020XML",
             "url": "classes/App-Controller-IDController.html#method_canondata"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003AdiocesehtmlbyID\u0028\u0029",
             "name": "diocesehtmlbyID",
-            "summary": "find\u0020diocese\u0020by\u0020id",
+            "summary": "find\u0020diocese\u0020by\u0020ID\u003B\u0020show\u0020details",
             "url": "classes/App-Controller-IDController.html#method_diocesehtmlbyID"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003Adiocesehtml\u0028\u0029",
             "name": "diocesehtml",
-            "summary": "",
+            "summary": "show\u0020details\u0020for\u0020diocese",
             "url": "classes/App-Controller-IDController.html#method_diocesehtml"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003Adiocesedata\u0028\u0029",
             "name": "diocesedata",
-            "summary": "find\u0020diocese\u0020by\u0020id",
+            "summary": "find\u0020diocese\u0020by\u0020ID\u003B\u0020deliver\u0020data\u0020as\u0020JSON,\u0020CSV\u0020or\u0020XML",
             "url": "classes/App-Controller-IDController.html#method_diocesedata"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003AdetailsByGndId\u0028\u0029",
             "name": "detailsByGndId",
-            "summary": "",
+            "summary": "find\u0020item\u0020by\u0020GND_ID\u003B\u0020show\u0020details",
             "url": "classes/App-Controller-IDController.html#method_detailsByGndId"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003AFORMAT_MAP",
             "name": "FORMAT_MAP",
-            "summary": "",
+            "summary": "suported\u0020formats\u0020for\u0020data\u0020export",
             "url": "classes/App-Controller-IDController.html#constant_FORMAT_MAP"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003A\u0024personData",
             "name": "personData",
-            "summary": "",
+            "summary": "service",
             "url": "classes/App-Controller-IDController.html#property_personData"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003A\u0024personLinkedData",
             "name": "personLinkedData",
-            "summary": "",
+            "summary": "service",
             "url": "classes/App-Controller-IDController.html#property_personLinkedData"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003A\u0024dioceseData",
             "name": "dioceseData",
-            "summary": "",
+            "summary": "service",
             "url": "classes/App-Controller-IDController.html#property_dioceseData"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003A\u0024dioceseLinkedData",
             "name": "dioceseLinkedData",
-            "summary": "",
+            "summary": "service",
             "url": "classes/App-Controller-IDController.html#property_dioceseLinkedData"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003A\u0024svccanon",
             "name": "svccanon",
-            "summary": "",
+            "summary": "service",
             "url": "classes/App-Controller-IDController.html#property_svccanon"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003A\u0024svccanonData",
             "name": "svccanonData",
-            "summary": "",
+            "summary": "service",
             "url": "classes/App-Controller-IDController.html#property_svccanonData"
         },                {
             "fqsen": "\\App\\Controller\\IDController\u003A\u003A\u0024svccanonLinkedData",
             "name": "svccanonLinkedData",
-            "summary": "",
+            "summary": "service",
             "url": "classes/App-Controller-IDController.html#property_svccanonLinkedData"
         },                {
             "fqsen": "\\App\\Controller\\QueryBishop",
@@ -473,7 +458,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\QueryBishop\u003A\u003Alaunch_query\u0028\u0029",
             "name": "launch_query",
-            "summary": "",
+            "summary": "display\u0020query\u0020form\u0020for\u0020bishops\u003B\u0020handle\u0020query",
             "url": "classes/App-Controller-QueryBishop.html#method_launch_query"
         },                {
             "fqsen": "\\App\\Controller\\QueryBishop\u003A\u003Agetperson\u0028\u0029",
@@ -518,12 +503,12 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\QueryBishop\u003A\u003ALIST_LIMIT",
             "name": "LIST_LIMIT",
-            "summary": "number\u0020of\u0020elements\u0020in\u0020query\u0020result\u0020list",
+            "summary": "number\u0020of\u0020items\u0020per\u0020page",
             "url": "classes/App-Controller-QueryBishop.html#constant_LIST_LIMIT"
         },                {
             "fqsen": "\\App\\Controller\\QueryBishopUtility",
             "name": "QueryBishopUtility",
-            "summary": "",
+            "summary": "AJAX\u0020callbacks\u0020for\u0020bishops",
             "url": "classes/App-Controller-QueryBishopUtility.html"
         },                {
             "fqsen": "\\App\\Controller\\QueryBishopUtility\u003A\u003AgetNamesApi\u0028\u0029",
@@ -543,37 +528,37 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\QueryBishopUtility\u003A\u003AHINT_LIST_LIMIT",
             "name": "HINT_LIST_LIMIT",
-            "summary": "",
+            "summary": "number\u0020of\u0020items\u0020in\u0020completion\u0020list",
             "url": "classes/App-Controller-QueryBishopUtility.html#constant_HINT_LIST_LIMIT"
         },                {
             "fqsen": "\\App\\Controller\\ReferenceController",
             "name": "ReferenceController",
-            "summary": "",
+            "summary": "show\u0020references\u0020for\u0020bishops",
             "url": "classes/App-Controller-ReferenceController.html"
         },                {
             "fqsen": "\\App\\Controller\\ReferenceController\u003A\u003AdetailsByShort\u0028\u0029",
             "name": "detailsByShort",
-            "summary": "",
+            "summary": "show\u0020list\u0020of\u0020refereces\u0020for\u0020bishops",
             "url": "classes/App-Controller-ReferenceController.html#method_detailsByShort"
         },                {
             "fqsen": "\\App\\Controller\\ReferenceController\u003A\u003Alist\u0028\u0029",
             "name": "list",
-            "summary": "",
+            "summary": "show\u0020details\u0020for\u0020a\u0020reference\u0020for\u0020bishops",
             "url": "classes/App-Controller-ReferenceController.html#method_list"
         },                {
             "fqsen": "\\App\\Controller\\SecurityController",
             "name": "SecurityController",
-            "summary": "",
+            "summary": "manage\u0020login",
             "url": "classes/App-Controller-SecurityController.html"
         },                {
             "fqsen": "\\App\\Controller\\SecurityController\u003A\u003Alogin\u0028\u0029",
             "name": "login",
-            "summary": "",
+            "summary": "manage\u0020login",
             "url": "classes/App-Controller-SecurityController.html#method_login"
         },                {
             "fqsen": "\\App\\Controller\\SecurityController\u003A\u003Alogout\u0028\u0029",
             "name": "logout",
-            "summary": "",
+            "summary": "manage\u0020logout",
             "url": "classes/App-Controller-SecurityController.html#method_logout"
         },                {
             "fqsen": "\\App\\Controller\\Start",
@@ -618,7 +603,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\UserAdminController",
             "name": "UserAdminController",
-            "summary": "",
+            "summary": "manage\u0020users",
             "url": "classes/App-Controller-UserAdminController.html"
         },                {
             "fqsen": "\\App\\Controller\\UserAdminController\u003A\u003A__construct\u0028\u0029",
@@ -628,12 +613,12 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\UserAdminController\u003A\u003AaddUser\u0028\u0029",
             "name": "addUser",
-            "summary": "",
+            "summary": "create\u0020user\u0020credentials",
             "url": "classes/App-Controller-UserAdminController.html#method_addUser"
         },                {
             "fqsen": "\\App\\Controller\\UserAdminController\u003A\u003AaddUserSucces\u0028\u0029",
             "name": "addUserSucces",
-            "summary": "",
+            "summary": "show\u0020message",
             "url": "classes/App-Controller-UserAdminController.html#method_addUserSucces"
         },                {
             "fqsen": "\\App\\Controller\\UserAdminController\u003A\u003A\u0024passwordEncoder",
