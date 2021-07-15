@@ -9,9 +9,16 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
+/**
+ * edit canon references
+ */
 class CanonReferenceController extends AbstractController {
 
     /**
+     * display details for a reference
+     *
+     * @return Response                 HTML
+     *
      * @Route("/canon-reference/id/{id}", name="canon_reference");
      */
     public function detailsByShort($id) {
@@ -28,23 +35,11 @@ class CanonReferenceController extends AbstractController {
     }
 
     /**
+     * display list of references
+     *
      * @Route("/canon-reference/list", name="canon_reference_list");
      */
     public function list() {
-
-        $references = $this->getDoctrine()
-                           ->getRepository(CnReference::class)
-                           ->findAll();
-
-        return $this->render("canon_reference/list.html.twig", [
-            'references' => $references,
-        ]);
-    }
-
-    /**
-     * @Route("/canon-reference/edit", name="canon_reference_editlist");
-     */
-    public function editlist() {
         $references = $this->getDoctrine()
                            ->getRepository(CnReference::class)
                            ->findAll();
@@ -56,6 +51,10 @@ class CanonReferenceController extends AbstractController {
     }
 
     /**
+     * display edit form for a reference (work in progress)
+     *
+     * @todo edit canon references
+     *
      * @Route("/canon-reference/edit/{id}", name="canon_reference_edit");
      */
     public function edit(CnReference $reference) {

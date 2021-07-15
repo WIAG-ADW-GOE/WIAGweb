@@ -32,6 +32,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
+ * create/edit canons
+ *
  * @IsGranted("ROLE_DATA_ADMIN")
  */
 class CanonEditController extends AbstractController {
@@ -105,9 +107,9 @@ class CanonEditController extends AbstractController {
     }
 
     /**
-     * display details for a canon in a query result list
+     * display details for a canon in a query result list (on hold)
      *
-     * This is not in use at the moment.
+     * This function is not in use at the moment.
      * The user gets the edit form, if she clicks on the link for a canon.
      * Keep it, in case another workflow becomes more attractive.
      */
@@ -179,6 +181,8 @@ class CanonEditController extends AbstractController {
     }
 
     /**
+     * display edit form for a canon
+     *
      * @Route("/domherren/edit/{id}", name="canon_edit")
      * @IsGranted("ROLE_DATA_ADMIN")
      */
@@ -197,7 +201,6 @@ class CanonEditController extends AbstractController {
             $em->persist($canon);
             $em->flush();
 
-            // $cs->canonreference($canon);
 
             $status = $canon->getStatus();
             if ($status == 'online') {
@@ -210,6 +213,8 @@ class CanonEditController extends AbstractController {
                 'id' => $canon->getId(),
             ]);
         }
+
+        // collect merged canons for a list of references
         $merged = array();
         $cycle = 1;
         $merged = $this->getDoctrine()
@@ -224,7 +229,10 @@ class CanonEditController extends AbstractController {
     }
 
 
-    /** @Route("/domherren/new-office/{id}", name="canon_new_office")
+    /**
+     * display input form for a new office
+     *
+     * @Route("/domherren/new-office/{id}", name="canon_new_office")
      * @IsGranted("ROLE_DATA_ADMIN")
      */
     public function new_office(Canon $canon,
@@ -268,6 +276,8 @@ class CanonEditController extends AbstractController {
     }
 
     /**
+     * display edit form for a canon's office
+     *
      * @Route("/domherren/edit-office/{id}/{idoffice}", name="canon_edit_office")
      * @ParamConverter("canon", options={"id": "id"})
      * @ParamConverter("office", options={"id": "idoffice"})
@@ -326,6 +336,7 @@ class CanonEditController extends AbstractController {
 
     /**
      * AJAX callback
+     *
      * @Route("domherren/edit/autocomplete/name", name="canon_edit_autocomplete_name")
      */
     public function autocompletename(Request $request) {
@@ -341,6 +352,7 @@ class CanonEditController extends AbstractController {
 
     /**
      * AJAX callback
+     *
      * @Route("domherren/edit/autocomplete/domstift", name="canon_edit_autocomplete_domstift")
      */
     public function autocompletedomstift(Request $request) {
@@ -363,6 +375,7 @@ class CanonEditController extends AbstractController {
 
     /**
      * AJAX callback
+     *
      * @Route("domherren/edit/autocomplete/monastery", name="canon_edit_autocomplete_monastery")
      */
     public function autocompletemonastery(Request $request) {
@@ -378,6 +391,7 @@ class CanonEditController extends AbstractController {
 
     /**
      * AJAX callback
+     *
      * @Route("domherren/edit/autocomplete/episcid", name="canon_edit_autocomplete_episcid")
      */
     public function autocompleteepiscid(Request $request) {
@@ -401,6 +415,7 @@ class CanonEditController extends AbstractController {
 
     /**
      * AJAX callback
+     *
      * @Route("domherren/edit/autocomplete/place", name="canon_edit_autocomplete_place")
      */
     public function autocompleteplace(Request $request) {
@@ -422,6 +437,7 @@ class CanonEditController extends AbstractController {
 
     /**
      * AJAX callback
+     *
      * @Route("domherren/edit/autocomplete/office", name="canon_edit_autocomplete_office")
      */
     public function autocompleteoffice(Request $request) {
@@ -437,6 +453,7 @@ class CanonEditController extends AbstractController {
 
     /**
      * AJAX callback
+     *
      * @Route("domherren/edit/autocomplete/gsn", name="canon_edit_autocomplete_gsn")
      */
     public function autocompletegsn(Request $request) {
@@ -452,6 +469,7 @@ class CanonEditController extends AbstractController {
 
     /**
      * AJAX callback
+     *
      * @Route("domherren/edit/autocomplete/reference", name="canon_edit_autocomplete_reference")
      */
     public function autocompletereference(Request $request) {
@@ -467,6 +485,7 @@ class CanonEditController extends AbstractController {
 
     /**
      * AJAX callback
+     *
      * @Route("domherren/edit/autocomplete/merged", name="canon_edit_autocomplete_merged")
      */
     public function autocompletemerged(Request $request) {
@@ -482,6 +501,7 @@ class CanonEditController extends AbstractController {
 
     /**
      * AJAX callback
+     *
      * @Route("domherren/edit/autocomplete/diocese", name="canon_edit_autocomplete_diocese")
      */
     public function autocompletediocese(Request $request) {

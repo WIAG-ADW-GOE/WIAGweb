@@ -27,7 +27,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class BishopApiController extends AbstractController {
 
     /**
-     * 2021-07-13 obsolete?
+     * 2021-07-13 obsolete? see IDController
      *
      * @Route("/api/bishop/{wiagidlong}", name="api_bishop")
      */

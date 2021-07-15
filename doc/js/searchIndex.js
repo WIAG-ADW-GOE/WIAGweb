@@ -8,7 +8,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\BishopApiController\u003A\u003Agetperson\u0028\u0029",
             "name": "getperson",
-            "summary": "2021\u002D07\u002D13\u0020obsolete\u003F",
+            "summary": "2021\u002D07\u002D13\u0020obsolete\u003F\u0020see\u0020IDController",
             "url": "classes/App-Controller-BishopApiController.html#method_getperson"
         },                {
             "fqsen": "\\App\\Controller\\BishopApiController\u003A\u003Aapigetpersons\u0028\u0029",
@@ -16,24 +16,14 @@ Search.appendIndex(
             "summary": "accept\u0020query\u0020request\u0020and\u0020return\u0020serialized\u0020bishop\u0020data\u0020\u0028json\u0020or\u0020csv\u0029",
             "url": "classes/App-Controller-BishopApiController.html#method_apigetpersons"
         },                {
-            "fqsen": "\\App\\Controller\\BishopTestsController",
-            "name": "BishopTestsController",
-            "summary": "",
-            "url": "classes/App-Controller-BishopTestsController.html"
-        },                {
-            "fqsen": "\\App\\Controller\\BishopTestsController\u003A\u003Alist\u0028\u0029",
-            "name": "list",
-            "summary": "",
-            "url": "classes/App-Controller-BishopTestsController.html#method_list"
-        },                {
             "fqsen": "\\App\\Controller\\CanonApiController",
             "name": "CanonApiController",
-            "summary": "",
+            "summary": "hande\u0020API\u0020request",
             "url": "classes/App-Controller-CanonApiController.html"
         },                {
             "fqsen": "\\App\\Controller\\CanonApiController\u003A\u003Alistcanons\u0028\u0029",
             "name": "listcanons",
-            "summary": "",
+            "summary": "accept\u0020query\u0020request,\u0020display\u0020list\u0020of\u0020matching\u0020canons",
             "url": "classes/App-Controller-CanonApiController.html#method_listcanons"
         },                {
             "fqsen": "\\App\\Controller\\CanonApiController\u003A\u003ALIST_LIMIT",
@@ -78,47 +68,47 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\CanonController\u003A\u003ALIST_LIMIT",
             "name": "LIST_LIMIT",
-            "summary": "",
+            "summary": "number\u0020of\u0020elements\u0020in\u0020query\u0020result\u0020list",
             "url": "classes/App-Controller-CanonController.html#constant_LIST_LIMIT"
         },                {
             "fqsen": "\\App\\Controller\\CanonController\u003A\u003AHINT_LIST_LIMIT",
             "name": "HINT_LIST_LIMIT",
-            "summary": "",
+            "summary": "number\u0020of\u0020elements\u0020in\u0020autocompletion\u0020list",
             "url": "classes/App-Controller-CanonController.html#constant_HINT_LIST_LIMIT"
         },                {
             "fqsen": "\\App\\Controller\\CanonEditController",
             "name": "CanonEditController",
-            "summary": "",
+            "summary": "create\/edit\u0020canons",
             "url": "classes/App-Controller-CanonEditController.html"
         },                {
             "fqsen": "\\App\\Controller\\CanonEditController\u003A\u003Alaunch_query\u0028\u0029",
             "name": "launch_query",
-            "summary": "",
+            "summary": "display\u0020search\u0020form\u0020for\u0020canons\u0020to\u0020be\u0020edited",
             "url": "classes/App-Controller-CanonEditController.html#method_launch_query"
         },                {
             "fqsen": "\\App\\Controller\\CanonEditController\u003A\u003AgetCanonInQuery\u0028\u0029",
             "name": "getCanonInQuery",
-            "summary": "",
+            "summary": "display\u0020details\u0020for\u0020a\u0020canon\u0020in\u0020a\u0020query\u0020result\u0020list\u0020\u0028on\u0020hold\u0029",
             "url": "classes/App-Controller-CanonEditController.html#method_getCanonInQuery"
         },                {
             "fqsen": "\\App\\Controller\\CanonEditController\u003A\u003Anew\u0028\u0029",
             "name": "new",
-            "summary": "",
+            "summary": "display\u0020input\u0020form\u0020for\u0020a\u0020new\u0020canon",
             "url": "classes/App-Controller-CanonEditController.html#method_new"
         },                {
             "fqsen": "\\App\\Controller\\CanonEditController\u003A\u003Aedit\u0028\u0029",
             "name": "edit",
-            "summary": "",
+            "summary": "display\u0020edit\u0020form\u0020for\u0020a\u0020canon",
             "url": "classes/App-Controller-CanonEditController.html#method_edit"
         },                {
             "fqsen": "\\App\\Controller\\CanonEditController\u003A\u003Anew_office\u0028\u0029",
             "name": "new_office",
-            "summary": "",
+            "summary": "display\u0020input\u0020form\u0020for\u0020a\u0020new\u0020office",
             "url": "classes/App-Controller-CanonEditController.html#method_new_office"
         },                {
             "fqsen": "\\App\\Controller\\CanonEditController\u003A\u003Aedit_office\u0028\u0029",
             "name": "edit_office",
-            "summary": "",
+            "summary": "display\u0020edit\u0020form\u0020for\u0020a\u0020canon\u0027s\u0020office",
             "url": "classes/App-Controller-CanonEditController.html#method_edit_office"
         },                {
             "fqsen": "\\App\\Controller\\CanonEditController\u003A\u003Aautocompletename\u0028\u0029",
@@ -173,43 +163,33 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\CanonEditController\u003A\u003ALIST_LIMIT",
             "name": "LIST_LIMIT",
-            "summary": "Parameters",
+            "summary": "number\u0020of\u0020elements\u0020in\u0020query\u0020result\u0020list",
             "url": "classes/App-Controller-CanonEditController.html#constant_LIST_LIMIT"
         },                {
             "fqsen": "\\App\\Controller\\CanonEditController\u003A\u003AHINT_LIST_LIMIT",
             "name": "HINT_LIST_LIMIT",
-            "summary": "",
+            "summary": "number\u0020of\u0020elements\u0020in\u0020auto\u0020completion\u0020list",
             "url": "classes/App-Controller-CanonEditController.html#constant_HINT_LIST_LIMIT"
         },                {
             "fqsen": "\\App\\Controller\\CanonGSController",
             "name": "CanonGSController",
-            "summary": "",
+            "summary": "query\u0020for\u0020canons\u0020in\u0020GS\u0027s\u0020Personendatenbank",
             "url": "classes/App-Controller-CanonGSController.html"
         },                {
             "fqsen": "\\App\\Controller\\CanonGSController\u003A\u003Acanons\u0028\u0029",
             "name": "canons",
-            "summary": "",
+            "summary": "search\u0020for\u0020canons\u0020\u0028GS\u0029\u0020and\u0020display\u0020list\u0020of\u0020matching\u0020entries",
             "url": "classes/App-Controller-CanonGSController.html#method_canons"
         },                {
             "fqsen": "\\App\\Controller\\CanonGSController\u003A\u003AgetCanonInQuery\u0028\u0029",
             "name": "getCanonInQuery",
-            "summary": "",
+            "summary": "display\u0020details\u0020for\u0020a\u0020canon\u0020in\u0020a\u0020query\u0020result\u0020list",
             "url": "classes/App-Controller-CanonGSController.html#method_getCanonInQuery"
         },                {
             "fqsen": "\\App\\Controller\\CanonGSController\u003A\u003ALIST_LIMIT",
             "name": "LIST_LIMIT",
-            "summary": "Parameters",
+            "summary": "number\u0020of\u0020elements\u0020in\u0020query\u0020result\u0020list",
             "url": "classes/App-Controller-CanonGSController.html#constant_LIST_LIMIT"
-        },                {
-            "fqsen": "\\App\\Controller\\CanonGSUtility",
-            "name": "CanonGSUtility",
-            "summary": "",
-            "url": "classes/App-Controller-CanonGSUtility.html"
-        },                {
-            "fqsen": "\\App\\Controller\\CanonGSUtility\u003A\u003AHINT_LIST_LIMIT",
-            "name": "HINT_LIST_LIMIT",
-            "summary": "Parameters",
-            "url": "classes/App-Controller-CanonGSUtility.html#constant_HINT_LIST_LIMIT"
         },                {
             "fqsen": "\\App\\Controller\\CanonReferenceController",
             "name": "CanonReferenceController",
@@ -218,22 +198,17 @@ Search.appendIndex(
         },                {
             "fqsen": "\\App\\Controller\\CanonReferenceController\u003A\u003AdetailsByShort\u0028\u0029",
             "name": "detailsByShort",
-            "summary": "",
+            "summary": "display\u0020details\u0020for\u0020a\u0020reference",
             "url": "classes/App-Controller-CanonReferenceController.html#method_detailsByShort"
         },                {
             "fqsen": "\\App\\Controller\\CanonReferenceController\u003A\u003Alist\u0028\u0029",
             "name": "list",
-            "summary": "",
+            "summary": "display\u0020list\u0020of\u0020references",
             "url": "classes/App-Controller-CanonReferenceController.html#method_list"
-        },                {
-            "fqsen": "\\App\\Controller\\CanonReferenceController\u003A\u003Aeditlist\u0028\u0029",
-            "name": "editlist",
-            "summary": "",
-            "url": "classes/App-Controller-CanonReferenceController.html#method_editlist"
         },                {
             "fqsen": "\\App\\Controller\\CanonReferenceController\u003A\u003Aedit\u0028\u0029",
             "name": "edit",
-            "summary": "",
+            "summary": "display\u0020edit\u0020form\u0020for\u0020a\u0020reference\u0020\u0028work\u0020in\u0020progress\u0029",
             "url": "classes/App-Controller-CanonReferenceController.html#method_edit"
         },                {
             "fqsen": "\\App\\Controller\\CanonUtility",
@@ -536,9 +511,14 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Controller-QueryBishop.html#method_querytestmonastery"
         },                {
+            "fqsen": "\\App\\Controller\\QueryBishop\u003A\u003Asamplelist\u0028\u0029",
+            "name": "samplelist",
+            "summary": "",
+            "url": "classes/App-Controller-QueryBishop.html#method_samplelist"
+        },                {
             "fqsen": "\\App\\Controller\\QueryBishop\u003A\u003ALIST_LIMIT",
             "name": "LIST_LIMIT",
-            "summary": "Parameters",
+            "summary": "number\u0020of\u0020elements\u0020in\u0020query\u0020result\u0020list",
             "url": "classes/App-Controller-QueryBishop.html#constant_LIST_LIMIT"
         },                {
             "fqsen": "\\App\\Controller\\QueryBishopUtility",
@@ -2976,6 +2956,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Entity-CnOffice.html#method_isValidMonastery"
         },                {
+            "fqsen": "\\App\\Entity\\CnOffice\u003A\u003AgetDioceseInDb\u0028\u0029",
+            "name": "getDioceseInDb",
+            "summary": "",
+            "url": "classes/App-Entity-CnOffice.html#method_getDioceseInDb"
+        },                {
+            "fqsen": "\\App\\Entity\\CnOffice\u003A\u003AsetDioceseInDb\u0028\u0029",
+            "name": "setDioceseInDb",
+            "summary": "",
+            "url": "classes/App-Entity-CnOffice.html#method_setDioceseInDb"
+        },                {
             "fqsen": "\\App\\Entity\\CnOffice\u003A\u003A\u0024canon",
             "name": "canon",
             "summary": "",
@@ -3100,6 +3090,11 @@ Search.appendIndex(
             "name": "n_monasteries",
             "summary": "number\u0020of\u0020monastries\u0020for\u0020\u0024form_monastery_name",
             "url": "classes/App-Entity-CnOffice.html#property_n_monasteries"
+        },                {
+            "fqsen": "\\App\\Entity\\CnOffice\u003A\u003A\u0024dioceseInDb",
+            "name": "dioceseInDb",
+            "summary": "",
+            "url": "classes/App-Entity-CnOffice.html#property_dioceseInDb"
         },                {
             "fqsen": "\\App\\Entity\\CnOfficeGS",
             "name": "CnOfficeGS",
@@ -3311,6 +3306,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Entity-CnOfficeGS.html#method_setNumdateEnd"
         },                {
+            "fqsen": "\\App\\Entity\\CnOfficeGS\u003A\u003AgetDioceseInDb\u0028\u0029",
+            "name": "getDioceseInDb",
+            "summary": "",
+            "url": "classes/App-Entity-CnOfficeGS.html#method_getDioceseInDb"
+        },                {
+            "fqsen": "\\App\\Entity\\CnOfficeGS\u003A\u003AsetDioceseInDb\u0028\u0029",
+            "name": "setDioceseInDb",
+            "summary": "",
+            "url": "classes/App-Entity-CnOfficeGS.html#method_setDioceseInDb"
+        },                {
             "fqsen": "\\App\\Entity\\CnOfficeGS\u003A\u003A\u0024canon",
             "name": "canon",
             "summary": "",
@@ -3415,6 +3420,11 @@ Search.appendIndex(
             "name": "numdate_end",
             "summary": "",
             "url": "classes/App-Entity-CnOfficeGS.html#property_numdate_end"
+        },                {
+            "fqsen": "\\App\\Entity\\CnOfficeGS\u003A\u003A\u0024dioceseInDb",
+            "name": "dioceseInDb",
+            "summary": "",
+            "url": "classes/App-Entity-CnOfficeGS.html#property_dioceseInDb"
         },                {
             "fqsen": "\\App\\Entity\\CnOfficelookup",
             "name": "CnOfficelookup",
@@ -5306,6 +5316,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Entity-Office.html#method_setSortkey"
         },                {
+            "fqsen": "\\App\\Entity\\Office\u003A\u003AgetDioceseInDb\u0028\u0029",
+            "name": "getDioceseInDb",
+            "summary": "",
+            "url": "classes/App-Entity-Office.html#method_getDioceseInDb"
+        },                {
+            "fqsen": "\\App\\Entity\\Office\u003A\u003AsetDioceseInDb\u0028\u0029",
+            "name": "setDioceseInDb",
+            "summary": "",
+            "url": "classes/App-Entity-Office.html#method_setDioceseInDb"
+        },                {
             "fqsen": "\\App\\Entity\\Office\u003A\u003A\u0024wiagid",
             "name": "wiagid",
             "summary": "",
@@ -5385,6 +5405,11 @@ Search.appendIndex(
             "name": "sortkey",
             "summary": "",
             "url": "classes/App-Entity-Office.html#property_sortkey"
+        },                {
+            "fqsen": "\\App\\Entity\\Office\u003A\u003A\u0024dioceseInDb",
+            "name": "dioceseInDb",
+            "summary": "",
+            "url": "classes/App-Entity-Office.html#property_dioceseInDb"
         },                {
             "fqsen": "\\App\\Entity\\OfficeCount",
             "name": "OfficeCount",
@@ -7211,11 +7236,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/App-Repository-CnOfficeRepository.html#method_suggestOffice"
         },                {
-            "fqsen": "\\App\\Repository\\CnOfficeRepository\u003A\u003AsuggestDiocese\u0028\u0029",
-            "name": "suggestDiocese",
-            "summary": "",
-            "url": "classes/App-Repository-CnOfficeRepository.html#method_suggestDiocese"
-        },                {
             "fqsen": "\\App\\Repository\\CnOfficeSortkeyRepository",
             "name": "CnOfficeSortkeyRepository",
             "summary": "",
@@ -8080,6 +8100,11 @@ Search.appendIndex(
             "name": "fillMonastery",
             "summary": "",
             "url": "classes/App-Service-CnOfficeService.html#method_fillMonastery"
+        },                {
+            "fqsen": "\\App\\Service\\CnOfficeService\u003A\u003AfillDioceseInDb\u0028\u0029",
+            "name": "fillDioceseInDb",
+            "summary": "",
+            "url": "classes/App-Service-CnOfficeService.html#method_fillDioceseInDb"
         },                {
             "fqsen": "\\App\\Service\\CnOfficeService\u003A\u003A\u0024parsedates",
             "name": "parsedates",

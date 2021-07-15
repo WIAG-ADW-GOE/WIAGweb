@@ -19,6 +19,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 /**
+ * hande API request
+ *
  * @IsGranted("IS_AUTHENTICATED_ANONYMOUSLY")
  */
 class CanonApiController extends AbstractController {
@@ -26,6 +28,10 @@ class CanonApiController extends AbstractController {
     const LIST_LIMIT = 20;
 
     /**
+     * accept query request, display list of matching canons
+     *
+     * @return Response                 HTML
+     *
      * @Route("/api/domherren", name="api_query_canons")
      */
     public function listcanons(Request $request) {

@@ -29,9 +29,7 @@ use Symfony\Component\Serializer\Encoder\CsvEncoder;
  * query bishops
  */
 class QueryBishop extends AbstractController {
-    /**
-     * Parameters
-     */
+    /** number of elements in query result list */
     const LIST_LIMIT = 20;
 
     /**

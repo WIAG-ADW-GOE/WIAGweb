@@ -11,7 +11,9 @@
 		    <tbody>
 			{% for reference in references|sort((a, b) => a.id <=> b.id) %}
 			    <tr>
-				<td><a href="{{ path(link_path, {'id': reference.id}) }}">{{ reference.id }}</a></td>
+				{% if link_path is defined %}
+				    <td><a href="{{ path(link_path, {'id': reference.id}) }}">{{ reference.id }}</a></td>
+				{% endif %}
 				<td>{{ reference.shorttitle }}</td>
 				<td>{{ reference.title }}</td>
 			    </tr>

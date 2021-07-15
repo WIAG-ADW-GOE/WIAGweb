@@ -120,30 +120,23 @@
                     <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-CanonReferenceController.html#method_detailsByShort">detailsByShort()</a>
     <span>
-                        &nbsp;: mixed    </span>
+                        &nbsp;: <abbr title="\App\Controller\Response">Response</abbr>    </span>
 </dt>
-<dd></dd>
+<dd>display details for a reference</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-CanonReferenceController.html#method_edit">edit()</a>
     <span>
                         &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/App-Controller-CanonReferenceController.html#method_editlist">editlist()</a>
-    <span>
-                        &nbsp;: mixed    </span>
-</dt>
-<dd></dd>
+<dd>display edit form for a reference (work in progress)</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/App-Controller-CanonReferenceController.html#method_list">list()</a>
     <span>
                         &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
+<dd>display list of references</dd>
 
         </dl>
 
@@ -171,13 +164,14 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/CanonReferenceController.php"><a href="files/src-controller-canonreferencecontroller.html"><abbr title="src/Controller/CanonReferenceController.php">CanonReferenceController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">17</span>
+    <span class="phpdocumentor-element-found-in__line">21</span>
 </aside>
 
-    
+        <p class="phpdocumentor-summary">display details for a reference</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">detailsByShort</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                <span class="phpdocumentor-signature__name">detailsByShort</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\App\Controller\Response">Response</abbr></span></code>
 
         <section class="phpdocumentor-description"></section>
 
@@ -210,9 +204,10 @@
                         </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
+    <span class="phpdocumentor-signature__response_type"><abbr title="\App\Controller\Response">Response</abbr></span>
             &mdash;
-            <section class="phpdocumentor-description"></section>
+            <section class="phpdocumentor-description"><p>HTML</p>
+</section>
 
     
 </article>
@@ -229,10 +224,11 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/CanonReferenceController.php"><a href="files/src-controller-canonreferencecontroller.html"><abbr title="src/Controller/CanonReferenceController.php">CanonReferenceController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">61</span>
+    <span class="phpdocumentor-element-found-in__line">57</span>
 </aside>
 
-    
+        <p class="phpdocumentor-summary">display edit form for a reference (work in progress)</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">edit</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/App-Entity-CnReference.html"><abbr title="\App\Entity\CnReference">CnReference</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$reference</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
@@ -257,59 +253,20 @@
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">todo</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>edit canon references</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
                     <span class="phpdocumentor-tag__name">Route</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                 
                                                  <section class="phpdocumentor-description"><p>(&quot;/canon-reference/edit/{id}&quot;, name=&quot;canon_reference_edit&quot;);</p>
-</section>
-
-                                    </dd>
-                        </dl>
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-            <section class="phpdocumentor-description"></section>
-
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_editlist">
-        editlist()
-        <a href="classes/App-Controller-CanonReferenceController.html#method_editlist" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/CanonReferenceController.php"><a href="files/src-controller-canonreferencecontroller.html"><abbr title="src/Controller/CanonReferenceController.php">CanonReferenceController.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">47</span>
-</aside>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">editlist</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-    
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">Route</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                
-                                                 <section class="phpdocumentor-description"><p>(&quot;/canon-reference/edit&quot;, name=&quot;canon_reference_editlist&quot;);</p>
 </section>
 
                                     </dd>
@@ -335,10 +292,11 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Controller/CanonReferenceController.php"><a href="files/src-controller-canonreferencecontroller.html"><abbr title="src/Controller/CanonReferenceController.php">CanonReferenceController.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">33</span>
+    <span class="phpdocumentor-element-found-in__line">39</span>
 </aside>
 
-    
+        <p class="phpdocumentor-summary">display list of references</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__name">list</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>

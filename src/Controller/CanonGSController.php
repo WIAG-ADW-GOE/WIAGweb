@@ -19,16 +19,18 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 
 /**
+ * query for canons in GS's Personendatenbank
+ *
  * @IsGranted("ROLE_DATA_ADMIN")
  */
 class CanonGSController extends AbstractController {
-    /**
-     * Parameters
-     */
+    /** number of elements in query result list */
     const LIST_LIMIT = 25;
 
 
     /**
+     * search for canons (GS) and display list of matching entries
+     *
      * @Route("/domherren-gs", name="query_canons_gs")
      */
     public function canons (Request $request, HTTPClient $client) {
@@ -89,13 +91,14 @@ class CanonGSController extends AbstractController {
 
         }
 
-
         return $this->render('query_canon_gs/launch_query.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
-
+    /**
+     * display details for a canon in a query result list
+     */
     public function getCanonInQuery($form, $offset, HTTPClient $client) {
 
         $choice = $form->getData();
@@ -121,6 +124,7 @@ class CanonGSController extends AbstractController {
         $gsns = $person->{'item.gsn'};
         $person->gsn_id = $gsns[0]->nummer;
 
+        # 2021-07-14: This function may soon be obsolete, so don't adapt this code
         $dioceserepository = $this->getDoctrine()->getRepository(Diocese::class);
 
         $personrepository = $this->getDoctrine()->getRepository(Person::class);

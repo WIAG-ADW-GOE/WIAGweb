@@ -26,8 +26,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * query for canons (Domherren)
  */
 class CanonController extends AbstractController {
-
+    /** number of elements in query result list */
     const LIST_LIMIT = 20;
+    /** number of elements in autocompletion list */
     const HINT_LIST_LIMIT = 12;
 
     /**
@@ -208,6 +209,7 @@ class CanonController extends AbstractController {
 
     /**
      * AJAX callback
+     *
      * @Route("domherren-wd/autocomplete/name", name="canon_autocomplete_name")
      */
     public function autocompletenames(Request $request) {
@@ -223,6 +225,7 @@ class CanonController extends AbstractController {
 
     /**
      * AJAX callback
+     *
      * @Route("domherren-wd/autocomplete/monastery", name="canon_autocomplete_domstift")
      */
     public function autocompletemonastery(Request $request) {
@@ -246,6 +249,7 @@ class CanonController extends AbstractController {
 
     /**
      * AJAX callback
+     *
      * @Route("domherren-wd/autocomplete/place", name="canon_autocomplete_place")
      */
     public function autocompleteplace(Request $request) {
@@ -269,6 +273,7 @@ class CanonController extends AbstractController {
 
     /**
      * AJAX callback
+     *
      * @Route("domherren-wd/autocomplete/office", name="canon_autocomplete_office")
      */
     public function autocompleteoffices(Request $request) {
