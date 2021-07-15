@@ -35,8 +35,6 @@ class CanonGSController extends AbstractController {
      */
     public function canons (Request $request, HTTPClient $client) {
 
-        $route_utility_stiftnames = $this->generateUrl('query_canons_utility_stiftnames');
-
         $domstiftchoices = $this->getDoctrine()
                                 ->getRepository(Domstift::class)
                                 ->findChoiceList();
