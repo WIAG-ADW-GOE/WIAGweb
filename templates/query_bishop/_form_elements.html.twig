@@ -1,23 +1,29 @@
 {# {{ form_start(query_form, {'attr': {'id':'q_form'}}) }} #}
-<div class="row ml-2 col-12">
-    {{  form_row(query_form.name) }}
-    <span class="ml-2">{{ form_row(query_form.place) }}</span>
-    <span class="ml-2">{{ form_row(query_form.office) }}</span>
-    <span class="ml-2">{{ form_row(query_form.year) }}</span>
-    {% if query_form.someid is defined %}
-	<span class="ml-2">{{ form_row(query_form.someid) }}</span>
-    {% endif %}
+
+<div class="row ml-2 mt-3">
+    <div class="col-12">
+	<div class="d-flex flex-wrap">
+	    {{  form_row(query_form.name, { row_attr: {class: 'mr-2'}}) }}
+	    {{  form_row(query_form.place, { row_attr: {class: 'mr-2'}}) }}
+	    {{  form_row(query_form.office, { row_attr: {class: 'mr-2'}}) }}
+	    {{  form_row(query_form.year, { row_attr: {class: 'mr-2'}}) }}
+	    {{  form_row(query_form.someid) }}
+	</div>
+    </div>
 </div>
-<div class="row ml-2 col-12">
-    {{ form_row(query_form.searchHTML) }}
-    <a href="{{ path('launch_query') }}" class="ml-1"><button class="btn btn-secondary btn-light btn-sm" type="button">Neue Suche</button></a>
-    <span class="ml-3">{{ form_widget(query_form.searchJSON) }}</span>
-    <span class="ml-1">{{ form_widget(query_form.searchCSV) }}</span>
-    <span class="ml-1">{{ form_widget(query_form.searchRDF) }}</span>
-    <span class="ml-1">{{ form_widget(query_form.searchJSONLD) }}</span>
+<div class="row ml-2">
+    <div class="col-12">
+	<div class="d-flex flex-wrap">
+	    {{  form_row(query_form.searchHTML, { row_attr: {class: 'mr-1'}}) }}
+	    {{  form_row(query_form.searchCSV, { row_attr: {class: 'mr-1'}}) }}
+	    {{  form_row(query_form.searchRDF, { row_attr: {class: 'mr-1'}}) }}
+	    {{  form_row(query_form.searchJSON, { row_attr: {class: 'mr-1'}}) }}
+	    {{  form_row(query_form.searchJSONLD, { row_attr: {class: 'mr-1'}}) }}
+	    <a href="{{ path('launch_query') }}" class="mr-1"><button class="btn btn-secondary btn-light btn-sm" type="button">Neue Suche</button></a>
+	</div>
     {{ form_widget(query_form.stateFctDioc) }}
     {{ form_widget(query_form.stateFctOfc) }}
+    </div>
 </div>
-
 
 {# {{ form_end(query_form) }} #}
