@@ -11,7 +11,9 @@ doctrine:
             type: pool
             pool: doctrine.result_cache_pool
     dbal:
-      server_version: '5.7'
+        server_version: '5.7'
+        # "TEST_TOKEN" is typically set by ParaTest
+        dbname_suffix: '_test%env(default::TEST_TOKEN)%'
 
 framework:
     cache:
