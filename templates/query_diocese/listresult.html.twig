@@ -34,8 +34,25 @@
 	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_dioceses')}}) }}
 	    <div class="row ms-2 col-12">
 		<div class="d-flex">
-		{{ form_row(form.diocese) }} <span class="ms-2">{{ form_row(form.searchHTML) }}</span>
-		    {#  <div class="col-md-3 ms-n1">{{ form_row(form.searchHTML) }}</div>  #}
+		    <div class="me-2 mt-1"
+			 {{ stimulus_controller('autocomplete', {
+			     url: path('query_dioceses_utility_names'),
+			 }) }}>
+			{{ form_label(form.diocese) }}
+			{{ form_errors(form.diocese) }}
+			{{ form_widget(form.diocese, {
+			    attr: {
+				'data-autocomplete-target': "input",
+				'size': 31,
+			    },
+			}) }}
+			<ul class="list-group autocomplete-target"
+				   data-autocomplete-target="results"
+				   style="max-width: 20em;"></ul>
+		    </div>
+		    {{ form_row(form.searchHTML, {
+			row_attr: { class: "me-2" }
+		    }) }}
 		</div>
 	    </div>
 	{{ form_end(form) }}

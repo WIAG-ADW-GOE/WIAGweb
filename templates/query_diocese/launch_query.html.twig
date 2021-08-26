@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{# 2021-08-26 obsolete? see listresult.html.twig #}
 {% set menuItem='collections' %}
 
 {% block stylesheets %}
@@ -17,7 +18,22 @@
 	<div class="row-col-12 topic-title">{{ diocesestitle }}</div>
 	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_dioceses')}}) }}
 	    <div class="row col-12">
-		{{  form_row(form.diocese) }}
+		<div class="me-2 mt-1"
+		     {{ stimulus_controller('autocomplete', {
+			 url: path('query_dioceses_utility_names'),
+		     }) }}>
+		    {{ form_label(form.diocese) }}
+		    {{ form_errors(form.diocese) }}
+		    {{ form_widget(form.diocese, {
+			attr: {
+			    'data-autocomplete-target': "input",
+			    'size': 31,
+			},
+		    }) }}
+		    <ul class="list-group autocomplete-target"
+			data-autocomplete-target="results"
+			style="max-width: 20em;"></ul>
+		</div>
 	    </div>
 	    {{ form_widget(form.searchHTML) }}
 	{{ form_end(form) }}
