@@ -1,5 +1,6 @@
 {# query-diocese/listresult.html.twig #}
 {% extends 'base.html.twig' %}
+{% set menuItem='collections' %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -15,30 +16,33 @@
     {# add page forward and backward buttons #}
 
     {% set forwardsymbol %}<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-right-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12.14 8.753l-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/></svg>{% endset %}
-    
+
     {% set backwardsymbol %}<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-left-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3.86 8.753l5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/></svg>{% endset %}
-    
+
     {% set fb_elements %}
     {% if count > 0 %}
-	<span class="ml-4">
+	<span class="ms-4">
 	    <button type="submit" form="q_form" class="btn btn-secondary" {% if offset < limit %} disabled="disabled" {% endif %} name="offset" value="{{ offset - limit }}">{{ backwardsymbol }} zurück</button>
-	    <button type="submit" form="q_form" class="btn btn-secondary ml-1" {% if offset + limit >= count%}disabled="disabled"{% endif %} name="offset" value="{{ offset + limit }}">vor {{ forwardsymbol }}</button>
+	    <button type="submit" form="q_form" class="btn btn-secondary ms-1" {% if offset + limit >= count%}disabled="disabled"{% endif %} name="offset" value="{{ offset + limit }}">vor {{ forwardsymbol }}</button>
 	</span>
     {% endif %}
     {% endset %}
     <div class="container-fluid mt-3">
-	<div class="row ml-2 col-12">
+	<div class="row ms-2 col-12">
 	    {% include('query_diocese/_title.html.twig') %}
 	</div>
 	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_dioceses')}}) }}
-	    <div class="row ml-2 col-12">
-		{{ form_row(form.diocese) }} <span class="ml-2">{{ form_row(form.searchHTML) }}</span>
-		{#  <div class="col-md-3 ml-n1">{{ form_row(form.searchHTML) }}</div>  #}
+	    <div class="row ms-2 col-12">
+		<div class="d-flex">
+		{{ form_row(form.diocese) }} <span class="ms-2">{{ form_row(form.searchHTML) }}</span>
+		    {#  <div class="col-md-3 ms-n1">{{ form_row(form.searchHTML) }}</div>  #}
+		</div>
 	    </div>
 	{{ form_end(form) }}
 
-	<div class="row ml-2 mt-3 mb-1">
-	    <div class="col-12">Treffer:
+	<div class="row mx-2 mt-3 mb-1">
+	    <div class="col-12">
+		Treffer:
 		{% if count == 0 %}
 		    keine
 		{% elseif count == 1 %}
@@ -48,10 +52,10 @@
 		{% endif %}
 		{{ fb_elements }}
 
-		<button type="submit" form="q_form" name="format" value="JSON" class="btn btn-secondary btn-light btn-sm ml-2">JSON</button>
-		<button type="submit" form="q_form" name="format" value="CSV" class="btn btn-secondary btn-light btn-sm ml-1">CSV</button>
-		<button type="submit" form="q_form" name="format" value="RDF" class="btn btn-secondary btn-light btn-sm ml-1">RDF-XML</button>
-		<button type="submit" form="q_form" name="format" value="JSONLD" class="btn btn-secondary btn-light btn-sm ml-1">JSON-LD</button>
+		<button type="submit" form="q_form" name="format" value="JSON" class="btn btn-secondary btn-light btn-sm ms-2">JSON</button>
+		<button type="submit" form="q_form" name="format" value="CSV" class="btn btn-secondary btn-light btn-sm ms-1">CSV</button>
+		<button type="submit" form="q_form" name="format" value="RDF" class="btn btn-secondary btn-light btn-sm ms-1">RDF-XML</button>
+		<button type="submit" form="q_form" name="format" value="JSONLD" class="btn btn-secondary btn-light btn-sm ms-1">JSON-LD</button>
 	    </div>
 	</div>
 

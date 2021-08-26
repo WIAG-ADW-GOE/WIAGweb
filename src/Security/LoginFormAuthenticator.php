@@ -34,7 +34,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator {
         $this->csrfTokenManager = $csrfTokenManager;
         $this->passwordEncoder = $passwordEncoder;
     }
-    
+
     public function supports(Request $request)
     {
         return $request->attributes->get('_route') === 'wiag_login' && $request->isMethod('POST');
@@ -76,17 +76,17 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator {
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        /* If nothing is done here, the request is handled by the controller. 
+        /* If nothing is done here, the request is handled by the controller.
          * This is should be done for an API request.
          */
 
         $targetPath = $this->getTargetPath($request->getSession(), $providerKey);
-        
+
         if ($targetPath) return new RedirectResponse($targetPath);
         else return new RedirectResponse($this->router->generate('wiag_welcome'));
     }
 
-    // The parent class does the right thing, e.g. for anoymous users 
+    // The parent class does the right thing, e.g. for anoymous users
     // public function start(Request $request, AuthenticationException $authException = null)
     // {
     //     // todo

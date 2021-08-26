@@ -215,12 +215,17 @@ class CanonController extends AbstractController {
     public function autocompletenames(Request $request) {
         $suggestions = $this->getDoctrine()
                             ->getRepository(CnNamelookup::class)
-                            ->suggestName($request->query->get('query'),
+                            ->suggestName($request->query->get('q'),
                                           self::HINT_LIST_LIMIT);
 
-        return $this->json([
-            'choices' => $suggestions,
+        // return $this->json([
+        //     'choices' => $suggestions,
+        // ]);
+
+        return $this->render('canon/_autocomplete.twig.html', [
+            'suggestions' => array_column($suggestions, 'suggestion'),
         ]);
+
     }
 
     /**
@@ -229,7 +234,7 @@ class CanonController extends AbstractController {
      * @Route("domherren-wd/autocomplete/monastery", name="canon_autocomplete_domstift")
      */
     public function autocompletemonastery(Request $request) {
-        $query = trim($request->query->get('query'));
+        $query = trim($request->query->get('q'));
         # strip 'bistum' or 'erzbistum'
         foreach(['Stift', 'Domstift'] as $bs) {
             if(!is_null($query) && str_starts_with($query, $bs)) {
@@ -241,9 +246,11 @@ class CanonController extends AbstractController {
         $monasteries = $this->getDoctrine()
                             ->getRepository(Monastery::class)
                             ->suggestDomstift($query, self::HINT_LIST_LIMIT);
-        return $this->json([
-            'monasteries' => $monasteries,
+
+        return $this->render('canon/_autocomplete.twig.html', [
+            'suggestions' => array_column($monasteries, 'suggestion'),
         ]);
+
     }
 
 
@@ -253,7 +260,7 @@ class CanonController extends AbstractController {
      * @Route("domherren-wd/autocomplete/place", name="canon_autocomplete_place")
      */
     public function autocompleteplace(Request $request) {
-        $query = trim($request->query->get('query'));
+        $query = trim($request->query->get('q'));
         # strip 'bistum' or 'erzbistum'
         foreach(['Stift', 'Domstift'] as $bs) {
             if(!is_null($query) && str_starts_with($query, $bs)) {
@@ -265,6 +272,12 @@ class CanonController extends AbstractController {
         $places = $this->getDoctrine()
                        ->getRepository(CnOfficelookup::class)
                        ->suggestPlace($query, self::HINT_LIST_LIMIT);
+
+        return $this->render('canon/_autocomplete.twig.html', [
+            'suggestions' => array_column($places, 'suggestion'),
+        ]);
+
+
         return $this->json([
             'places' => $places,
         ]);
@@ -276,15 +289,16 @@ class CanonController extends AbstractController {
      *
      * @Route("domherren-wd/autocomplete/office", name="canon_autocomplete_office")
      */
-    public function autocompleteoffices(Request $request) {
+    public function autocompleteoffice(Request $request) {
         $offices = $this->getDoctrine()
                         ->getRepository(CnOfficelookup::class)
-                        ->suggestOffice($request->query->get('query'),
+                        ->suggestOffice($request->query->get('q'),
                                         self::HINT_LIST_LIMIT);
 
-        return $this->json([
-            'offices' => $offices,
+        return $this->render('canon/_autocomplete.twig.html', [
+            'suggestions' => array_column($offices, 'suggestion'),
         ]);
+
     }
 
 

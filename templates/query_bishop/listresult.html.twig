@@ -1,14 +1,12 @@
 {# query_bishop/listresult.html.twig #}
 {% extends 'base.html.twig' %}
+{% set menuItem='collections' %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
-    <script src="{{ asset('js/bishop.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -16,31 +14,42 @@
     {% set fb_elements %}
     {% if count > 0 %}
 	<button type="submit" form="q_form" class="btn btn-secondary" {% if offset < limit %} disabled="disabled" {% endif %} name="offset" value="{{ offset - limit }}">{{ include('symbols/backward.svg') }}zurück</button>
-	<button type="submit" form="q_form" class="btn btn-secondary ml-1" {% if offset + limit >= count%}disabled="disabled"{% endif %} name="offset" value="{{ offset + limit }}">vor {{ include('symbols/forward.svg') }}</button>
+	<button type="submit" form="q_form" class="btn btn-secondary ms-1" {% if offset + limit >= count%}disabled="disabled"{% endif %} name="offset" value="{{ offset + limit }}">vor {{ include('symbols/forward.svg') }}</button>
     {% endif %}
     {% endset %}
 
-    {{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('launch_query')} }) }}
+    {{ form_start(query_form, {
+	'attr': {
+	    'id':'q_form',
+	    'action':path('launch_query'),
+	    'data-controller': 'facet-state hide-on-input facet-submit',
+	    'data-action': 'shown.bs.collapse->facet-state#register hidden.bs.collapse->facet-state#register input->facet-state#clearFacet input->hide-on-input#hideResults input->facet-submit#submit'
+	}
+    }) }}
+
 	<div class="container-fluid mt-3">
-	    <div class="row ml-2 mb-3">
+	    <div class="row mx-2 mb-3">
 		{{ include('query_bishop/_title.html.twig') }}
 	    </div>
 	    {{ include('query_bishop/_form_elements.html.twig') }}
-	    <div id="count-result" class="row ml-2 mt-3 col-12">
-		Treffer:
-		{% if count == 0 %}
-		    keine
-		{% elseif count == 1 %}
-		    1
-		{% else %}
-		    {{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ count }}
-		{% endif %}
-		<span class="ml-3">{{ fb_elements }}</span>
+	    <div class="result row ms-2 mt-3">
+		<div class="col-12">
+		    Treffer:
+		    {% if count == 0 %}
+			keine
+		    {% elseif count == 1 %}
+			1
+		    {% else %}
+			{{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ count }}
+		    {% endif %}
+		    <span class="ms-3">{{ fb_elements }}</span>
+		</div>
 	    </div>
 	</div>
+	{#{ dump('stateFctDioc', query_form.vars.data.stateFctDioc) }#}
 	{% if count > 0 or query_form.facetPlaces is defined or query_form.facetOffices is defined%}
 	    <div class="container-fluid">
-		<div id="list-result" class="row mt-2 mx-2 mb-2">
+		<div class="result row mt-2 mx-2 mb-2">
 		    <div class="col-9">
 			<div class="table-responsive">
 			    <table class="table">
@@ -56,11 +65,11 @@
 					    <td><button type="submit" form="q_form" class="btn btn-link text-sm-left" name="singleoffset" value="{{ offset + loop.index0 }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
 						{% if not person.datebirth and not person.datedeath %}
 						{% elseif person.datebirth and not person.datedeath %}
-						    <p class="ml-3">* {{ person.datebirth }}</p>
+						    <p class="ms-3">* {{ person.datebirth }}</p>
 						{% elseif not person.datebirth and person.datedeath %}
-						    <p class="ml-3">&dagger; {{ person.datedeath }}</p>
+						    <p class="ms-3">&dagger; {{ person.datedeath }}</p>
 						{% else %}
-						    <p class="ml-3">* {{ person.datebirth }} <span class="ml-2">&dagger; {{ person.datedeath }}</span></p>
+						    <p class="ms-3">* {{ person.datebirth }} <span class="ms-2">&dagger; {{ person.datedeath }}</span></p>
 						{% endif %}
 					    </td>
 					    <td>{% for o in person.offices|sort((a, b) => a.numdate.datestart <=> b.numdate.datestart) %}
@@ -85,51 +94,20 @@
 		    {# facets #}
 		    <div class="col-3">
 			{% if query_form.facetPlaces is defined %}
-			    {% set longFctDioc=query_form.facetPlaces|length > 12 %}
-			    {% set btnTglFctDioc %}<button id="btnTglFctDioc" class="btn btn-outline-secondary btn-sm" type="button" data-toggle="collapse" href="#restFctDioc" aria-expanded="false" aria-controls="restFctDioc"><img src="{{ asset('images/arrow-down.svg') }}"/></button>{% endset %}
-			    <div class="card card-body">
-				{% if longFctDioc %}
-				    <p class="card-title mb-0"><strong>Filter Bistum</strong></p>
-				    <p class="text-right mt-n3 mb-n1">{{ btnTglFctDioc }}</p>
-				{% else %}
-				    <p class="card-title"><strong>Filter Bistum</strong></p>
-				{% endif %}
-				<div>
-				    {% for fpl in query_form.facetPlaces%}
-					{# <div class="form-group small"> #}
-					<div class="form-group p-1 m-0">
-					    {{ form_widget(fpl) }}
-					</div>
-					{% if longFctDioc and loop.index == 7 %}
-				</div>
-				<div class="collapse" id="restFctDioc">
-					{% endif %}
-				    {% endfor %}
-				</div>
-			    </div>
+			    {{ include('query_bishop/_facet.twig.html', {
+				facet: query_form.facetPlaces,
+				facetTitle: 'Filter Bistum',
+				facetState: query_form.stateFctDioc.vars.value,
+				facetShort: 'Dioc'
+			    }) }}
 			{% endif %}
 			{% if query_form.facetOffices is defined %}
-			    {% set longFctOfc=query_form.facetOffices|length > 12 %}
-			    {% set btnTglFctOfc %}<button id="btnTglFctOfc" class="btn btn-outline-secondary btn-sm" type="button" data-toggle="collapse" href="#restFctOfc" aria-expanded="false" aria-controls="restFctOfc"><img src="{{ asset('images/arrow-down.svg') }}"/></button>{% endset %}
-			    <div class="card card-body">
-				{% if longFctOfc %}
-				    <p class="card-title mb-0"><strong>Filter Amt</strong></p>
-				    <p class="text-right mt-n3 mb-n1">{{ btnTglFctOfc }}</p>
-				{% else %}
-				    <p class="card-title"><strong>Filter Amt</strong></p>
-				{% endif %}
-				<div>
-				    {% for foc in query_form.facetOffices%}
-					<div class="form-group p-1 m-0">
-					    {{ form_widget(foc) }}
-					</div>
-					{% if longFctOfc and loop.index == 7 %}
-				</div>
-				<div class="collapse" id="restFctOfc">
-					{% endif %}
-				    {% endfor %}
-				</div>
-			    </div>
+			    {{ include('query_bishop/_facet.twig.html', {
+				facet: query_form.facetOffices,
+				facetTitle: 'Filter Amt',
+				facetState: query_form.stateFctOfc.vars.value,
+				facetShort: 'Ofc'
+			    }) }}
 			{% endif %}
 		    </div>
 		</div>

@@ -1,18 +1,15 @@
 {# query_bishop/listresult.html.twig #}
 {% extends 'base.html.twig' %}
+{% set menuItem='collections' %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/algolia-autocomplete.css') }}">
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
-    <script src="{{ asset('js/canon.js') }}"></script>
 {% endblock %}
 
 {% import "canon/macro.html.twig" as macro  %}
-
 {% block body %}
     {# add page forward and backward buttons, do not use images for the symbols, because then bootstrap can not change the colour #}
     {% set fb_elements %}
@@ -22,24 +19,33 @@
     {% endif %}
     {% endset %}
 
-    {{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('query_canons')} }) }}
+    {{ form_start(query_form, {
+	'attr': {
+	    'id':'q_form',
+	    'action':path('query_canons'),
+	    'data-controller': 'facet-state hide-on-input facet-submit',
+	    'data-action': 'shown.bs.collapse->facet-state#register hidden.bs.collapse->facet-state#register input->facet-state#clearFacet input->hide-on-input#hideResults input->facet-submit#submit'
+	}
+    }) }}
 	<div class="container-fluid mt-3">
-	    <div class="row ml-2 col-12">
+	    <div class="row mx-2 col-12">
 		{{ include('canon/_title.html.twig') }}
 	    </div>
 	    {{ include('canon/_form_elements.html.twig') }}
-	    <div id="count-result" class="row ml-2 mt-3 col-12">
-		Treffer:
-		{% if count == 0 %}
-		    keine
-		{% elseif count == 1 %}
-		    1
-		{% else %}
-		    {{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ count }}
-		{% endif %}
-		<span class="ml-3">{{ fb_elements }}</span>
+	    <div class="result row mx-2 mt-3">
+		<div class="col-12">
+		    Treffer:
+		    {% if count == 0 %}
+			keine
+		    {% elseif count == 1 %}
+			1
+		    {% else %}
+			{{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ count }}
+		    {% endif %}
+		    <span class="ms-3">{{ fb_elements }}</span>
+		</div>
 	    </div>
-	    <div id="list-result" class="row mt-2 mx-2 mb-2">
+	    <div class="result row mt-2 mx-2 mb-2 col-12">
 		{% if count > 0 %}
 		    <div class="col-9">
 			<div class="table-responsive">
@@ -70,75 +76,28 @@
 		{# facets #}
 		<div class="col-3" {% if count == 0 %}hidden="hidden"{% endif %}>
 		    {% if query_form.facetMonasteries is defined %}
-			{% set longFctMon=query_form.facetMonasteries|length > 12 %}
-			{% set btnTglFctMon %}<button id="btnTglFctMon" class="btn btn-outline-secondary btn-sm" type="button" data-toggle="collapse" href="#restFctMon" aria-expanded="false" aria-controls="restFctMon"><img src="{{ asset('images/arrow-down.svg') }}"/></button>{% endset %}
-			<div class="card card-body">
-			    {% if longFctMon %}
-				<p class="card-title mb-0"><strong>Filter Domstift</strong></p>
-				<p class="text-right mt-n3 mb-n1">{{ btnTglFctMon }}</p>
-			    {% else %}
-				<p class="card-title"><strong>Filter Domstift</strong></p>
-			    {% endif %}
-			    <div>
-				{% for fpl in query_form.facetMonasteries%}
-				    {# <div class="form-group small"> #}
-				    <div class="form-group p-1 m-0">
-					{{ form_widget(fpl) }}
-				    </div>
-				    {% if longFctMon and loop.index == 7 %}
-			    </div>
-			    <div class="collapse" id="restFctMon">
-				    {% endif %}
-				{% endfor %}
-			    </div>
-			</div>
+			{{ include('canon/_facet.twig.html', {
+			    facet: query_form.facetMonasteries,
+			    facetTitle: 'Filter Domstift',
+			    facetState: query_form.stateFctMon.vars.value,
+			    facetShort: 'Mon'
+			}) }}
 		    {% endif %}
 		    {% if query_form.facetOffices is defined %}
-			{% set longFctOfc=query_form.facetOffices|length > 12 %}
-			{% set btnTglFctOfc %}<button id="btnTglFctOfc" class="btn btn-outline-secondary btn-sm" type="button" data-toggle="collapse" href="#restFctOfc" aria-expanded="false" aria-controls="restFctOfc"><img src="{{ asset('images/arrow-down.svg') }}"/></button>{% endset %}
-			<div class="card card-body">
-			    {% if longFctOfc %}
-				<p class="card-title mb-0"><strong>Filter Amt</strong></p>
-				<p class="text-right mt-n3 mb-n1">{{ btnTglFctOfc }}</p>
-			    {% else %}
-				<p class="card-title"><strong>Filter Amt</strong></p>
-			    {% endif %}
-			    <div>
-				{% for foc in query_form.facetOffices%}
-				    <div class="form-group p-1 m-0">
-					{{ form_widget(foc) }}
-				    </div>
-				    {% if longFctOfc and loop.index == 7 %}
-			    </div>
-			    <div class="collapse" id="restFctOfc">
-				    {% endif %}
-				{% endfor %}
-			    </div>
-			</div>
+			{{ include('canon/_facet.twig.html', {
+			    facet: query_form.facetOffices,
+			    facetTitle: 'Filter Amt',
+			    facetState: query_form.stateFctOfc.vars.value,
+			    facetShort: 'Ofc'
+			}) }}
 		    {% endif %}
 		    {% if query_form.facetLocations is defined %}
-			{% set longFctLoc=query_form.facetLocations|length > 12 %}
-			{% set btnTglFctLoc %}<button id="btnTglFctLoc" class="btn btn-outline-secondary btn-sm" type="button" data-toggle="collapse" href="#restFctLoc" aria-expanded="false" aria-controls="restFctLoc"><img src="{{ asset('images/arrow-down.svg') }}"/></button>{% endset %}
-			<div class="card card-body">
-			    {% if longFctLoc %}
-				<p class="card-title mb-0"><strong>Filter Ort</strong></p>
-				<p class="text-right mt-n3 mb-n1">{{ btnTglFctLoc }}</p>
-			    {% else %}
-				<p class="card-title"><strong>Filter Ort</strong></p>
-			    {% endif %}
-			    <div>
-				{% for flc in query_form.facetLocations %}
-				    {# <div class="form-group small"> #}
-				    <div class="form-group p-1 m-0">
-					{{ form_widget(flc) }}
-				    </div>
-				    {% if longFctLoc and loop.index == 7 %}
-			    </div>
-			    <div class="collapse" id="restFctLoc">
-				    {% endif %}
-				{% endfor %}
-			    </div>
-			</div>
+			{{ include('canon/_facet.twig.html', {
+			    facet: query_form.facetLocations,
+			    facetTitle: 'Filter Ort',
+			    facetState: query_form.stateFctLoc.vars.value,
+			    facetShort: 'Loc'
+			}) }}
 		    {% endif %}
 		</div>
 	    </div>

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% set menuItem='collections' %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -163,189 +164,55 @@
 		    {% endif %}
 		</div>
 	    {% endif %}
-	    {% if false and stylebefore20210507 %}
-		<dl class="row mx-2 mt-3">
-		    {% if person.religiousorder %}
-			<dt class="col-sm-3">Orden</dt>
-			<dd class="col-sm-9">{{ person.religiousorder }}</dd>
-		    {% endif %}
-		    {% if person.offices %}
-			<dt class="col-sm-3">Ämter</dt>
-			<dd class="col-sm-9">
-			    <ul class="list-unstyled">
-				{% for office in person.offices|sort((a, b) => a.numdate.datestart <=> b.numdate.datestart) %}
-				    <li>
-					<ul class="list-inlined list-unstyled">
-					    <li class="list-inline-item"> {{ office.officename }}</li>
-					    {% if office.diocese %}
-						<li class="list-inline-item">{% if office.dioceseindb %}<a href="{{ path('diocese', {'idorname': office.diocese}) }}">{{ office.diocese }}</a>{% else %}{{ office.diocese }}{% endif %}</li>
-					    {% endif %}
-					    {% if office.idmonastery %}
-						<li class="list-inline-item">
-						    <a href="{{ urlgsmonasteries }}gsn/{{ office.idmonastery }}">{{ office.monastery.monasteryname }}</a>
-						</li>
-					    {% endif %}
-					    <li class="list-inline-item">
-						{% if not office.datestart and not office.dateend %}
-						{% elseif office.datestart and not office.dateend %}
-						    {{ office.datestart }}
-						{% elseif not office.datestart and office.dateend %}
-						    bis {{ office.dateend }}
-						{% else %}
-						    {{ office.datestart }}–{{ office.dateend }}
-						{% endif %}
-					    </li>
-					    {% if office.comment %}
-						<li class="list-inline-item comment"> ({{ office.comment }}) </li>
-					    {% endif %}
 
-					</ul>
-				    </li>
-				{% endfor %}
-			    </ul>
-			</dd>
-		    {% endif %}
-		    {% if person.hasExternalIdentifier %}
-			<dt class="col-sm-3">Externe Identifier</dt>
-			<dd class="col-sm-9">
-			    <ul class ="list-unstyled">
-				{% if person.gndid %}
-				    <li>
-					<ul class="list-inlined list-unstyled">
-					    <li class="list-inline-item">GND</li>
-					    <li class="list-inline-item"><a href="{{ urlgnd }}{{ person.gndid }}" target="_blank" rel="noopener">{{ person.gndid }}</a></li>
-					</ul>
-				    </li>
-				{% endif %}
-				{% if person.viafid %}
-				    <li>
-					<ul class="list-inlined list-unstyled">
-					    <li class="list-inline-item">VIAF</li>
-					    <li class="list-inline-item"><a href="{{ urlviaf }}{{ person.viafid }}" target="_blank" rel="noopener">{{ person.viafid }}</a></li>
-					</ul>
-				    </li>
-				{% endif %}
-				{% if person.wikidataid %}
-				    <li>
-					<ul class="list-inlined list-unstyled">
-					    <li class="list-inline-item">Wikidata</li>
-					    <li class="list-inline-item"><a href="{{ urlwikidata }}{{ person.wikidataid }}" target="_blank" rel="noopener">{{ person.wikidataid }}</a></li>
-					</ul>
-				    </li>
-				{% endif %}
-			    </ul>
-			</dd>
-		    {% endif %}
-		    {% if person.hasOtherIdentifier %}
-			<dt class="col-sm-3">Siehe auch</dt>
-			<dd class="col-sm-9">
-			    <ul class ="list-unstyled">
-				{% if person.gsid %}
-				    <li>
-					<ul class="list-inlined list-unstyled">
-					    <li class="list-inline-item">Germania Sacra</li>
-					    <li class="list-inline-item">
-						<a href="{{ urlgspersons }}index/gsn/{{ person.gsid }}" target="_blank" rel="noopener">{{ person.gsid }}</a></li>
-					</ul>
-				    </li>
-				{% endif %}
-				{% if person.wikipediatitle %}
-				    <li>
-					<ul class="list-inlined list-unstyled">
-					    <li class="list-inline-item">Wikipedia</li>
-					    <li class="list-inline-item"><a href="{{ person.wikipediaurl }}" target="_blank" rel="noopener">{{ person.wikipediatitle }}</a></li>
-					</ul>
-				    </li>
-				{% endif %}
-			    </ul>
-			</dd>
-		    {% endif %}
-		    {% if person.reference %}
-			<dt class="col-sm-3">Referenzwerk</dt>
-			<dd class="col-sm-9"><a href="{{ path('reference', {'id': person.referenceid}) }}">{{ person.reference.shorttitle }}</a>, S. {{ person.pagesgatz }}</dd>
-		    {% endif %}
-
-		</dl>
-	    {% endif %} {# obsolete? #}
-	    <div class="card mx-2 mb-2 mt-3">
-		<span class="card-header"><strong>Amtsangaben aus Referenzwerken</strong></span>
-		<dl class="card-body row">
-		    {{ _self.sectionoffices(person.offices, urlgsmonasteries) }}
-		    {% if person.reference %}
-			<dt class="col-sm-3">Referenzwerk</dt>
-			<dd class="col-sm-9 small"><a href="{{ path('reference', {'id': person.referenceid}) }}">{{ person.reference.shorttitle }}</a>, S. {{ person.pagesgatz }}</dd>
-		    {% endif %}
-		</dl>
+	    <div class="row mx-2 mt-3 mb-2">
+		<div class="col-12">
+		    <div class="card">
+			<span class="card-header"><strong>Amtsangaben aus Referenzwerken</strong></span>
+			<dl class="card-body row">
+			    {{ _self.sectionoffices(person.offices, urlgsmonasteries) }}
+			    {% if person.reference %}
+				<dt class="col-sm-3">Referenzwerk</dt>
+				<dd class="col-sm-9 small"><a href="{{ path('reference', {'id': person.referenceid}) }}">{{ person.reference.shorttitle }}</a>, S. {{ person.pagesgatz }}</dd>
+			    {% endif %}
+			</dl>
+		    </div>
+		</div>
 	    </div>
 	    {% if canon and canon.offices %}
-		<div class="card mx-2 mb-2">
-		    <span class="card-header"><strong>Amtsangaben aus der Datenbank Domherren des Alten Reiches </strong></span>
-		    <dl class="card-body row mb-0 pb-0">
-			{# offices and references#}
-			{# { dump(person.officesdh) } #}
-			{{ _self.sectionoffices(canon.offices, urlgsmonasteries) }}
-			{{ _self.sectionreferencesdh(canon_merged, false, url_gs_bios) }}
-		    </dl>
+		<div class="row mx-2 mt-3 mb-2">
+		    <div class="col-12">
+			<div class="card">
+			    <span class="card-header"><strong>Amtsangaben aus der Datenbank Domherren des Alten Reiches </strong></span>
+			    <dl class="card-body row mb-0 pb-0">
+				{# offices and references#}
+				{# { dump(person.officesdh) } #}
+				{{ _self.sectionoffices(canon.offices, urlgsmonasteries) }}
+				{{ _self.sectionreferencesdh(canon_merged, false, url_gs_bios) }}
+			    </dl>
+			</div>
+		    </div>
 		</div>
 	    {% endif %}
 	    {% if canon_gs and canon_gs.offices %}
-		<div class="card mx-2 mb-2">
-		    <span class="card-header"><a href="{{ urlgspersons }}index/gsn/{{ person.gsid }}" target="_blank" rel="noopener"><strong>Amtsangaben aus dem Digitalen Personenregister der Germania Sacra — {{ person.gsid }}</strong></a></span>
-		    <dl class="card-body row mb-0 pb-0">
-			{{ _self.sectionoffices(canon_gs.offices, urlgsmonasteries) }}
-			{% if canon_gs.references and canon_gs.references|length > 0 %}
-			    {{ _self.sectionreferences(canon_gs.references, true, url_gs_bios) }}
-			{% endif %}
-		    </dl>
+		<div class="row mx-2 mt-3 mb-2">
+		    <div class="col-12">
+			<div class="card">
+			    <span class="card-header"><a href="{{ urlgspersons }}index/gsn/{{ person.gsid }}" target="_blank" rel="noopener"><strong>Amtsangaben aus dem Digitalen Personenregister der Germania Sacra — {{ person.gsid }}</strong></a></span>
+			    <dl class="card-body row mb-0 pb-0">
+				{{ _self.sectionoffices(canon_gs.offices, urlgsmonasteries) }}
+				{% if canon_gs.references and canon_gs.references|length > 0 %}
+				    {{ _self.sectionreferences(canon_gs.references, true, url_gs_bios) }}
+				{% endif %}
+			    </dl>
+			</div>
+		    </div>
 		</div>
 	    {% endif %}
 	    {% if person.hasExternalIdentifier %}
-		<div class="card mx-2">
-		    <span class="card-header"><strong>Externe Identifier</strong></span>
-		    <div class="card-body">
-			<ul class="list-unstyled mb-0">
-			    {% if person.gsnid %}
-				<li>
-				    <ul class="list-inlined list-unstyled">
-					<li class="list-inline-item">Germania Sacra</li>
-					<li class="list-inline-item">
-					    <a href="{{ urlgspersons }}index/gsn/{{ person.gsnid }}" target="_blank" rel="noopener">{{ person.gsnid }}</a></li>
-				    </ul>
-				</li>
-			    {% endif %}
-			    {% if person.gndid %}
-				<li>
-				    <ul class="list-inlined list-unstyled">
-					<li class="list-inline-item">GND</li>
-					<li class="list-inline-item"><a href="{{ urlgnd }}{{ person.gndid }}" target="_blank" rel="noopener">{{ person.gndid }}</a></li>
-				    </ul>
-				</li>
-			    {% endif %}
-			    {% if person.wikidataid %}
-				<li>
-				    <ul class="list-inlined list-unstyled">
-					<li class="list-inline-item">Wikidata</li>
-					<li class="list-inline-item"><a href="{{ urlwikidata }}{{ person.wikidataid }}" target="_blank" rel="noopener">{{ person.wikidataid }}</a></li>
-				    </ul>
-				</li>
-			    {% endif %}
-			    {% if person.viafid %}
-				<li>
-				    <ul class="list-inlined list-unstyled">
-					<li class="list-inline-item">VIAF</li>
-					<li class="list-inline-item"><a href="{{ urlviaf }}{{ person.viafid }}" target="_blank" rel="noopener">{{ person.viafid }}</a></li>
-				    </ul>
-				</li>
-			    {% endif %}
-			    {% if person.wikipediatitle %}
-				<li>
-				    <ul class="list-inlined list-unstyled">
-					<li class="list-inline-item">Wikipedia</li>
-					<li class="list-inline-item"><a href="{{ person.wikipediaurl }}" target="_blank" rel="noopener">{{ person.wikipediatitle }}</a></li>
-				    </ul>
-				</li>
-			    {% endif %}
-			</ul>
+		<div class="row mx-2 mt-3 mb-2">
+		    <div class="col-12">
+			{{ include('query_bishop/_external_identifiers.html.twig') }}
 		    </div>
 		</div>
 	    {% endif %}
@@ -356,18 +223,20 @@
 		<span id="citation">"{{ person.displayname }}" in: WIAG, {{ protocol }}:{{ url('id', {id: person.wiagidlong}, schemeRelative = true) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</span></div>
 
 	    <div class="row mx-2 col-12 mt-4">
-		{% if query_form is defined %}
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button>
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button>
-		    <a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm ml-1 mr-3">Neue Suche</button></a>
-		{% else %}
-		    <a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm ml-1 mr-3">Suche</button></a>
-		{% endif %}
-		<a href="{{ path('wiag_id_data', {id: person.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
-		<a href="{{ path('wiag_id_data', {id: person.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">CSV</button></a>
-		<a href="{{ path('wiag_id_data', {id: person.wiagidlong}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">RDF-XML</button></a>
-		<a href="{{ path('wiag_id_data', {id: person.wiagidlong, format: 'json-ld'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">JSON-LD</button></a>
+		<div class="d-flex">
+		    {% if query_form is defined %}
+			<button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
+			<button type="submit" form="q_form" class="btn btn-secondary btn-sm ms-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button>
+			<button type="submit" form="q_form" class="btn btn-secondary btn-sm ms-1" name="offset" value="{{ offset }}">Ergebnisliste</button>
+			<a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm ms-1 me-3">Neue Suche</button></a>
+		    {% else %}
+			<a href="{{ path('launch_query') }}"><button class="btn btn-secondary btn-sm ms-1 me-3">Suche</button></a>
+		    {% endif %}
+		    <a href="{{ path('wiag_id_data', {id: person.wiagidlong, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
+		    <a href="{{ path('wiag_id_data', {id: person.wiagidlong, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ms-1">CSV</button></a>
+		    <a href="{{ path('wiag_id_data', {id: person.wiagidlong}) }}"><button class="btn btn-secondary btn-light btn-sm ms-1">RDF-XML</button></a>
+		    <a href="{{ path('wiag_id_data', {id: person.wiagidlong, format: 'json-ld'}) }}"><button class="btn btn-secondary btn-light btn-sm ms-1">JSON-LD</button></a>
+		</div>
 	    </div>
 	</div>
 

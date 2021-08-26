@@ -86,7 +86,7 @@ $(document).ready(function() {
 
     }
 
-        /** collapse long facets
+    /** collapse long facets
      * offices
      */
     var input_statefctofc = $('#bishop_query_form_stateFctOfc');
@@ -119,7 +119,7 @@ $(document).ready(function() {
 
     }
 
-        // click on a checkbox submits the form
+    // click on a checkbox submits the form
     // console.log('query-bishop-fire-facet');
     var fpx = $("input[id*='bishop_query_form_facet']");
     var btn_submit = $("#bishop_query_form_searchHTML");

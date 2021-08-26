@@ -58,9 +58,6 @@ class CanonFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Vor- oder Nachname',
-                    'class' => 'js-autocomplete',
-                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_name'),
-                    'size' => '30',
                 ],
             ])
             ->add('monastery', TextType::class, [
@@ -68,9 +65,6 @@ class CanonFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Domstift',
-                    'class' => 'js-domstift-autocomplete',
-                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_domstift'),
-                    'size' => '8',
                 ],
             ])
             ->add('office', TextType::class, [
@@ -78,9 +72,6 @@ class CanonFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Amtsbezeichnung',
-                    'class' => 'js-office-autocomplete',
-                    'data-autocomplete-url' => $this->router->generate('canon_autocomplete_office'),
-                    'size' => '18',
                 ],
             ])
             ->add('place', TextType::class, [
@@ -93,7 +84,6 @@ class CanonFormType extends AbstractType
                     'size' => '12',
                 ],
             ])
-
             ->add('year', NumberType::class, [
                 'label' => 'Jahr',
                 'required' => false,

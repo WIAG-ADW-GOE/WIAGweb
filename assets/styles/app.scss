@@ -1,0 +1,97 @@
+@import '@fontsource/nunito-sans';
+
+@import '_variables.scss';
+@import '~bootstrap';
+
+
+
+html {
+  font-family: sans-serif;
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+
+// body {
+//   margin: 0;
+//   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+//   font-size: 0.9rem;
+//   font-weight: 400;
+//   line-height: 1.5;
+//   color: #212529;
+//   text-align: left;
+//   background-color: #fff;
+// }
+
+body {
+    font-family: $font-family-sans-serif;
+    color: $body-color;
+}
+
+.wiag-large {
+  font-size: large;
+}
+
+.wiag-title {
+  font-size: x-large;
+  font-weight: bold;
+  color: black;
+}
+
+.wiag-version {
+  color: #777;
+}
+
+.topic-title {
+  font-size: large;
+  font-weight: bold;
+}
+
+.wiag-impress {
+  font-size: small;
+  color: #222;
+}
+
+.wiag-id {
+  font-size: normal;
+}
+
+.comment {
+  color: #484;
+}
+
+.dio {
+  text-transform: uppercase;
+  color: #068;
+}
+
+.gs {
+    color: #a33;
+}
+
+// remove the standard caret after the dropdown menu entry
+.nav-link.dropdown-toggle::after {
+    content: none;
+}
+
+.navbar-light .navbar-nav .nav-link.active {
+    color: $link-color;
+    // border-bottom: thin solid $link-color;
+}
+
+.nav-item .dropdown-item {
+    font-size: 0.85rem;
+}
+
+ul.autocomplete-target {
+    position: absolute;
+    z-index: 99;
+}
+
+
+footer {
+  background-color: #efefee;
+}
+
+@import 'components/login.scss';

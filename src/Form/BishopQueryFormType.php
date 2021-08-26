@@ -52,9 +52,6 @@ class BishopQueryFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Vor- oder Nachname',
-                    'class' => 'js-name-autocomplete',
-                    'data-autocomplete-url' => $this->router->generate('query_bishops_utility_names'),
-                    'size' => '30',
                 ],
             ])
             ->add('place', TextType::class, [
@@ -62,9 +59,6 @@ class BishopQueryFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Erzbistum/Bistum',
-                    'class' => 'js-place-autocomplete',
-                    'data-autocomplete-url' => $this->router->generate('query_bishops_utility_places'),
-                    'size' => '15',
                 ],
             ])
             ->add('office', TextType::class, [
@@ -72,9 +66,6 @@ class BishopQueryFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'Amtsbezeichnung',
-                    'class' => 'js-office-autocomplete',
-                    'data-autocomplete-url' => $this->router->generate('query_bishops_utility_offices'),
-                    'size' => '18',
                 ],
             ])
             ->add('year', NumberType::class, [

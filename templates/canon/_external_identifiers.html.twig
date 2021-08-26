@@ -1,0 +1,56 @@
+<div class="card">
+    <span class="card-header"><strong>Externe Identifier</strong></span>
+    <div class="card-body">
+	<ul class="list-unstyled mb-0">
+	    {% if canon.gsnid %}
+		<li>
+		    <ul class="list-inlined list-unstyled">
+			<li class="list-inline-item">Germania Sacra</li>
+			<li class="list-inline-item">
+			    <a href="{{ urlgspersons }}index/gsn/{{ canon.gsnid }}" target="_blank" rel="noopener">{{ canon.gsnid }}</a></li>
+		    </ul>
+		</li>
+	    {% endif %}
+	    {% if canon.wiagepiscid %}
+		<li>
+		    <ul class="list-inlined list-unstyled">
+			<li class="list-inline-item">WIAG</li>
+			<li class="list-inline-item"><a href="{{ protocol }}:{{ url('id', {'id': canon.wiagepiscidlong}, schemeRelative=true) }}" target="_blank" rel="noopener">{{ canon.wiagepiscidlong }}</a></li>
+		    </ul>
+		</li>
+	    {% endif %}
+	    {% if canon.gndid %}
+		<li>
+		    <ul class="list-inlined list-unstyled">
+			<li class="list-inline-item">GND</li>
+			<li class="list-inline-item"><a href="{{ urlgnd }}{{ canon.gndid }}" target="_blank" rel="noopener">{{ canon.gndid }}</a></li>
+		    </ul>
+		</li>
+	    {% endif %}
+	    {% if canon.wikidataid %}
+		<li>
+		    <ul class="list-inlined list-unstyled">
+			<li class="list-inline-item">Wikidata</li>
+			<li class="list-inline-item"><a href="{{ urlwikidata }}{{ canon.wikidataid }}" target="_blank" rel="noopener">{{ canon.wikidataid }}</a></li>
+		    </ul>
+		</li>
+	    {% endif %}
+	    {% if canon.viafid %}
+		<li>
+		    <ul class="list-inlined list-unstyled">
+			<li class="list-inline-item">VIAF</li>
+			<li class="list-inline-item"><a href="{{ urlviaf }}{{ canon.viafid }}" target="_blank" rel="noopener">{{ canon.viafid }}</a></li>
+		    </ul>
+		</li>
+	    {% endif %}
+	    {% if canon.wikipediatitle %}
+		<li>
+		    <ul class="list-inlined list-unstyled">
+			<li class="list-inline-item">Wikipedia</li>
+			<li class="list-inline-item"><a href="{{ canon.wikipediaurl }}" target="_blank" rel="noopener">{{ canon.wikipediatitle }}</a></li>
+		    </ul>
+		</li>
+	    {% endif %}
+	</ul>
+    </div>
+</div>

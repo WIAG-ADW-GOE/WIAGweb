@@ -10,63 +10,93 @@
     </head>
     <body class="d-flex flex-column h-100">
 	<div class="container-fluid">
-	    <div class="row ml-2">
+	    <div class="row ms-2">
 		<div class="fixed mt-3">
 		    <a href="{{ path('wiag_welcome') }}"><img src="{{ asset('images/WIAG-logo.png') }}" width="80"></a>
 		</div>
 		<div class="col mt-3">
-		    <a class="wiag-title text-reset text-decoration-none" href="{{ path('wiag_welcome') }}">Wissensaggregator Mittelalter und Frühe Neuzeit</a> <span class="wiag-version ml-1">Version: Beta</span>
+		    <a class="wiag-title text-reset text-decoration-none" href="{{ path('wiag_welcome') }}">Wissensaggregator Mittelalter und Frühe Neuzeit</a> <span class="wiag-version ms-1">Version: Beta</span>
 		    <p>Strukturierung, Standardisierung und Bereitstellung von Forschungsdaten aus Sach- und Schriftquellen des Mittelalters und der Frühen Neuzeit</p>
 		</div>
 	    </div>
 	</div>
-	<div class="container-fluid">
-		<nav class="navbar navbar-expand-sm navbar-light bg-white">
-		    <ul class="navbar-nav ml-auto">
-			<li class="nav-item active btn-group m-1"><div class="dropdown">
-			    {# border-white?! #}
-			    <button class="btn btn-light bg-white font-weight-bold" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Über&nbsp;WIAG</button>
-			    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-				<a class="dropdown-item" href="{{ path('wiag_about') }}">Ziele</a>
-				<a class="dropdown-item" href="{{ path('reference_list') }}">Referenzwerke</a>
-				<a class="dropdown-item" href="{{ path('api_documentation') }}">API</a>
-				<a class="dropdown-item" href="{{ path('wiag_contact') }}">Kontakt</a>
-			    </div>
-			</div></li>
-			{% if is_granted('ROLE_DATA_ADMIN') %}
-			    <li class="nav-item active btn-group m-1"><div class="dropdown">
-				<button class="btn btn-light bg-white font-weight-bold" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Redaktion</button>
-				<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-				    <a class="dropdown-item" href="{{ path('canon_editlist') }}">Domherren des Alten Reiches</a>
-				    <a class="dropdown-item" href="{{ path('canon_reference_list') }}">Referenzen Domherren</a>
-				</div>
-			    </div></li>
-			{% endif %}
-			<li class="nav-item active btn-group m-1"><div class="dropdown">
-			    <button class="btn btn-light font-weight-bold bg-white" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Datensammlungen</button>
-			    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-				<a class="dropdown-item" href="{{ path('launch_query') }}">Bischöfe des Alten Reiches</a>
-				<a class="dropdown-item" href="{{ path('query_dioceses') }}">Bistümer des Alten Reiches</a>
 
-				{% if is_granted('ROLE_DATA_ADMIN') %}
-				    <a class="dropdown-item" href="{{ path('query_canons_gs') }}">Domherren des Alten Reiches (GS)</a>
-				{% endif %}
-				    <a class="dropdown-item" href="{{ path('query_canons') }}">Domherren des Alten Reiches</a>
-				{% if is_granted('ROLE_DATA_ADMIN') %}
-				    <a class="dropdown-item" href="{{ path('bulk_export_dispatch') }}">Datenexport</a>
-				{% endif %}
+	<nav class="navbar navbar-expand-lg navbar-light bg-white">
+	    <div class="container-fluid mx-3">
+		<button class="navbar-toggler"
+			type="button"
+			data-bs-toggle="collapse"
+			data-bs-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent"
+			aria-expanded="false"
+			aria-label="Toggle navigation">
+		    <span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+			<li class="nav-item">
+			    {% if menuItem == 'home' %}
+				<a class="nav-link fw-bold active" type="button" aria-current="aria-current" href="{{ path('wiag_welcome') }}">Start</a>
+			    {% else %}
+				<a class="nav-link fw-bold" type="button" href="{{ path('wiag_welcome') }}">Start</a>
+			    {% endif %}
+			</li>
 
-			    </div>
-			</div></li>
-			<li class="nav-item m-1"><a href="{{ path('data_service') }}"><button class="btn btn-light font-weight-bold bg-white">Datenservice</button></a></li>
+			<li class="nav-item dropdown">
+			    {% if menuItem == 'about-wiag' %}
+			    <a class="nav-link dropdown-toggle fw-bold active" href="#" id="about-wiag" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-current="aria-current">Über WIAG</a>
+			    {% else %}
+			    <a class="nav-link dropdown-toggle fw-bold" href="#" id="about-wiag" type="button" data-bs-toggle="dropdown" aria-expanded="false">Über WIAG</a>
+			    {% endif %}
+			    <ul class="dropdown-menu" aria-labelledby="about-wiag">
+				<li><a class="dropdown-item" href="{{ path('wiag_about') }}">Ziele</a></li>
+				<li><a class="dropdown-item" href="{{ path('reference_list') }}">Referenzwerke</a></li>
+				<li><a class="dropdown-item" href="{{ path('api_documentation') }}">API</a></li>
+				<li><a class="dropdown-item" href="{{ path('wiag_contact') }}">Kontakt</a></li>
+			    </ul>
+			</li>
+			<li class="nav-item dropdown">
+			    {% if menuItem == 'collections'  %}
+				<a class="nav-link dropdown-toggle fw-bold active" href="#" id="collections" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-current="aria-current">Datensammlungen</a>
+			    {% else %}
+				<a class="nav-link dropdown-toggle fw-bold" href="#" id="collections" type="button" data-bs-toggle="dropdown" aria-expanded="false">Datensammlungen</a>
+			    {% endif %}
+			    <ul class="dropdown-menu" aria-labelledby="collections">
+				<li><a class="dropdown-item" href="{{ path('launch_query') }}">Bischöfe des Alten Reiches</a></li>
+				<li><a class="dropdown-item" href="{{ path('query_dioceses') }}">Bistümer des Alten Reiches</a></li>
+				{% if is_granted('ROLE_DATA_ADMIN') %}
+				    <li><a class="dropdown-item" href="{{ path('query_canons_gs') }}">Domherren des Alten Reiches (GS)</a></li>
+				{% endif %}
+				<li><a class="dropdown-item" href="{{ path('query_canons') }}">Domherren des Alten Reiches</a></li>
+				{% if is_granted('ROLE_DATA_ADMIN') %}
+				    <li><a class="dropdown-item" href="{{ path('bulk_export_dispatch') }}">Datenexport</a></li>
+				{% endif %}
+			    </ul>
+			</li>
+			<li class="nav-item">
+			    {% if menuItem == 'service' %}
+				<a class="nav-link fw-bold active" type="button" aria-current="aria-current" href="{{ path('data_service') }}">Datenservice</a>
+			    {% else %}
+				<a class="nav-link fw-bold" type="button" href="{{ path('data_service') }}">Datenservice</a>
+			    {% endif %}
+			</li>
 			{% if is_granted('ROLE_USER') %}
-			    <li class="nav-item m-1"><a href="{{ path('wiag_logout') }}"><button class="btn btn-light font-weight-bold bg-white">Logout</button></a></li>
+			    <li class="nav-item">
+				<a class="nav-link fw-bold" type="button" href="{{ path('wiag_logout') }}">Logout</a>
+			    </li>
 			{% else %}
-			    <li class="nav-item m-1"><a href="{{ path('wiag_login') }}"><button class="btn btn-light font-weight-bold bg-white">Login</button></a></li>
+			    <li class="nav-item">
+				{% if menuItem == 'login' %}
+				    <a class="nav-link fw-bold active" type="button" aria-current="aria-current" href="{{ path('wiag_login') }}">Login</a>
+				{% else %}
+				    <a class="nav-link fw-bold" type="button" href="{{ path('wiag_login') }}">Login</a>
+				{% endif %}
+			    </li>
 			{% endif %}
 		    </ul>
-		</nav></div>
-
+		</div>
+	    </div>
+	</nav>
 	{% block body %}{% endblock %}
 	<footer class="mt-auto pt-3 pb-2">
 	    <div class="container-fluid">
@@ -80,7 +110,7 @@
 		<div class="row justify-content-sm-center mt-2">
 		    <div class="col-sm-10 text-left">
 			<a href="https://adw-goe.de/impressum" class="wiag-impress" target="_blank" rel="noopener">Impressum</a>
-			<a href="{{ path('wiag_contact') }}" class="wiag-impress ml-2">Kontakt</a>
+			<a href="{{ path('wiag_contact') }}" class="wiag-impress ms-2">Kontakt</a>
 		    </div>
 		</div>
 	    </div>

@@ -27,12 +27,17 @@ class QueryBishopUtility extends AbstractController {
     public function getNamesApi(Request $request) {
         $suggestions = $this->getDoctrine()
                             ->getRepository(Namelookup::class)
-                            ->suggestName($request->query->get('query'),
+                            ->suggestName($request->query->get('q'),
                                           self::HINT_LIST_LIMIT);
 
-        return $this->json([
-            'names' => $suggestions,
+        // return $this->json([
+        //     'names' => $suggestions,
+        // ]);
+
+        return $this->render('query_bishop/_autocomplete.twig.html', [
+            'suggestions' => array_column($suggestions, 'suggestion'),
         ]);
+
     }
 
     /**
@@ -41,7 +46,7 @@ class QueryBishopUtility extends AbstractController {
      *@Route("/query-bishops/utility/places", methods="GET", name="query_bishops_utility_places")
      */
     public function getPlacesApi(Request $request) {
-        $query = trim($request->query->get('query'));
+        $query = trim($request->query->get('q'));
         # strip 'bistum' or 'erzbistum'
         foreach(['bistum', 'erzbistum', 'Bistum', 'Erzbistum'] as $bs) {
             if(!is_null($query) && str_starts_with($query, $bs))
@@ -51,8 +56,9 @@ class QueryBishopUtility extends AbstractController {
         $places = $this->getDoctrine()
                        ->getRepository(Office::class)
                        ->suggestPlace($query, self::HINT_LIST_LIMIT);
-        return $this->json([
-            'places' => $places,
+
+        return $this->render('query_bishop/_autocomplete.twig.html', [
+            'suggestions' => array_column($places, 'suggestion'),
         ]);
     }
 
@@ -64,11 +70,11 @@ class QueryBishopUtility extends AbstractController {
     public function getOfficeApi(Request $request) {
         $offices = $this->getDoctrine()
                        ->getRepository(Office::class)
-                       ->suggestOffice($request->query->get('query'),
+                       ->suggestOffice($request->query->get('q'),
                                                     self::HINT_LIST_LIMIT);
 
-        return $this->json([
-            'offices' => $offices,
+        return $this->render('query_bishop/_autocomplete.twig.html', [
+            'suggestions' => array_column($offices, 'suggestion'),
         ]);
     }
 

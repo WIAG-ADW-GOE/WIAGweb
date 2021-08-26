@@ -1,28 +1,74 @@
-{# {{ form_start(query_form, {'attr': {'id':'q_form'}}) }} #}
-
-<div class="row ml-2 mt-3">
+<div class="row mx-2 mt-3">
     <div class="col-12">
 	<div class="d-flex flex-wrap">
-	    {{  form_row(query_form.name, { row_attr: {class: 'mr-2'}}) }}
-	    {{  form_row(query_form.place, { row_attr: {class: 'mr-2'}}) }}
-	    {{  form_row(query_form.office, { row_attr: {class: 'mr-2'}}) }}
-	    {{  form_row(query_form.year, { row_attr: {class: 'mr-2'}}) }}
-	    {{  form_row(query_form.someid) }}
+	    {# name #}
+	    <div class="me-2 mt-1"
+		 {{ stimulus_controller('autocomplete', {
+		     url: path('query_bishops_utility_names'),
+		 }) }}>
+		{{ form_label(query_form.name) }}
+		{{ form_errors(query_form.name) }}
+		{{ form_widget(query_form.name, {
+		    attr: {
+			'data-autocomplete-target': "input",
+			'size': 31,
+		    },
+		}) }}
+		<ul class="list-group autocomplete-target"
+		    data-autocomplete-target="results"
+		    style="max-width: 20rem;"></ul>
+	    </div>
+	    {# diocese #}
+	    <div class="me-2 mt-1"
+		 {{ stimulus_controller('autocomplete', {
+		     url: path('query_bishops_utility_places'),
+		 }) }}>
+		{{ form_label(query_form.place) }}
+		{{ form_errors(query_form.place) }}
+		{{ form_widget(query_form.place, {
+		    attr: {
+			'data-autocomplete-target': "input",
+			'size': 15,
+		    },
+		}) }}
+		<ul class="list-group autocomplete-target"
+		    data-autocomplete-target="results"
+		    style="max-width: 9em;"></ul>
+	    </div>
+	    {# office #}
+	    <div class="me-2 mt-1"
+		 {{ stimulus_controller('autocomplete', {
+		     url: path('query_bishops_utility_offices'),
+		 }) }}>
+		{{ form_label(query_form.office) }}
+		{{ form_errors(query_form.office) }}
+		{{ form_widget(query_form.office, {
+		    attr: {
+			'data-autocomplete-target': "input",
+			'size': 18,
+		    },
+		}) }}
+		<ul class="list-group autocomplete-target"
+		    data-autocomplete-target="results"
+		    style="max-width: 12em;"></ul>
+	    </div>
+	    {{  form_row(query_form.year, { row_attr: {class: 'me-2 mt-1'}}) }}
+	    {{  form_row(query_form.someid, {row_attr: {class: 'mt-1'}}) }}
 	</div>
     </div>
 </div>
-<div class="row ml-2">
+<div class="row mx-2 mt-2">
     <div class="col-12">
 	<div class="d-flex flex-wrap">
-	    {{  form_row(query_form.searchHTML, { row_attr: {class: 'mr-1'}}) }}
-	    {{  form_row(query_form.searchCSV, { row_attr: {class: 'mr-1'}}) }}
-	    {{  form_row(query_form.searchRDF, { row_attr: {class: 'mr-1'}}) }}
-	    {{  form_row(query_form.searchJSON, { row_attr: {class: 'mr-1'}}) }}
-	    {{  form_row(query_form.searchJSONLD, { row_attr: {class: 'mr-1'}}) }}
-	    <a href="{{ path('launch_query') }}" class="mr-1"><button class="btn btn-secondary btn-light btn-sm" type="button">Neue Suche</button></a>
+	    {{  form_row(query_form.searchHTML, { row_attr: {class: 'me-1'}}) }}
+	    {{  form_row(query_form.searchCSV, { row_attr: {class: 'me-1'}}) }}
+	    {{  form_row(query_form.searchRDF, { row_attr: {class: 'me-1'}}) }}
+	    {{  form_row(query_form.searchJSON, { row_attr: {class: 'me-1'}}) }}
+	    {{  form_row(query_form.searchJSONLD, { row_attr: {class: 'me-1'}}) }}
+	    <a href="{{ path('launch_query') }}" class="me-1"><button class="btn btn-secondary btn-light btn-sm" type="button">Neue Suche</button></a>
 	</div>
-    {{ form_widget(query_form.stateFctDioc) }}
-    {{ form_widget(query_form.stateFctOfc) }}
+	{{ form_widget(query_form.stateFctDioc) }}
+	{{ form_widget(query_form.stateFctOfc) }}
     </div>
 </div>
 

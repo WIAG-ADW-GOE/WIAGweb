@@ -130,7 +130,7 @@ class QueryBishop extends AbstractController {
                 'limit' => self::LIST_LIMIT,
                 'offset' => $offset,
                 'persons' => $persons,
-                'facetPlacesState' => $facetPlacesState,
+                'facetPlacesState' => $facetPlacesState, // obsolete 2021-08-24 !?
                 'facetOfficesState' => $facetOfficesState,
             ]);
 

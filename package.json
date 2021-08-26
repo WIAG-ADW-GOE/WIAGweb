@@ -4,7 +4,11 @@
         "@symfony/webpack-encore": "^1.0.0",
         "core-js": "^3.0.0",
         "regenerator-runtime": "^0.13.2",
+        "sass": "^1.38.0",
         "stimulus": "^2.0.0",
+        "stimulus-autocomplete": "^2.0.1-phylor-6095f2a9",
+        "stimulus-use": "^0.25.4",
+        "webpack-bundle-analyzer": "^4.4.2",
         "webpack-notifier": "^1.6.0"
     },
     "license": "UNLICENSED",
@@ -16,7 +20,9 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "@fontsource/nunito-sans": "^4.5.0",
         "@popperjs/core": "^2.9.3",
-        "bootstrap": "^5.1.0"
+        "bootstrap": "^5.1.0",
+        "sass-loader": "^12.1.0"
     }
 }

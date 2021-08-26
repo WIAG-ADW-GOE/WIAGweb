@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% set menuItem='collections' %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -174,41 +175,53 @@
 	    {% endif %}
 	    {# <p>{{ dump(person) }}</p> #}
 	    {% if person.iddh %}
-		<div class="card mx-2 mb-2 mt-3">
-		    <span class="card-header"><strong>Amtsangaben aus Referenzwerken</strong></span>
-		    <dl class="card-body row mb-0 pb-0">
-			{# offices and references#}
-			{{ _self.sectionoffices(person.canondh.offices, urlgsmonasteries) }}
-			{% if references is defined and references|length > 0 %}
-			    {{ _self.sectionreferencesdh(references) }}
-			{% endif %}
-		    </dl>
+		<div class="row mx-2 mb-2 mt-3">
+		    <div class="col-12">
+			<div class="card">
+			    <span class="card-header"><strong>Amtsangaben aus Referenzwerken</strong></span>
+			    <dl class="card-body row mb-0 pb-0">
+				{# offices and references#}
+				{{ _self.sectionoffices(person.canondh.offices, urlgsmonasteries) }}
+				{% if references is defined and references|length > 0 %}
+				    {{ _self.sectionreferencesdh(references) }}
+				{% endif %}
+			    </dl>
+			</div>
+		    </div>
 		</div>
 	    {% endif %}
 	    {# Germania Sacra #}
 	    {% if person.idgs %}
-		<div class="card mx-2 mb-2">
-		    <span class="card-header"><a href="{{ urlgspersons }}index/gsn/{{ canon.gsnid }}" target="_blank" rel="noopener"><strong>Amtsangaben aus dem Digitalen Personenregister der Germania Sacra — {{ canon.gsnid }}</strong></a></span>
-		    <dl class="card-body row mb-0 pb-0">
-			{{ _self.sectionoffices(person.officesgs, urlgsmonasteries) }}
-			{% if person.referencesgs|length > 0 %}
-			    {{ _self.sectionreferences(person.referencesgs, true, url_gs_bios) }}
-			{% endif %}
-		    </dl>
+		<div class="row mx-2 mb-2 mt-3">
+		    <div class="col-12">
+			<div class="card">
+			    <span class="card-header"><a href="{{ urlgspersons }}index/gsn/{{ canon.gsnid }}" target="_blank" rel="noopener"><strong>Amtsangaben aus dem Digitalen Personenregister der Germania Sacra — {{ canon.gsnid }}</strong></a></span>
+			    <dl class="card-body row mb-0 pb-0">
+				{{ _self.sectionoffices(person.officesgs, urlgsmonasteries) }}
+				{% if person.referencesgs|length > 0 %}
+				    {{ _self.sectionreferences(person.referencesgs, true, url_gs_bios) }}
+				{% endif %}
+			    </dl>
+			</div>
+		    </div>
 		</div>
 	    {% endif %}
 	    {# WIAG bishop database #}
 	    {% if person.bishop %}
-		<div class="card mx-2 mb-2">
-		    <span class="card-header"><a href="{{ protocol }}:{{ url('id', {'id': person.wiagid}, schemeRelative=true) }}" target="_blank" rel="noopener"><strong>Amtsangaben aus der Datenbank Bischöfe des Alten Reiches (WIAG) — {{ person.wiagid }}</strong></span></a>
-		    <dl class="card-body row">
-			{% set bishop = person.bishop %}
-			{{ _self.sectionoffices(bishop.offices, urlgsmonasteries) }}
+		<div class="row mx-2 mb-2 mt-3">
+		    <div class="col-12">
+			<div class="card">
+			    <span class="card-header"><a href="{{ protocol }}:{{ url('id', {'id': person.wiagid}, schemeRelative=true) }}" target="_blank" rel="noopener"><strong>Amtsangaben aus der Datenbank Bischöfe des Alten Reiches (WIAG) — {{ person.wiagid }}</strong></span></a>
+			    <dl class="card-body row">
+				{% set bishop = person.bishop %}
+				{{ _self.sectionoffices(bishop.offices, urlgsmonasteries) }}
 			{% if bishop.reference %}
 			    <dt class="col-sm-3">Referenzwerk</dt>
 			    <dd class="col-sm-9 small"><a href="{{ path('reference', {'id': bishop.referenceid}) }}">{{ bishop.reference.shorttitle }}</a>, S. {{ bishop.pagesgatz }}</dd>
 			{% endif %}
-		    </dl>
+			    </dl>
+			</div>
+		    </div>
 		</div>
 	    {% endif %}
 	    {# external identifiers and other identifiers (canondh holds a copy of bishop data if available#}
@@ -217,60 +230,9 @@
 	    {% else %}{% set canon = person.canongs %}
 	    {% endif %}
 	    {% if canon.hasExternalIdentifier or canon.hasOtherIdentifier %}
-		<div class="card mx-2">
-		    <span class="card-header"><strong>Externe Identifier</strong></span>
-		    <div class="card-body">
-			<ul class="list-unstyled mb-0">
-			    {% if canon.gsnid %}
-				<li>
-				    <ul class="list-inlined list-unstyled">
-					<li class="list-inline-item">Germania Sacra</li>
-					<li class="list-inline-item">
-					    <a href="{{ urlgspersons }}index/gsn/{{ canon.gsnid }}" target="_blank" rel="noopener">{{ canon.gsnid }}</a></li>
-				    </ul>
-				</li>
-			    {% endif %}
-			    {% if canon.wiagepiscid %}
-				<li>
-				    <ul class="list-inlined list-unstyled">
-					<li class="list-inline-item">WIAG</li>
-					<li class="list-inline-item"><a href="{{ protocol }}:{{ url('id', {'id': canon.wiagepiscidlong}, schemeRelative=true) }}" target="_blank" rel="noopener">{{ canon.wiagepiscidlong }}</a></li>
-				    </ul>
-				</li>
-			    {% endif %}
-			    {% if canon.gndid %}
-				<li>
-				    <ul class="list-inlined list-unstyled">
-					<li class="list-inline-item">GND</li>
-					<li class="list-inline-item"><a href="{{ urlgnd }}{{ canon.gndid }}" target="_blank" rel="noopener">{{ canon.gndid }}</a></li>
-				    </ul>
-				</li>
-			    {% endif %}
-			    {% if canon.wikidataid %}
-				<li>
-				    <ul class="list-inlined list-unstyled">
-					<li class="list-inline-item">Wikidata</li>
-					<li class="list-inline-item"><a href="{{ urlwikidata }}{{ canon.wikidataid }}" target="_blank" rel="noopener">{{ canon.wikidataid }}</a></li>
-				    </ul>
-				</li>
-			    {% endif %}
-			    {% if canon.viafid %}
-				<li>
-				    <ul class="list-inlined list-unstyled">
-					<li class="list-inline-item">VIAF</li>
-					<li class="list-inline-item"><a href="{{ urlviaf }}{{ canon.viafid }}" target="_blank" rel="noopener">{{ canon.viafid }}</a></li>
-				    </ul>
-				</li>
-			    {% endif %}
-			    {% if canon.wikipediatitle %}
-				<li>
-				    <ul class="list-inlined list-unstyled">
-					<li class="list-inline-item">Wikipedia</li>
-					<li class="list-inline-item"><a href="{{ canon.wikipediaurl }}" target="_blank" rel="noopener">{{ canon.wikipediatitle }}</a></li>
-				    </ul>
-				</li>
-			    {% endif %}
-			</ul>
+		<div class="row mx-2 mb-2 mt-3">
+		    <div class="col-12">
+			{{ include('canon/_external_identifiers.html.twig') }}
 		    </div>
 		</div>
 	    {% endif %}
@@ -280,20 +242,21 @@
 		{# app.request.schemeAndHttpHost ~ app.request.baseUrl  #}
 		<span id="citation">"{{ canon.displayname }}" in: WIAG, {{ protocol }}:{{ url('id', {id: person.wiagid}, schemeRelative=true) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</span></div>
 	    <div class="row mx-2 col-12 mt-4">
-		{% if query_form is defined %}
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button>
-		    <button type="submit" form="q_form" class="btn btn-secondary btn-sm ml-1" name="offset" value="{{ offset }}">Ergebnisliste</button>
-		    <a href="{{ path('query_canons') }}"><button class="btn btn-secondary btn-sm ml-1 mr-3">Neue Suche</button></a>
-		{% else %}
-		    <a href="{{ path('query_canons') }}"><button class="btn btn-secondary btn-sm mr-2" type="button">Suche</button></a>
-		{% endif %}
-		<a href="{{ path('wiag_id_data', {id: person.wiagid, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
-		<a href="{{ path('wiag_id_data', {id: person.wiagid, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">CSV</button></a>
-		<a href="{{ path('wiag_id_data', {id: person.wiagid}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">RDF-XML</button></a>
-		<a href="{{ path('wiag_id_data', {id: person.wiagid, format: 'json-ld'}) }}"><button class="btn btn-secondary btn-light btn-sm ml-1">JSON-LD</button></a>
+		<div class="d-flex">
+		    {% if query_form is defined %}
+			<button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
+			<button type="submit" form="q_form" class="btn btn-secondary btn-sm ms-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button>
+			<button type="submit" form="q_form" class="btn btn-secondary btn-sm ms-1" name="offset" value="{{ offset }}">Ergebnisliste</button>
+			<a href="{{ path('query_canons') }}"><button class="btn btn-secondary btn-sm ms-1 me-3">Neue Suche</button></a>
+		    {% else %}
+			<a href="{{ path('query_canons') }}"><button class="btn btn-secondary btn-sm me-2" type="button">Suche</button></a>
+		    {% endif %}
+		    <a href="{{ path('wiag_id_data', {id: person.wiagid, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
+		    <a href="{{ path('wiag_id_data', {id: person.wiagid, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ms-1">CSV</button></a>
+		    <a href="{{ path('wiag_id_data', {id: person.wiagid}) }}"><button class="btn btn-secondary btn-light btn-sm ms-1">RDF-XML</button></a>
+		    <a href="{{ path('wiag_id_data', {id: person.wiagid, format: 'json-ld'}) }}"><button class="btn btn-secondary btn-light btn-sm ms-1">JSON-LD</button></a>
+		</div>
 	    </div>
 	</div>
-
     {% endif %}
 {% endblock %}

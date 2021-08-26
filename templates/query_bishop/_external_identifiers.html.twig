@@ -1,0 +1,48 @@
+<div class="card">
+    <span class="card-header"><strong>Externe Identifier</strong></span>
+    <div class="card-body">
+	<ul class="list-unstyled mb-0">
+	    {% if person.gsnid %}
+		<li>
+		    <ul class="list-inlined list-unstyled">
+			<li class="list-inline-item">Germania Sacra</li>
+			<li class="list-inline-item">
+			    <a href="{{ urlgspersons }}index/gsn/{{ person.gsnid }}" target="_blank" rel="noopener">{{ person.gsnid }}</a></li>
+		    </ul>
+		</li>
+	    {% endif %}
+	    {% if person.gndid %}
+		<li>
+		    <ul class="list-inlined list-unstyled">
+			<li class="list-inline-item">GND</li>
+			<li class="list-inline-item"><a href="{{ urlgnd }}{{ person.gndid }}" target="_blank" rel="noopener">{{ person.gndid }}</a></li>
+		    </ul>
+		</li>
+	    {% endif %}
+	    {% if person.wikidataid %}
+		<li>
+		    <ul class="list-inlined list-unstyled">
+			<li class="list-inline-item">Wikidata</li>
+			<li class="list-inline-item"><a href="{{ urlwikidata }}{{ person.wikidataid }}" target="_blank" rel="noopener">{{ person.wikidataid }}</a></li>
+		    </ul>
+		</li>
+	    {% endif %}
+	    {% if person.viafid %}
+		<li>
+		    <ul class="list-inlined list-unstyled">
+			<li class="list-inline-item">VIAF</li>
+			<li class="list-inline-item"><a href="{{ urlviaf }}{{ person.viafid }}" target="_blank" rel="noopener">{{ person.viafid }}</a></li>
+		    </ul>
+		</li>
+	    {% endif %}
+	    {% if person.wikipediatitle %}
+		<li>
+		    <ul class="list-inlined list-unstyled">
+			<li class="list-inline-item">Wikipedia</li>
+			<li class="list-inline-item"><a href="{{ person.wikipediaurl }}" target="_blank" rel="noopener">{{ person.wikipediatitle }}</a></li>
+		    </ul>
+		</li>
+	    {% endif %}
+	</ul>
+    </div>
+</div>

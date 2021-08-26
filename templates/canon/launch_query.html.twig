@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% set menuItem='collections' %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -12,10 +13,15 @@
 
 {% block body %}
     <div class="container-fluid mt-3">
-	<div class="row ml-2 col-12">
+	<div class="row mx-2 col-12">
 	    {{ include('canon/_title.html.twig') }}
 	</div>
-	{{ form_start(query_form, {'attr': {'id':'q_form', 'action':path('canons_wd')}}) }}
+	{{ form_start(query_form, {
+	    'attr': {
+		'id':'q_form',
+		'action':path('canons_wd'),
+		'data-controller': 'hide-on-input',
+	    }}) }}
 	    {{ include('canon/_form_elements.html.twig') }}
 	{{ form_end(query_form) }}
     </div>

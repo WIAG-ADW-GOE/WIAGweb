@@ -27,14 +27,18 @@ class Start extends AbstractController {
      * @Route("/api-doc", name="api_documentation")
      */
     public function apidoc() {
-        return $this->render('start/apidoc.html.twig');
+        return $this->render('start/apidoc.html.twig', [
+            'menuItem' => 'about-wiag',
+        ]);
     }
 
     /**
      * @Route("/contact", name="wiag_contact")
      */
     public function contact() {
-        return $this->render('start/contact.html.twig');
+        return $this->render('start/contact.html.twig', [
+            'menuItem' => 'about-wiag',
+        ]);
     }
 
     /**

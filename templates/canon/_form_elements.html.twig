@@ -1,26 +1,98 @@
-{# {{ form_start(query_form, {'attr': {'id':'q_form'}}) }} #}
-<div class="row ml-2 col-12">
-    {{  form_row(query_form.name) }}
-    <span class="ml-2">{{ form_row(query_form.monastery) }}</span>
-    <span class="ml-2">{{ form_row(query_form.office) }}</span>
-    <span class="ml-2">{{ form_row(query_form.place) }}</span>
-    <span class="ml-2">{{ form_row(query_form.year) }}</span>
-    {% if query_form.someid is defined %}
-	<span class="ml-2">{{ form_row(query_form.someid) }}</span>
-    {% endif %}
-</div>
-<div class="row ml-2 col-12">
-    {{ form_row(query_form.searchHTML) }}
-    <a href="{{ path('query_canons') }}" class="ml-1"><button class="btn btn-secondary btn-light btn-sm" type="button">Neue Suche</button></a>
-    <div hidden="hidden">
-	<span class="ml-3">{{ form_widget(query_form.searchJSON) }}</span>
-	<span class="ml-1">{{ form_widget(query_form.searchCSV) }}</span>
-	<span class="ml-1">{{ form_widget(query_form.searchRDF) }}</span>
-	<span class="ml-1">{{ form_widget(query_form.searchJSONLD) }}</span>
+<div class="row mx-2 mt-2">
+    <div class="col-12">
+	<div class="d-flex flex-wrap">
+	    {# mt-1 for wrap appearance #}
+	    {# name #}
+	    <div class="me-2 mt-1"
+		 {{ stimulus_controller('autocomplete', {
+		     url: path('canon_autocomplete_name'),
+		 }) }}>
+		{{ form_label(query_form.name) }}
+		{{ form_errors(query_form.name) }}
+		{{ form_widget(query_form.name, {
+		    attr: {
+			'data-autocomplete-target': "input",
+			'size': 31,
+		    },
+		}) }}
+		<ul class="list-group autocomplete-target"
+		    data-autocomplete-target="results"
+		    style="max-width: 20em;"></ul>
+	    </div>
+	    {# monastery #}
+	    <div class="me-2 mt-1"
+		 {{ stimulus_controller('autocomplete', {
+		     url: path('canon_autocomplete_domstift'),
+		 }) }}>
+		{{ form_label(query_form.monastery) }}
+		{{ form_errors(query_form.monastery) }}
+		{{ form_widget(query_form.monastery, {
+		    attr: {
+			'data-autocomplete-target': "input",
+			'size': 12,
+		    },
+		}) }}
+		<ul class="list-group autocomplete-target"
+			   data-autocomplete-target="results"
+			   style="max-width: 16em;"></ul>
+	    </div>
+	    {# office #}
+	    <div class="me-2 mt-1"
+		 {{ stimulus_controller('autocomplete', {
+		     url: path('canon_autocomplete_office'),
+		 }) }}>
+		{{ form_label(query_form.office) }}
+		{{ form_errors(query_form.office) }}
+		{{ form_widget(query_form.office, {
+		    attr: {
+			'data-autocomplete-target': "input",
+			'size': 16,
+		    },
+		}) }}
+		<ul class="list-group autocomplete-target"
+		    data-autocomplete-target="results"
+		    style="max-width: 16em;"></ul>
+	    </div>
+	    {# place #}
+	    <div class="me-2 mt-1"
+		 {{ stimulus_controller('autocomplete', {
+		     url: path('canon_autocomplete_place'),
+		 }) }}>
+		{{ form_label(query_form.place) }}
+		{{ form_errors(query_form.place) }}
+		{{ form_widget(query_form.place, {
+		    attr: {
+			'data-autocomplete-target': "input",
+			'size': 12,
+		    },
+		}) }}
+		<ul class="list-group autocomplete-target"
+			   data-autocomplete-target="results"
+			   style="max-width: 16em;"></ul>
+	    </div>
+	    {{ form_row(query_form.year, {row_attr: {class: 'me-2 mt-1'}}) }}
+	    {% if query_form.someid is defined %}
+		{{ form_row(query_form.someid, {row_attr: {class: 'mt-1'}}) }}
+	    {% endif %}
+	</div>
     </div>
-    {{ form_widget(query_form.stateFctLoc) }}
-    {{ form_widget(query_form.stateFctMon) }}
-    {{ form_widget(query_form.stateFctOfc) }}
+</div>
+<div class="row mx-2 mt-2">
+    <div class="col-12">
+	<div class="d-flex flex-wrap">
+	    {{ form_row(query_form.searchHTML) }}
+	    <a href="{{ path('query_canons') }}" class="ms-1"><button class="btn btn-secondary btn-light btn-sm" type="button">Neue Suche</button></a>
+	    <div hidden="hidden">
+		{{ form_widget(query_form.searchJSON, { row_attr: {class: 'me-1'}}) }}
+		{{ form_widget(query_form.searchCSV, { row_attr: {class: 'me-1'}}) }}
+		{{ form_widget(query_form.searchRDF, { row_attr: {class: 'me-1'}}) }}
+		{{ form_widget(query_form.searchJSONLD) }}
+	    </div>
+	</div>
+	{{ form_widget(query_form.stateFctLoc) }}
+	{{ form_widget(query_form.stateFctMon) }}
+	{{ form_widget(query_form.stateFctOfc) }}
+    </div>
 </div>
 
 {# {{ form_end(query_form) }} #}

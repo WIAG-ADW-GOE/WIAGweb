@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
+{% set menuItem='login' %}
 
 {% block title %}WIAG Anmeldung{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -17,11 +17,10 @@
         <label for="inputName" class="sr-only">Email address</label>
         <input type="text" name="email" value="{{ last_username }}" id="inputName" class="form-control" placeholder="Name/Kennung" required autofocus>
 	<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-        <label for="inputPassword" class="sr-only">Passwort</label>
+        <label for="inputPassword" class="sr-only mt-2">Passwort</label>
         <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">
+        <button class="btn btn-lg btn-primary btn-block mt-2" type="submit">
             Anmelden
         </button>
     </form>
 {% endblock %}
-
