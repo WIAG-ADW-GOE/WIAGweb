@@ -3,9 +3,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {# this is required for bishop.js, even if it is not necessary for this page #}
-    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
-    <script src="{{ asset('js/bishop.js') }}"></script>
 {% endblock %}
 
 {% macro sectionoffices(offices, urlgsmonasteries) %}
@@ -99,6 +96,8 @@
     {% set urlgnd = 'http://d-nb.info/gnd/' %}
     {% set urlwikidata = 'https://www.wikidata.org/wiki/' %}
     {% set urlviaf = 'https://viaf.org/viaf/' %}
+    {% set permalink %}{{ protocol }}:{{ url('id', {id: person.wiagidlong}, schemeRelative = true) }}{% endset %}
+    {% set citation %}"{{ person.displayname }}" in: WIAG, {{ protocol }}:{{ url('id', {id: person.wiagidlong}, schemeRelative = true) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).{% endset %}
 
     {# person is passed as an object #}
     {% if not person%}
@@ -113,13 +112,16 @@
 	    <div class="row mx-2 col-12">
 		{{ include('query_bishop/_title.html.twig') }}
 	    </div>
-	    <div class="row mx-2 my-2">
-		<div class="col-8"><h2>{{ person.displayname[:200] }}</h2></div>
-		<div class="col-4 text-right text-nowrap">
-		    <button type="button" class="btn to-clipboard" title="{{ protocol }}:{{ url('id', {id: person.wiagidlong}, schemeRelative = true) }}">{{ person.wiagidlong }} <img src="{{ asset('images/link45deg.svg') }}" width="18"></button>
+	    <div class="row col-12 mx-2 mt-2 mb-0">
+		<div class="d-flex justify-content-between">
+		    <span class="fs-2">{{ person.displayname[:200] }}</span>
+		    <button type="button"
+			    class="btn"
+			    title="{{ permalink }}"
+			    {{ stimulus_controller('clipboard') }}
+			    data-action="clipboard#copyTitle">{{ person.wiagidlong }} <img src="{{ asset('images/link45deg.svg') }}" width="18"></button>
 		</div>
 	    </div>
-
 	    {% if person.flagcomment %}
 		<div class="row mx-2 col-12">
 		    {% if person.givennamevariant is defined and person.givennamevariant != '' %}
@@ -216,13 +218,19 @@
 		    </div>
 		</div>
 	    {% endif %}
-	    <div class="row mx-2 col-12"><span class="align-baseline"> Empfohlene Zitierweise: <button type="button" class="btn btn-sm" id="copy-citation"><img src="{{ asset('images/clipboard.svg') }}"></button> </span></div>
-	    <div class="row mx-2 col-12">
-		{# (WIAGID: {{ person.wiagidlong }}), #}
+	    <div class="row mx-2">
 		{# app.request.schemeAndHttpHost ~ app.request.baseUrl  #}
-		<span id="citation">"{{ person.displayname }}" in: WIAG, {{ protocol }}:{{ url('id', {id: person.wiagidlong}, schemeRelative = true) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</span></div>
-
-	    <div class="row mx-2 col-12 mt-4">
+		<div class="col-12">
+		    Empfohlene Zitierweise:
+		    <button type="button"
+			    class="btn btn-sm"
+			    title="Kopiere die Zitierweise"
+			    {{ stimulus_controller('clipboard') }}
+			    data-action="clipboard#copyCitation"><img src="{{ asset('images/clipboard.svg') }}"></button><br/>
+		    <span id="citation">{{ citation }}</span>
+		</div>
+	    </div>
+	    <div class="row mx-2 col-12 mt-4 mb-2">
 		<div class="d-flex">
 		    {% if query_form is defined %}
 			<button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>

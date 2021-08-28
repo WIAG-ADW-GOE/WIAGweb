@@ -124,7 +124,7 @@ class IDController extends AbstractController {
     }
 
     /**
-     * match id with object type (bishop, canon, diocse); deliver data as JSON, CSV or XML
+     * match id with object type (bishop, canon, diocese); deliver data as JSON, CSV or XML
      *
      * @Route("/data/{id}", name="wiag_id_data")
      */
@@ -291,7 +291,7 @@ class IDController extends AbstractController {
         // collect references
         $canon_dh = $canon->getCanonDh();
         $canon_merged = array();
-        if (!is_null($canon)) {
+        if (!is_null($canon_dh)) {
             $cycle = 1;
             $canon_merged = $this->getDoctrine()
                                  ->getRepository(Canon::class)

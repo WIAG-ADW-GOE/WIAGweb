@@ -8,11 +8,18 @@
     <script src="{{ asset('js/canon.js') }}"></script>
 {% endblock %}
 
+{% if person.iddh %}{% set canon = person.canondh %}
+{% elseif person.idep %}{% set canon = person.bishop %}
+{% else %}{% set canon = person.canongs %}
+{% endif %}
+
 {% set urlgspersons = 'http://personendatenbank.germania-sacra.de/' %}
 {% set urlgsmonasteries = 'http://klosterdatenbank.germania-sacra.de/' %}
 {% set urlgnd = 'http://d-nb.info/gnd/' %}
 {% set urlwikidata = 'https://www.wikidata.org/wiki/' %}
 {% set urlviaf = 'https://viaf.org/viaf/' %}
+{% set permalink %}{{ protocol }}:{{ url('id', {id: person.wiagid}, schemeRelative=true) }}{% endset %}
+{% set citation %}"{{ canon.displayname }}" in: WIAG, {{ protocol }}:{{ url('id', {id: person.wiagid}, schemeRelative=true) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).{% endset %}
 
 {% macro sectionoffices(offices, urlgsmonasteries) %}
     <dt class="col-sm-3">Ämter</dt>
@@ -113,15 +120,14 @@
 	    <div class="row mx-2 col-12">
 		{{ include('canon/_title.html.twig') }}
 	    </div>
-	    <div class="row mx-2 mt-2 mb-1">
-		{% if person.iddh %}
-		    {% set canon=person.canondh %}
-		{% else %}
-		    {% set canon=person.canongs %}
-		{% endif %}
-		<div class="col-8"><h2>{{ canon.displayname[:200] }}</h2></div>
-		<div class="col-4 text-right text-nowrap">
-		    <button type="button" class="btn to-clipboard" title="{{ protocol }}:{{ url('id', {id: person.wiagid}, schemeRelative=true) }}" >{{ person.wiagid }} <img src="{{ asset('images/link45deg.svg') }}" width="18"></button>
+	    <div class="row col-12 mx-2 mt-2 mb-0">
+		<div class="d-flex justify-content-between">
+		    <span class="fs-2">{{ canon.displayname[:200] }}</span>
+		    <button type="button"
+			    class="btn"
+			    title="{{ permalink }}"
+			    {{ stimulus_controller('clipboard') }}
+			    data-action="clipboard#copyTitle">{{ person.wiagid }} <img src="{{ asset('images/link45deg.svg') }}" width="18"></button>
 		</div>
 	    </div>
 	    {% if canon.flagnamevariant %}
@@ -225,10 +231,6 @@
 		</div>
 	    {% endif %}
 	    {# external identifiers and other identifiers (canondh holds a copy of bishop data if available#}
-	    {% if person.iddh %}{% set canon = person.canondh %}
-            {% elseif person.idep %}{% set canon = person.bishop %}
-	    {% else %}{% set canon = person.canongs %}
-	    {% endif %}
 	    {% if canon.hasExternalIdentifier or canon.hasOtherIdentifier %}
 		<div class="row mx-2 mb-2 mt-3">
 		    <div class="col-12">
@@ -236,12 +238,18 @@
 		    </div>
 		</div>
 	    {% endif %}
-	    <div class="row mx-2 col-12"><span class="align-baseline"> Empfohlene Zitierweise: <button type="button" class="btn btn-sm" id="copy-citation"> <img src="{{ asset('images/clipboard.svg') }}"></button> </span></div>
-	    <div class="row mx-2 col-12">
-		{# (WIAGID: {{ person.wiagidlong }}), #}
-		{# app.request.schemeAndHttpHost ~ app.request.baseUrl  #}
-		<span id="citation">"{{ canon.displayname }}" in: WIAG, {{ protocol }}:{{ url('id', {id: person.wiagid}, schemeRelative=true) }} (Abgerufen: {{ "now"|date('d.m.Y') }}).</span></div>
-	    <div class="row mx-2 col-12 mt-4">
+	    <div class="row mx-2">
+		<div class="col-12">
+		    Empfohlene Zitierweise:
+		    <button type="button"
+			    class="btn btn-sm"
+			    title="Kopiere die Zitierweise"
+			    {{ stimulus_controller('clipboard') }}
+			    data-action="clipboard#copyCitation"><img src="{{ asset('images/clipboard.svg') }}"></button><br/>
+		    <span id="citation">{{ citation }}</span>
+		</div>
+	    </div>
+	    <div class="row mx-2 col-12 mt-4 mb-2">
 		<div class="d-flex">
 		    {% if query_form is defined %}
 			<button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
