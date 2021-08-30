@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Guard\Authenticator\AbstractFormLoginAuthenticator;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
@@ -26,13 +26,13 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator {
     private $userRepository;
     private $router;
     private $csrfTokenManager;
-    private $passwordEncoder;
+    private $passwordHasher;
 
-    public function __construct(UserRepository $userRepository, RouterInterface $router, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder) {
+    public function __construct(UserRepository $userRepository, RouterInterface $router, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordHasherInterface $passwordHasher) {
         $this->userRepository = $userRepository;
         $this->router = $router;
         $this->csrfTokenManager = $csrfTokenManager;
-        $this->passwordEncoder = $passwordEncoder;
+        $this->passwordHasher = $passwordHasher;
     }
 
     public function supports(Request $request)
@@ -65,8 +65,8 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator {
     public function checkCredentials($credentials, UserInterface $user)
     {
         //dd($user);
-        // dd($this->passwordEncoder->isPasswordValid($user, $credentials['password']));
-        return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
+        // dd($this->passwordHasher->isPasswordValid($user, $credentials['password']));
+        return $this->passwordHasher->isPasswordValid($user, $credentials['password']);
     }
 
     // public function onAuthenticationFailure(Request $request, AuthenticationException $exception)

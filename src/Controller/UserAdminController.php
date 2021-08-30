@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
 /**
@@ -24,10 +24,10 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class UserAdminController extends AbstractController {
 
-    private $passwordEncoder;
+    private $passwordHasher;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder) {
-        $this->passwordEncoder = $passwordEncoder;
+    public function __construct(UserPasswordHasherInterface $passwordHasher) {
+        $this->passwordHasher = $passwordHasher;
     }
 
     /**
@@ -46,7 +46,7 @@ class UserAdminController extends AbstractController {
             $user = $form->getData();
 
             $pwd = $user->getPassword();
-            $user->setPassword($this->passwordEncoder->encodePassword($user, $pwd));
+            $user->setPassword($this->passwordHasher->hashPassword($user, $pwd));
             $entityManager->persist($user);
             $entityManager->flush();
             return $this->redirectToRoute('admin_add_user_success');
