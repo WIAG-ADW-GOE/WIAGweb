@@ -30,7 +30,7 @@ use Symfony\Component\Serializer\Encoder\CsvEncoder;
  */
 class QueryBishop extends AbstractController {
     /** number of items per page */
-    const LIST_LIMIT = 20;
+    const PAGE_SIZE = 20;
 
     /**
      * display query form for bishops; handle query
@@ -68,7 +68,7 @@ class QueryBishop extends AbstractController {
             }
 
 
-            // get the number of results (without page limit restriction)
+            // get the number of results (without page size restriction)
             $count = $this->getDoctrine()
                           ->getRepository(Person::class)
                           ->countByQueryObject($bishopquery)[1];
@@ -115,16 +115,16 @@ class QueryBishop extends AbstractController {
 
 
             // extra check to avoid empty lists
-            if($count < self::LIST_LIMIT) $offset = 0;
+            if($count < self::PAGE_SIZE) $offset = 0;
 
-            $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
+            $offset = (int) floor($offset / self::PAGE_SIZE) * self::PAGE_SIZE;
             $addMonasteryLocations = true;
-            $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset, $addMonasteryLocations);
+            $persons = $personRepository->findWithOffices($bishopquery, self::PAGE_SIZE, $offset, $addMonasteryLocations);
 
             return $this->render('query_bishop/listresult.html.twig', [
                 'query_form' => $form->createView(),
                 'count' => $count,
-                'limit' => self::LIST_LIMIT,
+                'pageSize' => self::PAGE_SIZE,
                 'offset' => $offset,
                 'persons' => $persons,
                 'facetPlacesState' => $facetPlacesState, // obsolete 2021-08-24 !?
@@ -144,24 +144,26 @@ class QueryBishop extends AbstractController {
     /**
      * return list result
      *
-     * @Route("/bischoefe/list", name="bishop_list")
+     * @Route("/bischoefe/_list", name="bishop_list")
      */
     public function _list(Request $request, PersonRepository $personRepository) {
 
-        $request->request->set('name', 'lud');
-
         $offset = $request->request->get('offset') ?? 0;
-        $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
+        $offset = (int) floor($offset / self::PAGE_SIZE) * self::PAGE_SIZE;
 
         $addMonasteryLocations = true;
         $bishopquery = new BishopQueryFormModel();
-        $bishopquery->setFieldsByArray($request->request->all());
+        $bishopquery->setFieldsByArray($request->request->get('bishop_query_form'));
 
-        $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset, $addMonasteryLocations);
 
-        dump($persons);
+        $persons = $personRepository->findWithOffices($bishopquery, self::PAGE_SIZE, $offset, $addMonasteryLocations);
 
-        return new Response("Treffer: ".count($persons));
+        // return new Response('name: '.$bishopquery->name.' diocese: '.$bishopquery->place);
+
+        return $this->render('query_bishop/_list.html.twig', [
+            'persons' => $persons,
+            'offset' => $offset,
+        ]);
 
     }
 
@@ -318,7 +320,7 @@ class QueryBishop extends AbstractController {
         $person = $this->getDoctrine()
                        ->getRepository(Person::class)
                        ->findOneByWiagid($id);
-        dd($person, self::LIST_LIMIT);
+        dd($person, self::PAGE_SIZE);
     }
 
     /**

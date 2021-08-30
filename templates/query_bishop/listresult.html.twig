@@ -12,9 +12,17 @@
 {% block body %}
     {# add page forward and backward buttons; do not use images because then the colour can't be changed by bootstrap#}
     {% set fb_elements %}
-    {% if count > 0 %}
-	<button type="submit" form="q_form" class="btn btn-secondary" {% if offset < limit %} disabled="disabled" {% endif %} name="offset" value="{{ offset - limit }}">{{ include('symbols/backward.svg') }}zurück</button>
-	<button type="submit" form="q_form" class="btn btn-secondary ms-1" {% if offset + limit >= count%}disabled="disabled"{% endif %} name="offset" value="{{ offset + limit }}">vor {{ include('symbols/forward.svg') }}</button>
+    {% if count > pageSize %}
+	<span data-action="click->refresh-list#update"
+	      data-refresh-list-target="fbButtons">
+	    <button id="backward"
+		    type="button"
+		    class="btn btn-secondary"
+		    disabled="disabled">{{ include('symbols/backward.svg') }}zurück</button>
+	    <button id ="forward"
+			 type="button"
+		    class="btn btn-secondary ms-1">vor {{ include('symbols/forward.svg') }}</button>
+	</span>
     {% endif %}
     {% endset %}
 
@@ -22,7 +30,11 @@
 	'attr': {
 	    'id':'q_form',
 	    'action':path('launch_query'),
-	    'data-controller': 'facet-state hide-on-input facet-submit',
+	    'data-controller': 'facet-state hide-on-input facet-submit refresh-list',
+	    'data-refresh-list-offset-value': offset,
+	    'data-refresh-list-count-value': count,
+	    'data-refresh-list-page-size-value': pageSize,
+	    'data-refresh-list-url-value': path('bishop_list'),
 	    'data-action': 'shown.bs.collapse->facet-state#register hidden.bs.collapse->facet-state#register input->facet-state#clearFacet input->hide-on-input#hideResults input->facet-submit#submit'
 	}
     }) }}
@@ -36,60 +48,28 @@
 		<div class="row ms-2 mt-3">
 		    <div class="col-12">
 			Treffer:
-			{% if count == 0 %}
-			    keine
-			{% elseif count == 1 %}
-			    1
-			{% else %}
-			    {{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ count }}
-			{% endif %}
+			<span data-refresh-list-target="hitcount">
+			    {% if count == 0 %}
+				keine
+			    {% elseif count == 1 %}
+				1
+			    {% else %}
+				{{ offset + 1 }} - {{ min(offset + pageSize, count)}} von {{ count }}
+			    {% endif %}
+			</span>
 			<span class="ms-3">{{ fb_elements }}</span>
 		    </div>
 		</div>
 		{#{ dump('stateFctDioc', query_form.vars.data.stateFctDioc) }#}
 		{% if count > 0 or query_form.facetPlaces is defined or query_form.facetOffices is defined%}
-		    <div class="result row mt-2 mx-2 mb-2">
+		    <div class="row mt-2 mx-2 mb-2">
 			<div class="col-9">
-			    <div class="table-responsive">
-				<table class="table">
-				    <thead class="thead-light">
-					<tr>
-					    <th scope="col">Name</th>
-					    <th scope="col">Ämter</th>
-					</tr>
-				    </thead>
-				    <tbody>
-					{% for person in persons %}
-					    <tr>
-						<td><button type="submit" form="q_form" class="btn btn-link text-sm-left" name="singleoffset" value="{{ offset + loop.index0 }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
-						    {% if not person.datebirth and not person.datedeath %}
-						    {% elseif person.datebirth and not person.datedeath %}
-							<p class="ms-3">* {{ person.datebirth }}</p>
-						    {% elseif not person.datebirth and person.datedeath %}
-							<p class="ms-3">&dagger; {{ person.datedeath }}</p>
-						    {% else %}
-							<p class="ms-3">* {{ person.datebirth }} <span class="ms-2">&dagger; {{ person.datedeath }}</span></p>
-						    {% endif %}
-						</td>
-						<td>{% for o in person.offices|sort((a, b) => a.numdate.datestart <=> b.numdate.datestart) %}
-						    <small>{{ o.officename }}
-							{% if o.diocese %}({{ o.diocese }}){% endif %}
-							{% if o.idmonastery %}({{ o.monasterylocationstr }}){% endif %}
-							{% if o.datestart and not o.dateend %}{{ o.datestart }}
-							{% elseif not o.datestart and o.dateend %}{{ o.dateend }}
-							{% elseif o.datestart and o.dateend %}{{ o.datestart }}-{{ o.dateend }}{% endif %}
-						    </small><br/>{% endfor %}
-						</td>
-					    </tr>
-					{% endfor %}
-					<tr>
-					    <td>{{ fb_elements }}</td>
-					    <td></td>
-					</tr>
-				    </tbody>
-				</table>
-			    </div> {# table-responsive #}
+			    <div data-refresh-list-target="list">
+				{{ include('query_bishop/_list.html.twig') }}
+			    </div>
+			    <div>{{ fb_elements }}</div>
 			</div>
+
 			{# facets #}
 			<div class="col-3">
 			    {% if query_form.facetPlaces is defined %}
