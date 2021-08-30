@@ -97,7 +97,11 @@ class PersonRepository extends ServiceEntityRepository {
         return $ncount;
     }
 
-    public function findWithOffices(?BishopQueryFormModel $bishopquery, $limit = 0, $offset = 0) {
+    public function findWithOffices(
+        ?BishopQueryFormModel $bishopquery,
+        $limit = 0,
+        $offset = 0,
+        $addMonasteryLocations = false) {
 
         $qb = $this->createQueryBuilder('person')
                    ->leftJoin('person.offices', 'oc')
@@ -120,6 +124,14 @@ class PersonRepository extends ServiceEntityRepository {
         $query = $qb->getQuery();
 
         $persons = new Paginator($query, true);
+
+        if ($addMonasteryLocations) {
+            foreach($persons as $p) {
+                if($p->hasMonastery()) {
+                    $this->addMonasteryLocation($p);
+                }
+            }
+        }
 
         // $persons = $query->getResult();
 

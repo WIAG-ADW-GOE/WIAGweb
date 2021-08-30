@@ -32,73 +32,75 @@
 		{{ include('canon/_title.html.twig') }}
 	    </div>
 	    {{ include('canon/_form_elements.html.twig') }}
-	    <div class="result row mx-2 mt-3">
-		<div class="col-12">
-		    Treffer:
-		    {% if count == 0 %}
-			keine
-		    {% elseif count == 1 %}
-			1
-		    {% else %}
-			{{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ count }}
-		    {% endif %}
-		    <span class="ms-3">{{ fb_elements }}</span>
-		</div>
-	    </div>
-	    <div class="result row mt-2 mx-2 mb-2 col-12">
-		{% if count > 0 %}
-		    <div class="col-9">
-			<div class="table-responsive">
-			    <table class="table">
-				<thead class="thead-light">
-				    <tr>
-					<th scope="col">Name</th>
-					<th scope="col">Ämter</th>
-				    </tr>
-				</thead>
-				<tbody>
-				    {% for person in persons %}
-					{% if person.iddh %}
-					    {{ macro.canonrow(person.canondh, true, person.idgs, person.idep, person.canondh.offices, offset + loop.index0) }}
-					{% elseif person.idgs %}
-					    {{ macro.canonrow(person.canongs, false, true, person.idep, person.canongs.offices, offset + loop.index0) }}
-					{% endif %}
-				    {% endfor %}
-				    <tr>
-					<td>{{ fb_elements }}</td>
-					<td></td>
-				    </tr>
-				</tbody>
-			    </table>
-			</div> {# table-responsive #}
+	    <div data-hide-on-input-target="result">
+		<div class="row mx-2 mt-3">
+		    <div class="col-12">
+			Treffer:
+			{% if count == 0 %}
+			    keine
+			{% elseif count == 1 %}
+			    1
+			{% else %}
+			    {{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ count }}
+			{% endif %}
+			<span class="ms-3">{{ fb_elements }}</span>
 		    </div>
-		{% endif %}
-		{# facets #}
-		<div class="col-3" {% if count == 0 %}hidden="hidden"{% endif %}>
-		    {% if query_form.facetMonasteries is defined %}
-			{{ include('canon/_facet.twig.html', {
-			    facet: query_form.facetMonasteries,
-			    facetTitle: 'Filter Domstift',
-			    facetState: query_form.stateFctMon.vars.value,
-			    facetShort: 'Mon'
-			}) }}
+		</div>
+		<div class="row mt-2 mx-2 mb-2 col-12">
+		    {% if count > 0 %}
+			<div class="col-9">
+			    <div class="table-responsive">
+				<table class="table">
+				    <thead class="thead-light">
+					<tr>
+					    <th scope="col">Name</th>
+					    <th scope="col">Ämter</th>
+					</tr>
+				    </thead>
+				    <tbody>
+					{% for person in persons %}
+					    {% if person.iddh %}
+						{{ macro.canonrow(person.canondh, true, person.idgs, person.idep, person.canondh.offices, offset + loop.index0) }}
+					    {% elseif person.idgs %}
+						{{ macro.canonrow(person.canongs, false, true, person.idep, person.canongs.offices, offset + loop.index0) }}
+					    {% endif %}
+					{% endfor %}
+					<tr>
+					    <td>{{ fb_elements }}</td>
+					    <td></td>
+					</tr>
+				    </tbody>
+				</table>
+			    </div> {# table-responsive #}
+			</div>
 		    {% endif %}
-		    {% if query_form.facetOffices is defined %}
-			{{ include('canon/_facet.twig.html', {
-			    facet: query_form.facetOffices,
-			    facetTitle: 'Filter Amt',
-			    facetState: query_form.stateFctOfc.vars.value,
-			    facetShort: 'Ofc'
-			}) }}
-		    {% endif %}
-		    {% if query_form.facetLocations is defined %}
-			{{ include('canon/_facet.twig.html', {
-			    facet: query_form.facetLocations,
-			    facetTitle: 'Filter Ort',
-			    facetState: query_form.stateFctLoc.vars.value,
-			    facetShort: 'Loc'
-			}) }}
-		    {% endif %}
+		    {# facets #}
+		    <div class="col-3" {% if count == 0 %}hidden="hidden"{% endif %}>
+			{% if query_form.facetMonasteries is defined %}
+			    {{ include('canon/_facet.twig.html', {
+				facet: query_form.facetMonasteries,
+				facetTitle: 'Filter Domstift',
+				facetState: query_form.stateFctMon.vars.value,
+				facetShort: 'Mon'
+			    }) }}
+			{% endif %}
+			{% if query_form.facetOffices is defined %}
+			    {{ include('canon/_facet.twig.html', {
+				facet: query_form.facetOffices,
+				facetTitle: 'Filter Amt',
+				facetState: query_form.stateFctOfc.vars.value,
+				facetShort: 'Ofc'
+			    }) }}
+			{% endif %}
+			{% if query_form.facetLocations is defined %}
+			    {{ include('canon/_facet.twig.html', {
+				facet: query_form.facetLocations,
+				facetTitle: 'Filter Ort',
+				facetState: query_form.stateFctLoc.vars.value,
+				facetShort: 'Loc'
+			    }) }}
+			{% endif %}
+		    </div>
 		</div>
 	    </div>
 	</div>

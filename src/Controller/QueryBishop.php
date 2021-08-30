@@ -55,6 +55,7 @@ class QueryBishop extends AbstractController {
         $facetOfficesState = 'show';
 
         if ($form->isSubmitted() && $form->isValid()) {
+            dump($request->request->all());
 
             $bishopquery = $form->getData();
 
@@ -112,17 +113,13 @@ class QueryBishop extends AbstractController {
 
             $offset = $request->request->get('offset') ?? 0;
 
+
             // extra check to avoid empty lists
             if($count < self::LIST_LIMIT) $offset = 0;
 
             $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
-            $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset);
-
-            foreach($persons as $p) {
-                if($p->hasMonastery()) {
-                    $personRepository->addMonasteryLocation($p);
-                }
-            }
+            $addMonasteryLocations = true;
+            $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset, $addMonasteryLocations);
 
             return $this->render('query_bishop/listresult.html.twig', [
                 'query_form' => $form->createView(),
@@ -142,6 +139,30 @@ class QueryBishop extends AbstractController {
                 'facetOfficesState' => $facetOfficesState,
             ]);
         }
+    }
+
+    /**
+     * return list result
+     *
+     * @Route("/bischoefe/list", name="bishop_list")
+     */
+    public function _list(Request $request, PersonRepository $personRepository) {
+
+        $request->request->set('name', 'lud');
+
+        $offset = $request->request->get('offset') ?? 0;
+        $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
+
+        $addMonasteryLocations = true;
+        $bishopquery = new BishopQueryFormModel();
+        $bishopquery->setFieldsByArray($request->request->all());
+
+        $persons = $personRepository->findWithOffices($bishopquery, self::LIST_LIMIT, $offset, $addMonasteryLocations);
+
+        dump($persons);
+
+        return new Response("Treffer: ".count($persons));
+
     }
 
 

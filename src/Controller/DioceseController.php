@@ -366,13 +366,9 @@ class DioceseController extends AbstractController {
             # map to pages
             $offset = floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
 
-            $persons = $personRepository->findWithOffices($diocesequery, self::LIST_LIMIT, $offset);
+            $addMonasteryLocations = true;
+            $persons = $personRepository->findWithOffices($diocesequery, self::LIST_LIMIT, $offset, $addMonasteryLocations);
 
-            foreach($persons as $p) {
-                if($p->hasMonastery()) {
-                    $personRepository->addMonasteryLocation($p);
-                }
-            }
         }
 
         return $this->render('query_diocese/listresult.html.twig', [

@@ -53,13 +53,13 @@ class BishopQueryFormModel {
     }
 
     public function setFieldsByArray(array $a) {
-        $this->name = $a['name'];
-        $this->place = $a['place'];
-        $this->office = $a['office'];
-        $this->year = $a['year'];
-        $this->someid = $a['someid'];
-        $this->stateFctDioc = $a['stateFctDioc'];
-        $this->stateFctOfc = $a['stateFctOfc'];
+        $this->name = $a['name'] ?? null;
+        $this->place = $a['place'] ?? null;
+        $this->office = $a['office'] ?? null;
+        $this->year = $a['year'] ?? null;
+        $this->someid = $a['someid'] ?? null;
+        $this->stateFctDioc = $a['stateFctDioc'] ?? null;
+        $this->stateFctOfc = $a['stateFctOfc'] ?? null;
 
 
         if (array_key_exists('facetOffices', $a)) {

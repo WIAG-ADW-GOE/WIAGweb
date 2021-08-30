@@ -1,18 +1,18 @@
 import { Controller } from 'stimulus';
 
 export default class extends Controller {
+    static targets = ['result'];
+
     connect() {
 	// console.log('this is hide-on-input');
     }
 
     hideResults(event) {
 	// console.log('event bubbles up');
-	var targets = this.element.getElementsByClassName('result');
 	const eventTargetType = event.target.getAttribute('type');
+	// console.log('this.resultTarget');
 	if (eventTargetType == 'text') {
-	    for (let target of targets) {
-		target.style.visibility = "hidden";
-	    }
+	    this.resultTarget.style.visibility = "hidden";
 	}
     }
 

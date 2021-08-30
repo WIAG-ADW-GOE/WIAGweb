@@ -7,7 +7,7 @@ export default class extends Controller {
     }
 
     /**
-     * update the value of a form element according to the state of
+     * update the value of a hidden form element according to the state of
      * a collapsable facet.
      * event: one of 'shown.bs.collapse', 'hidden.bs.collapse'
      * see https://getbootstrap.com/docs/5.1/components/collapse/
