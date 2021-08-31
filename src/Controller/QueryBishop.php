@@ -15,7 +15,6 @@ use App\Entity\CnCanonReferenceGS;
 use App\Repository\PersonRepository;
 use App\Service\PersonData;
 use App\Service\PersonLinkedData;
-
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,8 +54,6 @@ class QueryBishop extends AbstractController {
         $facetOfficesState = 'show';
 
         if ($form->isSubmitted() && $form->isValid()) {
-            dump($request->request->all());
-
             $bishopquery = $form->getData();
 
             # strip 'Bistum' or 'Erzbistum'

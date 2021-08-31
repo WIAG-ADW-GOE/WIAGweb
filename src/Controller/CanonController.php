@@ -27,7 +27,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class CanonController extends AbstractController {
     /** number of elements in query result list */
-    const LIST_LIMIT = 20;
+    const PAGE_SIZE = 20;
     /** number of elements in autocompletion list */
     const HINT_LIST_LIMIT = 12;
 
@@ -125,15 +125,15 @@ class CanonController extends AbstractController {
             $offset = $request->request->get('offset') ?? 0;
 
             // extra check to avoid empty lists
-            if($count < self::LIST_LIMIT) $offset = 0;
+            if($count < self::PAGE_SIZE) $offset = 0;
 
-            $offset = (int) floor($offset / self::LIST_LIMIT) * self::LIST_LIMIT;
+            $offset = (int) floor($offset / self::PAGE_SIZE) * self::PAGE_SIZE;
 
-            $persons = $repository->findByQueryObject($queryformdata, self::LIST_LIMIT, $offset);
+            $persons = $repository->findByQueryObject($queryformdata, self::PAGE_SIZE, $offset);
 
             foreach($persons as $p) {
                 /* It may look strange to do queries in a loop, but we have two data sources.
-                   The list is not long (LIST_LIMIT).
+                   The list is not long (PAGE_SIZE).
                  */
                 $repository->fillListData($p);
             }
@@ -141,7 +141,7 @@ class CanonController extends AbstractController {
             return $this->render('canon/listresult.html.twig', [
                 'query_form' => $form->createView(),
                 'count' => $count,
-                'limit' => self::LIST_LIMIT,
+                'pageSize' => self::PAGE_SIZE,
                 'offset' => $offset,
                 'persons' => $persons,
                 'facetInstitutionsState' => $facetInstitutionsState,

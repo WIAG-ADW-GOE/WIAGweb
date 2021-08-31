@@ -1,5 +1,9 @@
 import { Controller } from 'stimulus';
 
+/**
+ * browse result list
+ * (not in use, because concept is not easily applicable to detail views)
+ */
 export default class extends Controller {
     static targets = ['hitcount', 'fbButtons', 'list'];
 

@@ -13,9 +13,19 @@
 {% block body %}
     {# add page forward and backward buttons, do not use images for the symbols, because then bootstrap can not change the colour #}
     {% set fb_elements %}
-    {% if count > 0 %}
-	<button type="submit" form="q_form" class="btn btn-secondary" {% if offset < limit %} disabled="disabled" {% endif %} name="offset" value="{{ offset - limit }}">{{ include('symbols/backward.svg') }} zurück</button>
-	<button type="submit" form="q_form" class="btn btn-secondary ml-1" {% if offset + limit >= count%}disabled="disabled"{% endif %} name="offset" value="{{ offset + limit }}">vor {{ include('symbols/forward.svg') }}</button>
+    {% if count > pageSize %}
+	<button type="submit"
+		form="q_form"
+		class="btn btn-secondary"
+		{% if offset < pageSize %} disabled="disabled" {% endif %}
+		name="offset"
+		value="{{ offset - pageSize }}">{{ include('symbols/backward.svg') }} zurück</button>
+	<button type="submit"
+		form="q_form"
+		class="btn btn-secondary ml-1"
+		{% if offset + pageSize >= count%}disabled="disabled"{% endif %}
+		name="offset"
+		value="{{ offset + pageSize }}">vor {{ include('symbols/forward.svg') }}</button>
     {% endif %}
     {% endset %}
 
@@ -41,7 +51,7 @@
 			{% elseif count == 1 %}
 			    1
 			{% else %}
-			    {{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ count }}
+			    {{ offset + 1 }} - {{ min(offset + pageSize, count)}} von {{ count }}
 			{% endif %}
 			<span class="ms-3">{{ fb_elements }}</span>
 		    </div>
@@ -65,13 +75,10 @@
 						{{ macro.canonrow(person.canongs, false, true, person.idep, person.canongs.offices, offset + loop.index0) }}
 					    {% endif %}
 					{% endfor %}
-					<tr>
-					    <td>{{ fb_elements }}</td>
-					    <td></td>
-					</tr>
 				    </tbody>
 				</table>
 			    </div> {# table-responsive #}
+			    <div>{{ fb_elements }}</div>
 			</div>
 		    {% endif %}
 		    {# facets #}
