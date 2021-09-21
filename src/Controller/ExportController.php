@@ -221,8 +221,8 @@ class ExportController extends AbstractController {
         $cbeaconheader = [
             "#FORMAT: BEACON",
             "#VERSION: 0.1",
-            "#PREFIX: http://d-nb.info/gnd/{+ID}",
-            "#TARGET: ".$baseurl."/gnd/{+ID}",
+            "#PREFIX: http://d-nb.info/gnd/",
+            "#TARGET: ".$baseurl."/gnd/{ID}",
             "#FEED: ".$baseurl."/beacon.txt",
             "#NAME: Wissensaggregator Mittelalter und Frühe Neuzeit",
             "#DESCRIPTION: ",

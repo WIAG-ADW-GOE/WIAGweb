@@ -114,7 +114,6 @@ class CanonEditController extends AbstractController {
      * Keep it, in case another workflow becomes more attractive.
      */
     public function getCanonInQuery($form, $offset) {
-        dump($offset);
         $queryformdata = $form->getData();
 
         $personRepository = $this->getDoctrine()

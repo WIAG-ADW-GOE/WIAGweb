@@ -122,7 +122,7 @@
 			    data-action="clipboard#copyTitle">{{ person.wiagidlong }} <img src="{{ asset('images/link45deg.svg') }}" width="18"></button>
 		</div>
 	    </div>
-	    {% if person.flagcomment %}
+	    {% if person.flagcomment or person.flagnamevariant %}
 		<div class="row mx-2 col-12">
 		    {% if person.givennamevariant is defined and person.givennamevariant != '' %}
 			<span class="comment">{{ person.givennamevariant }}</span>

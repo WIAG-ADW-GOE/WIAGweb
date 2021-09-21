@@ -70,6 +70,13 @@ Encore
 
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
+
+    // see https://symfonycasts.com/screencast/webpack-encore/copy-files
+    // .copyFiles({
+    // 	from: './public/images',
+    // 	to: 'images/[path][name].[hash:8].[ext]'
+    // })
+
 ;
 
 module.exports = Encore.getWebpackConfig();

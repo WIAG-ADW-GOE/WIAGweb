@@ -134,22 +134,22 @@ class Person {
     /**
      * @ORM\Column(type="string", length=511, nullable=true)
      */
-    private $comment_person;
+    private $commentPerson;
 
     /**
      * @ORM\Column(type="string", length=127, nullable=true)
      */
-    private $comment_name;
+    private $commentName;
 
     /**
      * @ORM\Column(type="string", length=127, nullable=true)
      */
-    private $familyname_variant;
+    private $familynameVariant;
 
     /**
      * @ORM\Column(type="string", length=127, nullable=true)
      */
-    private $givenname_variant;
+    private $givennameVariant;
 
     /**
      * @ORM\OneToMany(targetEntity="Namelookup", mappedBy="wiagid_person")
@@ -273,25 +273,25 @@ class Person {
 
     public function getFamilynameVariant()
     {
-        return $this->familyname_variant;
+        return $this->familynameVariant;
     }
 
-    public function setFamilynameVariant(?string $familyname_variant): self
+    public function setFamilynameVariant(?string $familynameVariant): self
     {
-        $this->familyname_variant = $familyname_variant;
+        $this->familynameVariant = $familynameVariant;
 
         return $this;
     }
 
     public function getGivennameVariant()
     {
-        return $this->givenname_variant;
+        return $this->givennameVariant;
     }
 
 
-    public function setGivennameVariant(?string $givenname_variant): self
+    public function setGivennameVariant(?string $givennameVariant): self
     {
-        $this->givenname_variant = $givenname_variant;
+        $this->givennameVariant = $givennameVariant;
 
         return $this;
     }
@@ -412,24 +412,24 @@ class Person {
 
     public function getCommentPerson(): ?string
     {
-        return $this->comment_person;
+        return $this->commentPerson;
     }
 
-    public function setCommentPerson(?string $comment_person): self
+    public function setCommentPerson(?string $commentPerson): self
     {
-        $this->comment_person = $comment_person;
+        $this->commentPerson = $commentPerson;
 
         return $this;
     }
 
     public function getCommentName(): ?string
     {
-        return $this->comment_name;
+        return $this->commentName;
     }
 
-    public function setCommentName(?string $comment_name): self
+    public function setCommentName(?string $commentName): self
     {
-        $this->comment_name = $comment_name;
+        $this->commentName = $commentName;
 
         return $this;
     }
@@ -533,15 +533,28 @@ class Person {
                 || $this->wikipediaurl);
     }
 
+    public function getFlagNameVariant() {
+        return ($this->givennameVariant and
+                $this->givennameVariant != ''
+                or $this->familynameVariant and
+                $this->familynameVariant != ''
+                or $this->commentName and
+                $this->commentName != '');
+    }
+
     public function getFlagComment() {
-        return ($this->givenname_variant and
-                $this->givenname_variant != ''
-                or $this->familyname_variant and
-                $this->familyname_variant != ''
-                or $this->comment_name and
-                $this->comment_name != ''
-                or $this->comment_person and
-                $this->comment_person != '');
+        // return ($this->givenname_variant and
+        //         $this->givenname_variant != ''
+        //         or $this->familyname_variant and
+        //         $this->familyname_variant != ''
+        //         or $this->comment_name and
+        //         $this->comment_name != ''
+        //         or $this->comment_person and
+        //         $this->comment_person != '');
+        return ($this->commentName and
+                $this->commentName != ''
+                or $this->commentPerson and
+                $this->commentPerson != '');
     }
 
     public function hasMonastery(): bool {
@@ -589,5 +602,11 @@ class Person {
         return $this;
     }
 
+    /**
+     * dummy for canon interface
+     */
+    public function getAcademicTitle() {
+        return null;
+    }
 
 }

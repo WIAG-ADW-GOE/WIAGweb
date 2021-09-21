@@ -3,11 +3,15 @@
 namespace App\Repository;
 
 use App\Entity\Diocese;
+use App\Entity\AltLabelDiocese;
 use App\Entity\Place;
 use App\Entity\Reference;
 
+
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+
 
 /**
  * @method Diocese|null find($id, $lockMode = null, $lockVersion = null)
@@ -117,10 +121,11 @@ class DioceseRepository extends ServiceEntityRepository
 
     public function countByName($name) {
         $qb = $this->createQueryBuilder('diocese')
-                   ->select('COUNT(diocese.id_diocese) AS count');
+                   ->select('COUNT(DISTINCT diocese.id_diocese) AS count')
+                   ->join('diocese.altlabel', 'altlabel');
 
         if($name != "")
-            $qb->andWhere('diocese.diocese LIKE :name')
+            $qb->andWhere('diocese.diocese LIKE :name OR altlabel.alt_label_diocese LIKE :name')
                ->setParameter('name', '%'.$name.'%');
 
         $query = $qb->getQuery();
@@ -131,10 +136,11 @@ class DioceseRepository extends ServiceEntityRepository
     public function findByNameWithBishopricSeat($name = null, $limit = null, $offset = 0) {
         $qb = $this->createQueryBuilder('diocese')
                    ->addSelect('placeobj')
-                   ->leftJoin('diocese.bishopricseatobj', 'placeobj');
+                   ->leftJoin('diocese.bishopricseatobj', 'placeobj')
+                   ->join('diocese.altlabel', 'altlabel');
 
         if(!is_null($name) && $name != "") {
-            $qb->andWhere('diocese.diocese LIKE :name')
+            $qb->andWhere('diocese.diocese LIKE :name OR altlabel.alt_label_diocese LIKE :name')
                ->setParameter('name', '%'.$name.'%');
         }
 
@@ -145,7 +151,9 @@ class DioceseRepository extends ServiceEntityRepository
         }
 
         $query = $qb->getQuery();
-        $dioceses = $query->getResult();
+
+        $dioceses = new Paginator($query, true);
+        # $dioceses = $query->getResult();
 
         return $dioceses;
     }
@@ -184,7 +192,23 @@ class DioceseRepository extends ServiceEntityRepository
 
         # dd($query->getDQL());
 
-        return $query->getResult();
+        $suggestions = $query->getResult();
+
+        $n_suggestions = count($suggestions);
+        if ($n_suggestions < $limit) {
+            $qb_a = $this->getEntityManager()
+                       ->getRepository(AltLabelDiocese::class)
+                       ->createQueryBuilder('ald')
+                       ->select('DISTINCT ald.alt_label_diocese as suggestion')
+                       ->andWhere('ald.alt_label_diocese LIKE :diocese')
+                       ->setParameter('diocese', '%'.$diocese.'%')
+                       ->setMaxResults($limit - $n_suggestions);
+            $query = $qb_a->getQuery();
+            $suggestions_a = $query->getResult();
+            $suggestions = array_merge($suggestions, $suggestions_a);
+        }
+
+        return $suggestions;
 
     }
 

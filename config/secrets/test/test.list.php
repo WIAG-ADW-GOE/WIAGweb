@@ -1,5 +1,5 @@
 <?php
 
-return array (
-  'DATABASE_PASSWORD' => NULL,
-);
+return [
+    'DATABASE_PASSWORD' => null,
+];

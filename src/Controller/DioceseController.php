@@ -194,6 +194,45 @@ class DioceseController extends AbstractController {
 
     }
 
+    /**
+     * start with an empty search form
+     * [to be completed if neccessary]
+     * @Route("/suche-bistuemer", name="query_dioceses")
+     */
+    public function query(Request $request) {
+        $diocesequery = new Diocese();
+
+        $route_utility_names = $this->generateUrl('query_dioceses_utility_names');
+
+        $form = $this->createFormBuilder($diocesequery)
+                     ->add('diocese', TextType::class, [
+                         'label' => false,
+                         'required' => false,
+                         'attr' => [
+                             'placeholder' => 'Erzbistum/Bistum',
+                             'class' => 'js-name-autocomplete',
+                             'data-autocomplete-url' => $route_utility_names,
+                             'size' => 25,
+                         ],
+                     ])
+                     ->add('searchHTML', SubmitType::class, [
+                         'label' => 'Suche',
+                         'attr' => [
+                             'class' => 'btn btn-secondary btn-light',
+                         ],
+                     ])
+                     ->getForm();
+
+        $form->handlerequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            # to be completed if neccessary
+        }
+
+        return $this->render('query_diocese/launch_query.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
 
 
     /**
@@ -245,13 +284,15 @@ class DioceseController extends AbstractController {
         $hassuccessor = false;
         if($offset == 0) {
             $dioceses = $dioceserepository->findByNameWithBishopricSeat($name, 2, $offset);
-            if(count($dioceses) == 2) $hassuccessor = true;
-            $diocese = $dioceses ? $dioceses[0] : null;
+            $iterator = $dioceses->getIterator();
+            if(count($iterator) == 2) $hassuccessor = true;
         } else {
             $dioceses = $dioceserepository->findByNameWithBishopricSeat($name, 3, $offset - 1);
-            if(count($dioceses) == 3) $hassuccessor = true;
-            $diocese = $dioceses ? $dioceses[1] : null;
+            $iterator = $dioceses->getIterator();
+            if(count($iterator) == 3) $hassuccessor = true;
+            $iterator->next();
         }
+        $diocese = $iterator->current();
 
         if (!$diocese) {
             throw $this->createNotFoundException("Bistum wurde nicht gefunden.");

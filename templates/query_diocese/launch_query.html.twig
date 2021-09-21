@@ -14,8 +14,7 @@
 
 {% block body %}
     <div class="container-fluid mt-3">
-	{# global: diocesestitle #}
-	<div class="row-col-12 topic-title">{{ diocesestitle }}</div>
+	<div class="row-col-12">{{ include('query_diocese/_title.html.twig') }}</div>
 	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_dioceses')}}) }}
 	    <div class="row col-12">
 		<div class="me-2 mt-1"

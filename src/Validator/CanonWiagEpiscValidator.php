@@ -27,7 +27,6 @@ class CanonWiagEpiscValidator extends ConstraintValidator
         $id = Person::extractDbId($value);
         if (!is_null($id)) {
             $qresult = $this->personRepository->findOneByWiagid($id);
-            dump($value, $qresult);
 
             if (!is_null($qresult) == 1) {
                 return;
