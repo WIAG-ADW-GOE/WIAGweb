@@ -122,6 +122,7 @@ class DioceseController extends AbstractController {
                  * If name is empty return all dioceses.
                  */
                 $dioceses = $repository->findByNameWithBishopricSeat($name, self::LIST_LIMIT, $offset);
+
                 if($count > 0) {
                     $baseurl = $request->getSchemeAndHttpHost();
                     switch($format) {
@@ -197,7 +198,7 @@ class DioceseController extends AbstractController {
     /**
      * start with an empty search form
      * [to be completed if neccessary]
-     * @Route("/suche-bistuemer", name="query_dioceses")
+     * @Route("/suche-bistuemer", name="query_dioceses_empty")
      */
     public function query(Request $request) {
         $diocesequery = new Diocese();
@@ -239,7 +240,7 @@ class DioceseController extends AbstractController {
      * find diocese by id or by name; display details or deliver data as JSON or CSV
      *
      * @Route("/diocese/{idorname}", name="diocese")
-     * @todo bring up to date
+     * @todo bring up to date; see DioceseApiController
      */
     public function getDiocese($idorname, Request $request) {
 

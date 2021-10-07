@@ -14,27 +14,36 @@
 
 {% block body %}
     <div class="container-fluid mt-3">
-	<div class="row-col-12">{{ include('query_diocese/_title.html.twig') }}</div>
+	<div class="row mx-2 col-12">{{ include('query_diocese/_title.html.twig') }}</div>
 	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_dioceses')}}) }}
-	    <div class="row col-12">
-		<div class="me-2 mt-1"
-		     {{ stimulus_controller('autocomplete', {
-			 url: path('query_dioceses_utility_names'),
-		     }) }}>
-		    {{ form_label(form.diocese) }}
-		    {{ form_errors(form.diocese) }}
-		    {{ form_widget(form.diocese, {
-			attr: {
-			    'data-autocomplete-target': "input",
-			    'size': 31,
-			},
-		    }) }}
-		    <ul class="list-group autocomplete-target"
-			data-autocomplete-target="results"
-			style="max-width: 20em;"></ul>
+	    <div class="row mx-2 mt-2">
+		<div class="col-12">
+		    <div class="d-flex">
+			<div class="me-2 mt-1"
+			     {{ stimulus_controller('autocomplete', {
+				 url: path('query_dioceses_utility_names'),
+			     }) }}>
+			    {{ form_label(form.diocese) }}
+			    {{ form_errors(form.diocese) }}
+			    {{ form_widget(form.diocese, {
+				attr: {
+				    'data-autocomplete-target': "input",
+				},
+			    }) }}
+			    <ul class="list-group autocomplete-target"
+				data-autocomplete-target="results"
+				style="max-width: 20em;"></ul>
+			</div>
+		    </div>
 		</div>
 	    </div>
-	    {{ form_widget(form.searchHTML) }}
+	    <div class="row mx-2 mt-2">
+		<div class="col-12">
+		    <div class="d-flex">
+			{{ form_widget(form.searchHTML) }}
+		    </div>
+		</div>
+	    </div>
 	{{ form_end(form) }}
     </div>
 {% endblock %}

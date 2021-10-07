@@ -57,7 +57,27 @@ class DioceseRepository extends ServiceEntityRepository
     }
     */
 
-    public function findWithBishopricSeat($idorname) {
+    public function findWithBishopricSeat($idLong) {
+        $id = DIOCESE::wiagidLongToId($idLong);
+
+        $qb = $this->createQueryBuilder('diocese')
+                   ->addSelect('placeobj')
+                   ->leftJoin('diocese.bishopricseatobj', 'placeobj')
+                   ->join('diocese.altlabel', 'altlabel');
+
+        if(!is_null($id)) {
+            $qb->andWhere('diocese.id_diocese = :id')
+               ->setParameter('id', $id);
+        }
+
+        $query = $qb->getQuery();
+
+        $diocese = $query->getOneOrNullResult();
+
+        return $diocese;
+    }
+
+    public function findWithBishopricSeat_obs($idorname) {
         $id = DIOCESE::wiagidLongToId($idorname);
         $diocese = null;
         $qb = $this->createQueryBuilder('diocese')
@@ -133,6 +153,11 @@ class DioceseRepository extends ServiceEntityRepository
         return $count ? $count['count'] : null;
     }
 
+    /**
+     * find dioceses by name with bishopric seat
+     *
+     * look for matching name in `diocese.diocese` and alt_label_diocese.alt_label_diocese
+     */
     public function findByNameWithBishopricSeat($name = null, $limit = null, $offset = 0) {
         $qb = $this->createQueryBuilder('diocese')
                    ->addSelect('placeobj')
