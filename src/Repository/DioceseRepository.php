@@ -185,7 +185,7 @@ class DioceseRepository extends ServiceEntityRepository
 
     public function getDioceseID($diocese) {
         if(is_null($diocese)) return null;
-        $diocObj = $this->findByNameWithBishopricSeat($diocese);
+        $diocObj = $this->findByDiocese($diocese);
         $diocID = null;
         if($diocObj) {
             $diocID = $diocObj[0]->getWiagIdLong();
