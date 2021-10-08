@@ -84,7 +84,7 @@ class PersonRepository extends ServiceEntityRepository {
     }
 
     public function countByQueryObject(BishopQueryFormModel $bishopquery) {
-        if($bishopquery->isEmpty()) return 0;
+        if($bishopquery->isEmpty()) return array(1 => 0);
 
         $qb = $this->createQueryBuilder('person')
                    ->select('COUNT(DISTINCT person.wiagid)');

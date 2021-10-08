@@ -66,10 +66,11 @@ class QueryBishop extends AbstractController {
 
 
             // get the number of results (without page size restriction)
-            $count = $this->getDoctrine()
-                          ->getRepository(Person::class)
-                          ->countByQueryObject($bishopquery)[1];
+            $countResult = $this->getDoctrine()
+                                ->getRepository(Person::class)
+                                ->countByQueryObject($bishopquery);
 
+            $count = $countResult[1];
 
             $offset = 0;
             $querystr = null;

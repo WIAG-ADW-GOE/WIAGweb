@@ -121,9 +121,10 @@ class DioceseController extends AbstractController {
                 /* In case of a GET-request (list=all) name is empty.
                  * If name is empty return all dioceses.
                  */
-                $dioceses = $repository->findByNameWithBishopricSeat($name, self::LIST_LIMIT, $offset);
 
-                if($count > 0) {
+                if($count > 0 && $format) {
+                    $dioceses = $repository->findByNameWithBishopricSeat($name);
+
                     $baseurl = $request->getSchemeAndHttpHost();
                     switch($format) {
                     case 'CSV':
@@ -160,6 +161,8 @@ class DioceseController extends AbstractController {
                         break;
                     }
                 }
+                $dioceses = $repository->findByNameWithBishopricSeat($name, self::LIST_LIMIT, $offset);
+
                 return $this->render('query_diocese/listresult.html.twig', [
                     'form' => $form->createView(),
                     'dioceses' => $dioceses,

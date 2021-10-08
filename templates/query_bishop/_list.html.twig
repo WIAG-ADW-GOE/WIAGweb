@@ -9,7 +9,7 @@
 	<tbody>
 	    {% for person in persons %}
 		<tr>
-		    <td><button type="submit" form="q_form" class="btn btn-link text-sm-left" name="singleoffset" value="{{ offset + loop.index0 }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
+		    <td><button type="submit" form="q_form" class="btn btn-link text-sm-start" name="singleoffset" value="{{ offset + loop.index0 }}">{{ person.givenname }} {{ person.prefixname }} {{ person.familyname }}</button>
 			{% if not person.datebirth and not person.datedeath %}
 			{% elseif person.datebirth and not person.datedeath %}
 			    <p class="ms-3">* {{ person.datebirth }}</p>

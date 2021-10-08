@@ -58,7 +58,6 @@
 			<span class="ms-3">{{ fb_elements }}</span>
 		    </div>
 		</div>
-		{#{ dump('stateFctDioc', query_form.vars.data.stateFctDioc) }#}
 		{% if count > 0 or query_form.facetPlaces is defined or query_form.facetOffices is defined%}
 		    <div class="row mt-2 mx-2 mb-2">
 			<div class="col-9">
@@ -88,6 +87,7 @@
 		    </div>
 		{% endif %}
 	    </div>
+	</div>
     {{ form_end(query_form) }}
 
 {% endblock %}

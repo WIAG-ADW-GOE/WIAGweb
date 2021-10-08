@@ -30,12 +30,12 @@
 	</div>
 	{{ form_start(form, {'attr': {'id':'q_form', 'action':path('query_dioceses')}}) }}
 	    <div class="row ms-2 col-12">
-		<div class="d-flex">
-		    <div class="me-2 mt-1"
+		{{ form_label(form.diocese) }}
+		<div class="input-group mt-2">
+		    <div class="me-2"
 			 {{ stimulus_controller('autocomplete', {
 			     url: path('query_dioceses_utility_names'),
 			 }) }}>
-			{{ form_label(form.diocese) }}
 			{{ form_errors(form.diocese) }}
 			{{ form_widget(form.diocese, {
 			    attr: {
@@ -65,14 +65,16 @@
 		    {{ offset + 1 }} - {{ min(offset + limit, count)}} von {{ count }}
 		{% endif %}
 		{{ fb_elements }}
-
-		<button type="submit" form="q_form" name="format" value="JSON" class="btn btn-secondary btn-light btn-sm ms-2">JSON</button>
-		<button type="submit" form="q_form" name="format" value="CSV" class="btn btn-secondary btn-light btn-sm ms-1">CSV</button>
-		<button type="submit" form="q_form" name="format" value="RDF" class="btn btn-secondary btn-light btn-sm ms-1">RDF-XML</button>
-		<button type="submit" form="q_form" name="format" value="JSONLD" class="btn btn-secondary btn-light btn-sm ms-1">JSON-LD</button>
+		{% if count > 0 %}
+		    <button type="submit" form="q_form" name="format" value="JSON" class="btn btn-secondary btn-light btn-sm ms-2">JSON</button>
+		    <button type="submit" form="q_form" name="format" value="CSV" class="btn btn-secondary btn-light btn-sm ms-1">CSV</button>
+		    <button type="submit" form="q_form" name="format" value="RDF" class="btn btn-secondary btn-light btn-sm ms-1">RDF-XML</button>
+		    <button type="submit" form="q_form" name="format" value="JSONLD" class="btn btn-secondary btn-light btn-sm ms-1">JSON-LD</button>
+		{% endif %}
 	    </div>
 	</div>
 
+	{% if count > 0 %}
 	<div class="row mx-2 mb-3">
 	    <div class="col">
 		<div class="table-responsive">
@@ -106,5 +108,6 @@
 
 	    </div>
 	</div>
+	{% endif %}
     </div>
 {% endblock %}
