@@ -9,6 +9,9 @@
 	{% endblock %}
     </head>
     <body class="d-flex flex-column h-100">
+	{% if menuItem is not defined %}
+	    {% set menuItem='home' %}
+	{% endif %}
 	<div class="container-fluid">
 	    <div class="row mt-2">
 		 <div class="col-12 ms-2">

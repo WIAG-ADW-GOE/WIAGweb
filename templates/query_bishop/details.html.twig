@@ -14,7 +14,7 @@
 		    <ul class="list-inlined list-unstyled">
 			<li class="list-inline-item"> {{ office.officename }}</li>
 			{% if office.diocese and not office.idmonastery %}
-			    <li class="list-inline-item">{% if office.dioceseindb %}<a href="{{ path('diocese', {'idorname': office.diocese}) }}">{{ office.diocese }}</a>{% else %}{{ office.diocese }}{% endif %}</li>
+			    <li class="list-inline-item">{% if office.dioceseindb %}<a href="{{ path('diocese', {'name': office.diocese}) }}">{{ office.diocese }}</a>{% else %}{{ office.diocese }}{% endif %}</li>
 			{% endif %}
 			{% if office.idmonastery %}
 			    <li class="list-inline-item">
@@ -122,35 +122,11 @@
 			    data-action="clipboard#copyTitle">{{ person.wiagidlong }} <img src="{{ asset('images/link45deg.svg') }}" width="18"></button>
 		</div>
 	    </div>
-	    {% if person.flagcomment or person.flagnamevariant %}
-		<div class="row mx-2 col-12">
-		    {% if person.givennamevariant is defined and person.givennamevariant != '' %}
-			<span class="comment">{{ person.givennamevariant }}</span>
-			{% if person.familynamevariant is defined and person.familynamevariant != '' %}
-			    <span class="comment">; {{ person.familynamevariant }}</span>
-			{% endif %}
-			{% if person.commentname is defined and person.commentname != '' %}
-			    <span class="comment">; {{ person.commentname }}</span>
-			{% endif %}
-			{% if person.commentperson is defined and person.commentperson != '' %}
-			    <span class="comment">; {{ person.commentperson }}</span>
-			{% endif %}
-		    {% elseif person.familynamevariant is defined and person.familynamevariant != '' %}
-			<span class="comment">{{ person.familynamevariant }}</span>
-			{% if person.commentname is defined and person.commentname != '' %}
-			    <span class="comment">; {{ person.commentname }}</span>
-			{% endif %}
-			{% if person.commentperson is defined and person.commentperson != '' %}
-			    <span class="comment">; {{ person.commentperson }}</span>
-			{% endif %}
-		    {% elseif person.commentname is defined and person.commentname != '' %}
-			<span class="comment">{{ person.commentname }}</span>
-			{% if person.commentperson is defined and person.commentperson != '' %}
-			    <span class="comment">; {{ person.commentperson }}</span>
-			{% endif %}
-		    {% elseif person.commentperson is defined and person.commentperson != '' %}
-			<span class="comment">{{ person.commentperson }}</span>
-		    {% endif %}
+	    {% if person.createCommentLine %}
+		<div class="row mx-2">
+		    <div class="col-12 comment">
+			{{ person.createCommentLine }}
+		    </div>
 		</div>
 	    {% endif %}
 

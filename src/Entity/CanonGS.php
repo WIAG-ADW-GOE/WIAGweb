@@ -637,6 +637,30 @@ class CanonGS
         return $wikipediatitle;
     }
 
+    /**
+     * concatenate name variants and name comment
+     */
+    public function createNameVariantLine() {
+        $lineElts = array();
+        $eltCands = [
+            $this->givennameVariant,
+            $this->familynameVariant,
+            $this->commentName,
+        ];
+        foreach ($eltCands as $elt) {
+            if (!is_null($elt) && $elt != '') {
+                $lineElts[] = $elt;
+            }
+        }
+
+        $commentLine = null;
+        if (count($lineElts) > 0) {
+            $commentLine = implode('; ', $lineElts);
+        }
+
+        return $commentLine;
+    }
+
     public function hasExternalIdentifier() {
         return ($this->viafId
                 || $this->wikidataId
@@ -657,7 +681,7 @@ class CanonGS
                 $this->commentName != '');
     }
 
-    public function getFlagComment() {
+    public function getFlagCommentPerson() {
         return ($this->commentPerson and
                 $this->commentPerson != '');
     }

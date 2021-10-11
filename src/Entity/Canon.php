@@ -721,7 +721,7 @@ class Canon
                 $this->commentName != '');
     }
 
-    public function getFlagComment() {
+    public function getFlagCommentPerson() {
         return ($this->commentPerson and
                 $this->commentPerson != '');
     }
@@ -783,6 +783,29 @@ class Canon
         return $this;
     }
 
+    /**
+     * concatenate name variants and name comment
+     */
+    public function createNameVariantLine() {
+        $lineElts = array();
+        $eltCands = [
+            $this->givennameVariant,
+            $this->familynameVariant,
+            $this->commentName,
+        ];
+        foreach ($eltCands as $elt) {
+            if (!is_null($elt) && $elt != '') {
+                $lineElts[] = $elt;
+            }
+        }
+
+        $commentLine = null;
+        if (count($lineElts) > 0) {
+            $commentLine = implode('; ', $lineElts);
+        }
+
+        return $commentLine;
+    }
 
     public static function isWiagidLong($wiagidlong) {
         // do something reasonable as soon as the WIAG ID format is defined

@@ -543,18 +543,64 @@ class Person {
     }
 
     public function getFlagComment() {
-        // return ($this->givenname_variant and
-        //         $this->givenname_variant != ''
-        //         or $this->familyname_variant and
-        //         $this->familyname_variant != ''
-        //         or $this->comment_name and
-        //         $this->comment_name != ''
-        //         or $this->comment_person and
-        //         $this->comment_person != '');
         return ($this->commentName and
                 $this->commentName != ''
                 or $this->commentPerson and
                 $this->commentPerson != '');
+    }
+
+    public function getFlagCommentPerson() {
+        return ($this->commentPerson and
+                $this->commentPerson != '');
+    }
+
+    /**
+     * concatenate name variants and comments
+     */
+    public function createCommentLine() {
+        $lineElts = array();
+        $eltCands = [
+            $this->givennameVariant,
+            $this->familynameVariant,
+            $this->commentName,
+            $this->commentPerson,
+        ];
+        foreach ($eltCands as $elt) {
+            if (!is_null($elt) && $elt != '') {
+                $lineElts[] = $elt;
+            }
+        }
+
+        $commentLine = null;
+        if (count($lineElts) > 0) {
+            $commentLine = implode('; ', $lineElts);
+        }
+
+        return $commentLine;
+    }
+
+    /**
+     * concatenate name variants and name comment
+     */
+    public function createNameVariantLine() {
+        $lineElts = array();
+        $eltCands = [
+            $this->givennameVariant,
+            $this->familynameVariant,
+            $this->commentName,
+        ];
+        foreach ($eltCands as $elt) {
+            if (!is_null($elt) && $elt != '') {
+                $lineElts[] = $elt;
+            }
+        }
+
+        $commentLine = null;
+        if (count($lineElts) > 0) {
+            $commentLine = implode('; ', $lineElts);
+        }
+
+        return $commentLine;
     }
 
     public function hasMonastery(): bool {

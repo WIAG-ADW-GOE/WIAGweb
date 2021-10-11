@@ -240,18 +240,18 @@ class DioceseController extends AbstractController {
 
 
     /**
-     * find diocese by id or by name; display details or deliver data as JSON or CSV
+     * find diocese by name
      *
-     * @Route("/diocese/{idorname}", name="diocese")
+     * @Route("/diocese/{name}", name="diocese")
      * @todo bring up to date; see DioceseApiController
      */
-    public function getDiocese($idorname, Request $request) {
+    public function singleDiocese($name, Request $request) {
 
         $format = $request->query->get('format');
 
         if(!is_null($format)) {
             return $this->redirectToRoute('api_diocese', [
-                'wiagid' => $idorname,
+                'wiagid' => $name,
                 'format' => $format,
             ]);
         }
@@ -260,10 +260,10 @@ class DioceseController extends AbstractController {
 
         $diocese = $this->getDoctrine()
                         ->getRepository(Diocese::class)
-                        ->findWithBishopricSeat($idorname);
+                        ->findOneByDiocese($name);
 
         if (!$diocese) {
-            throw $this->createNotFoundException("Bistum wurde nicht gefunden: {$idorname}");
+            throw $this->createNotFoundException("Bistum wurde nicht gefunden: {$name}");
         }
 
 
