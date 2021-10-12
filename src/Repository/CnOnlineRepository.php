@@ -91,7 +91,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
         }
 
         // dump($qb->getDQL());
-        $this->addSortParameter($qb, $formmodel);
+        // $this->addSortParameter($qb, $formmodel);
 
         $query = $qb->getQuery();
         // dd($query->getResult());
@@ -103,8 +103,8 @@ class CnOnlineRepository extends ServiceEntityRepository {
     private function addQueryConditions(QueryBuilder $qb, CanonFormModel $formmodel): QueryBuilder {
 
         // conditions are independent from each other
-        // e.g. search for a 'Kanoniker' who had also an office in 'Mainz' says not that the
-        // person was 'Kononiker' in 'Mainz';
+        // e.g. search for a 'Kanoniker' who had also an office in 'Mainz' means not that the
+        // person was 'Kanoniker' in 'Mainz';
 
         # identifier
         if($formmodel->someid) {

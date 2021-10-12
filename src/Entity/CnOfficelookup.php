@@ -7,6 +7,10 @@ use App\Repository\CnOfficelookupRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * CnOfficelookup
+ *
+ * hold office data to find canons, and to provide suggestions for form input fields
+ *
  * @ORM\Entity(repositoryClass=CnOfficelookupRepository::class)
  */
 class CnOfficelookup {
