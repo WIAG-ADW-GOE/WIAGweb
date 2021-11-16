@@ -32,7 +32,6 @@ class CnOfficelookup {
      */
     private $monastery;
 
-
     /**
      * @ORM\Id
      * @ORM\Column(type="string", length=31)
@@ -53,6 +52,11 @@ class CnOfficelookup {
      * @ORM\Column(type="integer", nullable=true)
      */
     private $idMonastery;
+
+    /**
+     * @ORM\Column(type="string", length=63, nullable=true)
+     */
+    private $domstift;
 
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
@@ -115,7 +119,7 @@ class CnOfficelookup {
         return $this;
     }
 
-    public function getIdMonastery(): ?string
+    public function getIdMonastery(): ?int
     {
         return $this->idMonastery;
     }
@@ -127,6 +131,10 @@ class CnOfficelookup {
         return $this;
     }
 
+    public function getDomstift(): ?string
+    {
+        return $this->domstift;
+    }
 
     public function getLocationName(): ?string
     {

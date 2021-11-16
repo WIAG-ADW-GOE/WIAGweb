@@ -91,9 +91,10 @@ class CnOnlineRepository extends ServiceEntityRepository {
         }
 
         // dump($qb->getDQL());
-        // $this->addSortParameter($qb, $formmodel);
+        $this->addSortParameter($qb, $formmodel);
 
         $query = $qb->getQuery();
+
         // dd($query->getResult());
         $persons = new Paginator($query, true);
 
@@ -125,11 +126,9 @@ class CnOnlineRepository extends ServiceEntityRepository {
 
         # domstift
         if($formmodel->monastery) {
-            $qb->join('co.officelookup', 'olt_monastery')
-               ->join('olt_monastery.monastery', 'monastery')
-               ->join('monastery.domstift', 'query_domstift')
-               ->andWhere('monastery.monastery_name LIKE :monastery')
-               ->setParameter('monastery', '%'.$formmodel->monastery.'%');
+            $qb->join('co.officelookup', 'olt_domstift')
+               ->andWhere('olt_domstift.domstift LIKE :domstift')
+               ->setParameter(':domstift', '%'.$formmodel->monastery.'%');
         }
 
         # office title
@@ -201,11 +200,12 @@ class CnOnlineRepository extends ServiceEntityRepository {
         $monastery = $bishopquery->monastery;
         if ($monastery) $sort = 'specific_domstift';
 
+        // specific domstift via facet
         if ($bishopquery->isEmpty() and $bishopquery->facetMonasteries) {
             $facetMonasteries = $bishopquery->facetMonasteries;
             if (count($facetMonasteries) == 1) {
                 $sort = 'specific_domstift_id';
-                $monastery = $facetMonasteries[0]->getId();
+                $id_monastery = $facetMonasteries[0]->getId();
             }
         }
 
@@ -224,8 +224,8 @@ class CnOnlineRepository extends ServiceEntityRepository {
         case 'specific_domstift_id':
             // strange enough it is more efficient to add officelookup a second time for sorting
             $qb->join('co.officelookup', 'olt_sort')
-               ->andWhere('olt_sort.idMonastery = :monastery')
-               ->setParameter('monastery', $monastery)
+               ->andWhere('olt_sort.idMonastery = :id_monastery')
+               ->setParameter(':id_monastery', $id_monastery)
                ->addOrderBy('olt_sort.numdateStart', 'ASC')
                ->addOrderBy('olt_sort.numdateEnd', 'ASC')
                ->addOrderBy('co.familyname', 'ASC')
@@ -233,18 +233,15 @@ class CnOnlineRepository extends ServiceEntityRepository {
                ->addOrderBy('co.id');
             break;
         case 'specific_domstift':
-            $qb->addOrderBy('olt_monastery.numdateStart', 'ASC')
-               ->addOrderBy('olt_monastery.numdateEnd', 'ASC')
-               ->leftJoin('co.era', 'era_sort')
-               ->addOrderBy('era_sort.eraStart')
-               ->addOrderBy('era_sort.eraEnd')
+            $qb->addOrderBy('olt_domstift.numdateStart', 'ASC')
+               ->addOrderBy('olt_domstift.numdateEnd', 'ASC')
                ->addOrderBy('co.familyname', 'ASC')
                ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('co.id');
             break;
         case 'year':
             $qb->addOrderBy('era.eraStart', 'ASC')
-                ->addOrderBy('era.eraEnd', 'ASC')
+               ->addOrderBy('era.eraEnd', 'ASC')
                ->addOrderBy('co.familyname', 'ASC')
                ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('co.id');
@@ -258,9 +255,11 @@ class CnOnlineRepository extends ServiceEntityRepository {
                ->addOrderBy('co.id');
             break;
         case 'domstift':
-            $qb->join('co.era', 'era_ds')
-               ->addOrderBy('era_ds.domstift', 'ASC')
-               ->addOrderBy('era_ds.domstift_start', 'ASC')
+            $qb->join('co.officelookup', 'olt_sort')
+               ->andWhere('olt_sort.domstift IS NOT NULL')
+               ->addOrderBy('olt_sort.domstift', 'ASC')
+               ->addOrderBy('olt_sort.numdateStart', 'ASC')
+               ->addOrderBy('olt_sort.numdateEnd', 'ASC')
                ->addOrderBy('co.familyname', 'ASC')
                ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('co.id');
