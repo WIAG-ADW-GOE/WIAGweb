@@ -693,9 +693,9 @@ class Canon
         $wikipediaurlbase = 'https://de.wikipedia.org/wiki/';
 
 
-        $head = strlen($wikipediaurlbase);
-        $wikipediatitle = substr($url, $head);
-        $wikipediatitle = urldecode($wikipediatitle);
+        // $head = strlen($wikipediaurlbase);
+        // $wikipediatitle = substr($url, $head);
+        $wikipediatitle = urldecode($url);
         $wikipediatitle = str_replace('_', ' ', $wikipediatitle);
 
         return $wikipediatitle;
