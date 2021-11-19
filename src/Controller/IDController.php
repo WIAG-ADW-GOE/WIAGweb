@@ -318,8 +318,7 @@ class IDController extends AbstractController {
 
         $canononline = $this->getDoctrine()
                             ->getRepository(CnOnline::class)
-                            ->findOneById($idbase);
-        # dd($idbase, $canononline);
+                            ->findOneByWiagid($idbase);
 
         $canon = null;
         if ($canononline->getIdDh()) {

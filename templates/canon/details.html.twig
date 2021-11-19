@@ -74,7 +74,7 @@
     <dt class="col-sm-3">{{ references|length > 1 ? 'Referenzwerke' : 'Referenzwerk' }}</dt>
     <dd class="col-sm-9">
 	{# <ul class="list-unstyled">  #}
-	<ul class="{% if references|length == 1 %}list-unstyled{% else %}pl-3{% endif %} small">
+	<ul class="{% if references|length == 1 %}list-unstyled{% else %}ps-3{% endif %} small">
 	    {% for cnref in references %}
 		{% set refid = cnref.idinreference %}
 		{% set refuri %}{% if cnref.reference.onlineresource %}{{ cnref.reference.onlineresource }}{% else %}{{ path('canon_reference', {'id': cnref.reference.id }) }}{% endif %}{% endset %}
@@ -96,7 +96,7 @@
     {# references are of type canon #}
     <dt class="col-sm-3">{{ references|length > 1 ? 'Referenzwerke' : 'Referenzwerk' }}</dt>
     <dd class="col-sm-9">
-	<ul class="{% if references|length == 1 %}list-unstyled{% else %}pl-3{% endif %} small">
+	<ul class="{% if references|length == 1 %}list-unstyled{% else %}ps-3{% endif %} small">
 	    {% for ref in references|sort((a, b) => (a.reference.id <=> b.reference.id)) %}
 		{% set refid = ref.idinreference %}
 		{% set refuri %}{% if ref.reference.onlineresource %}{{ ref.reference.onlineresource }}{% else %}{{ path('canon_reference', {'id': ref.reference.id }) }}{% endif %}{% endset %}
