@@ -121,6 +121,22 @@
 	    <div class="row mx-2 col-12">
 		{{ include('canon/_title.html.twig') }}
 	    </div>
+	    <div class="row mx-2 col-12 mt-4 mb-2">
+		<div class="d-flex">
+		    {% if query_form is defined %}
+			<button type="submit" form="q_form" class="btn btn-outline-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
+			<button type="submit" form="q_form" class="btn btn-outline-secondary btn-sm ms-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button>
+			<button type="submit" form="q_form" class="btn btn-outline-secondary btn-sm ms-1" name="offset" value="{{ offset }}">Ergebnisliste</button>
+			<a href="{{ path('query_canons') }}"><button class="btn btn-outline-secondary btn-sm ms-1 me-3">Neue Suche</button></a>
+		    {% else %}
+			<a href="{{ path('query_canons') }}"><button class="btn btn-outline-secondary btn-sm me-2" type="button">Suche</button></a>
+		    {% endif %}
+		    <a href="{{ path('wiag_id_data', {id: person.wiagid, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
+		    <a href="{{ path('wiag_id_data', {id: person.wiagid, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ms-1">CSV</button></a>
+		    <a href="{{ path('wiag_id_data', {id: person.wiagid}) }}"><button class="btn btn-secondary btn-light btn-sm ms-1">RDF-XML</button></a>
+		    <a href="{{ path('wiag_id_data', {id: person.wiagid, format: 'json-ld'}) }}"><button class="btn btn-secondary btn-light btn-sm ms-1">JSON-LD</button></a>
+		</div>
+	    </div>
 	    <div class="row col-12 mx-2 mt-2 mb-0">
 		<div class="d-flex justify-content-between">
 		    <span class="fs-2">{{ canon.displayname[:200] }}</span>
@@ -242,12 +258,12 @@
 	    <div class="row mx-2 col-12 mt-4 mb-2">
 		<div class="d-flex">
 		    {% if query_form is defined %}
-			<button type="submit" form="q_form" class="btn btn-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
-			<button type="submit" form="q_form" class="btn btn-secondary btn-sm ms-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button>
-			<button type="submit" form="q_form" class="btn btn-secondary btn-sm ms-1" name="offset" value="{{ offset }}">Ergebnisliste</button>
-			<a href="{{ path('query_canons') }}"><button class="btn btn-secondary btn-sm ms-1 me-3">Neue Suche</button></a>
+			<button type="submit" form="q_form" class="btn btn-outline-secondary btn-sm" name="singleoffset" value="{{ offset - 1 }}" {% if offset == 0 %}disabled="disabled"{% endif %}>vorheriger Treffer</button>
+			<button type="submit" form="q_form" class="btn btn-outline-secondary btn-sm ms-1" name="singleoffset" value="{{ offset + 1 }}" {% if not hassuccessor %}disabled="disabled"{% endif %}>nächster Treffer</button>
+			<button type="submit" form="q_form" class="btn btn-outline-secondary btn-sm ms-1" name="offset" value="{{ offset }}">Ergebnisliste</button>
+			<a href="{{ path('query_canons') }}"><button class="btn btn-outline-secondary btn-sm ms-1 me-3">Neue Suche</button></a>
 		    {% else %}
-			<a href="{{ path('query_canons') }}"><button class="btn btn-secondary btn-sm me-2" type="button">Suche</button></a>
+			<a href="{{ path('query_canons') }}"><button class="btn btn-outline-secondary btn-sm me-2" type="button">Suche</button></a>
 		    {% endif %}
 		    <a href="{{ path('wiag_id_data', {id: person.wiagid, format: 'json'}) }}"><button class="btn btn-secondary btn-light btn-sm">JSON</button></a>
 		    <a href="{{ path('wiag_id_data', {id: person.wiagid, format: 'csv'}) }}"><button class="btn btn-secondary btn-light btn-sm ms-1">CSV</button></a>

@@ -118,8 +118,11 @@ class CnOnlineRepository extends ServiceEntityRepository {
 
         # year
         if($formmodel->year) {
+            # there is an entry in cn_era (domstift = 'all') for each canon
+            # eraStart is not NULL if eraEnd is not NULL (and vice versa)
             $qb->join('co.era', 'era')
-               ->andWhere('era.eraStart - :mgnyear < :qyear AND :qyear < era.eraEnd + :mgnyear')
+               ->andWhere("era.domstift = 'all'")
+               ->andWhere("era.eraStart - :mgnyear < :qyear AND :qyear < era.eraEnd + :mgnyear")
                ->setParameter(':mgnyear', self::MARGINYEAR)
                ->setParameter(':qyear', $formmodel->year);
         }
@@ -127,7 +130,9 @@ class CnOnlineRepository extends ServiceEntityRepository {
         # domstift
         if($formmodel->monastery) {
             $qb->join('co.officelookup', 'olt_domstift')
+               ->join('co.era', 'era_srt')
                ->andWhere('olt_domstift.domstift LIKE :domstift')
+               ->andWhere('era_srt.domstift LIKE :domstift')
                ->setParameter(':domstift', '%'.$formmodel->monastery.'%');
         }
 
@@ -198,48 +203,43 @@ class CnOnlineRepository extends ServiceEntityRepository {
         if ($bishopquery->place) $sort = 'domstift';
         if ($bishopquery->office) $sort = 'domstift';
         $monastery = $bishopquery->monastery;
-        if ($monastery) $sort = 'specific_domstift';
+        if ($monastery) $sort = 'domstift_domstift';
 
-        // specific domstift via facet
+        // domstift via facet
         if ($bishopquery->isEmpty() and $bishopquery->facetMonasteries) {
-            $facetMonasteries = $bishopquery->facetMonasteries;
-            if (count($facetMonasteries) == 1) {
-                $sort = 'specific_domstift_id';
-                $id_monastery = $facetMonasteries[0]->getId();
+            $fctMon = $bishopquery->facetMonasteries;
+            $domstiftSrt = array();
+            foreach($bishopquery->facetMonasteries as $mon) {
+                $domstiftSrt[] = $mon->getName();
             }
+            $sort = 'domstift_facet';
         }
-
-        // this is not possible, because the sorting would be more restrictive as the
-        // query condition
-        // $monastery_sort_candidate = $this->getIdDomstift($bishopquery->monastery);
-        // if (!is_null($monastery_sort_candidate)) {
-        //     $sort = 'specific_domstift';
-        //     $monastery_sort = $monastery_sort_candidate;
-        // }
 
         /**
          * a reliable order is required
          */
         switch ($sort) {
-        case 'specific_domstift_id':
-            // strange enough it is more efficient to add officelookup a second time for sorting
-            $qb->join('co.officelookup', 'olt_sort')
-               ->andWhere('olt_sort.idMonastery = :id_monastery')
-               ->setParameter(':id_monastery', $id_monastery)
-               ->addOrderBy('olt_sort.numdateStart', 'ASC')
-               ->addOrderBy('olt_sort.numdateEnd', 'ASC')
+        case 'domstift_facet':
+            $qb->join('co.era', 'era_srt', 'WITH', 'era_srt.domstift in (:domstiftSrt)')
+               ->setParameter(':domstiftSrt', $domstiftSrt)
+               ->addOrderBy('era_srt.domstift', 'ASC')
+               ->addOrderBy('era_srt.eraStart', 'ASC')
+               ->addOrderBy('era_srt.eraEnd', 'ASC')
                ->addOrderBy('co.familyname', 'ASC')
                ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('co.id');
             break;
-        case 'specific_domstift':
-            $qb->addOrderBy('olt_domstift.numdateStart', 'ASC')
-               ->addOrderBy('olt_domstift.numdateEnd', 'ASC')
+        case 'domstift_domstift':
+            // join see conditions
+            $qb->addOrderBy('era_srt.domstift', 'ASC')
+               ->addOrderBy('era_srt.eraStart', 'ASC')
+               ->addOrderBy('era_srt.eraEnd', 'ASC')
                ->addOrderBy('co.familyname', 'ASC')
                ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('co.id');
             break;
         case 'year':
+            // join see conditions
             $qb->addOrderBy('era.eraStart', 'ASC')
                ->addOrderBy('era.eraEnd', 'ASC')
                ->addOrderBy('co.familyname', 'ASC')
@@ -247,19 +247,18 @@ class CnOnlineRepository extends ServiceEntityRepository {
                ->addOrderBy('co.id');
             break;
         case 'name':
-            // $qb->orderBy('person.familyname, person.givenname, oc.diocese');
-            $qb->join('co.era', 'era', 'ASC')
+            // join('co.era', 'era', 'ASC')
+            $qb->join('co.era', 'era', 'WITH', "era.domstift = 'all'")
                ->addOrderBy('co.familyname', 'ASC')
                ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('era.eraStart', 'ASC')
                ->addOrderBy('co.id');
             break;
         case 'domstift':
-            $qb->join('co.officelookup', 'olt_sort')
-               ->andWhere('olt_sort.domstift IS NOT NULL')
-               ->addOrderBy('olt_sort.domstift', 'ASC')
-               ->addOrderBy('olt_sort.numdateStart', 'ASC')
-               ->addOrderBy('olt_sort.numdateEnd', 'ASC')
+            $qb->join('co.era', 'era_srt', 'WITH', "era_srt.domstift <> 'all'")
+               ->addOrderBy('era_srt.domstift')
+               ->addOrderBy('era_srt.eraStart')
+               ->addOrderBy('era_srt.eraEnd')
                ->addOrderBy('co.familyname', 'ASC')
                ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('co.id');
