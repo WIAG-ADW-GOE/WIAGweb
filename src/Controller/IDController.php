@@ -321,14 +321,18 @@ class IDController extends AbstractController {
                             ->findOneByWiagid($idbase);
 
         $canon = null;
-        if ($canononline->getIdDh()) {
+        $idDh = $canononline->getIdDh();
+        if ($idDh) {
             $canon = $this->getDoctrine()
                           ->getRepository(Canon::class)
-                          ->findOneWithOffices($idbase);
-        } elseif ($canononline->getIdGs()) {
+                          ->findOneWithOffices($idDh);
+        } else {
+            $idGs = $canononline->getIdGs();
+            if ($idGs) {
             $canon = $this->getDoctrine()
                           ->getRepository(CanonGS::class)
-                          ->findOneWithOffices($idbase);
+                          ->findOneWithOffices($idGs);
+            }
         }
         $svcData = $this->svccanonData;
         $svcLinkedData = $this->svccanonLinkedData;
