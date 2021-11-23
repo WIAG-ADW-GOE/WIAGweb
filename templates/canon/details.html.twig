@@ -33,10 +33,12 @@
 			{% if office.diocese and not office.idmonastery %}
 			    <li class="list-inline-item">{% if office.dioceseindb %}<a href="{{ path('diocese', {'name': office.diocese}) }}">{{ office.diocese }}</a>{% else %}{{ office.diocese }}{% endif %}</li>
 			{% endif %}
-			{% if office.idmonastery %}
+			{% if office.monastery and office.monastery.monasteryname %}
 			    <li class="list-inline-item">
 				<a href="{{ urlgsmonasteries }}gsn/{{ office.idmonastery }}" target="_blank" rel="noopener">{{ office.monastery.monasteryname }}</a>
 			    </li>
+			{% elseif office.institution %}
+			    <li class="list-inline-item">{{ office.institution }}</li>
 			{% endif %}
 			<li class="list-inline-item">
 			    {% if not office.datestart and not office.dateend %}
