@@ -6,7 +6,7 @@ use App\Entity\CnReference;
 
 class CnReferenceData {
 
-    static public function toArray(CnReference $ref): array {
+    static public function toArray($ref): array {
         $rfj = array();
 
         $rfj['title'] = $ref->getTitle();
@@ -24,4 +24,3 @@ class CnReferenceData {
 
     }
 }
-
