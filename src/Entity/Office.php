@@ -77,12 +77,17 @@ class Office
     private $location;
 
     /**
+     * @ORM\Column(type="string", length=63, nullable = true)
+     */
+    private $locationShow;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable = true)
      */
     private $comment;
 
     /**
-     * @ORM\Column(type="string", length=31, nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $id_monastery;
 
@@ -234,6 +239,18 @@ class Office
         return $this;
     }
 
+    public function getLocationShow(): ?string
+    {
+        return $this->locationShow;
+    }
+
+    public function setLocationShow(?string $locationShow): self
+    {
+        $this->locationShow = $locationShow;
+
+        return $this;
+    }
+
     public function getComment(): ?string
     {
         return $this->comment;
@@ -258,7 +275,7 @@ class Office
         return $this;
     }
 
-    public function getIdMonastery(): ?string
+    public function getIdMonastery(): ?int
     {
         return $this->id_monastery;
     }

@@ -132,8 +132,7 @@ class CanonController extends AbstractController {
             $persons = $repository->findByQueryObject($queryformdata, self::PAGE_SIZE, $offset);
 
             foreach($persons as $p) {
-                /* It may look strange to do queries in a loop, but we have two data sources.
-                   The list is not long (PAGE_SIZE).
+                /* get data from two different sources
                  */
                 $repository->fillListData($p);
             }

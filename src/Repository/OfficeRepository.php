@@ -104,6 +104,9 @@ class OfficeRepository extends ServiceEntityRepository
             return $wiagids;
     }
 
+    /**
+     * 2021-11-26: obsolete see Office.locationShow
+     */
     public function setMonasteryLocation(Office $oc) {
 
         if($oc->getIdMonastery()) {

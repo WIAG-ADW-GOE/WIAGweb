@@ -125,13 +125,14 @@ class PersonRepository extends ServiceEntityRepository {
 
         $persons = new Paginator($query, true);
 
-        if ($addMonasteryLocations) {
-            foreach($persons as $p) {
-                if($p->hasMonastery()) {
-                    $this->addMonasteryLocation($p);
-                }
-            }
-        }
+        // 2021-11-26: obsolete: see Office.locationShow
+        // if ($addMonasteryLocations) {
+        //     foreach($persons as $p) {
+        //         if($p->hasMonastery()) {
+        //             $this->addMonasteryLocation($p);
+        //         }
+        //     }
+        // }
 
         // $persons = $query->getResult();
 
