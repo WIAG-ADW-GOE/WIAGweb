@@ -127,12 +127,18 @@ class CnOnlineRepository extends ServiceEntityRepository {
         }
 
         # domstift
+        $monastery = $formmodel->monastery;
         if($formmodel->monastery) {
+            $monasteryShort = preg_replace(
+                 "/(domstift|stift) (.+)/i",
+                 "$2",
+                 $monastery);
+
             $qb->join('co.officelookup', 'olt_domstift')
                ->join('co.era', 'era_srt')
                ->andWhere('olt_domstift.domstift LIKE :domstift')
                ->andWhere('era_srt.domstift LIKE :domstift')
-               ->setParameter(':domstift', '%'.$formmodel->monastery.'%');
+               ->setParameter(':domstift', '%'.$monasteryShort.'%');
         }
 
         # office title

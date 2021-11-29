@@ -234,7 +234,7 @@ class CanonController extends AbstractController {
      */
     public function autocompletemonastery(Request $request) {
         $query = trim($request->query->get('q'));
-        # strip 'bistum' or 'erzbistum'
+        # strip 'Stift' or 'Domstift'
         foreach(['Stift', 'Domstift'] as $bs) {
             if(!is_null($query) && str_starts_with($query, $bs)) {
                 $query = trim(str_replace($bs, "", $query));
