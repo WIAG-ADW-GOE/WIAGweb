@@ -25,6 +25,8 @@ class Canon
     const WIAGID_POSTFIX = '-001';
     const WIAGID_EPISC_PREFIX = 'WIAG-Pers-EPISCGatz-';
     const WIAGID_EPISC_POSTFIX = '-001';
+    const WIKIPEDIA_BASE = 'https://de.wikipedia.org/wiki/';
+
 
     static public function datasource(): string {
         return 'dh';
@@ -473,7 +475,7 @@ class Canon
 
     public function getWikipediaUrl(): ?string
     {
-        return $this->wikipediaUrl;
+        return self::WIKIPEDIA_BASE.$this->wikipediaUrl;
     }
 
     public function setWikipediaUrl(?string $wikipediaUrl): self
@@ -687,7 +689,7 @@ class Canon
     }
 
     public function getWikipediaTitle(): ?string {
-        $url = $this->getWikipediaurl();
+        $url = $this->wikipediaUrl;
         if(!$url || $url == '') return null;
 
         $wikipediaurlbase = 'https://de.wikipedia.org/wiki/';
