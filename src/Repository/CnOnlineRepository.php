@@ -411,7 +411,6 @@ class CnOnlineRepository extends ServiceEntityRepository {
         return($episc);
     }
 
-    // do not follow the naming convention here (idDh instead of id_dh)
     public function findOneByIdDh($value): ?CnOnline {
         return $this->createQueryBuilder('c')
                     ->andWhere('c.id_dh = :val')
@@ -420,7 +419,6 @@ class CnOnlineRepository extends ServiceEntityRepository {
                     ->getOneOrNullResult();
     }
 
-    // do not follow the naming convention here (idGs instead of id_gs)
     public function findOneByIdGs($value): ?CnOnline {
         return $this->createQueryBuilder('c')
                     ->andWhere('c.id_gs = :val')
@@ -429,7 +427,6 @@ class CnOnlineRepository extends ServiceEntityRepository {
                     ->getOneOrNullResult();
     }
 
-    // do not follow the naming convention here (idEp instead of id_gs)
     public function findOneByIdEp($value): ?CnOnline {
         return $this->createQueryBuilder('c')
                     ->andWhere('c.id_ep = :val')
@@ -438,5 +435,38 @@ class CnOnlineRepository extends ServiceEntityRepository {
                     ->getOneOrNullResult();
     }
 
+    public function findOffices($idMonastery) {
+        $qb = $this->createQueryBuilder('c')
+                   ->select('o.officeName')
+                   ->join('c.officelookup', 'ofs')
+                   ->andWhere('ofs.idMonastery = :id')
+                   ->setParameter(':id', $idMonastery)
+                   ->join('c.officelookup', 'o')
+                   ->groupBy('o.officeName');
+
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+    }
+
+    public function findByMonasteryOffice($domstift, $officeName) {
+        $qb = $this->createQueryBuilder('co')
+                   ->join('co.officelookup', 'mns')
+                   ->andWhere('mns.domstift = :domstift')
+                   ->setParameter(':domstift', $domstift)
+                   ->andWhere('mns.officeName = :officeName')
+                   ->setParameter(':officeName', $officeName)
+                   ->join('co.era', 'era_srt')
+                   ->andWhere('era_srt.domstift LIKE :domstift')
+                   ->addOrderBy('era_srt.eraStart', 'ASC')
+                   ->addOrderBy('era_srt.eraEnd', 'ASC')
+                   ->addOrderBy('co.familyname', 'ASC')
+                   ->addOrderBy('co.givenname', 'ASC')
+                   ->addOrderBy('co.id');
+
+        $query = $qb->getQuery();
+
+        return $query->getResult();
+    }
 
 }

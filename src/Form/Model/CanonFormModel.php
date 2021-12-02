@@ -79,16 +79,13 @@ class CanonFormModel {
     }
 
     public function setFieldsByArray(array $a) {
-        $this->name = $a['name'];
-        $this->monastery = $a['monastery'];
-        $this->place = $a['place'];
-        $this->office = $a['office'];
-        $this->year = $a['year'];
-        $this->someid = $a['someid'];
-        $this->stateFctLoc = $a['stateFctLoc'];
-        $this->stateFctMon = $a['stateFctMon'];
-        $this->stateFctOfc = $a['stateFctOfc'];
-
+        $keys = ['name', 'monastery', 'place', 'office', 'year', 'someid',
+                 'stateFctLoc', 'stateFctMon', 'stateFctOfc'];
+        foreach($keys as $key) {
+            if (array_key_exists($key, $a)) {
+                $this->$key = $a[$key];
+            }
+        }
 
         if (array_key_exists('facetLocations', $a)) {
             $facetLocations = array();

@@ -3,6 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\CnOnline;
+use App\Entity\Canon;
+use App\Entity\Domstift;
+use App\Entity\CnOfficeDesignation;
+// use App\Entity\CanonsByOffice;
 use App\Form\CanonFormType;
 use App\Form\Model\CanonFormModel;
 
@@ -16,6 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 
 
 /**
@@ -43,25 +48,17 @@ class CanonApiController extends AbstractController {
             throw $this->createNotFoundException('Unbekanntes Format: '.$format.'.');
         }
 
-        $name = $request->query->get('name');
-        $monastery= $request->query->get('domstift');
-        $office = $request->query->get('amt');
-        $place = $request->query->get('ort');
-        $year = $request->query->get('jahr');
-        $someid = $request->query->get('nummer');
+        $data = $request->query->all();
+        dump($data);
 
-        $queryformdata = new CanonFormModel($name, $monastery, $office, $place, $year, $someid);
-
-        $form = $this->createForm(CanonFormType::class, $queryformdata, [
-            'force_facets' => true,
-        ]);
-
-        $offset = 0;
+        $model = new CanonFormModel();
+        $model->setFieldsByArray($data);
 
         $repository = $this->getDoctrine()->getRepository(CnOnline::class);
         // dd($queryformdata);
-        $count = $repository->countByQueryObject($queryformdata)[1];
-        $persons = $repository->findByQueryObject($queryformdata, self::LIST_LIMIT, $offset);
+        $persons = $repository->findByQueryObject($model);
+
+        dump($persons);
 
         foreach($persons as $p) {
             /* It may look strange to do queries in a loop, but we have two data sources.
@@ -70,13 +67,45 @@ class CanonApiController extends AbstractController {
             $repository->fillListData($p);
         }
 
-        return $this->render('canon/listresult.html.twig', [
-            'query_form' => $form->createView(),
-            'count' => $count,
-            'limit' => self::LIST_LIMIT,
-            'offset' => $offset,
+        return $this->render('canon/printlist.html.twig', [
             'persons' => $persons,
+            'count' => count($persons),
+            'offset' => 0,
         ]);
 
     }
+
+    /**
+     *
+     * @return Response                 HTML
+     *
+     * @Route("/api/domstift/domherren", name="api_query_domstift_canons")
+     */
+    public function groupCanonsByOffice(Request $request) {
+
+        $monasteryName = $request->query->get('monastery');
+
+        $officeNames = null;
+        $repository = null;
+
+
+        // find offices
+        $officeNames = $this->getDoctrine()
+                            ->getRepository(CnOfficeDesignation::class)
+                            ->findByMonastery($monasteryName);
+
+
+        $repository = $this->getDoctrine()->getRepository(CnOnline::class);
+        $canonRepository = $this->getDoctrine()->getRepository(Canon::class);
+
+        return $this->render('canon/printlist.html.twig', [
+            'monasteryName' => $monasteryName,
+            'officeNames' => $officeNames,
+            'repository' => $repository,
+            'canonRepository' => $canonRepository,
+        ]);
+
+    }
+
+
 }

@@ -375,4 +375,17 @@ class Office
         return $this;
     }
 
+    public function showDate(): ?string {
+        if(!$this->date_start && !$this->date_end) {
+            return null;
+        }
+        if(!$this->date_start) {
+            return "bis ".$this->date_end;
+        }
+        if(!$this->date_end) {
+            return $this->date_start;
+        }
+        return $this->date_start.'-'.$this->date_end;
+    }
+
 }

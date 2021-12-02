@@ -289,6 +289,16 @@ class CanonRepository extends ServiceEntityRepository {
         return $cmerged;
     }
 
+    /**
+     * collect merged canons (only one level)
+     */
+    public function collectMergedLevelOne(Canon $canon) {
+        $merged = array();
+        $merged = $this->collectMerged($merged, $canon, 1);
+        array_unshift($merged, $canon);
+        return $merged;
+    }
+
 
 
     /**

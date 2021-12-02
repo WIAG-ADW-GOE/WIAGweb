@@ -122,6 +122,7 @@
 	    <div class="row mx-2 col-12">
 		{{ include('canon/_title.html.twig') }}
 	    </div>
+	    {#{ dump(person.bishop) }#}
 	    <div class="row mx-2 col-12 mt-4 mb-2">
 		<div class="d-flex">
 		    {% if query_form is defined %}
@@ -159,7 +160,7 @@
 	    {% if not canon.datebirth and not canon.datedeath %}
 	    {% else %}
 		<div class="row mx-2 col-12 mt-2 mb-1">
-		    {% if canon.datebirth and not canon.datedeath %}
+ 		    {% if canon.datebirth and not canon.datedeath %}
 			<span class="wiag-large">* {{ canon.datebirth }}</span>
 		    {% elseif not canon.datebirth and canon.datedeath %}
 			<span class="wiag-large">&dagger; {{ canon.datedeath }}</span>

@@ -1,0 +1,24 @@
+{# parameter: offices #}
+{% for office in offices %}
+    {% set inststr=null %}
+    {% if office.diocese and not office.idmonastery %}
+	{% set inststr=office.diocese %}
+    {% endif %}
+    {% if office.monastery and office.monastery.monasteryname %}
+	{% set inststr=office.monastery.monasteryname %}
+    {% elseif office.institution %}
+	{% set inststr=office.institution %}
+    {% endif %}
+    {% if office.archdeaconterritory %}
+	{% set archdeaconterritory %}<span class="comment">Archidiakonat {{ office.archdeaconterritory }} </span>{% endset %}
+    {% else %}
+	{% set archdeaconterritory=null %}
+    {% endif %}
+    {% if office.comment %}
+	{% set commentstr %}<span class="comment">({{ office.comment }})</span>{% endset %}
+    {% else %}
+	{% set commentstr=null %}
+    {% endif %}
+    {% set officestr=[office.officename ~ ' ' ~ inststr, office.showdate(), archdeaconterritory, commentstr] %}
+    <p>{{ officestr|filter((x) => x is not null)|join(', ')|raw }}</p>
+{% endfor %}

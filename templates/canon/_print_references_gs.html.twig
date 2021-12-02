@@ -1,0 +1,18 @@
+{# parameter: references (type Canon) #}
+{% if references is defined and references|length > 0 %}
+    <h5>{{ references|length > 1 ? 'Referenzwerke' : 'Referenzwerk' }}</h5>
+    <ul class="small">
+	{% for cnref in references %}
+	    {% set refid = cnref.idinreference %}
+	    {% set refuri %}{% if cnref.reference.onlineresource %}{{ cnref.reference.onlineresource }}{% else %}{{ path('canon_reference', {'id': cnref.reference.id }) }}{% endif %}{% endset %}
+	    {% set refdisplaytitle=cnref.reference.title %}
+	    {% if cnref.isbio and cnref.status == 'online' %}
+		<li>{{ refdisplaytitle }}, S. {% for p in cnref.pages %}{{ p.page }}{%if not loop.last %},{% endif %}{% endfor %}</li>
+		{% elseif isgs %}
+		<li>{{ refdisplaytitle }}, {% if refid %} S. {{ cnref.pagereference|raw }}, ID/Nr. {{ refid }}. {% else %} S. {{ cnref.pagereference|raw }}. {% endif %}<strong>Biogramm in Printpublikation vorhanden</strong></li>
+	    {% else %}
+		<li>{{ refdisplaytitle }}{% if cnref.pagereference %}, S. {{ cnref.pagereference }}{% if refid %}, ID/Nr. {{ refid }}{% endif %}{% else %}{% if refid %}, ID/Nr. {{ refid }}{% endif %}{% endif %}</li>
+	    {% endif %}
+	{% endfor %}
+    </ul>
+{% endif %}

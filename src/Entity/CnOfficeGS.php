@@ -383,5 +383,18 @@ class CnOfficeGS
         return $this;
     }
 
+    public function showDate(): ?string {
+        if(!$this->dateStart && !$this->dateEnd) {
+            return null;
+        }
+        if(!$this->dateStart) {
+            return "bis ".$this->dateEnd;
+        }
+        if(!$this->dateEnd) {
+            return $this->dateStart;
+        }
+
+        return $this->dateStart.'-'.$this->dateEnd;
+    }
 
 }
