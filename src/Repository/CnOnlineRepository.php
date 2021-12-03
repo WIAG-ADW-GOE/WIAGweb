@@ -129,16 +129,26 @@ class CnOnlineRepository extends ServiceEntityRepository {
         # domstift
         $monastery = $formmodel->monastery;
         if($formmodel->monastery) {
-            $monasteryShort = preg_replace(
-                 "/(domstift|stift) (.+)/i",
-                 "$2",
-                 $monastery);
+            /**
+             * workaround to allow search strings like 'Domstift Lebus (...)' and
+             * 'Augustinerchorherrenstift Herrenchiemsee'
+             */
+            $em = $this->getEntityManager();
+            $domstifte = $em->getRepository(Domstift::class)->findAll();
+            $names = array();
+            foreach ($domstifte as $d) {
+                $names[] = $d->getName();
+            }
+            $rgm = array();
+            preg_match("/".implode('|', $names)."/i", $monastery, $rgm);
+
+            $monasteryPar = count($rgm) > 0 ? $rgm[0] : $monastery;
 
             $qb->join('co.officelookup', 'olt_domstift')
                ->join('co.era', 'era_srt')
                ->andWhere('olt_domstift.domstift LIKE :domstift')
                ->andWhere('era_srt.domstift LIKE :domstift')
-               ->setParameter(':domstift', '%'.$monasteryShort.'%');
+               ->setParameter(':domstift', '%'.$monasteryPar.'%');
         }
 
         # office title
@@ -286,6 +296,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
             return null;
         }
     }
+
 
     /**
      * return list of monasteries, where persons have an office;
