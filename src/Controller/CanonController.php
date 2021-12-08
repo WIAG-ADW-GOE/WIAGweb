@@ -195,7 +195,7 @@ class CanonController extends AbstractController {
             array_unshift($references, $canon_dh);
         }
 
-        dump($references);
+        // dump($references);
 
         return $this->render('canon/details.html.twig', [
             'query_form' => $form->createView(),

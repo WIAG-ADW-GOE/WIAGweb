@@ -9,71 +9,71 @@
 {% endblock %}
 
 {% import "canon/macro.html.twig" as macro  %}
+{% set wiagurl="https://wiag-vocab.adw-goe.de/id/" %}
 {% block body %}
     <div class="container-fluid mt-3">
-	<div class="row mx-2 col-12">
-	    {{ include('canon/_title.html.twig') }}
-	</div>
 	<div class="row mx-2 col-12">
 	    <h1>Domstift {{ monasteryName }}</h1>
 	</div>
 	<div class="row mt-2 mx-2 mb-2">
 	    <div class="col-12">
+		{% set ncanon = 0 %}
 		{% for office in officeNames %}
 		    {% set canons=repository.findByMonasteryOffice(monasteryName, office.nameSingular) %}
+		    {% set ncanon = ncanon + canons|length %}
 		    {% if canons|length > 0 %}
 			<h2>{{ office.namePlural }}</h2>
 			{% for co in canons %}
-			    {% set dummy=repository.fillData(co) %}
+			    {# get data #}
+			    {% set void = repository.fillData(co, monasteryName) %}
 			    {% if co.iddh %}{% set canon = co.canondh %}
 			    {% elseif co.idep %}{% set canon = co.bishop %}
 			    {% else %}{% set canon = co.canongs %}
 			    {% endif %}
-			    <h3>{{ canon.displayname }}</h3>
-			    {# birth and death #}
+			    {# dates of birth and death #}
+			    {% set dobdod = null %}
 			    {% if not canon.datebirth and not canon.datedeath %}
 			    {% else %}
 				{% if canon.datebirth and not canon.datedeath %}
-				    <p class="wiag-large">* {{ canon.datebirth }}</p>
+				    {% set dobdod = canon.datebirth %}
 				{% elseif not canon.datebirth and canon.datedeath %}
-				    <p class="wiag-large">&dagger; {{ canon.datedeath }}</p>
+				    {% set dobdod = "† " ~ canon.datedeath %}
 				{% else %}
-				    <p class="wiag-large">* {{ canon.datebirth }} <span class="pl-3">&dagger; {{ canon.datedeath }}</span></p>
+				    {% set dobdod = canon.datebirth ~ " † " ~ canon.datedeath %}
 				{% endif %}
+			    {% endif %}
+			    {# wiagid #}
+			    {% set permalink = wiagurl~co.wiagid %}
+			    <div custom-style="WiagId"><a href={{ permalink }}>{{ co.wiagid }}</a></div>
+			    {# name #}
+			    <h3>{{ canon.displayname }}{% if dobdod %}, {{ dobdod }}{% endif %}</h3>
+			    {# academic title #}
+			    {% set separator = canon.academictitle and canon.religiousorder ? "; " : "" %}
+			    {% if canon.academictitle or canon.religiousorder %}
+				<div custom-style="AkadTitel">{{ canon.academictitle~separator~canon.religiousorder }}</div>
 			    {% endif %}
 			    {# comments #}
 			    {% if canon.commentperson %}
-				<p class="comment">Bemerkungen: {{ canon.commentperson }}</p>
-			    {% endif %}
-			    {# other titles #}
-			    {% if canon.religiousorder %}
-				<p>Orden: {{ canon.religiousorder }}</p>
-			    {% endif %}
-			    {% if canon.academictitle %}
-				<p>Akademischer Titel: {{ canon.academictitle }}</p>
+				<div custom-style="Bemerkung">{{ canon.commentperson }}</p>
 			    {% endif %}
 			    {# offices #}
 			    {% if co.iddh %}
-				<h4>Amtsangaben aus Referenzwerken</h4>
 				{{ include('canon/_print_offices.html.twig', {'offices': canon.offices}) }}
 				{{ include('canon/_print_references_dh.html.twig', {
 				    'references': canonRepository.collectMergedLevelOne(canon)
 				}) }}
 			    {% endif %}
 			    {% if co.idgs %}
-				<h4>Amtsangaben aus dem Digitalen Personenregister der Germania Sacra — {{ canon.gsnid }}</h4>
-				{{ include('canon/_print_offices.html.twig', {'offices': co.officesgs}) }}
+				<h4><a href={{ wiagurl~canon.gsnid }}>GSN {{ canon.gsnid }}</a></h4>
+				{{ include('canon/_print_offices.html.twig', {'offices': canon.offices}) }}
 				{{ include('canon/_print_references_gs.html.twig', {
 				    'references': co.referencesgs
 				}) }}
 			    {% endif %}
 			    {% if co.bishop %}
-				<h4>Amtsangaben aus der Datenbank Bischöfe des Alten Reiches (WIAG) — {{ co.wiagid }}</h4>
+				<h4><a href={{ wiagurl~co.wiagid }}>{{ co.wiagid }}</a></h4>
 				{{ include('canon/_print_offices.html.twig', {'offices': co.bishop.offices}) }}
-				<h5>Referenzwerk</h5>
-				<ul>
-				    <li>{{ co.bishop.reference.shorttitle }}, S. {{ co.bishop.pagesgatz }}</li>
-				</ul>
+				<div custom-style="Compact">{{ co.bishop.reference.shorttitle }}, S. {{ co.bishop.pagesgatz }}</div>
 			    {% endif %}
 			{% endfor %}
 		    {% endif %}

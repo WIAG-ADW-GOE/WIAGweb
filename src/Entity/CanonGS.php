@@ -234,6 +234,12 @@ class CanonGS
         return $this->offices;
     }
 
+    public function setOffices($offices) {
+        $this->offices = $offices;
+        return $this;
+    }
+
+
     public function getReferences() {
         return $this->references;
     }

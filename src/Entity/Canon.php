@@ -276,9 +276,15 @@ class Canon
         return $this->offices;
     }
 
+    public function setOffices($offices) {
+        $this->offices = $offices;
+        return $this;
+    }
+
+
     public function addOffice($office) {
         $this->offices[] = $office;
-        dd($this->offices);
+        // dd($this->offices);
     }
 
     public function getReferences() {

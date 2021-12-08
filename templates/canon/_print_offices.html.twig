@@ -20,5 +20,5 @@
 	{% set commentstr=null %}
     {% endif %}
     {% set officestr=[office.officename ~ ' ' ~ inststr, office.showdate(), archdeaconterritory, commentstr] %}
-    <p>{{ officestr|filter((x) => x is not null)|join(', ')|raw }}</p>
+    <div custom-style="Aemter">{{ officestr|filter((x) => x is not null)|join(', ')|raw }}</div>
 {% endfor %}

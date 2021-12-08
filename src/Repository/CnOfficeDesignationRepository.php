@@ -49,7 +49,7 @@ class CnOfficeDesignationRepository extends ServiceEntityRepository
     }
     */
 
-    public function findByMonastery($monasteryName) {
+    public function findByMonastery($monasteryName, $limit, $offset = 0) {
         $qb = $this->createQueryBuilder('dsgn')
                    ->join('\App\Entity\CnOfficelookup', 'olt', 'WITH', 'olt.officeName = dsgn.nameSingular')
                    ->andWhere('olt.domstift = :monasteryName')
@@ -58,6 +58,10 @@ class CnOfficeDesignationRepository extends ServiceEntityRepository
                    ->addOrderBy('dsgn.sortkey');
 
         $query = $qb->getQuery();
+        if ($limit) {
+            $query->setMaxResults($limit);
+            $query->setFirstResult($offset);
+        }
 
         return $query->getResult();
     }

@@ -18,6 +18,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 
 /**
@@ -369,7 +371,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
     /**
      * Fill object with data for the detail view.
      */
-    public function fillData(CnOnline $online) {
+    public function fillData(CnOnline $online, $monasteryName = null) {
         // this looks not very elegant, but it is simple and each step is easy to control
         $em = $this->getEntityManager();
         if (!is_null($online->getIdDh())) {
@@ -398,6 +400,22 @@ class CnOnlineRepository extends ServiceEntityRepository {
                 $episc = $personrepo->findOneWithOffices($online->getIdEp());
                 $online->setBishop($episc);
             }
+        }
+
+        $co = $online->getCanonDh();
+        if ($co) {
+            $offices = $co->getOffices();
+            $co->setOffices($this->prioByMonastery($offices, $monasteryName));
+        }
+        $co = $online->getCanonGs();
+        if ($co) {
+            $offices = $co->getOffices();
+            $co->setOffices($this->prioByMonastery($offices, $monasteryName));
+        }
+        $co = $online->getBishop();
+        if ($co) {
+            $offices = $co->getOffices();
+            $co->setOffices($this->prioByMonastery($offices, $monasteryName));
         }
     }
 
@@ -478,6 +496,39 @@ class CnOnlineRepository extends ServiceEntityRepository {
         $query = $qb->getQuery();
 
         return $query->getResult();
+    }
+
+    /**
+     * prioByMonastery($monasteryName)
+     *
+     * put offices related to `$monasteryName` on top
+     */
+    public function prioByMonastery(Collection $offices, $monasteryName) {
+        if (is_null($monasteryName) || is_null($offices)) {
+            return $offices;
+        }
+
+        $em = $this->getEntityManager();
+        $domstift = $em->getRepository(Domstift::class)->findOneByName($monasteryName);
+        if (is_null($domstift)) {
+            return $offices;
+        }
+        $idDomstift = $domstift->getGsId();
+
+        $partOffices = $offices->partition(function($key, $value) use ($idDomstift) {
+            return $value->getIdMonastery() == $idDomstift;
+        });
+
+        if (count($partOffices) > 1) {
+            foreach ($partOffices[1] as $oom) {
+                $partOffices[0]->add($oom);
+            }
+        }
+        else {
+            dump($partOffices[0]);
+        }
+
+        return $partOffices[0];
     }
 
 }

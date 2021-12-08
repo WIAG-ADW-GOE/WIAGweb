@@ -64,7 +64,7 @@ class CanonRepository extends ServiceEntityRepository {
      */
     public function findOneWithOffices($id) {
         // fetch all data related to this canon
-        // sorting of offices is specified by an annotation to CanonGS.offices
+        // sorting of offices is specified by an annotation to Canon.offices
         // [Probably Doctrine can do this automatically. Do not replace this function, to implement
         // a more complex search if required.]
         $query = $this->createQueryBuilder('canon')
