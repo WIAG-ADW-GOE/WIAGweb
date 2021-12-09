@@ -457,11 +457,13 @@ class CnOnlineRepository extends ServiceEntityRepository {
     }
 
     public function findOneByIdEp($value): ?CnOnline {
-        return $this->createQueryBuilder('c')
+        $result = $this->createQueryBuilder('c')
                     ->andWhere('c.id_ep = :val')
                     ->setParameter('val', $value)
                     ->getQuery()
-                    ->getOneOrNullResult();
+                    ->getResult();
+
+        return $result[0];
     }
 
     public function findOffices($idMonastery) {
