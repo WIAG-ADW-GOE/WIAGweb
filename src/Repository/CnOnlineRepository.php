@@ -463,7 +463,8 @@ class CnOnlineRepository extends ServiceEntityRepository {
                     ->getQuery()
                     ->getResult();
 
-        return $result[0];
+        // There should at most one element in the result. Do not crash if there are several elements.
+        return $result ? $result[0] : null;
     }
 
     public function findOffices($idMonastery) {
@@ -532,5 +533,6 @@ class CnOnlineRepository extends ServiceEntityRepository {
 
         return $partOffices[0];
     }
+
 
 }
