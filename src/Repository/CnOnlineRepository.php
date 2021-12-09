@@ -463,7 +463,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
                     ->getQuery()
                     ->getResult();
 
-        // There should at most one element in the result. Do not crash if there are several elements.
+        // There should at most be one element in the result. Do not crash if there are several elements.
         return $result ? $result[0] : null;
     }
 

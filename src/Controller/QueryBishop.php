@@ -284,10 +284,12 @@ class QueryBishop extends AbstractController {
         if (!is_null($cnonline)) {
             $cnonlineRepository->fillData($cnonline);
             $canon = $cnonline->getCanonDh();
-            $canon_gs = $cnonline->getCanonGs();
+            // 2021-12-09 obsolete: Show ID but no offices nor references
+            // $canon_gs = $cnonline->getCanonGs();
         }
 
         $canon_merged = array();
+        // 2021-12-09 obsolete: Get references directly from cn_canon_references
         if (!is_null($canon)) {
             $cycle = 1;
             $canon_merged = $this->getDoctrine()
@@ -303,7 +305,7 @@ class QueryBishop extends AbstractController {
             'offset' => $offset,
             'hassuccessor' => $hassuccessor,
             'canon' => $canon,
-            'canon_merged' => $canon_merged,
+            # 'canon_merged' => $canon_merged,
             'canon_gs' => $canon_gs,
         ]);
 
