@@ -193,6 +193,7 @@ class CanonController extends AbstractController {
                                ->getRepository(Canon::class)
                                ->collectMerged($references, $canon_dh, $cycle);
             array_unshift($references, $canon_dh);
+            dump($references);
         }
 
         // dump($references);
