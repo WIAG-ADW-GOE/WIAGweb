@@ -164,7 +164,6 @@ class CanonController extends AbstractController {
      * @param int $offset                              offset of the canon in a query result list
      */
     public function getCanonInQuery($form, int $offset) {
-
         $queryformdata = $form->getData();
 
         $personRepository = $this->getDoctrine()
@@ -187,6 +186,7 @@ class CanonController extends AbstractController {
 
         $canon_dh = $person->getCanonDh();
         $references = array();
+        // 2021-12-09 obsolete! handle multiple references in the data input process
         if (!is_null($canon_dh)) {
             $cycle = 1;
             $references = $this->getDoctrine()
@@ -203,7 +203,6 @@ class CanonController extends AbstractController {
             'wiagidlong' => $person->getId(),
             'offset' => $offset,
             'hassuccessor' => $hassuccessor,
-            'references' => $references,
         ]);
 
     }

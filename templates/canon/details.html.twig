@@ -196,8 +196,8 @@
 			    <dl class="card-body row mb-0 pb-0">
 				{# offices and references#}
 				{{ _self.sectionoffices(person.canondh.offices, urlgsmonasteries) }}
-				{% if references is defined and references|length > 0 %}
-				    {{ _self.sectionreferencesdh(references) }}
+				{% if person.canondh.references %}
+				    {{ _self.sectionreferencesdh(person.canondh.references) }}
 				{% endif %}
 			    </dl>
 			</div>
