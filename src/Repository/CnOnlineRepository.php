@@ -425,7 +425,8 @@ class CnOnlineRepository extends ServiceEntityRepository {
         $online->setOfficesGs($officesgs);
 
         $refsrepogs = $em->getRepository(CnCanonReferenceGS::class);
-        $refsgs = $refsrepogs->findByIdCanon($online->getIdGs());
+        $refsgs = $refsrepogs->findByIdCanon($online->getIdGs(), ['idReference' => 'ASC']);
+        dump($refsgs);
         $online->setReferencesGS($refsgs);
         return $online;
     }
