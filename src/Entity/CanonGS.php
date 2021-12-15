@@ -47,6 +47,7 @@ class CanonGS
     /**
      * @ORM\OneToMany(targetEntity="CnCanonReferenceGS", mappedBy="canon")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
+     * @ORM\OrderBy({"idReference" = "ASC"})
      */
     private $references;
 

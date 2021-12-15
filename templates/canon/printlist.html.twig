@@ -60,8 +60,8 @@
 			    {% if co.iddh %}
 				{{ include('canon/_print_offices.html.twig', {'offices': canon.offices}) }}
 				{{ include('canon/_print_references_dh.html.twig', {
-				    'references': canonRepository.collectMergedLevelOne(canon)
-				}) }}
+				    'references': canon.references
+				    }) }}
 			    {% endif %}
 			    {% if co.idgs %}
 				<h4><a href={{ wiagurl~canon.gsnid }}>GSN {{ canon.gsnid }}</a></h4>

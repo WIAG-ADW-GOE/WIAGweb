@@ -1,9 +1,11 @@
 {# parameter: references (type Canon) #}
 {% if references is defined and references|length > 0 %}
-    {% for cnref in references %}
-	{% set refid = cnref.idinreference %}
-	{% set refuri %}{% if cnref.reference.onlineresource %}{{ cnref.reference.onlineresource }}{% else %}{{ path('canon_reference', {'id': cnref.reference.id }) }}{% endif %}{% endset %}
-	{% set refdisplaytitle=cnref.reference.shorttitle %}
-	<div custom-style="Compact">{{ refdisplaytitle }}{% if cnref.pagereference %}, S. {{ cnref.pagereference }}{% if refid %}, ID/Nr. {{ refid }}{% endif %}{% else %}{% if refid %}, ID/Nr. {{ refid }}{% endif %}{% endif %}</div>
-    {% endfor %}
+    <div custom-style="Compact">
+	{% for cnref in references %}
+	    {% set refid = cnref.idinreference %}
+	    {% set refuri %}{% if cnref.reference.onlineresource %}{{ cnref.reference.onlineresource }}{% else %}{{ path('canon_reference', {'id': cnref.reference.id }) }}{% endif %}{% endset %}
+	    {% set refdisplaytitle=cnref.reference.shorttitle %}
+	    {{ refdisplaytitle }}{% if cnref.pagereference %}, S. {{ cnref.pagereference }}{% if refid %}, ID/Nr. {{ refid }}{% endif %}{% else %}{% if refid %}, ID/Nr. {{ refid }}{% endif %}{% endif %}{% if not loop.last %} &mdash; {% endif %}
+	{% endfor %}
+    </div>
 {% endif %}

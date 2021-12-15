@@ -66,10 +66,10 @@ class Canon
      */
     private $offices;
 
-    // 2021-07-08 replaced by CanonService.collectMerged
     /**
      * @ORM\OneToMany(targetEntity="CnCanonReference", mappedBy="canon")
      * @ORM\JoinColumn(name="id", referencedColumnName="id_canon")
+     * @ORM\OrderBy({"idReference" = "ASC"})
      */
     private $references;
 

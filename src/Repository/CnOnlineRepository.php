@@ -374,6 +374,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
     public function fillData(CnOnline $online, $monasteryName = null) {
         // this looks not very elegant, but it is simple and each step is easy to control
         $em = $this->getEntityManager();
+        // DH
         if (!is_null($online->getIdDh())) {
             $canon = $em->getRepository(Canon::class)->findOneWithOffices($online->getIdDh());
             $online->setCanonDh($canon);
@@ -389,7 +390,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
                 $online->setBishop($episc);
             }
         }
-        # GS only
+        // GS only
         elseif (!is_null($online->getIdGs())) {
             $canon = $em->getRepository(CanonGS::class)->findOneWithOffices($online->getIdGs());
             $online->setCanonGs($canon);
@@ -402,6 +403,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
             }
         }
 
+        // order offices by $monasteryName if $monasteryName is given (print)
         $co = $online->getCanonDh();
         if ($co) {
             $offices = $co->getOffices();
@@ -426,8 +428,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
 
         $refsrepogs = $em->getRepository(CnCanonReferenceGS::class);
         $refsgs = $refsrepogs->findByIdCanon($online->getIdGs(), ['idReference' => 'ASC']);
-        dump($refsgs);
-        $online->setReferencesGS($refsgs);
+        $online->setReferencesGs($refsgs);
         return $online;
     }
 
