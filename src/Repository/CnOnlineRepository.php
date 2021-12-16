@@ -67,7 +67,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
     */
 
     public function countByQueryObject(CanonFormModel $formmodel) {
-        // if($formmodel->isEmpty()) return 0;
+        // if ($formmodel->isEmpty()) return 0;
         $qb = $this->createQueryBuilder('co')
                    ->select('COUNT(DISTINCT co.id)');
 
@@ -87,7 +87,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
         $this->addQueryConditions($qb, $formmodel);
 
 
-        if($limit > 0) {
+        if ($limit > 0) {
             $qb->setMaxResults($limit);
             $qb->setFirstResult($offset);
         }
@@ -109,28 +109,17 @@ class CnOnlineRepository extends ServiceEntityRepository {
         // e.g. search for a 'Kanoniker' who had also an office in 'Mainz' means not that the
         // person was 'Kanoniker' in 'Mainz';
 
-        # identifier
-        if($formmodel->someid) {
-            $qb->leftJoin('co.idlookup', 'ilt')
-               ->andWhere('ilt.authorityId LIKE :someid_pat OR co.wiagid LIKE :someid_pat OR co.id_dh = :someid OR co.id_gs = :someid')
-               ->setParameter(':someid_pat', '%'.$formmodel->someid.'%')
-               ->setParameter(':someid', $formmodel->someid);
-        }
-
-        # year
-        if($formmodel->year) {
-            # there is an entry in cn_era (domstift = 'all') for each canon
-            # eraStart is not NULL if eraEnd is not NULL (and vice versa)
-            $qb->join('co.era', 'era')
-               ->andWhere("era.domstift = 'all'")
-               ->andWhere("era.eraStart - :mgnyear < :qyear AND :qyear < era.eraEnd + :mgnyear")
-               ->setParameter(':mgnyear', self::MARGINYEAR)
-               ->setParameter(':qyear', $formmodel->year);
-        }
-
-        # domstift
+        $someid = $formmodel->someid;
+        $year = $formmodel->year;
         $monastery = $formmodel->monastery;
-        if($formmodel->monastery) {
+        $name = $formmodel->name;
+        $office = $formmodel->office;
+        $place = $formmodel->place;
+
+        # domstift and combinations
+        # exclude combinations with `place`
+        $monastery = $monastery;
+        if ($monastery) {
             /**
              * workaround to allow search strings like 'Domstift Lebus (...)' and
              * 'Augustinerchorherrenstift Herrenchiemsee'
@@ -147,32 +136,108 @@ class CnOnlineRepository extends ServiceEntityRepository {
             $monasteryPar = count($rgm) > 0 ? $rgm[0] : $monastery;
 
             $qb->join('co.officelookup', 'olt_domstift')
-               ->join('co.era', 'era_srt')
+               ->join('co.era', 'era_domstift_srt') # for sorting
                ->andWhere('olt_domstift.domstift LIKE :domstift')
-               ->andWhere('era_srt.domstift LIKE :domstift')
+               ->andWhere('era_domstift_srt.domstift LIKE :domstift')
                ->setParameter(':domstift', '%'.$monasteryPar.'%');
-        }
 
-        # office title
-        if($formmodel->office) {
+            # domstift - office
+            if ($office) {
+                $qb->andWhere('olt_domstift.officeName LIKE :office')
+                   ->setParameter('office', '%'.$office.'%');
+
+                # domstift - office - year
+                if ($year) {
+                    $qb->andWhere("olt_domstift.numdateStart - :mgnyear < :qyear ".
+                                  " AND :qyear < olt_domstift.numdateEnd + :mgnyear")
+                       ->setParameter(':mgnyear', self::MARGINYEAR)
+                       ->setParameter(':qyear', $year);
+                }
+            }
+            # domstift - year
+            elseif ($year) {
+                $qb->andWhere("olt_domstift.numdateStart - :mgnyear < :qyear ".
+                              " AND :qyear < olt_domstift.numdateEnd + :mgnyear")
+                   ->setParameter(':mgnyear', self::MARGINYEAR)
+                   ->setParameter(':qyear', $year);
+                // $qb->andWhere("era_domstift.eraStart - :mgnyear < :qyear AND :qyear < era_domstift.eraEnd + :mgnyear")
+                //    ->setParameter(':mgnyear', self::MARGINYEAR)
+                //    ->setParameter(':qyear', $year);
+            }
+
+            # do not handle triple combinations with place:
+            # if domstift != place the result set will be empty or very small
+
+        }
+        # office
+        elseif ($office) {
             $qb->join('co.officelookup', 'olt_office')
                ->andWhere('olt_office.officeName LIKE :office')
-               ->setParameter('office', '%'.$formmodel->office.'%');
+               ->setParameter('office', '%'.$office.'%');
+            # office - year
+            if ($year) {
+                $qb->andWhere("olt_office.numdateStart - :mgnyear < :qyear ".
+                              " AND :qyear < olt_office.numdateEnd + :mgnyear")
+                   ->setParameter(':mgnyear', self::MARGINYEAR)
+                   ->setParameter(':qyear', $year);
+            }
+        }
+        # year
+        elseif ($year) {
+            # there is an entry in cn_era (domstift = 'all') for each canon
+            # eraStart is not NULL if eraEnd is not NULL (and vice versa)
+            $qb->join('co.era', 'era')
+               ->andWhere("era.domstift = 'all'")
+               ->andWhere("era.eraStart - :mgnyear < :qyear AND :qyear < era.eraEnd + :mgnyear")
+               ->setParameter(':mgnyear', self::MARGINYEAR)
+               ->setParameter(':qyear', $year);
         }
 
-        # office place
-        if($formmodel->place) {
+        # place
+        if ($place) {
             $qb->join('co.officelookup', 'olt_place')
                ->andWhere('olt_place.locationName LIKE :place OR olt_place.archdeaconTerritory LIKE :place')
-               ->setParameter('place', '%'.$formmodel->place.'%');
+               ->setParameter('place', '%'.$place.'%');
+
+            # place - office
+            if ($office) {
+                $qb->andWhere('olt_place.officeName LIKE :office')
+                   ->setParameter('office', '%'.$office.'%');
+
+                # domstift - office - year
+                if ($year) {
+                    $qb->andWhere("olt_place.numdateStart - :mgnyear < :qyear ".
+                                  " AND :qyear < olt_place.numdateEnd + :mgnyear")
+                       ->setParameter(':mgnyear', self::MARGINYEAR)
+                       ->setParameter(':qyear', $year);
+                }
+            }
+            # domstift - year
+            elseif ($year) {
+                $qb->andWhere("olt_place.numdateStart - :mgnyear < :qyear ".
+                              " AND :qyear < olt_place.numdateEnd + :mgnyear")
+                   ->setParameter(':mgnyear', self::MARGINYEAR)
+                   ->setParameter(':qyear', $year);
+            }
         }
 
         # names
-        if($formmodel->name) {
+        if ($name) {
             $qb->join('co.namelookup', 'nlt')
                ->andWhere("nlt.givenname LIKE :qname OR nlt.familyname LIKE :qname".
                           " OR nlt.gn_fn LIKE :qname OR nlt.gn_prefix_fn LIKE :qname")
-               ->setParameter('qname', '%'.$formmodel->name.'%');
+               ->setParameter('qname', '%'.$name.'%');
+        }
+
+        # identifier
+        if ($someid) {
+            $qb->leftJoin('co.idlookup', 'ilt')
+               ->andWhere('ilt.authorityId LIKE :someid_pat '.
+                          'OR co.wiagid LIKE :someid_pat '.
+                          'OR co.id_dh = :someid '.
+                          'OR co.id_gs = :someid')
+               ->setParameter(':someid_pat', '%'.$someid.'%')
+               ->setParameter(':someid', $someid);
         }
 
         $this->addFacets($formmodel, $qb);
@@ -186,13 +251,13 @@ class CnOnlineRepository extends ServiceEntityRepository {
      * add conditions set by facets
      */
     public function addFacets($querydata, $qb) {
-        if($querydata->facetLocations) {
+        if ($querydata->facetLocations) {
             $locations = array_column($querydata->facetLocations, 'id');
             $qb->join('co.officelookup', 'ocfctl')
                ->andWhere('ocfctl.locationName IN (:locations)')
                ->setParameter('locations', $locations);
         }
-        if($querydata->facetMonasteries) {
+        if ($querydata->facetMonasteries) {
             $ids_monastery = array_column($querydata->facetMonasteries, 'id');
             // $facetMonasteries = array_map(function($a) {return 'Domstift '.$a;}, $facetMonasteries);
             $qb->join('co.officelookup', 'ocfctp')
@@ -200,7 +265,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
                ->andWhere('mfctp.wiagid IN (:places)')
                ->setParameter('places', $ids_monastery);
         }
-        if($querydata->facetOffices) {
+        if ($querydata->facetOffices) {
             $facetOffices = array_column($querydata->facetOffices, 'name');
             $qb->join('co.officelookup', 'ocfctoc')
                ->andWhere("ocfctoc.officeName IN (:offices)")
@@ -248,9 +313,9 @@ class CnOnlineRepository extends ServiceEntityRepository {
             break;
         case 'domstift_domstift':
             // join see conditions
-            $qb->addOrderBy('era_srt.domstift', 'ASC')
-               ->addOrderBy('era_srt.eraStart', 'ASC')
-               ->addOrderBy('era_srt.eraEnd', 'ASC')
+            $qb->addOrderBy('era_domstift_srt.domstift', 'ASC')
+               ->addOrderBy('era_domstift_srt.eraStart', 'ASC')
+               ->addOrderBy('era_domstift_srt.eraEnd', 'ASC')
                ->addOrderBy('co.familyname', 'ASC')
                ->addOrderBy('co.givenname', 'ASC')
                ->addOrderBy('co.id');
@@ -292,7 +357,7 @@ class CnOnlineRepository extends ServiceEntityRepository {
         }
         $em = $this->getEntityManager();
         $mon = $em->getRepository(Domstift::class)->findOneByName($monastery_name);
-        if($mon) {
+        if ($mon) {
             return $mon->getGsId();
         } else {
             return null;
