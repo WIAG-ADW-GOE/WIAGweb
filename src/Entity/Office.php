@@ -268,6 +268,11 @@ class Office
         return $this->office_name;
     }
 
+    // see CnOffice
+    public function getOfficeNameShow() {
+        return $this->office_name;
+    }
+
     public function setOfficeName(?string $office_name): self
     {
         $this->office_name = $office_name;

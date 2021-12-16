@@ -30,6 +30,13 @@ class CnOffice {
     private $monasterylocationstr;
 
     /**
+     * @ORM\OneToOne(targetEntity="CnOfficeNorm")
+     * @ORM\JoinColumn(nullable=true, name="id_office_norm", referencedColumnName="id")
+     */
+    private $officeNorm;
+
+
+    /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -46,6 +53,11 @@ class CnOffice {
      * @Assert\NotBlank(message="Bitte Feld 'Amtsart' befüllen.")
      */
     private $officeName;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $idOfficeNorm;
 
     /**
      * @ORM\Column(type="string", length=63, nullable=true)
@@ -173,6 +185,14 @@ class CnOffice {
     public function getMonastery()
     {
         return $this->monastery;
+    }
+
+    public function getOfficeNorm() {
+        return $this->officeNorm;
+    }
+
+    public function getOfficeNameShow() {
+        return $this->officeNorm ? $this->officeNorm->getOfficeName() : $this->officeName;
     }
 
     public function getId(): ?int

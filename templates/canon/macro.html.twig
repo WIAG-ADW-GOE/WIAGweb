@@ -12,7 +12,7 @@
 	</td>
 	<td>
 	    {% for o in offices%}
-		<small>{{ o.officename }}
+		<small>{{ o.officenameshow }}
 		    {% if o.locationshow %}({{ o.locationshow }}){% endif %}
 		    {% if o.datestart and not o.dateend %}{{ o.datestart }}
 		    {% elseif not o.datestart and o.dateend %}{{ o.dateend }}

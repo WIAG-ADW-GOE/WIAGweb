@@ -28,7 +28,7 @@
 	    {% for office in offices %}
 		<li>
 		    <ul class="list-inlined list-unstyled">
-			<li class="list-inline-item"> {{ office.officename }}</li>
+			<li class="list-inline-item"> {{ office.officenameshow }}</li>
 			{% if office.diocese and not office.idmonastery %}
 			    <li class="list-inline-item">{% if office.dioceseindb %}<a href="{{ path('diocese', {'name': office.diocese}) }}">{{ office.diocese }}</a>{% else %}{{ office.diocese }}{% endif %}</li>
 			{% endif %}
@@ -187,7 +187,6 @@
 		    {% endif %}
 		</dl>
 	    {% endif %}
-	    {# <p>{{ dump(person) }}</p> #}
 	    {% if person.iddh %}
 		<div class="row mx-2 mb-2 mt-3">
 		    <div class="col-12">

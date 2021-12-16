@@ -92,7 +92,6 @@ class CnOnlineRepository extends ServiceEntityRepository {
             $qb->setFirstResult($offset);
         }
 
-        // dump($qb->getDQL());
         $this->addSortParameter($qb, $formmodel);
 
         $query = $qb->getQuery();
@@ -593,9 +592,6 @@ class CnOnlineRepository extends ServiceEntityRepository {
             foreach ($partOffices[1] as $oom) {
                 $partOffices[0]->add($oom);
             }
-        }
-        else {
-            dump($partOffices[0]);
         }
 
         return $partOffices[0];
